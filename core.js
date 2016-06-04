@@ -1,82 +1,24 @@
-//# Setup the required global variables
-var $z = window.$z || {};
-
-
-
-//####################################################################################################
-//# core
-//####################################################################################################
 /*
+####################################################################################################
 Class: core
-
-About:
-Global reference for all non-library Javascript functionality known externally as `window.$z`.
+Vanilla++ Javascript Functionality (Neapolitan).
+####################################################################################################
 */
-//# Begin the population of the system's core namespace (mrs)
-(function (core) {
+!function (sName) {
     'use strict';
 
+    var core = { $ver: '2016-06-04' },
+        _Object_prototype_toString = Object.prototype.toString //# code-golf
+    ; //# core
 
-    //# Set the .name of our namespace (for use in error messages and the like)
-    core.$name = '$z';
-    core.$ver = '2016-05-26a';
 
-
-    //####################################################################################################
-    //# core.resolve
-    //####################################################################################################
     /*
-	Function: resolve
-	Safely resolves the referenced path within the provided object, returning undefined if the path does not exist.
-
-	Parameters:
-	oObject - The object to interrogate.
-	sPath - String representing the path to the requested property.
-
-	Returns:
-	Varient representing the value at the referenced path, returning undefined if the path does not exist.
-
-	About:
-	NOTE: To default a value, use the following snipit:
-	> var v = $services.resolve({}, 'some.path') || 'default value';
-
-	See Also:
-	<core.make.obj>
-	*/
-    core.resolve = function (oObject, sPath) {
-        var a_sPath, i,
-            oReturnVal = (core.is.obj(oObject) ? oObject : undefined)
-        ;
-
-        //# If the passed oObject .is.obj and sPath .is.str, .split sPath into a_sPath
-        if (oReturnVal && core.is.str(sPath)) {
-            a_sPath = sPath.split(".");
-
-            //# Traverse the a_sPath, resetting the oReturnVal to the value present at the current a_sPath or undefined if it's not present (while falling from the loop)
-            for (i = 0; i < a_sPath.length; i++) {
-                if (core.is.obj(oReturnVal) && a_sPath[i] in oReturnVal) {
-                    oReturnVal = oReturnVal[a_sPath[i]];
-                } else {
-                    oReturnVal = undefined;
-                    break;
-                }
-            }
-        }
-
-        return oReturnVal;
-    }; //# core.resolve
-
-
-    //####################################################################################################
-    //# core.cookie
-    //####################################################################################################
-    /*
+    ####################################################################################################
     Class: core.cookie
-    
-    About:
     Parses the referenced cookie and returns an object to manage it.
+    ####################################################################################################
     */
-    (function () {
+    !function () {
         var oOnUnload = {
             $keys: []
         };
@@ -204,66 +146,16 @@ Global reference for all non-library Javascript functionality known externally a
             $returnValue.data = oModel;
             return $returnValue;
         };
-    })(); //# core.cookie
+    }(); //# core.cookie
 
-
-    //####################################################################################################
-    //# core.queryString
-    //####################################################################################################
-    /*
-    Class: core.queryString
     
-    About:
-    Parses the referenced cookie and returns an object to manage it.
-    */
-    //# Parses the queryString and returns a deserialized object to access it
-    (function () {
-        var $queryString;
-
-        //# Parses the query string into an object model, returning an object containing the .model and a .value function to retrieve the values (see note below).
-        //#     Supports: ?test=Hello&person=neek&person=jeff&person[]=jim&person[extra]=john&test3&nocache=1398914891264&person=frank,jim;person=aaron
-        core.queryString = function (sKey, bCaseInsenstive) {
-            var vReturnVal;
-
-            //# Ensure the cached $queryString is setup
-            $queryString = $queryString || core.serial.de(window.location.search.substring(1));
-
-            //# If there were no arguments, return the cached $queryString
-            if (arguments.length === 0) {
-                vReturnVal = $queryString;
-            }
-                //# Else if this is a bCaseInsenstive call
-            else if (bCaseInsenstive) {
-                sKey = (sKey + "").toLowerCase();
-
-                //# Traverse the $queryString, returning the first matching .toLowerCase'd key
-                for (var key in $queryString) {
-                    if (key.toLowerCase() == sKey) {
-                        vReturnVal = $queryString[key];
-                        break;
-                    }
-                }
-            }
-                //# Else a case-specific sKey was requested
-            else {
-                vReturnVal = $queryString[sKey];
-            }
-
-            return vReturnVal;
-        }; //# core.queryString
-    })();
-
-
-    //####################################################################################################
-    //# core.console
-    //####################################################################################################
     /*
+    ####################################################################################################
 	Class: core.console
-
-	About:
-	Wrapper for console functionality.
+    Console and error handling functionality.
+    ####################################################################################################
 	*/
-    (function () {
+    !function () {
         core.console = {
             raise: function (sMessage) {
                 throw sMessage;
@@ -285,17 +177,14 @@ Global reference for all non-library Javascript functionality known externally a
                 } catch (e) { }
             } //# warn
         }; //# core.console
-    })();
+    }(); //# core.console
 
 
-    //####################################################################################################
-    //# core.fn (function)
-    //####################################################################################################
     /*
+    ####################################################################################################
 	Class: core.fn
-
-	About:
 	Function management functionality.
+    ####################################################################################################
 	*/
     core.fn = {
         /*
@@ -321,7 +210,45 @@ Global reference for all non-library Javascript functionality known externally a
 				);
             }
         },
+        
+        
+        /*
+        Function: tryCatch
+        Safely calls the passed function, returning the default value if an error occurs during execution.
 
+		Parameters:
+		fn - Function to call.
+		vContext - Varient representing the Javascript context (e.g. `this`) in which to call the function.
+		vArguments - Varient representing the argument(s) to pass into the passed function.
+        vDefault - Varient representing the default value to return if an error occurs. Default: `undefined`.
+        bReturnObj - Boolean value representing if an Object is to be returned representing the result and error. Default `false`.
+
+		Returns:
+		Varient representing the result of the passed function.
+
+		See Also:
+		<core.fn>, <core.fn.tryCatch>, <core.fn.once>, <core.fn.poll>, <core.fn.debounce>
+        */
+        tryCatch: function (fn, vContext, vArguments, vDefault, bReturnObj) {
+            var oReturnVal = {
+                result: vDefault,
+                error: null
+            };
+            
+            try {
+                oReturnVal.result = fn.apply(
+                    vContext || this,
+                    core.is.arr(vArguments) ? vArguments : [vArguments]
+                );
+            }
+            catch (e) {
+                oReturnVal.error = e;
+            }
+            
+            return (bReturnObj ? oReturnVal : oReturnVal.result);
+        }, //# tryCatch
+
+        
         /*
 		Function: debounce
 		Returns a function, that, as long as it continues to be invoked, will not be triggered. The function will be called after it stops being called for N milliseconds. If `immediate` is passed, trigger the function on the leading edge, instead of the trailing.
@@ -360,6 +287,7 @@ Global reference for all non-library Javascript functionality known externally a
             };
         },
 
+        
         /*
 		Function: poll
 		Calls the referenced function based on an interval until it returns true.
@@ -389,17 +317,18 @@ Global reference for all non-library Javascript functionality known externally a
                 if (fn()) {
                     fnCallback();
                 }
-                    // If the condition isn't met but the timeout hasn't elapsed, go again
+                // If the condition isn't met but the timeout hasn't elapsed, go again
                 else if (Number(new Date()) < endTime) {
                     setTimeout(p, iInterval);
                 }
-                    // Didn't match and too much time, reject!
+                // Didn't match and too much time, reject!
                 else {
                     fnErrback(new Error('timed out for ' + fn + ': ' + arguments));
                 }
             })();
         }, //# poll
 
+        
         /*
 		Function: once
 		Ensure a function is called only .once (optionally within a specific context)
@@ -439,15 +368,11 @@ Global reference for all non-library Javascript functionality known externally a
     }; //# core.fn
 
 
-
-    //####################################################################################################
-    //# core.tools
-    //####################################################################################################
     /*
+    ####################################################################################################
 	Class: core.tools
-
-	About:
 	Bucket for various functionality.
+    ####################################################################################################
 	*/
     core.tools = {
         /*
@@ -462,9 +387,6 @@ Global reference for all non-library Javascript functionality known externally a
 
 		Returns:
 		String representing the absolute URL.
-
-		See Also:
-		<core.tools>, <core.tools.baseUrl>, <core.tools.mvcPath>
 		*/
         absoluteUrl: (function () {
             var a = document.createElement('a');
@@ -478,15 +400,11 @@ Global reference for all non-library Javascript functionality known externally a
     }; //# core.tools
 
 
-
-    //####################################################################################################
-    //# core.is
-    //####################################################################################################
     /*
+    ####################################################################################################
 	Class: core.is
-
-	About:
 	Variable type identification logic.
+    ####################################################################################################
 	*/
     core.is = {
         /*
@@ -506,11 +424,12 @@ Global reference for all non-library Javascript functionality known externally a
 		*/
         str: function (s, bDisallowNullString, bTrimWhitespace) {
             return (
-				(typeof s == 'string' || s instanceof String) &&
+				(typeof s === 'string' || s instanceof String) &&
 				(!bDisallowNullString || s !== '') &&
 				(!bTrimWhitespace || core.make.str(s).trim() !== '')
 			) ? true : false;
         }, //# is.str
+        
 
         /*
 		Function: date
@@ -527,8 +446,9 @@ Global reference for all non-library Javascript functionality known externally a
 		*/
         date: function (x) {
             var d = new Date(x);
-            return (x && Object.prototype.toString.call(d) === "[object Date]" && !isNaN(d.valueOf())) ? true : false;
+            return (x && _Object_prototype_toString.call(d) === "[object Date]" && !isNaN(d.valueOf())) ? true : false;
         }, //# is.date
+        
 
         /*
 		Function: num
@@ -546,6 +466,7 @@ Global reference for all non-library Javascript functionality known externally a
         num: function (x) {
             return (/^[-0-9]?[0-9]*(\.[0-9]{1,})?$/.test(x) && !isNaN(parseFloat(x)) && isFinite(x)) ? true : false;
         }, //# is.num
+        
 
         /*
 		Function: int
@@ -565,6 +486,7 @@ Global reference for all non-library Javascript functionality known externally a
 
             return (core.is.num(x) && fX % 1 === 0);
         }, //# is.int
+        
 
         /*
 		Function: float
@@ -585,6 +507,7 @@ Global reference for all non-library Javascript functionality known externally a
             return (core.is.num(x) && fX % 1 !== 0);
         }, //# is.float
 
+        
         /*
 		Function: bool
 		Determines if the passed value is a boolean value (e.g. `true` or `false`).
@@ -599,8 +522,10 @@ Global reference for all non-library Javascript functionality known externally a
 		<core.is>, <core.is.true>
 		*/
         bool: function (b) {
-            return (b === true || b === false) ? true : false;
+            //return (b === true || b === false) ? true : false;
+            return (_Object_prototype_toString.call(b) === '[object Boolean]') ? true : false;
         }, //# is.bool
+        
 
         /*
 		Function: true
@@ -621,6 +546,7 @@ Global reference for all non-library Javascript functionality known externally a
 				(v + "").trim().toLowerCase() === "true"
 			) ? true : false;
         }, //# is.true
+        
 
         /*
 		Function: fn
@@ -636,8 +562,9 @@ Global reference for all non-library Javascript functionality known externally a
 		<core.is>, <core.tools.callFn>
 		*/
         fn: function (f) {
-            return (Object.prototype.toString.call(f) === '[object Function]') ? true : false;
+            return (_Object_prototype_toString.call(f) === '[object Function]') ? true : false;
         }, //# is.fn
+        
 
         /*
 		Function: obj
@@ -652,12 +579,12 @@ Global reference for all non-library Javascript functionality known externally a
 		Boolean value representing if the value is an object.
 
 		See Also:
-		<core.is>, <core.make.obj>, <core.resolve>
+		<core.is>, <core.make.obj>, <core.data.get>
 		*/
         obj: function (o /*, [bDisallowEmptyObject], [a_sRequiredKeys] */) {
             var a_sRequiredKeys, i,
                 bDisallowEmptyObject = false,
-                bReturnVal = (o && o === Object(o) && !core.is.fn(o))
+                bReturnVal = (o && o === Object(o) && !core.is.fn(o) ? true : false)
             ;
 
             //# If the passed o(bject) is an Object
@@ -678,7 +605,7 @@ Global reference for all non-library Javascript functionality known externally a
                 }
 
                 //# Reset our bReturnVal based on bDisallowEmptyObject
-                bReturnVal = (!bDisallowEmptyObject || Object.getOwnPropertyNames(o).length !== 0) ? true : false;
+                bReturnVal = (!bDisallowEmptyObject || Object.getOwnPropertyNames(o).length !== 0 ? true : false);
 
                 //# If we still have a valid Object and we have a_sRequiredKeys, traverse them
                 if (bReturnVal && a_sRequiredKeys) {
@@ -694,6 +621,7 @@ Global reference for all non-library Javascript functionality known externally a
 
             return bReturnVal;
         }, //# is.obj
+        
 
         /*
 		Function: arr
@@ -710,10 +638,11 @@ Global reference for all non-library Javascript functionality known externally a
 		<core.is>, <core.make.arr>
 		*/
         arr: function (a, bDisallow0Length) {
-            return (Object.prototype.toString.call(a) === '[object Array]' &&
+            return (_Object_prototype_toString.call(a) === '[object Array]' &&
 				(!bDisallow0Length || a.length > 0)
 			) ? true : false;
         }, //# is.arr
+        
 
         /*
 		Function: val
@@ -731,30 +660,7 @@ Global reference for all non-library Javascript functionality known externally a
         val: function (v) {
             return (v !== undefined && v !== null) ? true : false;
         }, //# is.val
-
-        /*
-		Function: prop
-		Determines if the passed object contains the referenced property.
-
-		Parameters:
-		o - The object to interrogate.
-		sProp - String representing the name the property.
-		bPropIsPath - Boolean flag representing if the passed sProp represents a path (e.g. `core.is.prop(obj "child.grandchild", true)`)
-
-		Returns:
-		Boolean value representing if the property is present in the passed object.
-
-		See Also:
-		<core.is>, <core.resolve>
-		*/
-        prop: function (o, sProp, bPropIsPath) {
-            var oObj = (core.is.arr(o, true) ? o[0] : o);
-
-            return (bPropIsPath === true ?
-				core.resolve(oObj, sProp) !== undefined :
-				core.is.obj(oObj) && sProp in oObj
-			) ? true : false;
-        }, //# is.prop
+        
 
         /*
 		Function: json
@@ -777,6 +683,7 @@ Global reference for all non-library Javascript functionality known externally a
                 return false;
             }
         }, //# is.json
+        
 
         /*
 		Function: dom
@@ -792,20 +699,16 @@ Global reference for all non-library Javascript functionality known externally a
 		<core.is>
 		*/
         dom: function (x) {
-            return (x && core.is.str(x.tagName) && x.tagName !== "" && core.is.fn(x.getAttribute)) ? true : false;
+            return (x && core.is.str(x.tagName) && x.tagName !== "" && core.is.fn(x.getAttribute) ? true : false);
         } //# is.dom
     }; //# core.is
 
 
-
-    //####################################################################################################
-    //# core.make
-    //####################################################################################################
     /*
+    ####################################################################################################
 	Class: core.make
-
-	About:
 	Variable casting logic.
+    ####################################################################################################
 	*/
     core.make = {
         /*
@@ -831,6 +734,7 @@ Global reference for all non-library Javascript functionality known externally a
 			);
         }, //#make. str
 
+        
         /*
 		Function: date
 		Safely forces the passed value into a date.
@@ -851,6 +755,7 @@ Global reference for all non-library Javascript functionality known externally a
 				(arguments.length > 1 ? vDefault : new Date())
 			);
         }, //# make.date
+        
 
         /*
 		Function: int
@@ -880,11 +785,14 @@ Global reference for all non-library Javascript functionality known externally a
 		<core.make>, <core.make.float>, <core.is.float>, <core.make.int>, <core.eq.num>, <core.cp.num>
 		*/
         int: function (i, vDefault) {
-            return (!isNaN(parseInt(i, 10)) ?
-				parseInt(i, 10) :
+            var iReturnVal = parseInt(f, 10);
+            
+            return (!isNaN(iReturnVal) ?
+				iReturnVal :
 				(arguments.length > 1 ? vDefault : 0)
 			);
         }, //# make.int
+        
 
         /*
 		Function: float
@@ -901,11 +809,14 @@ Global reference for all non-library Javascript functionality known externally a
 		<core.make>, <core.make.int>, <core.is.float>, <core.make.int>, <core.eq.num>, <core.cp.num>
 		*/
         float: function (f, vDefault) {
-            return (!isNaN(parseFloat(f, 10)) ?
-				parseFloat(f, 10) :
+            var fReturnVal = parseFloat(f, 10);
+            
+            return (!isNaN(fReturnVal) ?
+				fReturnVal :
 				(arguments.length > 1 ? vDefault : 0)
 			);
         }, //# make.float
+        
 
         /*
 		Function: arr
@@ -927,6 +838,7 @@ Global reference for all non-library Javascript functionality known externally a
 				(arguments.length > 1 ? a_vDefault : [])
 			);
         }, //# make.arr
+        
 
         /*
 		Function: obj
@@ -941,48 +853,16 @@ Global reference for all non-library Javascript functionality known externally a
 		Object representing the updated object reference.
 
 		See Also:
-		<core.make>, <core.resolve>
+		<core.make>
 		*/
-        obj: function (o, sPath, vValue) {
-            var a_sPath, i,
-				oReturnVal = (core.is.obj(o) ? o : {}),
-				oCurrent = oReturnVal
-            ;
-
-            //# Optionally builds the sKey as an [object], returning the result
-            function setIndex(oObj, sKey) {
-                //# Reset sKey for this loop, then set/create it within the oReturnVal
-                //#     NOTE: The validity of the current sKey is not checked as we assume that "you must be at least this smart to ride this ride"
-                //#     NOTE: Due to the nature of this function, we know that oObj will always be an object (thanks to the `oReturnVal =` logic above and `|| {}` logic below)
-                oObj[sKey] = oObj[sKey] || {};
-                //oObj[sKey].$parent = oObj[sKey].$parent || oObj;
-                return oObj[sKey];
-            }
-
-            //# If the passed sPath .is.str
-            if (sPath && core.is.str(sPath)) {
-                //# .split the a_sPath
-                //#     NOTE: Due to how .split works above, we will always have at least 1 index in a_sPath, so there is no need to pretest it below
-                a_sPath = sPath.split(".");
-
-                //# Traverse all but the last entry of the a_sPath (hence -1), resetting the oCurrent [object] to the .setIndex as we go
-                for (i = 0; i < a_sPath.length - 1; i++) {
-                    oCurrent = setIndex(oCurrent, a_sPath[i]);
-                }
-
-                //# If the caller passed in 3 arguments, set the last a_sPath entry with the passed vValue
-                if (arguments.length === 3) {
-                    oCurrent[a_sPath[i]] = vValue;
-                }
-                    //# Else we need to .setIndex of the last a_sPath entry
-                else {
-                    /*oCurrent =*/ setIndex(oCurrent, a_sPath[i]);
-                }
-            }
-
-            return oReturnVal;
+        obj: function (o, oDefault) {
+            return (core.is.obj(o) ?
+                o :
+                (arguments.length > 1 ? oDefault : {})
+            );
         }, //# make.obj
 
+        
         /*
 		Function: age
 		Safely parses the passed value as a date of birth into the age in years.
@@ -1011,6 +891,7 @@ Global reference for all non-library Javascript functionality known externally a
             return iReturnVal;
         }, //# make.age
 
+        
         /*
 		Function: yyyymmdd
 		Safely parses the passed value into a string containing the international date format (YYYY/MM/DD).
@@ -1035,6 +916,7 @@ Global reference for all non-library Javascript functionality known externally a
             //dCalDate.getHours() + ':' + core.make.str(dCalDate.getMinutes()).lPad("0", 2) + ':' + core.make.str(dCalDate.getSeconds()).lPad("0", 2)
         }, //# make.yyyymmdd
 
+        
         /*
 		Function: dateOnly
 		Safely parses the passed value into a date containing the year/month/day while replacing any time portion with midnight.
@@ -1053,6 +935,7 @@ Global reference for all non-library Javascript functionality known externally a
             return core.make.date(core.make.yyyymmdd(x, dDefault));
         }, //# make.dateOnly
 
+        
         /*
 		Function: json
 		Safely parses the passed value as a JSON string into an object.
@@ -1068,7 +951,7 @@ Global reference for all non-library Javascript functionality known externally a
 		<core.make>, <core.make.obj>
 		*/
         json: function (s, vDefault) {
-            var oJson = (arguments.length > 1 ? vDefault : s);
+            var oJson = (arguments.length > 1 ? vDefault : {});
 
             try {
                 oJson = JSON.parse(s);
@@ -1079,15 +962,96 @@ Global reference for all non-library Javascript functionality known externally a
     }; //# core.make
 
 
-
-    //####################################################################################################
-    //# core.cp (compare)
-    //####################################################################################################
     /*
-	Class: core.cp
+    ####################################################################################################
+	Class: core.eq
+	Equating logic (including implicit casting of types).
+    ####################################################################################################
+	*/
+    core.eq = {
+        /*
+		Function: date
+		Determines if the passed dates are equal (includes implicit casting).
 
-	About:
+		Parameters:
+		x - The first date to compare.
+		y - The second date to compare.
+
+		Returns:
+		Boolean value representing if the passed dates are equal.
+
+		See Also:
+		<core.eq>, <core.cp.date>, <core.is.date>, <core.make.date>
+		*/
+        date: function (x, y) {
+            var dDateX = core.make.date(x, null);
+            var dDateY = core.make.date(y, null);
+
+            //#     NOTE: `new Date("1970/01/01") === new Date("1970/01/01")` is always false as they are 2 different objects, while <= && >= will give the expected result
+            //#     SEE: Comment from Jason Sebring @ http://stackoverflow.com/a/493018/235704 
+            return (core.is.date(dDateX) && core.is.date(dDateY) && dDateX <= dDateY && dDateX >= dDateY);
+        }, //# date
+        
+
+        /*
+		Function: str
+		Determines if the passed strings are equal (includes implicit casting and trimming of leading/trailing whitespace).
+
+		Parameters:
+		s - The first string to compare.
+		t - The second string to compare.
+		bCaseInsenstive - Boolean value indicating if the comparison is to be case insenstive.
+
+		Returns:
+		Boolean value representing if the passed strings are equal.
+
+		See Also:
+		<core.eq>, <core.cp.str>, <core.is.str>, <core.make.str>
+		*/
+        str: function (s, t, bCaseInsenstive) {
+            s = core.make.str(s, "");
+            t = core.make.str(t, "");
+
+            //# Unless specificially told not to, compare the passed string as bCaseInsenstive
+            return (bCaseInsenstive !== false ?
+				(s.toLowerCase() === t.toLowerCase()) :
+				(s === t)
+			);
+        }, //# str
+        
+
+        /*
+		Function: num
+		Determines if the passed numeric values are equal (includes implicit casting per the Javascript rules, see: <core.make.int>).
+
+		Parameters:
+		s - The first numeric value to compare.
+		t - The second numeric value to compare.
+
+		Returns:
+		Boolean value representing if the passed numeric values are equal.
+
+		See Also:
+		<core.eq>, <core.cp.num>, <core.is.int>, <core.is.float>, <core.make.int>, <core.make.float>
+		*/
+        num: function (x, y) {
+            var bReturnVal = false;
+
+            //# If the passed x and y .is.num'bers, .make them .floats and reset our bReturnVal to their comparison
+            if (core.is.num(x) && core.is.num(y)) {
+                bReturnVal = (core.make.float(x) === core.make.float(y));
+            }
+
+            return bReturnVal;
+        } //# num
+    }; //# core.eq
+
+
+    /*
+    ####################################################################################################
+	Class: core.cp
 	Comparison logic (including implicit casting of types).
+    ####################################################################################################
 	*/
     core.cp = {
         /*
@@ -1126,26 +1090,7 @@ Global reference for all non-library Javascript functionality known externally a
             return iReturnVal;
         }, //# date
 
-        /*
-		Function: str
-		Performs a case-insensitive comparison of the passed strings (trimming both before comparison).
-
-		Parameters:
-		x - The first string to compare.
-		y - The second string to compare.
-
-		Returns:
-		Boolean value representing if the strings match.
-
-		See Also:
-		<core.cp>, <core.eq.str>, <core.is.str>, <core.make.str>
-		*/
-        str: function (x, y) {
-            return (
-                core.make.str(x).trim().toLowerCase() === core.make.str(y).trim().toLowerCase()
-            );
-        },
-
+        
         /*
 		Function: num
 		Determines the relationship between the passed numeric values (includes implicit casting per the Javascript rules, see: <core.make.int>).
@@ -1179,108 +1124,208 @@ Global reference for all non-library Javascript functionality known externally a
             }
 
             return iReturnVal;
-        } //# num
+        }, //# num
+
+        
+        /*
+		Function: str
+        Determines the relationship between the passed strings (implicitly casted, trimmed and compaired as case-insensitive).
+
+		Parameters:
+		x - The first string to compare.
+		y - The second string to compare.
+
+		Returns:
+		Truthy interger value representing 1 if x === y, 0 if x != y or -1 if x matches y (case-insensitive and trimmed).
+
+		See Also:
+		<core.cp>, <core.eq.str>, <core.is.str>, <core.make.str>
+		*/
+        str: function (x, y) {
+            var iReturnVal = 0,
+                s1 = core.make.str(x),
+                s2 = core.make.str(y)
+            ;
+            
+            //# If the strings match as-is, reset our iReturnVal to 1
+            if (s1 === s2) {
+                iReturnVal = 1;
+            }
+            //# Else if the strings match after .trim'ing and .toLowerCase'ing, reset our iReturnVal to -1
+            else if (s1.trim().toLowerCase() === s2.trim().toLowerCase()) {
+                iReturnVal = -1;
+            }
+            
+            return iReturnVal;
+        } //# str
     }; //# core.cp
 
 
-
-    //####################################################################################################
-    //# core.eq (equal)
-    //####################################################################################################
     /*
-	Class: core.eq
-
-	About:
-	Equating logic (including implicit casting of types).
-	*/
-    core.eq = {
-        /*
-		Function: date
-		Determines if the passed dates are equal (includes implicit casting).
-
-		Parameters:
-		x - The first date to compare.
-		y - The second date to compare.
-
-		Returns:
-		Boolean value representing if the passed dates are equal.
-
-		See Also:
-		<core.eq>, <core.cp.date>, <core.is.date>, <core.make.date>
-		*/
-        date: function (x, y) {
-            var dDateX = core.make.date(x, null);
-            var dDateY = core.make.date(y, null);
-
-            //#     NOTE: `new Date("1970/01/01") === new Date("1970/01/01")` is always false as they are 2 different objects, while <= && >= will give the expected result
-            //#     SEE: Comment from Jason Sebring @ http://stackoverflow.com/a/493018/235704 
-            return (core.is.date(dDateX) && core.is.date(dDateY) && dDateX <= dDateY && dDateX >= dDateY);
-        }, //# date
-
-        /*
-		Function: str
-		Determines if the passed strings are equal (includes implicit casting and trimming of leading/trailing whitespace).
-
-		Parameters:
-		s - The first string to compare.
-		t - The second string to compare.
-		bCaseInsenstive - Boolean value indicating if the comparison is to be case insenstive.
-
-		Returns:
-		Boolean value representing if the passed strings are equal.
-
-		See Also:
-		<core.eq>, <core.cp.str>, <core.is.str>, <core.make.str>
-		*/
-        str: function (s, t, bCaseInsenstive) {
-            s = core.make.str(s, "").trim();
-            t = core.make.str(t, "").trim();
-
-            //# Unless specificially told not to, compare the passed string as bCaseInsenstive
-            return (bCaseInsenstive !== false ?
-				(s.toLowerCase() === t.toLowerCase()) :
-				(s === t)
-			);
-        }, //# str
-
-        /*
-		Function: num
-		Determines if the passed numeric values are equal (includes implicit casting per the Javascript rules, see: <core.make.int>).
-
-		Parameters:
-		s - The first numeric value to compare.
-		t - The second numeric value to compare.
-
-		Returns:
-		Boolean value representing if the passed numeric values are equal.
-
-		See Also:
-		<core.eq>, <core.cp.num>, <core.is.int>, <core.is.float>, <core.make.int>, <core.make.float>
-		*/
-        num: function (x, y) {
-            var bReturnVal = false;
-
-            //# If the passed x and y .is.num'bers, .make them .floats and reset our bReturnVal to their comparison
-            if (core.is.num(x) && core.is.num(y)) {
-                bReturnVal = (core.make.float(x) === core.make.float(y));
-            }
-
-            return bReturnVal;
-        } //# num
-    }; //# core.eq
-
-
-
-    //####################################################################################################
-    //# core.data
-    //####################################################################################################
-    /*
+    ####################################################################################################
 	Class: core.data
-
-	About:
 	Data manipulation logic.
+    ####################################################################################################
 	*/
     core.data = {
+        /*
+        Function: get
+        Safely resolves the referenced path within the provided object, returning undefined if the path does not exist.
+
+        Parameters:
+        oObject - The object to interrogate.
+        sPath - String representing the path to the requested property (period-delimited, e.g. "0.parent.child").
+
+        Returns:
+        Varient representing the value at the referenced path, returning undefined if the path does not exist.
+
+        About:
+        NOTE: To default a value, use the following snipit:
+        > var v = core.data.get({}, 'some.path') || 'default value';
+
+        See Also:
+        <core.data>, <core.data.set>
+        */
+        get: function (oObject, sPath) {
+            var a_sPath, i,
+                oReturnVal = (core.is.obj(oObject) ? oObject : undefined)
+            ;
+
+            //# If the passed oObject .is.obj and sPath .is.str, .split sPath into a_sPath
+            if (oReturnVal && core.is.str(sPath)) {
+                a_sPath = sPath.split(".");
+
+                //# Traverse the a_sPath, resetting the oReturnVal to the value present at the current a_sPath or undefined if it's not present (while falling from the loop)
+                for (i = 0; i < a_sPath.length; i++) {
+                    if (core.is.obj(oReturnVal) && a_sPath[i] in oReturnVal) {
+                        oReturnVal = oReturnVal[a_sPath[i]];
+                    } else {
+                        oReturnVal = undefined;
+                        break;
+                    }
+                }
+            }
+
+            return oReturnVal;
+        }, //# get
+ 
+
+        /*
+		Function: set
+		Safely forces the passed object reference into an object containing the passed path, optionally setting its value.
+
+		Parameters:
+		oObject - The varient to interrogate.
+		sPath - String representing the path to the property (period-delimited, e.g. "0.parent.child").
+		(Optional) vValue - Varient representing the value to set the referenced property to.
+
+		Returns:
+		Object representing the updated object reference.
+
+		See Also:
+		<core.data>, <core.data.get>
+		*/
+        set: function (oObject, sPath, vValue) {
+            var a_sPath, i,
+				oReturnVal = (core.is.obj(oObject) ? oObject : {}),
+				oCurrent = oReturnVal
+            ;
+
+            //# Optionally builds the sKey as an [object], returning the result
+            function setIndex(oObj, sKey) {
+                //# Reset sKey for this loop, then set/create it within the oReturnVal
+                //#     NOTE: The validity of the current sKey is not checked as we assume that "you must be at least this smart to ride this ride"
+                //#     NOTE: Due to the nature of this function, we know that oObj will always be an object (thanks to the `oReturnVal =` logic above and `|| {}` logic below)
+                oObj[sKey] = oObj[sKey] || {};
+                //oObj[sKey].$parent = oObj[sKey].$parent || oObj;
+                return oObj[sKey];
+            }
+
+            //# If the passed sPath .is.str
+            if (core.is.str(sPath, true, true)) {
+                //# .split the a_sPath
+                //#     NOTE: Due to how .split works above, we will always have at least 1 index in a_sPath, so there is no need to pretest it below
+                a_sPath = sPath.split(".");
+
+                //# Traverse all but the last entry of the a_sPath (hence -1), resetting the oCurrent [object] to the .setIndex as we go
+                for (i = 0; i < a_sPath.length - 1; i++) {
+                    oCurrent = setIndex(oCurrent, a_sPath[i]);
+                }
+
+                //# If the caller passed in 3 arguments, set the last a_sPath entry with the passed vValue
+                if (arguments.length === 3) {
+                    oCurrent[a_sPath[i]] = vValue;
+                }
+                    //# Else we need to .setIndex of the last a_sPath entry
+                else {
+                    /*oCurrent =*/ setIndex(oCurrent, a_sPath[i]);
+                }
+            }
+
+            return oReturnVal;
+        }, //# make.obj
+        
+ 
+        /*
+        Function: extend
+        Merges the content of subsequent objects into the first one, overriding it’s original values
+
+        Parameters:
+        (Optional) bDeepCopy - Boolean value indicting if the copy is to be a deep copy. Default value: `false`.
+        oTarget - Object to recieve properties.
+        oSource - Object(s) who's properties will be copied into the target.
+
+        Returns:
+        Object referencing the passed oTarget.
+
+        About:
+        Right-most source object wins.
+        > var oResult = core.data.extend({}, { i: 1 }, { i: 2 });
+        `oResult` will equal `{ i: 2 }`
+        Heavily refactored code from http://gomakethings.com/vanilla-javascript-version-of-jquery-extend/
+        */
+        extend: function(/*bDeepCopy, oTarget, oSource*/) {
+            var oTarget, oCurrent, sKey, bDeepCopy, i,
+                a = arguments
+            ;
+
+            //# If the first argument .is.bool, setup the local vars accordingly
+            if (core.is.bool(a[0])) {
+                bDeepCopy = a[0];
+                oTarget = a[1];
+                i = 2;
+            }
+            //# Else the first argument is our oTarget, so setup the local vars accordingly
+            else {
+                bDeepCopy = false;
+                oTarget = a[0];
+                i = 1;
+            }
+
+            //# Ensure our oTarget is an object
+            oTarget = (core.is.obj(oTarget) ? oTarget : {});
+
+            //# Traverse the passed source objects
+            for (/*i = i*/; i < a.length; i++) {
+                oCurrent = a[i];
+
+                //# Traverse the sKeys in the oCurrent object
+                for (sKey in oCurrent) {
+                    //# If the current sKey is a native property of oCurrent, set it into our oTarget
+                    if (Object.prototype.hasOwnProperty.call(oCurrent, sKey)) {
+                        oTarget[sKey] = (
+                            bDeepCopy && core.is.obj(oCurrent[sKey]) ?
+                            core.data.extend(true, {}, oCurrent[sKey]) :
+                            oCurrent[sKey]
+                        );
+                    }
+                }
+            }
+
+            return oTarget;
+        }, //# extend
+
+        
         //# Returns the first entry within the passed collection matching the key/value pair (optionally testing as caseInsentive)
         getFirstByValue: function (key, value, collection, caseInsentive) {
             var returnValue = core.data.getByValue(key, value, collection, caseInsentive, true);
@@ -1310,6 +1355,7 @@ Global reference for all non-library Javascript functionality known externally a
             return (core.is.arr(returnValue.data, true) ? returnValue : undefined);
         }, //# getByValue
 
+        
         //# Returns the entry(ies) within the passed collection matching the key with the passed values (optionally testing as caseInsentive)
         getByValues: function (key, values, collection, caseInsentive) {
             var i, j, entry,
@@ -1336,8 +1382,9 @@ Global reference for all non-library Javascript functionality known externally a
             return (core.is.arr(returnVal.data, true) ? returnVal : undefined);
         }, //# getByValues
 
+        
         //# 
-        array: {
+        arr: {
             //# Removes the target from the referenced array
             remove: function (aArray, vTarget, vReplaceWith) {
                 var i,
@@ -1442,43 +1489,16 @@ Global reference for all non-library Javascript functionality known externally a
                     pruneArray(vSource.dimension1[k][vSource.dimension2]);
                 }
             }
-        }, //#remove
-
-        //# Shallow copies the .hasOwnProperty's oFrom the source object in oTo the destination object (where oTo defines the properties to mirror across)
-        //#      Example: mrs.net.post('/api/UserManagement/AssignRoles', mrs.data.mirror(oUser, mrs.glue.getType('UserRolesDto'), true)).then(...)
-        mirror: function (oFrom, oTo, bReturnTo) {
-            var a_sKeys, sKey, i,
-                iReturnVal = 0
-            ;
-
-            //# If both oFrom and oTo are .obj's, collect the a_sKeys from our destination object in oTo the a_sKeys
-            if (core.is.obj(oFrom) && core.is.obj(oTo)) {
-                a_sKeys = Object.keys(oTo);
-
-                //# Traverse the a_sKeys from our destination object, copying each in oTo our destination object that exist in both objects (inc'ing our iReturnVal as we go)
-                for (i = 0; i < a_sKeys.length; i++) {
-                    sKey = a_sKeys[i];
-                    if (oTo.hasOwnProperty(sKey) && oFrom.hasOwnProperty(sKey)) {
-                        oTo[sKey] = oFrom[sKey];
-                        iReturnVal++;
-                    }
-                }
-            }
-
-            return (bReturnTo ? oTo : iReturnVal);
-        } //# core.data.mirror
+        } //#remove
 
     }; //# core.data
 
 
-    //####################################################################################################
-    //# core.serial
-    //####################################################################################################
     /*
+    ####################################################################################################
 	Class: core.serial
-
-	About:
 	Data serialization logic.
+    ####################################################################################################
 	*/
     core.serial = {
         //# serializes the passed model (up to 3-dimensions)
@@ -1530,6 +1550,7 @@ Global reference for all non-library Javascript functionality known externally a
 
             return returnVal.trim().substr(0, returnVal.length - 1);
         }, //# ize
+        
 
         //# Parses the passed valuetoParse into a model (up to 3-dimensions deep)
         //#    Based on: http://jsbin.com/adali3/2/edit via http://stackoverflow.com/a/2880929/235704
@@ -1636,53 +1657,54 @@ Global reference for all non-library Javascript functionality known externally a
             //# Return the r(eturn value)
             return r;
         } //# de
-    }; //# serial
+    }; //# core.serial
 
 
-    //####################################################################################################
-    //# core.net
-    //####################################################################################################
     /*
-	Class: core.net
+    ####################################################################################################
+    Class: core.queryString
+    Parses the referenced cookie and returns an object to manage it.
+    ####################################################################################################
+    */
+    !function () {
+        var $queryString;
 
-	About:
-	Network (AJAX) abstraction logic.
-	*/
-    (function () {
-        function defaultError() {
-            core.console.log("Error!");
-        }
+        //# Parses the query string into an object model, returning an object containing the .model and a .value function to retrieve the values (see note below).
+        //#     Supports: ?test=Hello&person=neek&person=jeff&person[]=jim&person[extra]=john&test3&nocache=1398914891264&person=frank,jim;person=aaron
+        core.queryString = function (sKey, bCaseInsenstive) {
+            var vReturnVal;
 
-        function defaultFns(fnSuccess, fnError, fnFinal) {
-            return {
-                success: (core.is.fn(fnSuccess) ? fnSuccess : function () { }),
-                error: (core.is.fn(fnError) ? fnError : defaultError),
-                final: (core.is.fn(fnFinal) ? fnFinal : function () { })
-            };
-        }
+            //# Ensure the cached $queryString is setup
+            $queryString = $queryString || core.serial.de(window.location.search.substring(1));
 
-        core.net = {
-            process: function (oTemplate, fnSuccess, fnError, fnFinal) {
-                var oFns = defaultFns(fnSuccess, fnError, fnFinal),
-                    oReturnVal
-                ;
+            //# If there were no arguments, return the cached $queryString
+            if (arguments.length === 0) {
+                vReturnVal = $queryString;
+            }
+            //# Else if this is a bCaseInsenstive call
+            else if (bCaseInsenstive) {
+                sKey = core.make.str(sKey).toLowerCase();
 
-                //# If the passed oTemplate is a reconized template
-                if (core.is.obj(oTemplate, ['url', 'verb'])) {
-                    //# Submit the oTemplate via .ajax
-                    oReturnVal = jQuery.ajax(oTemplate.url, {
-                        method: core.make.str(oTemplate.verb).trim().toUpperCase(),
-                        data: oTemplate
-                    })
-                        .done(oFns.success)
-                        .fail(oFns.error)
-                        .always(oFns.final)
-                    ;
+                //# Traverse the $queryString, returning the first matching .toLowerCase'd key
+                for (var key in $queryString) {
+                    if (key.toLowerCase() == sKey) {
+                        vReturnVal = $queryString[key];
+                        break;
+                    }
                 }
+            }
+            //# Else a case-specific sKey was requested
+            else {
+                vReturnVal = $queryString[sKey];
+            }
 
-                return oReturnVal;
-            } //# process
-        }; //# net
-    })(); //# net
+            return vReturnVal;
+        }; //# core.queryString
+    }(); //# core.queryString
 
-})($z);
+    
+    //# Ensure the passed sName .is.str, then set our window variable
+    sName = (core.is.str(sName, true, true) ? sName : 'nea'); //# neapolitan
+    core.$name = sName;
+    window[sName] = core.extend(core, window[sName]);
+}('$z');
