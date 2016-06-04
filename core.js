@@ -7,7 +7,7 @@ Vanilla++ Javascript Functionality (Neapolitan).
 !function (sName) {
     'use strict';
 
-    var core = { $ver: '2016-06-04' },
+    var core = { $ver: '2016-06-04a' },
         _Object_prototype_toString = Object.prototype.toString //# code-golf
     ; //# core
 
@@ -1706,5 +1706,5 @@ Vanilla++ Javascript Functionality (Neapolitan).
     //# Ensure the passed sName .is.str, then set our window variable
     sName = (core.is.str(sName, true, true) ? sName : 'nea'); //# neapolitan
     core.$name = sName;
-    window[sName] = core.extend(core, window[sName]);
+    window[sName] = core.data.extend(core, window[sName]);
 }('$z');
