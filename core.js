@@ -1388,10 +1388,10 @@ License: MIT
                     if (sName === a_sCookies[i].substr(0, j).replace(/^\s+|\s+$/g, "")) {
                         $returnValue.original = unescape(a_sCookies[i].substr(j + 1));
 
-                        //oModel = core.mk.json($returnValue.original);
-                        oModel = core.fn.tryCatch(function() {
-                            JSON.parse($returnValue.original);
-                        }, this, [], {} /*, _false*/);
+                        oModel = core.mk.json($returnValue.original);
+                        //oModel = core.fn.tryCatch(function() {
+                        //    JSON.parse($returnValue.original);
+                        //}, this, [], {} /*, _false*/);
 
                         return _true;
                     }
