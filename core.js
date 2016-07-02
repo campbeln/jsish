@@ -143,8 +143,8 @@ License: MIT
     */
     core.extend = function (/*vDeepCopy, oTarget, oSource*/) {
         var oTarget, oCurrent, sKey, iDepth, i,
-            bDeepCopy = core.is.bool(a[0]),
-            a = arguments
+            a = arguments,
+            bDeepCopy = core.is.bool(a[0])
         ;
 
         //# If the first argument .is.bool or .is.num, setup the local vars accordingly
