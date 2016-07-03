@@ -1368,7 +1368,7 @@ License: MIT
 				        //# .escape the .string, set the max-age and path and toss it into the .cookie collection
 				        //$returnValue.data = null;
 				        delete oOnUnload[sName];
-				        core.data.array.remove(oOnUnload.$keys, sName);
+				        core.data.arr.remove(oOnUnload.$keys, sName);
 				        document.cookie = sName + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;" + ' path=' + (vAutoSetConfig.path || "/");
 				        return _true;
 				    }
