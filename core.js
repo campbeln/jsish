@@ -250,11 +250,11 @@ License: MIT
 		<core.is>, <core.eq.str>, <core.comp.str>, <core.mk.str>
 		*/
         str: function (s, bDisallowNullString, bTrimWhitespace) {
-            return (
+            return core.mk.bool(
 				(typeof s === 'string' || s instanceof String) &&
 				(!bDisallowNullString || s !== '') &&
 				(!bTrimWhitespace || core.mk.str(s).trim() !== '')
-			) ? _true : _false;
+			);
         }, //# is.str
 
 
@@ -270,7 +270,7 @@ License: MIT
 		*/
         date: function (x) {
             var d = new Date(x);
-            return (x && _Object_prototype_toString.call(d) === "[object Date]" && !isNaN(d.valueOf())) ? _true : _false;
+            return core.mk.bool(x && _Object_prototype_toString.call(d) === "[object Date]" && !isNaN(d.valueOf()));
         }, //# is.date
 
 
@@ -285,7 +285,7 @@ License: MIT
 		<core.is>, <core.eq.num>, <core.comp.num>, <core.mk.int>, <core.mk.float>
 		*/
         num: function (x) {
-            return (/^[-0-9]?[0-9]*(\.[0-9]{1,})?$/.test(x) && !isNaN(parseFloat(x)) && isFinite(x)) ? _true : _false;
+            return core.mk.bool(/^[-0-9]?[0-9]*(\.[0-9]{1,})?$/.test(x) && !isNaN(parseFloat(x)) && isFinite(x));
         }, //# is.num
 
 
@@ -334,8 +334,8 @@ License: MIT
 		<core.is>, <core.is.true>
 		*/
         bool: function (b) {
-            //return (b === _true || b === _false) ? _true : _false;
-            return (_Object_prototype_toString.call(b) === '[object Boolean]') ? _true : _false;
+            //return core.mk.bool(b === _true || b === _false);
+            return core.mk.bool(_Object_prototype_toString.call(b) === '[object Boolean]');
         }, //# is.bool
 
 
@@ -350,10 +350,10 @@ License: MIT
 		<core.is>, <core.is.bool>
 		*/
         'true': function (v) {
-            return (v === _true ?
+            return core.mk.bool(v === _true ?
 				_true :
 				(v + "").trim().toLowerCase() === "true"
-			) ? _true : _false;
+			);
         }, //# is.true
 
 
@@ -368,7 +368,7 @@ License: MIT
 		<core.is>, <core.tools.callFn>
 		*/
         fn: function (f) {
-            return (_Object_prototype_toString.call(f) === '[object Function]') ? _true : _false;
+            return core.mk.bool(_Object_prototype_toString.call(f) === '[object Function]');
         }, //# is.fn
 
 
@@ -387,7 +387,7 @@ License: MIT
         obj: function (o /*, [bDisallowEmptyObject], [a_sRequiredKeys] */) {
             var a_sRequiredKeys, i,
                 bDisallowEmptyObject = _false,
-                bReturnVal = (o && o === Object(o) && !core.is.fn(o) ? _true : _false)
+                bReturnVal = core.mk.bool(o && o === Object(o) && !core.is.fn(o))
             ;
 
             //# If the passed o(bject) is an Object
@@ -408,7 +408,7 @@ License: MIT
                 }
 
                 //# Reset our bReturnVal based on bDisallowEmptyObject
-                bReturnVal = (!bDisallowEmptyObject || Object.getOwnPropertyNames(o).length !== 0 ? _true : _false);
+                bReturnVal = core.mk.bool(!bDisallowEmptyObject || Object.getOwnPropertyNames(o).length !== 0);
 
                 //# If we still have a valid Object and we have a_sRequiredKeys, traverse them
                 if (bReturnVal && a_sRequiredKeys) {
@@ -438,9 +438,9 @@ License: MIT
 		<core.is>, <core.mk.arr>
 		*/
         arr: function (a, bDisallow0Length) {
-            return (_Object_prototype_toString.call(a) === '[object Array]' &&
+            return core.mk.bool(_Object_prototype_toString.call(a) === '[object Array]' &&
 				(!bDisallow0Length || a.length > 0)
-			) ? _true : _false;
+			);
         }, //# is.arr
 
 
@@ -455,7 +455,7 @@ License: MIT
         <core.is>, <core.mk.arr>
         */
         val: function (v) {
-            return (v !== _undefined && v !== null) ? _true : _false;
+            return core.mk.bool(v !== _undefined && v !== null);
         }, //# is.val
 
 
@@ -490,7 +490,7 @@ License: MIT
 		<core.is>
 		*/
         dom: function (x) {
-            return (x && core.is.str(x.tagName) && x.tagName !== "" && core.is.fn(x.getAttribute) ? _true : _false);
+            return core.mk.bool(x && core.is.str(x.tagName) && x.tagName !== "" && core.is.fn(x.getAttribute));
         } //# is.dom
     }; //# core.is
 
@@ -635,6 +635,21 @@ License: MIT
                 (arguments.length > 1 ? oDefault : {})
             );
         }, //# make.obj
+
+
+        /*
+		Function: bool
+		Safely forces the passed varient into a boolean value.
+		Parameters:
+		b - The varient to interrogate.
+		Returns:
+		Boolean value representing the truthiness of the passed varient.
+		See Also:
+		<core.mk>
+		*/
+        bool: function (b) {
+            return (b ? _true : _false);
+        }, //# make.bool
 
 
         /*
@@ -1236,7 +1251,7 @@ License: MIT
             logToServer(eSeverity.error, arguments);
 
             //# Surpress dialog
-            return (oOptions.surpressErrors ? _true : _false);
+            return core.mk.bool(oOptions.surpressErrors);
         } //# catchErrors
 
 
