@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2016-07-07',
+            $ver: '0.8.2016-10-19',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -1483,7 +1483,7 @@ License: MIT
                     key = e(key.trim());
 
                     //# If the current value is null or undefined, record a null-string value
-                    if (core.is.val(value)) {
+                    if (!core.is.val(value)) {
                         returnVal += key + "=" + delimiter;
                     }
                     //# Else if the current key is a pseudo-Array object
