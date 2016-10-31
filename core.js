@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2016-10-19',
+            $ver: '0.8.2016-10-31',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -149,7 +149,7 @@ License: MIT
 
         //# If the first argument .is.bool or .is.num, setup the local vars accordingly
         if (bDeepCopy || core.is.num(a[0])) {
-            iDepth = (bDeepCopy ? -1 : core.make.int(a[0]));
+            iDepth = (bDeepCopy ? -1 : core.mk.int(a[0]));
             oTarget = a[1];
             i = 2;
         }
@@ -783,7 +783,7 @@ License: MIT
         num: function (x, y) {
             var bReturnVal = _false;
 
-            //# If the passed x and y .is.num'bers, .make them .floats and reset our bReturnVal to their comparison
+            //# If the passed x and y .is.num'bers, .mk them .floats and reset our bReturnVal to their comparison
             if (core.is.num(x) && core.is.num(y)) {
                 bReturnVal = (core.mk.float(x) === core.mk.float(y));
             }
