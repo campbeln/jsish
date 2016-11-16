@@ -46,7 +46,7 @@ License: MIT
     > var deepProp = ish.resolve(true, neek, "nick.campbell");
     This will overwrite the boolean property `nick` with an object reference containing the property `campbell`.
     */
-    core.resolve = function (/*bForceCreate, oObject, sPath, vValue*/) {
+    core.resolve = function (/*bForceCreate, oObject, sPath|a_sPath, vValue*/) {
         var oObject, sPath, vValue, a_sPath, vReturnVal, bCurrentIsObj,
             a = arguments,
             i = a.length, //# borrow the use of i to store the arguments.length for use in setting the bools below
@@ -71,8 +71,8 @@ License: MIT
         vReturnVal = (core.is.obj(oObject) ? oObject : _undefined);
 
         //# If the passed oObject .is.obj and sPath .is.str, .split sPath into a_sPath
-        if (vReturnVal && core.is.str(sPath)) {
-            a_sPath = sPath.split(".");
+        if (vReturnVal && (core.is.str(sPath) || (core.is.arr(sPath, true) && core.is.str(sPath[0])))) {
+            a_sPath = (core.is.arr(sPath) ? sPath : sPath.split("."));
 
             //# Traverse the a_sPath
             for (i = 0; i < a_sPath.length; i++) {
