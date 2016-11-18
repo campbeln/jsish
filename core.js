@@ -230,11 +230,11 @@ License: MIT
             //# Traverse the SCRIPT tags, pulling the .src and .indexOf the ?domtarget=
             for (i = 0; i < vTarget.length; i++) {
                 sKey = core.mk.str(vTarget[i].src);
-                iIndexOf = sKey.toLowerCase().indexOf("?domtarget=");
+                vCurrent = sKey.toLowerCase().indexOf("?domtarget=");
 
                 //# If the ?domtarget= was found, push its value into the sProperty and fall from the loop
-                if (iIndexOf > -1) {
-                    sProperty = sKey.substr(iIndexOf + 11);
+                if (vCurrent > -1) {
+                    sProperty = sKey.substr(vCurrent + 11);
                     break;
                 }
             }
