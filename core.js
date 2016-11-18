@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2016-11-15',
+            $ver: '0.8.2016-11-18',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -195,7 +195,9 @@ License: MIT
     This function allows library authors to give their users the ability to soft-configure where the library attaches its functionality (e.g. `window.usersAppObject.library` rather than simply `window.library`).
     */
     core.locate = function locate(sProperty) {
-        var vCurrent, vTarget, sKey;
+        var vCurrent, vTarget, sKey, i,
+            bFound = false
+        ;
 
         //# Traverse all of the top-level properties of the _window
         for (sKey in _window) {
@@ -216,7 +218,25 @@ License: MIT
                 }
 
                 //# Fall from the loop as we have found what we are looking for
+                bFound = true;
                 break;
+            }
+        }
+
+        //# 
+        if (!bFound) {
+            vTarget = document.getElementsByTagName("SCRIPT");
+
+            //# Traverse the SCRIPT tags, pulling the .src and .indexOf the ?domtarget=
+            for (i = 0; i < vTarget.length; i++) {
+                sKey = core.mk.str(vTarget[i].src);
+                iIndexOf = sKey.toLowerCase().indexOf("?domtarget=");
+
+                //# If the ?domtarget= was found, push its value into the sProperty and fall from the loop
+                if (iIndexOf > -1) {
+                    sProperty = sKey.substr(iIndexOf + 11);
+                    break;
+                }
             }
         }
 
