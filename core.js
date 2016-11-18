@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2016-11-18a',
+            $ver: '0.8.2016-11-18b',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -223,18 +223,18 @@ License: MIT
             }
         }
 
-        //# 
+        //# If we didn't find a top-level property of the _window, look to the querystring of the .js
         if (!bFound) {
             vTarget = document.getElementsByTagName("SCRIPT");
 
             //# Traverse the SCRIPT tags, pulling the .src and .indexOf the ?domtarget=
             for (i = 0; i < vTarget.length; i++) {
-                sKey = core.mk.str(vTarget[i].src);
-                vCurrent = sKey.toLowerCase().indexOf("?domtarget=");
+                vCurrent = core.queryString.parse(vTarget[i].src);
+                sKey = core.data.getKey(sProperty, vCurrent, true);
 
-                //# If the ?domtarget= was found, push its value into the sProperty and fall from the loop
-                if (vCurrent > -1) {
-                    sProperty = sKey.substr(vCurrent + 11);
+                //# If the sProperty was found on the current .src, reset it to its value and fall from the loop
+                if (core.is.str(sKey, true)) {
+                    sProperty = sKey;
                     break;
                 }
             }
@@ -1668,24 +1668,29 @@ License: MIT
                 if (arguments.length === 0) {
                     vReturnVal = $queryString;
                 }
-                    //# Else if this is a bCaseInsenstive call
-                else if (bCaseInsenstive) {
-                    sKey = core.mk.str(sKey).toLowerCase();
-
-                    //# Traverse the $queryString, returning the first matching .toLowerCase'd key
-                    for (var key in $queryString) {
-                        if (key.toLowerCase() == sKey) {
-                            vReturnVal = $queryString[key];
-                            break;
-                        }
-                    }
-                }
-                    //# Else a case-specific sKey was requested
+                //# Else we need to .getKey from the $queryString
                 else {
-                    vReturnVal = $queryString[sKey];
+                    vReturnVal = core.data.getKey(sKey, $queryString, bCaseInsenstive);
                 }
 
                 return vReturnVal;
+            },
+
+            //# Parses the sUrl's query string into an object model, returning an object containing the .model and a .value function to retrieve the values (see note below).
+            parse: function (sUrl) {
+                var i, oReturnVal;
+
+                //# If the passed sUrl .is.str, see if it has a query string
+                if (core.is.str(sUrl, true)) {
+                    i = sUrl.indexOf("?");
+
+                    //# If the sUrl has a query string, .deserialize it into our oReturnVal
+                    if (i > -1) {
+                        oReturnVal = deserialize(sUrl.substr(i + 1))
+                    }
+                }
+
+                return oReturnVal;
             }
         }; //# core.queryString
     }(); //# core.queryString
@@ -1801,6 +1806,34 @@ License: MIT
     ####################################################################################################
 	*/
     core.data = {
+        getKey: function (sKey, oObject, bCaseInsentive) {
+            var sCurrentKey,
+                vReturnVal /* = undefined */
+            ;
+
+            //# If the called passed in a valid oObject
+            if (core.is.obj(oObject)) {
+                //# If this is a bCaseInsenstive call, .toLowerCase our sKey
+                if (bCaseInsenstive) {
+                    sKey = core.mk.str(sKey).toLowerCase();
+
+                    //# Traverse the oObject, returning the first matching .toLowerCase'd sCurrentKey
+                    for (sCurrentKey in oObject) {
+                        if (sCurrentKey.toLowerCase() === sKey) {
+                            vReturnVal = oObject[sCurrentKey];
+                            break;
+                        }
+                    }
+                }
+                //# Else a case-specific sKey was requested
+                else {
+                    vReturnVal = oObject[sKey];
+                }
+            }
+
+            return vReturnVal;
+        }, //# getKey
+
         //# Returns the first entry within the passed collection matching the key/value pair (optionally testing as caseInsentive)
         getFirstByValue: function (key, value, collection, caseInsentive) {
             var returnValue = core.data.getByValue(key, value, collection, caseInsentive, _true);
