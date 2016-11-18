@@ -1806,15 +1806,15 @@ License: MIT
     ####################################################################################################
 	*/
     core.data = {
-        getKey: function (sKey, oObject, bCaseInsentive) {
+        getKey: function (sKey, oObject, bCaseInsensitive) {
             var sCurrentKey,
                 vReturnVal /* = undefined */
             ;
 
             //# If the called passed in a valid oObject
             if (core.is.obj(oObject)) {
-                //# If this is a bCaseInsenstive call, .toLowerCase our sKey
-                if (bCaseInsenstive) {
+                //# If this is a bCaseInsensitive call, .toLowerCase our sKey
+                if (bCaseInsensitive) {
                     sKey = core.mk.str(sKey).toLowerCase();
 
                     //# Traverse the oObject, returning the first matching .toLowerCase'd sCurrentKey
