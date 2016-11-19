@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2016-11-18b',
+            $ver: '0.8.2016-11-18c',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -1705,11 +1705,13 @@ License: MIT
     ####################################################################################################
     */
     !function () {
-        var oOptions;
+        var oOptions = {
+            async: _true
+        };
         
         //# 
         function doOptions(oNetOptions) {
-            oOptions = core.extend();
+            oOptions = core.extend(oOptions, oNetOptions);
         } //# doOptions
         
         
