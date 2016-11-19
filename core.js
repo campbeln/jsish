@@ -1741,7 +1741,7 @@ License: MIT
                     if ($xhr.readyState === 4) {
                         vCallback.fn(
                             ($xhr.status === 200 || ($xhr.status === 0 && sUrl.substr(0, 7) === "file://")),
-                            $xhr.responseText,
+                            { text: $xhr.responseText, data: core.fn.call(JSON.parse, null, $xhr.responseText) },
                             vCallback.arg,
                             $xhr
                         );
