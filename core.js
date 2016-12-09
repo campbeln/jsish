@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2016-12-08',
+            $ver: '0.8.2016-12-09',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -1866,11 +1866,6 @@ License: MIT
             return bReturnVal;       
         }
 
-        //# Prunes the vKeys from the passed a_oSource
-        function pruneObj(oSource, vKeys, bSetToUndefined) {
-                
-        } //# pruneObj
-
         core.data = {
             getKey: function (sKey, oObject, bCaseInsensitive) {
                 var sCurrentKey,
@@ -2098,7 +2093,7 @@ License: MIT
 
                 //#
                 if (bReturnVal) {
-                    bReturnVal = pruneObj(vSource, oRemapDef, bSetToUndefined);
+                    bReturnVal = processObj(vSource, oRemapDef, bSetToUndefined);
                 }
 
                 return bReturnVal;
@@ -2116,7 +2111,7 @@ License: MIT
 
                 //#
                 if (bReturnVal) {
-                    bReturnVal = pruneObj(vSource, vKeys, bSetToUndefined);
+                    bReturnVal = processObj(vSource, vKeys, bSetToUndefined);
                 }
 
                 return bReturnVal;
