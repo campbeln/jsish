@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2016-12-09',
+            $ver: '0.8.2016-12-09a',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -1811,12 +1811,12 @@ License: MIT
         //# 
         function processObj(vSource, vKeys, bSetToUndefined) {
             var i,
-                bReturnVal = true
+                bReturnVal = _true
             ;
 
             function doPrune(oSource, vKeys, bSetToUndefined) {
                 var a_sKeys, sKey, i,
-                    bRemap = false
+                    bRemap = _false
                 ;
 
                 //# If the passed vKeys is an array, set it into a_sKeys
@@ -1826,7 +1826,7 @@ License: MIT
                 //# Else vKeys is a oRemapDef, so pull its .keys and flip bRemap
                 else if (core.is.obj(vKeys)) {
                     a_sKeys = Object.keys(vKeys);
-                    bRemap = true;
+                    bRemap = _true;
                 }
 
                 //# Traverse the a_sKeys
@@ -1834,7 +1834,7 @@ License: MIT
                     sKey = a_sKeys[i];
 
                     //# If we're supposed to bRemap, do so now
-                    if (bRemap) {
+                    if (bRemap && oSource.hasOwnProperty(sKey)) {
                         oSource[vKeys[sKey]] = oSource[sKey];
                     }
 
@@ -1860,7 +1860,7 @@ License: MIT
             }
             //# Else the vSource is not a valid value, so flip our bReturnVal
             else {
-                bReturnVal = false;
+                bReturnVal = _false;
             }     
 
             return bReturnVal;       
