@@ -542,7 +542,7 @@ License: MIT
                 sS :
 				(arguments.length > 1 ? sDefault : "")
 			);
-        }, //#make. str
+        }, //# mk.str
 
 
         /*
@@ -561,7 +561,7 @@ License: MIT
 				new Date(x) :
 				(arguments.length > 1 ? vDefault : new Date())
 			);
-        }, //# make.date
+        }, //# mk.date
 
 
         /*
@@ -594,7 +594,7 @@ License: MIT
                 iReturnVal :
 				(arguments.length > 1 ? vDefault : 0)
 			);
-        }, //# make.int
+        }, //# mk.int
 
 
         /*
@@ -615,7 +615,7 @@ License: MIT
                 fReturnVal :
 				(arguments.length > 1 ? vDefault : 0)
 			);
-        }, //# make.float
+        }, //# mk.float
 
 
         /*
@@ -634,7 +634,7 @@ License: MIT
                 a :
 				(arguments.length > 1 ? a_vDefault : [])
 			);
-        }, //# make.arr
+        }, //# mk.arr
 
 
         /*
@@ -654,7 +654,7 @@ License: MIT
                 o :
                 (arguments.length > 1 ? oDefault : {})
             );
-        }, //# make.obj
+        }, //# mk.obj
 
 
         /*
@@ -669,7 +669,7 @@ License: MIT
 		*/
         bool: function (b) {
             return (b ? _true : _false);
-        }, //# make.bool
+        }, //# mk.bool
 
 
         /*
@@ -695,7 +695,7 @@ License: MIT
             }
 
             return iReturnVal;
-        }, //# make.age
+        }, //# mk.age
 
 
         /*
@@ -717,7 +717,7 @@ License: MIT
 				""
 			);
             //dCalDate.getHours() + ':' + core.mk.str(dCalDate.getMinutes()).lPad("0", 2) + ':' + core.mk.str(dCalDate.getSeconds()).lPad("0", 2)
-        }, //# make.yyyymmdd
+        }, //# mk.yyyymmdd
 
 
         /*
@@ -733,7 +733,7 @@ License: MIT
 		*/
         dateOnly: function (x, dDefault) {
             return core.mk.date(core.mk.yyyymmdd.apply(this, arguments) + " 00:00:00");
-        }, //# make.dateOnly
+        }, //# mk.dateOnly
 
 
         /*
@@ -755,7 +755,7 @@ License: MIT
             } catch (e) { }
 
             return oJson;
-        } //# make.json
+        } //# mk.json
     }; //# core.mk
 
 
@@ -1807,270 +1807,323 @@ License: MIT
 	Data manipulation logic.
     ####################################################################################################
 	*/
-    core.data = {
-        getKey: function (sKey, oObject, bCaseInsensitive) {
-            var sCurrentKey,
-                vReturnVal /* = undefined */
-            ;
-
-            //# If the called passed in a valid oObject
-            if (core.is.obj(oObject)) {
-                //# If this is a bCaseInsensitive call, .toLowerCase our sKey
-                if (bCaseInsensitive) {
-                    sKey = core.mk.str(sKey).toLowerCase();
-
-                    //# Traverse the oObject, returning the first matching .toLowerCase'd sCurrentKey
-                    for (sCurrentKey in oObject) {
-                        if (sCurrentKey.toLowerCase() === sKey) {
-                            vReturnVal = oObject[sCurrentKey];
-                            break;
-                        }
-                    }
-                }
-                //# Else a case-specific sKey was requested
-                else {
-                    vReturnVal = oObject[sKey];
-                }
-            }
-
-            return vReturnVal;
-        }, //# getKey
-
-        //# Returns the first entry within the passed collection matching the key/value pair (optionally testing as caseInsentive)
-        getFirstByValue: function (key, value, collection, caseInsentive) {
-            var returnValue = core.data.getByValue(key, value, collection, caseInsentive, _true);
-            return (returnValue ? returnValue.data[0] : _undefined);
-        }, //# getFirstByValue
-
-
-        //# Returns the entry(ies) within the passed collection matching the key/value pair (optionally testing as caseInsentive)
-        getByValue: function (key, value, collection, caseInsentive, firstOnly) {
-            var i,
-                returnValue = { indexes: [], data: [] }
-            ;
-
-            //# If there is a valid key and collection to look thru
-            if (core.is.str(key) && core.is.arr(collection, _true)) {
-                //# Traverse the collection, returning the entry for the located medicalId
-                for (i = 0; i < collection.length; i++) {
-                    if (core.eq.str(collection[i][key], value, caseInsentive)) {
-                        returnValue.data.push(collection[i]);
-                        returnValue.indexes.push(i);
-                        if (firstOnly) { break; }
-                    }
-                }
-            }
-
-            //# If we didn't find anything, return undefined, else give'em what we got
-            return (core.is.arr(returnValue.data, _true) ? returnValue : _undefined);
-        }, //# getByValue
-
-
-        //# Returns the entry(ies) within the passed collection matching the key with the passed values (optionally testing as caseInsentive)
-        getByValues: function (key, values, collection, caseInsentive) {
-            var i, j, entry,
-                returnVal = { indexes: [], data: [] }
-            ;
-
-            //# If the user passed in a values Array
-            if (core.is.arr(values, _true)) {
-                //# Traverse the values, collecting an entry for each
-                for (i = 0; i < values.length; i++) {
-                    entry = core.data.getByValue(key, values[i], collection, caseInsentive);
-
-                    //# If the current values was found, traverse it while .push'ing it's entires into our returnVal
-                    if (entry) {
-                        for (j = 0; j < entry.indexes.length; j++) {
-                            returnVal.indexes.push(entry.indexes[j]);
-                            returnVal.data.push(entry.data[j]);
-                        }
-                    }
-                }
-            }
-
-            //# If we didn't find anything, return undefined, else give'em what we got
-            return (core.is.arr(returnVal.data, _true) ? returnVal : _undefined);
-        }, //# getByValues
-
-
+    !function () {
         //# 
-        arr: {
-            //# Removes the target from the referenced array
-            remove: function (aArray, vTarget, vReplaceWith) {
-                var i,
-                    bReturnVal = _false
+        function processObj(vSource, vKeys, bSetToUndefined) {
+            var i,
+                bReturnVal = true
+            ;
+
+            function doPrune(oSource, vKeys, bSetToUndefined) {
+                var a_sKeys, sKey, i,
+                    bRemap = false
                 ;
 
-                //# If the passed aArray is one, determine the i(ndex) of the passed vTarget (resetting our bReturnVal based on finding the i(ndex))
-                if (core.is.arr(aArray, _true)) {
-                    i = aArray.indexOf(vTarget);
-                    bReturnVal = (i > -1);
+                //# If the passed vKeys is an array, set it into a_sKeys
+                if (core.is.arr(vKeys)) {
+                    a_sKeys = vKeys;
+                }
+                //# Else vKeys is a oRemapDef, so pull its .keys and flip bRemap
+                else if (core.is.obj(vKeys)) {
+                    a_sKeys = Object.keys(vKeys);
+                    bRemap = true;
+                }
 
-                    //# If we found the i(ndex)
-                    if (bReturnVal) {
-                        //# If the caller passed in 3 arguments, we need to use vReplaceWith
-                        if (arguments.length === 3) {
-                            aArray[i] = vReplaceWith;
+                //# Traverse the a_sKeys
+                for (i = 0; i < a_sKeys.length; i++) {
+                    sKey = a_sKeys[i];
+
+                    //# If we're supposed to bRemap, do so now
+                    if (bRemap) {
+                        oSource[vKeys[sKey]] = oSource[sKey];
+                    }
+
+                    //# Either bSetToUndefined or delete the current sKey
+                    if (bSetToUndefined) {
+                        oSource[sKey] = _undefined;
+                    }
+                    else {
+                        delete oSource[sKey];
+                    }
+                }
+            } //# doPrune
+
+            //# If the caller passed in an .is.arr vSource, traverse it passing each entry into doPrune as we go
+            if (core.is.arr(vSource, _true)) {
+                for (i = 0; i < vSource.length; i++) {
+                    doPrune(vSource[i], vKeys, bSetToUndefined);
+                }
+            }
+            //# Else if the caller passed in an .is.obj, pass it off to doPrune
+            else if (core.is.obj(vSource)) {
+                doPrune(vSource, vKeys, bSetToUndefined);
+            }
+            //# Else the vSource is not a valid value, so flip our bReturnVal
+            else {
+                bReturnVal = false;
+            }     
+
+            return bReturnVal;       
+        }
+
+        //# Prunes the vKeys from the passed a_oSource
+        function pruneObj(oSource, vKeys, bSetToUndefined) {
+                
+        } //# pruneObj
+
+        core.data = {
+            getKey: function (sKey, oObject, bCaseInsensitive) {
+                var sCurrentKey,
+                    vReturnVal /* = undefined */
+                ;
+
+                //# If the called passed in a valid oObject
+                if (core.is.obj(oObject)) {
+                    //# If this is a bCaseInsensitive call, .toLowerCase our sKey
+                    if (bCaseInsensitive) {
+                        sKey = core.mk.str(sKey).toLowerCase();
+
+                        //# Traverse the oObject, returning the first matching .toLowerCase'd sCurrentKey
+                        for (sCurrentKey in oObject) {
+                            if (sCurrentKey.toLowerCase() === sKey) {
+                                vReturnVal = oObject[sCurrentKey];
+                                break;
+                            }
                         }
-                            //# Else we need to .splice it from the aArray
-                        else {
-                            aArray.splice(i, 1);
+                    }
+                    //# Else a case-specific sKey was requested
+                    else {
+                        vReturnVal = oObject[sKey];
+                    }
+                }
+
+                return vReturnVal;
+            }, //# getKey
+
+            //# Returns the first entry within the passed collection matching the key/value pair (optionally testing as caseInsentive)
+            getFirstByValue: function (key, value, collection, caseInsentive) {
+                var returnValue = core.data.getByValue(key, value, collection, caseInsentive, _true);
+                return (returnValue ? returnValue.data[0] : _undefined);
+            }, //# getFirstByValue
+
+
+            //# Returns the entry(ies) within the passed collection matching the key/value pair (optionally testing as caseInsentive)
+            getByValue: function (key, value, collection, caseInsentive, firstOnly) {
+                var i,
+                    returnValue = { indexes: [], data: [] }
+                ;
+
+                //# If there is a valid key and collection to look thru
+                if (core.is.str(key) && core.is.arr(collection, _true)) {
+                    //# Traverse the collection, returning the entry for the located medicalId
+                    for (i = 0; i < collection.length; i++) {
+                        if (core.eq.str(collection[i][key], value, caseInsentive)) {
+                            returnValue.data.push(collection[i]);
+                            returnValue.indexes.push(i);
+                            if (firstOnly) { break; }
                         }
                     }
                 }
 
-                return bReturnVal;
-            }, //# remove
+                //# If we didn't find anything, return undefined, else give'em what we got
+                return (core.is.arr(returnValue.data, _true) ? returnValue : _undefined);
+            }, //# getByValue
 
-            removeAll: function (a_vArray, a_vValuesToRemove, caseInsentive) {
-                var i, j, bSkipValue,
-                    a_vReturnVal = [],
-                    bValuesToRemove = core.is.arr(a_vValuesToRemove, _true)
+
+            //# Returns the entry(ies) within the passed collection matching the key with the passed values (optionally testing as caseInsentive)
+            getByValues: function (key, values, collection, caseInsentive) {
+                var i, j, entry,
+                    returnVal = { indexes: [], data: [] }
                 ;
 
-                //# If the caller passed a valid a_vArray, traverse it
-                if (core.is.arr(a_vArray, _true)) {
-                    for (i = 0; i < a_vArray.length; i++) {
-                        //# If we have a_vValuesToRemove, reset bSkipValue for this loop
-                        if (bValuesToRemove) {
-                            bSkipValue = _false;
+                //# If the user passed in a values Array
+                if (core.is.arr(values, _true)) {
+                    //# Traverse the values, collecting an entry for each
+                    for (i = 0; i < values.length; i++) {
+                        entry = core.data.getByValue(key, values[i], collection, caseInsentive);
 
-                            //# Traverse the bSkipValue, flipping bSkipValue if one is found for the current a_vArray value
-                            for (j = 0; j < a_vValuesToRemove.length; j++) {
-                                if (core.eq.str(a_vArray[i], a_vValuesToRemove[j], caseInsentive)) {
-                                    bSkipValue = _true;
-                                    break;
+                        //# If the current values was found, traverse it while .push'ing it's entires into our returnVal
+                        if (entry) {
+                            for (j = 0; j < entry.indexes.length; j++) {
+                                returnVal.indexes.push(entry.indexes[j]);
+                                returnVal.data.push(entry.data[j]);
+                            }
+                        }
+                    }
+                }
+
+                //# If we didn't find anything, return undefined, else give'em what we got
+                return (core.is.arr(returnVal.data, _true) ? returnVal : _undefined);
+            }, //# getByValues
+
+
+            //# 
+            arr: {
+                //# Removes the target from the referenced array
+                remove: function (aArray, vTarget, vReplaceWith) {
+                    var i,
+                        bReturnVal = _false
+                    ;
+
+                    //# If the passed aArray is one, determine the i(ndex) of the passed vTarget (resetting our bReturnVal based on finding the i(ndex))
+                    if (core.is.arr(aArray, _true)) {
+                        i = aArray.indexOf(vTarget);
+                        bReturnVal = (i > -1);
+
+                        //# If we found the i(ndex)
+                        if (bReturnVal) {
+                            //# If the caller passed in 3 arguments, we need to use vReplaceWith
+                            if (arguments.length === 3) {
+                                aArray[i] = vReplaceWith;
+                            }
+                                //# Else we need to .splice it from the aArray
+                            else {
+                                aArray.splice(i, 1);
+                            }
+                        }
+                    }
+
+                    return bReturnVal;
+                }, //# remove
+
+                removeAll: function (a_vArray, a_vValuesToRemove, caseInsentive) {
+                    var i, j, bSkipValue,
+                        a_vReturnVal = [],
+                        bValuesToRemove = core.is.arr(a_vValuesToRemove, _true)
+                    ;
+
+                    //# If the caller passed a valid a_vArray, traverse it
+                    if (core.is.arr(a_vArray, _true)) {
+                        for (i = 0; i < a_vArray.length; i++) {
+                            //# If we have a_vValuesToRemove, reset bSkipValue for this loop
+                            if (bValuesToRemove) {
+                                bSkipValue = _false;
+
+                                //# Traverse the bSkipValue, flipping bSkipValue if one is found for the current a_vArray value
+                                for (j = 0; j < a_vValuesToRemove.length; j++) {
+                                    if (core.eq.str(a_vArray[i], a_vValuesToRemove[j], caseInsentive)) {
+                                        bSkipValue = _true;
+                                        break;
+                                    }
+                                }
+
+                                //# If we are not to bSkipValue, .push it into our a_vReturnVal
+                                if (!bSkipValue) {
+                                    a_vReturnVal.push(a_vArray[i]);
                                 }
                             }
-
-                            //# If we are not to bSkipValue, .push it into our a_vReturnVal
-                            if (!bSkipValue) {
+                                //# Else we have no a_vValuesToRemove definition, so if the current a_vArray value is truthy
+                            else if (a_vArray[i]) {
                                 a_vReturnVal.push(a_vArray[i]);
                             }
                         }
-                            //# Else we have no a_vValuesToRemove definition, so if the current a_vArray value is truthy
-                        else if (a_vArray[i]) {
-                            a_vReturnVal.push(a_vArray[i]);
+                    }
+
+                    return a_vReturnVal;
+                }, //# removeAll
+
+                //# 
+                filter: function (a_oData, oQuery, bUseCoercion) {
+                    var a_sKeys = Objects.keys(oQuery),
+                        a_oReturnVal, bIsMatch, i, j
+                    ;
+
+                    //# If we have a_oData to search
+                    if (core.is.arr(a_oData, _true)) {
+                        //# If we have a defined oQuery
+                        if (core.is.arr(a_sKeys, _true)) {
+                            a_oReturnVal = [];
+
+                            //# Traverse our a_oData, flipping bIsMatch on each loop
+                            for (i = 0; i < a_oData.length; i++) {
+                                bIsMatch = _true;
+
+                                //# Traverse our oQuery's a_sKeys
+                                for (j = 0; j < a_sKeys.length; j++) {
+                                    //# If we are supposed to bUseCoercion and the current a_sKeys does not match the oQuery value, unflip bIsMatch and fall from the inner loop
+                                    if (bUseCoercion && core.resolve(a_oData, i + "." + a_sKeys[j]) != oQuery[a_sKeys[j]]) {
+                                        bIsMatch = _false;
+                                        break;
+                                    }
+                                        //# Else if the current a_sKeys does not exactly match the oQuery value, unflip bIsMatch and fall from the inner loop
+                                    else if (core.resolve(a_oData, i + "." + a_sKeys[j]) !== oQuery[a_sKeys[j]]) {
+                                        bIsMatch = _false;
+                                        break;
+                                    }
+                                }
+
+                                //# If the current a_oData record passed each oQuery value, .push it into our a_oReturnVal
+                                if (bIsMatch) {
+                                    a_oReturnVal.push(a_oData[i]);
+                                }
+                            }
+                        }
+                            //# Else the oQuery is empty, so return everything
+                        else {
+                            a_oReturnVal = a_oData;
                         }
                     }
-                }
 
-                return a_vReturnVal;
-            }, //# removeAll
+                    return a_oReturnVal;
+                } //# filter
+            }, //# array
 
             //# 
-            filter: function (a_oData, oQuery, bUseCoercion) {
-                var a_sKeys = core.data.keys(oQuery),
-                    a_oReturnVal, bIsMatch, i, j
-                ;
+            str: {
+                lpad: function (s, char, len) {
+                    var sReturnVal;
 
-                //# If we have a_oData to search
-                if (core.is.arr(a_oData, _true)) {
-                    //# If we have a defined oQuery
-                    if (core.is.arr(a_sKeys, _true)) {
-                        a_oReturnVal = [];
+                    //# Ensure the passed s(tring) .is.str
+                    sReturnVal = s = core.mk.str(s);
 
-                        //# Traverse our a_oData, flipping bIsMatch on each loop
-                        for (i = 0; i < a_oData.length; i++) {
-                            bIsMatch = _true;
-
-                            //# Traverse our oQuery's a_sKeys
-                            for (j = 0; j < a_sKeys.length; j++) {
-                                //# If we are supposed to bUseCoercion and the current a_sKeys does not match the oQuery value, unflip bIsMatch and fall from the inner loop
-                                if (bUseCoercion && core.resolve(a_oData, i + "." + a_sKeys[j]) != oQuery[a_sKeys[j]]) {
-                                    bIsMatch = _false;
-                                    break;
-                                }
-                                    //# Else if the current a_sKeys does not exactly match the oQuery value, unflip bIsMatch and fall from the inner loop
-                                else if (core.resolve(a_oData, i + "." + a_sKeys[j]) !== oQuery[a_sKeys[j]]) {
-                                    bIsMatch = _false;
-                                    break;
-                                }
-                            }
-
-                            //# If the current a_oData record passed each oQuery value, .push it into our a_oReturnVal
-                            if (bIsMatch) {
-                                a_oReturnVal.push(a_oData[i]);
-                            }
+                    //# If the arguments are of the proper types and values
+                    if (core.is.str(char) && char.length === 1 && core.is.num(len) && len > -1) {
+                        //# Left pad out this [string] while it's .length is less than the passed len
+                        while (sReturnVal.length < len) {
+                            sReturnVal = char + sReturnVal;
                         }
                     }
-                        //# Else the oQuery is empty, so return everything
+                        //# Else the arguments were invalid, so throw the error
                     else {
-                        a_oReturnVal = a_oData;
+                        throw "core.data.str.lpad: `char` must represent a single character and `len` must be an integer greater than 0.";
                     }
+
+                    return sReturnVal;
+                }
+            },
+
+            //# 
+            remap: function (vSource, oRemapDef, bSetToUndefined) {
+                var bReturnVal = core.is.obj(oRemapDef);
+
+                //#
+                if (bReturnVal) {
+                    bReturnVal = pruneObj(vSource, oRemapDef, bSetToUndefined);
                 }
 
-                return a_oReturnVal;
-            } //# filter
-        }, //# array
+                return bReturnVal;
+            },
 
-        //# 
-        str: {
-            lpad: function (s, char, len) {
-                var sReturnVal;
+            //# 
+            remove: function (vSource, vKeys, bSetToUndefined) {
+                var i, bReturnVal;
 
-                //# Ensure the passed s(tring) .is.str
-                sReturnVal = s = core.mk.str(s);
-
-                //# If the arguments are of the proper types and values
-                if (core.is.str(char) && char.length === 1 && core.is.num(len) && len > -1) {
-                    //# Left pad out this [string] while it's .length is less than the passed len
-                    while (sReturnVal.length < len) {
-                        sReturnVal = char + sReturnVal;
-                    }
+                //# If the caller passed in an .is.str, reset vKeys to an array
+                if (core.is.str(vKeys, _true)) {
+                    vKeys = [vKeys];
                 }
-                    //# Else the arguments were invalid, so throw the error
-                else {
-                    throw "core.data.str.lpad: `char` must represent a single character and `len` must be an integer greater than 0.";
+                bReturnVal = core.is.arr(vKeys, _true);
+
+                //#
+                if (bReturnVal) {
+                    bReturnVal = pruneObj(vSource, vKeys, bSetToUndefined);
                 }
 
-                return sReturnVal;
-            }
-        },
+                return bReturnVal;
+            } //#remove
 
-        //# 
-        remove: function (vSource, vKeys, bSetToUndefined) {
-            var k;
-
-            //# Prunes the vKeys from the passed a_oSource
-            function pruneArray(a_oSource) {
-                var i, j;
-
-                //# If the passed a_oSource and vKeys .is.arr's
-                if (core.is.arr(a_oSource, _true) && core.is.arr(vKeys, _true)) {
-                    //# Traverse the arrays, optionally bSetToUndefined or deleting each vKeys 
-                    for (i = 0; i < a_oSource.length; i++) {
-                        for (j = 0; j < vKeys.length; j++) {
-                            if (bSetToUndefined) {
-                                a_oSource[i][vKeys[j]] = _undefined;
-                            }
-                            else {
-                                delete a_oSource[i][vKeys[j]];
-                            }
-                        }
-                    }
-                }
-            } //# pruneArray
-
-
-            //# If the caller passed in an .is.str, reset vKeys to an array
-            if (core.is.str(vKeys, _true)) {
-                vKeys = [vKeys];
-            }
-
-            //# If the caller passed in an .is.arr vSource, pass it directly into pruneArray
-            if (core.is.arr(vSource, _true)) {
-                pruneArray(vSource);
-            }
-                //# Else if the caller passed in an .is.obj, traverse .dimension1 while pruneArray each .dimension2
-            else if (core.is.obj(vSource) && core.is.arr(vSource.dimension1) && core.is.str(vSource.dimension2, _true)) {
-                for (k = 0; k < vSource.dimension1.length; k++) {
-                    pruneArray(vSource.dimension1[k][vSource.dimension2]);
-                }
-            }
-        } //#remove
-
-    }; //# core.data
+        }; //# core.data
+    }();
 
 
     //##################################################
