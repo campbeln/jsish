@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2016-12-09a',
+            $ver: '0.8.2016-12-12',
             $ish: true
         },
     	_window = window,                                       //# code-golf
