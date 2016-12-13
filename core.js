@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2016-12-12',
+            $ver: '0.8.2016-12-12a',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -1811,6 +1811,7 @@ License: MIT
         //# 
         function processObj(vSource, vKeys, bSetToUndefined) {
             var i,
+                //bSetToUndefined = ,
                 bReturnVal = _true
             ;
 
@@ -1867,6 +1868,76 @@ License: MIT
         }
 
         core.data = {
+            //#
+            map: function (vSource, oMapping) {
+                var i,
+                    a_sKeys = (core.is.obj(oMapping) ? Object.keys(oMapping) : null),
+                    vReturnVal /*= undefined*/
+                ;
+
+                function mapObj(oSource) {
+                    var sKey, i,
+                        oReturnVal = {}
+                    ;
+
+                    for (i = 0; i < a_sKeys.length; i++) {
+                        sKey = a_sKeys[i];
+                        oNew[oMapping[sKey]] = oCurrent[sKey];
+                    }
+
+                    return oReturnVal;
+                }
+
+                //# If the passed oMapping .is.obj
+                if (a_sKeys) {
+                    //# If the passed vSource .is.arr, set our vReturnVal to an array
+                    if (core.is.arr(vSource)) {
+                        vReturnVal = [];
+
+                        //# Traverse the vSource, .push'ing each .mapObj into our vReturnVal
+                        for (i = 0; i < vSource.length; i++) {
+                            vReturnVal.push(mapObj(vSource[i]));
+                        }
+                    }
+                    //# Else if the passed vSource .is.obj, .mapObj directly into our vReturnVal
+                    else if (core.is.obj(vSource)) {
+                        vReturnVal = mapObj(vSource);
+                    }
+                }
+
+                return vReturnVal;
+            }, //# map
+
+            //# 
+            remap: function (vSource, oMapping, bSetToUndefined) {
+                var bReturnVal = core.is.obj(oMapping);
+
+                //#
+                if (bReturnVal) {
+                    bReturnVal = processObj(vSource, oMapping, bSetToUndefined);
+                }
+
+                return bReturnVal;
+            },
+
+            //# 
+            remove: function (vSource, vKeys, bSetToUndefined) {
+                var i, bReturnVal;
+
+                //# If the caller passed in an .is.str, reset vKeys to an array
+                if (core.is.str(vKeys, _true)) {
+                    vKeys = [vKeys];
+                }
+                bReturnVal = core.is.arr(vKeys, _true);
+
+                //#
+                if (bReturnVal) {
+                    bReturnVal = processObj(vSource, vKeys, bSetToUndefined);
+                }
+
+                return bReturnVal;
+            }, //#remove
+
             getKey: function (sKey, oObject, bCaseInsensitive) {
                 var sCurrentKey,
                     vReturnVal /* = undefined */
@@ -2085,37 +2156,7 @@ License: MIT
 
                     return sReturnVal;
                 }
-            },
-
-            //# 
-            remap: function (vSource, oRemapDef, bSetToUndefined) {
-                var bReturnVal = core.is.obj(oRemapDef);
-
-                //#
-                if (bReturnVal) {
-                    bReturnVal = processObj(vSource, oRemapDef, bSetToUndefined);
-                }
-
-                return bReturnVal;
-            },
-
-            //# 
-            remove: function (vSource, vKeys, bSetToUndefined) {
-                var i, bReturnVal;
-
-                //# If the caller passed in an .is.str, reset vKeys to an array
-                if (core.is.str(vKeys, _true)) {
-                    vKeys = [vKeys];
-                }
-                bReturnVal = core.is.arr(vKeys, _true);
-
-                //#
-                if (bReturnVal) {
-                    bReturnVal = processObj(vSource, vKeys, bSetToUndefined);
-                }
-
-                return bReturnVal;
-            } //#remove
+            } //# str
 
         }; //# core.data
     }();
