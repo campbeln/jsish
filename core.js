@@ -1824,7 +1824,7 @@ License: MIT
                 if (core.is.arr(vKeys)) {
                     a_sKeys = vKeys;
                 }
-                //# Else vKeys is a oRemapDef, so pull its .keys and flip bRemap
+                //# Else vKeys is a oMapping definition, so pull its .keys and flip bRemap
                 else if (core.is.obj(vKeys)) {
                     a_sKeys = Object.keys(vKeys);
                     bRemap = _true;
@@ -1882,7 +1882,7 @@ License: MIT
 
                     for (i = 0; i < a_sKeys.length; i++) {
                         sKey = a_sKeys[i];
-                        oNew[oMapping[sKey]] = oCurrent[sKey];
+                        oReturnVal[oMapping[sKey]] = oCurrent[sKey];
                     }
 
                     return oReturnVal;
