@@ -1882,7 +1882,7 @@ License: MIT
 
                     for (i = 0; i < a_sKeys.length; i++) {
                         sKey = a_sKeys[i];
-                        oReturnVal[oMapping[sKey]] = oCurrent[sKey];
+                        oReturnVal[oMapping[sKey]] = oSource[sKey];
                     }
 
                     return oReturnVal;
