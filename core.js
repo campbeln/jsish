@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2016-12-15b',
+            $ver: '0.8.2016-12-15c',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -1492,8 +1492,8 @@ License: MIT
         function serialize(model, vOptions) {
             var key, value, subkey, i,
                 oOptions = (core.is.obj(vOptions) ?
-                    vOption :
-                    { useSemicolon: vOption === _true, encodeURI: _true }
+                    vOptions :
+                    { useSemicolon: vOptions === _true, encodeURI: _true }
                 ),
                 e = (oOptions.encodeURI === _false ?
                     function (s) { return s; } :
