@@ -1491,7 +1491,7 @@ License: MIT
         //# serializes the passed model (up to 3-dimensions)
         function serialize(model, vOptions) {
             var key, value, subkey, i,
-                oOptions = (core.is.obj(vOption) ?
+                oOptions = (core.is.obj(vOptions) ?
                     vOption :
                     { useSemicolon: vOption === _true, encodeURI: _true }
                 ),
