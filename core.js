@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2016-12-12b',
+            $ver: '0.8.2016-12-15',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -1489,10 +1489,20 @@ License: MIT
         var $queryString;
 
         //# serializes the passed model (up to 3-dimensions)
-        function serialize(model, useSemicolon) {
+        function serialize(model, vOptions) {
             var key, value, subkey, i,
-                e = encodeURIComponent,
-                delimiter = (useSemicolon === _true ? "; " : "&"),
+                oOptions = (core.is.obj(vOption) ?
+                    vOption :
+                    { useSemicolon: vOption === _true, encodeURI: _true }
+                ),
+                e = (oOptions.encodeURI === _false ?
+                    function (s) { return s; } :
+                    encodeURIComponent
+                ),
+                delimiter = (oOptions.useSemicolon === _true ?
+                    "; " :
+                    "&"
+                ),
                 returnVal = ''
             ;
 
