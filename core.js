@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2017-01-02a',
+            $ver: '0.8.2017-01-02b',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -755,24 +755,33 @@ License: MIT
 
         /*
 		Function: json
-		Safely parses the passed value as a JSON string into an object.
+		Safely parses the passed value as a JSON string into an object or stringify's the passed object into a JSON string.
 		Parameters:
-		s - The varient to interrogate.
+		v - The varient to interrogate.
 		vDefault - The default value to return if casting fails.
 		Returns:
-		Object containing the parsed JSON data, or undefined if parsing failed.
+		Object containing the parsed JSON data, string containing the stringified object, or undefined if parsing failed.
 		See Also:
 		<core.mk>, <core.mk.obj>
 		*/
-        json: function (s, vDefault) {
-            var oJson = (arguments.length > 1 ? vDefault : {});
+        json: function (v, vDefault) {
+            var vJson = (arguments.length > 1 ? vDefault : {});
 
-            try {
-                oJson = JSON.parse(s);
-            } catch (e) { }
+            //# If the passed v(arient) .is.str, lets .parse it into an object
+            if (core.is.str(v, _true)) {
+                try {
+                    vJson = JSON.parse(v);
+                } catch (e) { }
+            }
+            //# Else if the passed v(arient) .is.boj, lets .stringify it into a string
+            else if (core.is.obj(v)) {
+                try {
+                    vJson = JSON.stringify(v);
+                } catch (e) { }
+            }
 
-            return oJson;
-        } //# mk.json
+            return vJson;
+        }, //# mk.json
     }; //# core.mk
 
 
