@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2017-01-02b',
+            $ver: '0.8.2017-01-02c',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -1844,6 +1844,10 @@ License: MIT
     ####################################################################################################
 	*/
     !function () {
+        var window_localStorage = _window.localStorage,         //# code-golf
+            window_sessionStorage = _window.sessionStorage      //# code-golf
+        ;
+
         //# 
         function processObj(vSource, vKeys, bSetToUndefined) {
             var i,
@@ -1904,6 +1908,26 @@ License: MIT
         }
 
         core.data = {
+            //# Aliases to window.localstorage and window.sessionStorage with automajic stringification of non-string values
+            storage: {
+                set: function (sKey, vValue, bSession) {
+                    var sValue = (core.is.obj(vValue) ? core.mk.json(vValue, vValue) : vValue);
+
+                    (bSession ? window_sessionStorage : window_localStorage).setItem(sKey, sValue);
+                },
+                get: function (sKey, bSession) {
+                    var sValue = (bSession ? window_sessionStorage : window_localStorage).getItem(sKey);
+
+                    return core.mk.json(sValue, sValue);
+                },
+                rm: function (sKey, bSession) {
+                    (bSession ? window_sessionStorage : window_localStorage).removeItem(sKey);
+                },
+                clear: function (bSession) {
+                    (bSession ? window_sessionStorage : window_localStorage).clear();
+                }
+            }, //# .data.storage
+
             //#
             map: function (vSource, oMapping) {
                 var i,
