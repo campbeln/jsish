@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2017-01-02c',
+            $ver: '0.8.2017-01-02d',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -1777,7 +1777,10 @@ License: MIT
                     if ($xhr.readyState === 4) {
                         vCallback.fn(
                             ($xhr.status === 200 || ($xhr.status === 0 && sUrl.substr(0, 7) === "file://")),
-                            { text: $xhr.responseText, data: core.fn.call(JSON.parse, null, $xhr.responseText) },
+                            {
+                                text: $xhr.responseText,
+                                data: core.fn.tryCatch(JSON.parse, null, $xhr.responseText /*, _undefined, _false */)
+                            },
                             vCallback.arg,
                             $xhr
                         );
