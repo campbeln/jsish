@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2016-12-15c',
+            $ver: '0.8.2017-01-02',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -478,6 +478,23 @@ License: MIT
             return core.mk.bool(v !== _undefined && v !== null);
         }, //# is.val
 
+
+        /*
+        Function: type
+        Determines if the passed value is an instance of the passed type.
+        Parameters:
+        o - The varient to interrogate.
+        t - The type to compare to.
+        Returns:
+        Boolean value representing if the passed value is an instance of the passed type.
+        */
+        type: function (o, t) {
+            try {
+                return (o instanceof t);
+            } catch (e) {
+                return _false;
+            }
+        },
 
         /*
         Function: json
@@ -2183,3 +2200,52 @@ License: MIT
     core.extend(core, oTarget.ref);
     core.extend(oTarget.ref, core);
 }();
+
+
+/*
+
+map: function (vSource, vMapping) {
+    var i,
+        bIsFn = core.is.fn(vMapping),
+        bIsObj = core.is.obj(vMapping),
+        a_sKeys = (bIsObj ? Object.keys(vMapping) : null),
+        vReturnVal / *= undefined* /,
+        fnMapObj = (
+            bIsFn ?
+            vMapping :
+            function mapObj(oSource) {
+                var sKey, i,
+                    oReturnVal = {}
+                ;
+
+                for (i = 0; i < a_sKeys.length; i++) {
+                    sKey = a_sKeys[i];
+                    oReturnVal[vMapping[sKey]] = oSource[sKey];
+                }
+
+                return oReturnVal;
+            }
+        )
+    ;
+
+    //# If the passed vMapping bIsFn or bIsObj
+    if (bIsFn || bIsObj) {
+        //# If the passed vSource .is.arr, set our vReturnVal to an array
+        if (core.is.arr(vSource)) {
+            vReturnVal = [];
+
+            //# Traverse the vSource, .push'ing each .fnMapObj into our vReturnVal
+            for (i = 0; i < vSource.length; i++) {
+                vReturnVal.push(fnMapObj(vSource[i]));
+            }
+        }
+        //# Else if the passed vSource .is.obj, .fnMapObj directly into our vReturnVal
+        else if (core.is.obj(vSource)) {
+            vReturnVal = fnMapObj(vSource);
+        }
+    }
+
+    return vReturnVal;
+}, //# map
+
+*/
