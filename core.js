@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2017-01-02',
+            $ver: '0.8.2017-01-02a',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -1948,6 +1948,22 @@ License: MIT
             },
 
             //# 
+            cp: function (vSource, a_sKeysToCopy) {
+                var i,
+                    oMapping = {}
+                ;
+
+                //# 
+                if (core.is.arr(a_sKeysToCopy, true) && core.is.str(a_sKeysToCopy[0])) {
+                    for (i = 0; i < a_sKeysToCopy.length; i++) {
+                        oMapping[a_sKeysToCopy[i]] = a_sKeysToCopy[i];
+                    }
+                }
+
+                return core.data.map(vSource, oMapping);
+            },
+
+            //# TODO rename to rm
             remove: function (vSource, vKeys, bSetToUndefined) {
                 var i, bReturnVal;
 
