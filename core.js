@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2017-01-02d',
+            $ver: '0.8.2017-01-03',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -1142,7 +1142,7 @@ License: MIT
 		Function: poll
 		Calls the referenced function based on an interval until it returns true.
 		Parameters:
-		fn - Function to call once.
+		fnTest - Function to call looking for a true-state return.
 		fnCallback - Function to call on success.
 		fnErrback - Function to call on failure.
 		iTimeout - Maximum number of miliseconds to do the polling (Default: 2000)
@@ -1154,26 +1154,31 @@ License: MIT
 		See Also:
 		<core.fn>, <core.fn.once>, <core.fn.debounce>, <core.fn.call>
 		*/
-        poll: function (fn, fnCallback, fnErrback, iTimeout, iInterval) {
+        poll: function (fnTest, fnCallback, fnErrback, iTimeout, iInterval, vArgument) {
             var endTime = Number(new Date()) + (iTimeout || 2000);
             iInterval = iInterval || 100;
 
-            (function p() {
+            !function p() {
                 // If the condition is met, we're done! 
-                if (fn()) {
-                    fnCallback();
+                if (fnTest(vArgument)) {
+                    fnCallback(vArgument);
                 }
                     // If the condition isn't met but the timeout hasn't elapsed, go again
                 else if (Number(new Date()) < endTime) {
                     setTimeout(p, iInterval);
                 }
                     // Didn't match and too much time, reject!
-                else {
-                    fnErrback(new Error('timed out for ' + fn + ': ' + arguments));
+                else if (core.is.fn(fnErrback)) {
+                    fnErrback(new Error('timed out for ' + fn + ': ' + arguments), vArgument);
                 }
-            })();
+            }();
         }, //# poll
 
+        /*
+        Function: noop
+        Null Function with no arguments or return for use when a valid function reference is required but no action is necessary
+        */
+        noop: function () {},
 
         /*
 		Function: once
