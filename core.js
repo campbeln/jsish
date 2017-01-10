@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2017-01-03',
+            $ver: '0.8.2017-01-09',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -1142,11 +1142,11 @@ License: MIT
 		Function: poll
 		Calls the referenced function based on an interval until it returns true.
 		Parameters:
-		fnTest - Function to call looking for a true-state return.
+		vTest - Varient defining the test. If a function, call looking for a true-state return. If === true, call fnCallback when it's defined.
 		fnCallback - Function to call on success.
 		fnErrback - Function to call on failure.
-		iTimeout - Maximum number of miliseconds to do the polling (Default: 2000)
-		iInterval - Number of miliseconds between each poll attempt (Default: 100)
+		iTimeout - Maximum number of milliseconds to do the polling (Default: 2000)
+		iInterval - Number of milliseconds between each poll attempt (Default: 100)
 		Returns:
 		Varient representing the result of the passed function.
 		About:
@@ -1154,16 +1154,20 @@ License: MIT
 		See Also:
 		<core.fn>, <core.fn.once>, <core.fn.debounce>, <core.fn.call>
 		*/
-        poll: function (fnTest, fnCallback, fnErrback, iTimeout, iInterval, vArgument) {
+        poll: function (vTest, fnCallback, fnErrback, iTimeout, iInterval, vArgument) {
             var endTime = Number(new Date()) + (iTimeout || 2000);
             iInterval = iInterval || 100;
 
             !function p() {
-                // If the condition is met, we're done! 
-                if (fnTest(vArgument)) {
+                // If 
+                if (vTest === true && core.is.fn(fnCallback)) {
                     fnCallback(vArgument);
                 }
-                    // If the condition isn't met but the timeout hasn't elapsed, go again
+                // If the condition is met, we're done! 
+                else if (core.fn.call(vTest, this, vArgument)) {
+                    fnCallback(vArgument);
+                }
+                // If the condition isn't met but the timeout hasn't elapsed, go again
                 else if (Number(new Date()) < endTime) {
                     setTimeout(p, iInterval);
                 }
@@ -2067,7 +2071,7 @@ License: MIT
                 if (core.is.str(key) && core.is.arr(collection, _true)) {
                     //# Traverse the collection, returning the entry for the located medicalId
                     for (i = 0; i < collection.length; i++) {
-                        if (core.eq.str(collection[i][key], value, caseInsentive)) {
+                        if (core.is.obj(collection[i]) && core.eq.str(collection[i][key], value, caseInsentive)) {
                             returnValue.data.push(collection[i]);
                             returnValue.indexes.push(i);
                             if (firstOnly) { break; }
