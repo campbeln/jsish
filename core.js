@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2017-01-12',
+            $ver: '0.8.2017-01-12a',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -74,6 +74,21 @@ License: MIT
             }
         }
 
+/*
+var neek = {};
+var neek2 = { camp: { bell: true } };
+
+var result1 = core.resolve(neek, "camp.bell"); // === undefined
+var result2 = core.resolve(neek2, "camp.bell"); // === true
+
+var result3 = core.resolve(true, neek, "camp.bell"); // === {} with neek now = { camp: { bell: {} } }
+var result4 = core.resolve(true, neek, "camp.bell", "blah"); // === "blah" with neek now = { camp: { bell: "blah" } }
+
+var result5 = core.resolve(neek, "camp.bell", "blah"); // === undefined
+var result6 = core.resolve(neek2, "camp.bell", "blah"); // === "blah" with neek2 now = { camp: { bell: "blah" } }
+*/
+
+
         //# Now that the passed oObject is known, set our vReturnVal accordingly
         vReturnVal = (core.is.obj(oObject) ? oObject : _undefined);
 
@@ -85,48 +100,44 @@ License: MIT
             for (i = 0; i < a_sPath.length; i++) {
                 bCurrentIsObj = core.is.obj(vReturnVal);
 
-                //# If the bCurrentIsObj and the current vPath segment exists
-                if (bCurrentIsObj && a_sPath[i] in vReturnVal) {
-                    //# Set oObject as the last object reference and vReturnVal as the current object reference
-                    oObject = vReturnVal;
-                    vReturnVal = vReturnVal[a_sPath[i]];
-                }
-                //# Else if we bHaveValue
-                else if (bHaveValue) {
-                    //# If bCurrentIsObj isn't setup
-                    if (!bCurrentIsObj) {
-                        //# If we are supposed to bForceCreate
-                        //#     NOTE: We only get here if the current vPath segment exists and it is not an object, as created vPath segments below are all objects
-                        if (bForceCreate) {
-                            //# Set a new object reference in vReturnVal then set it into oObject's last object reference
-                            //#     NOTE: We enter the outer loop knowing the initial vReturnVal bCurrentIsObj, so there is no need to worry about a [0 - 1] index below as we will never enter this if on the first loop
-                            oObject[a_sPath[i - 1]] = vReturnVal = {};
-                        }
-                        //# Else the current vPath segment doesn't exist and we're not supposed to bForceCreate it, so reset our vReturnVal to undefined and fall from the loop
-                        else {
-                            vReturnVal = _undefined;
-                            break;
-                        }
-                    }
-
-                    //# If we're on the last vPath segment
-                    if (i === a_sPath.length) {
-                        vReturnVal[a_sPath[i]] = vValue;
-                        vReturnVal = vValue;
-                    }
-                    //# Else we're not on the last vPath segment
-                    else {
-                        //# Set oObject as the last object reference and vReturnVal as the current object reference (creating a new object along the way as we know the current vPath segment doesn't already exist)
+                //# If the bCurrentIsObj
+                if (bCurrentIsObj) {
+                    //# If the current vPath segment exists
+                    if (a_sPath[i] in vReturnVal) {
+                        //# Set oObject as the last object reference and vReturnVal as the current object reference
                         oObject = vReturnVal;
-                        vReturnVal = vReturnVal[a_sPath[i]] = {};
+                        vReturnVal = oObject[a_sPath[i]];
+                    }
+                    //# Else if we are supposed to bForceCreate the current vPath segment
+                    else if (bForceCreate) {
+                        //# Set the oObject as the last object reference and create the new object at the current vPath segment while setting vReturnVal as the current object reference
+                        oObject = vReturnVal;
+                        vReturnVal = oObject[a_sPath[i]] = {};
+                    }
+                    //# Else the current vPath segment doesn't exist and we're not supposed to bForceCreate it, so reset our vReturnVal to undefined and fall from the loop
+                    else {
+                        vReturnVal = _undefined;
+                        break;
                     }
                 }
-                //# Else the current vPath segment doesn't exist and we don't bHaveValue, so reset our vReturnVal to undefined and fall from the loop
-                else {
+                //# Else if we are bForce(ing)Create
+                else if (bForceCreate) {
+                    //# Set a new object reference in vReturnVal then set it into oObject's last object reference
+                    //#     NOTE: We enter the outer loop knowing the initial vReturnVal bCurrentIsObj, so there is no need to worry about a [0 - 1] index below as we will never enter this if on the first loop
+                    oObject[a_sPath[i]] = vReturnVal = {};
+                }
+                //# Else if we're not on the final vPath segment
+                else if (i !== a_sPath.length) {
+                    //# The current vPath segment doesn't exist and we're not bForce(ing)Create, so reset our vReturnVal to undefined and fall from the loop
                     vReturnVal = _undefined;
                     break;
                 }
             }
+
+            //# If we bHaveValue, set it now
+            if (bHaveValue && vReturnVal) {
+                oObject[a_sPath[i - 1]] = vReturnVal = vValue;
+            }            
         }
 
         return vReturnVal;
