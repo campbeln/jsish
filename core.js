@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2017-01-09',
+            $ver: '0.8.2017-01-12',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -34,9 +34,9 @@ License: MIT
     Function: resolve
     Safely accesses (or optionally creates) an object structure, allowing access to deep properties without the need to ensure the object structure exists.
     Parameters:
-    (Optional) bForceCreate - Boolean value representing if the path is to be forcably created. `false` creates the path if it does not already exist, `true` overwrites non-object parent path segments with objects (see About).
+    (Optional) bForceCreate - Boolean value representing if the path is to be forcibly created. `false` creates the path if it does not already exist, `true` overwrites non-object parent path segments with objects (see About).
     oObject - The object to interrogate.
-    sPath - String representing the path to the requested property (period-delimited, e.g. "parent.child.array.0").
+    vPath - Varient representing the path to the requested property (array or period-delimited string, e.g. "parent.child.array.0").
     (Optional) vValue - Varient representing the value to set the referenced property to (used only when creating the path).
     Returns:
     Varient representing the value at the referenced path, returning undefined if the path does not exist.
@@ -46,75 +46,82 @@ License: MIT
     > var deepProp = ish.resolve(true, neek, "nick.campbell");
     This will overwrite the boolean property `nick` with an object reference containing the property `campbell`.
     */
-    core.resolve = function (/*bForceCreate, oObject, sPath|a_sPath, vValue*/) {
-        var oObject, sPath, vValue, a_sPath, vReturnVal, bCurrentIsObj,
-            a = arguments,
-            i = a.length, //# borrow the use of i to store the arguments.length for use in setting the bools below
-            bCreate = (i !== 2),
-            bSetValue = (i === 4),
-            bForceCreate = _false
+    core.resolve = function (/*bForceCreate, oObject, vPath|a_sPath, vValue*/) {
+        var vReturnVal, vValue, vPath, oObject, a_sPath, i, bCurrentIsObj, bHaveValue, bForceCreate,
+            a = arguments
         ;
 
-        //# Setup our local variables based on the number of passed a(rguments)
-        //#     NOTE: We need at least an oObject and a sPath, so if the caller passed in something other than 2 arguments, we simply assume they want to bCreate
-        if (bCreate) {
-            bForceCreate = (a[0] === _true);
+        //# Setup our local variables based on the passed a(rguments)
+        if (a[0] === _true) {
+            bForceCreate = _true;
             oObject = a[1];
-            sPath = a[2];
-            vValue = a[3];
+            vPath = a[2];
+
+            //# If the caller passed in a vValue
+            if (a.length > 3) {
+                bHaveValue = _true;
+                vValue = a[3];
+            }
         } else {
+            bForceCreate = _false
             oObject = a[0];
-            sPath = a[1];
+            vPath = a[1];
+
+            //# If the caller passed in a vValue
+            if (a.length > 2) {
+                bHaveValue = _true;
+                vValue = a[2];
+            }
         }
 
         //# Now that the passed oObject is known, set our vReturnVal accordingly
         vReturnVal = (core.is.obj(oObject) ? oObject : _undefined);
 
-        //# If the passed oObject .is.obj and sPath .is.str, .split sPath into a_sPath
-        if (vReturnVal && (core.is.str(sPath) || (core.is.arr(sPath, true) && core.is.str(sPath[0])))) {
-            a_sPath = (core.is.arr(sPath) ? sPath : sPath.split("."));
+        //# If the passed oObject .is.obj and vPath .is.str or .is.arr, populate our a_sPath
+        if (vReturnVal && (core.is.str(vPath) || (core.is.arr(vPath, true) && core.is.str(vPath[0])))) {
+            a_sPath = (core.is.arr(vPath) ? vPath : vPath.split("."));
 
             //# Traverse the a_sPath
             for (i = 0; i < a_sPath.length; i++) {
                 bCurrentIsObj = core.is.obj(vReturnVal);
 
-                //# If the bCurrentIsObj and the current sPath segment exists
+                //# If the bCurrentIsObj and the current vPath segment exists
                 if (bCurrentIsObj && a_sPath[i] in vReturnVal) {
                     //# Set oObject as the last object reference and vReturnVal as the current object reference
                     oObject = vReturnVal;
                     vReturnVal = vReturnVal[a_sPath[i]];
                 }
-                //# Else if we are supposed to bCreate the sPath
-                else if (bCreate) {
+                //# Else if we bHaveValue
+                else if (bHaveValue) {
                     //# If bCurrentIsObj isn't setup
                     if (!bCurrentIsObj) {
                         //# If we are supposed to bForceCreate
-                        //#     NOTE: We only get here if the current sPath segment exists and it is not an object, as created sPath segments below are all objects
+                        //#     NOTE: We only get here if the current vPath segment exists and it is not an object, as created vPath segments below are all objects
                         if (bForceCreate) {
                             //# Set a new object reference in vReturnVal then set it into oObject's last object reference
                             //#     NOTE: We enter the outer loop knowing the initial vReturnVal bCurrentIsObj, so there is no need to worry about a [0 - 1] index below as we will never enter this if on the first loop
                             oObject[a_sPath[i - 1]] = vReturnVal = {};
                         }
-                        //# Else the current sPath segment doesn't exist and we're not supposed to bForceCreate it, so reset our vReturnVal to undefined and fall from the loop
+                        //# Else the current vPath segment doesn't exist and we're not supposed to bForceCreate it, so reset our vReturnVal to undefined and fall from the loop
                         else {
                             vReturnVal = _undefined;
                             break;
                         }
                     }
 
-                    //# If we are supposed to bSetValue and we're on the last sPath segment
-                    if (bSetValue && i === a_sPath.length) {
+                    //# If we're on the last vPath segment
+                    if (i === a_sPath.length) {
                         vReturnVal[a_sPath[i]] = vValue;
                         vReturnVal = vValue;
                     }
-                    //# Else we're not supposed to bSetValue and/or we're not on the last sPath segment
+                    //# Else we're not on the last vPath segment
                     else {
-                        //# Set oObject as the last object reference and vReturnVal as the current object reference (creating a new object along the way as we know the current sPath segment doesn't already exist)
+                        //# Set oObject as the last object reference and vReturnVal as the current object reference (creating a new object along the way as we know the current vPath segment doesn't already exist)
                         oObject = vReturnVal;
                         vReturnVal = vReturnVal[a_sPath[i]] = {};
                     }
                 }
-                //# Else the current sPath segment doesn't exist and we're not supposed to bCreate it, so reset our vReturnVal to undefined and fall from the loop
+                //# Else the current vPath segment doesn't exist and we don't bHaveValue, so reset our vReturnVal to undefined and fall from the loop
                 else {
                     vReturnVal = _undefined;
                     break;
