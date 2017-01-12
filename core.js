@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2017-01-12a',
+            $ver: '0.8.2017-01-12b',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -127,17 +127,17 @@ var result6 = core.resolve(neek2, "camp.bell", "blah"); // === "blah" with neek2
                     oObject[a_sPath[i]] = vReturnVal = {};
                 }
                 //# Else if we're not on the final vPath segment
-                else if (i !== a_sPath.length) {
+                else if (i < a_sPath.length - 1) {
                     //# The current vPath segment doesn't exist and we're not bForce(ing)Create, so reset our vReturnVal to undefined and fall from the loop
                     vReturnVal = _undefined;
                     break;
                 }
             }
 
-            //# If we bHaveValue, set it now
+            //# If we bHaveValue and a valid vReturnVal, set it now
             if (bHaveValue && vReturnVal) {
-                oObject[a_sPath[i - 1]] = vReturnVal = vValue;
-            }            
+                oObject[a_sPath[a_sPath.length - 1]] = vReturnVal = vValue;
+            }
         }
 
         return vReturnVal;
