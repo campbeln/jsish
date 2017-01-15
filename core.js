@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2017-01-12b',
+            $ver: '0.8.2017-01-14',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -46,6 +46,20 @@ License: MIT
     > var deepProp = ish.resolve(true, neek, "nick.campbell");
     This will overwrite the boolean property `nick` with an object reference containing the property `campbell`.
     */
+
+    /*
+    var neek = {};
+    var neek2 = { camp: { bell: true } };
+
+    var result1 = core.resolve(neek, "camp.bell"); // === undefined
+    var result2 = core.resolve(neek2, "camp.bell"); // === true
+
+    var result3 = core.resolve(true, neek, "camp.bell"); // === {} with neek now = { camp: { bell: {} } }
+    var result4 = core.resolve(true, neek, "camp.bell", "blah"); // === "blah" with neek now = { camp: { bell: "blah" } }
+
+    var result5 = core.resolve(neek, "camp.bell", "blah"); // === undefined
+    var result6 = core.resolve(neek2, "camp.bell", "blah"); // === "blah" with neek2 now = { camp: { bell: "blah" } }
+    */
     core.resolve = function (/*bForceCreate, oObject, vPath|a_sPath, vValue*/) {
         var vReturnVal, vValue, vPath, oObject, a_sPath, i, bCurrentIsObj, bHaveValue, bForceCreate,
             a = arguments
@@ -73,21 +87,6 @@ License: MIT
                 vValue = a[2];
             }
         }
-
-/*
-var neek = {};
-var neek2 = { camp: { bell: true } };
-
-var result1 = core.resolve(neek, "camp.bell"); // === undefined
-var result2 = core.resolve(neek2, "camp.bell"); // === true
-
-var result3 = core.resolve(true, neek, "camp.bell"); // === {} with neek now = { camp: { bell: {} } }
-var result4 = core.resolve(true, neek, "camp.bell", "blah"); // === "blah" with neek now = { camp: { bell: "blah" } }
-
-var result5 = core.resolve(neek, "camp.bell", "blah"); // === undefined
-var result6 = core.resolve(neek2, "camp.bell", "blah"); // === "blah" with neek2 now = { camp: { bell: "blah" } }
-*/
-
 
         //# Now that the passed oObject is known, set our vReturnVal accordingly
         vReturnVal = (core.is.obj(oObject) ? oObject : _undefined);
@@ -160,7 +159,7 @@ var result6 = core.resolve(neek2, "camp.bell", "blah"); // === "blah" with neek2
     Heavily refactored code from http://gomakethings.com/vanilla-javascript-version-of-jquery-extend/
     */
     core.extend = function (/*vDeepCopy, oTarget, oSource*/) {
-        var oTarget, oCurrent, sKey, iDepth, i,
+        var oTarget, oCurrent, sKey, iDepth, i, j,
             a = arguments,
             bDeepCopy = core.is.bool(a[0])
         ;
@@ -189,11 +188,28 @@ var result6 = core.resolve(neek2, "camp.bell", "blah"); // === "blah" with neek2
             for (sKey in oCurrent) {
                 //# If the current sKey is a native property of oCurrent, set it into our oTarget
                 if (Object.prototype.hasOwnProperty.call(oCurrent, sKey)) {
-                    oTarget[sKey] = (
-                        iDepth !== 0 && core.is.obj(oCurrent[sKey]) ?
-                        core.extend(iDepth - 1, {}, oCurrent[sKey]) :
-                        oCurrent[sKey]
-                    );
+                    //# If the oCurrent sKey .is.arr, setup the oTarget's sKey as a new array
+                    //#     NOTE: This is necessary as otherwise arrays are copied in as objects so things like oTarget[sKey].push don't work in the .extend'ed objects, so since arrays return true from .is.obj and array's would otherwise be copied as references in the else below, this special case is necessary
+                    if (core.is.arr(oCurrent[sKey])) {
+                        oTarget[sKey] = [];
+
+                        //# Traverse the oCurrent array, .push'ing each value into out oTarget sKey's new array
+                        for (j = 0; j < oCurrent[sKey].length; j++) {
+                            oTarget[sKey].push(
+                                iDepth !== 0 && core.is.obj(oCurrent[sKey][j]) ?
+                                core.extend(iDepth - 1, {}, oCurrent[sKey][j]) :
+                                oCurrent[sKey][j]                              
+                            );
+                        }
+                    }
+                    //# Else the oCurrent sKey isn't an .arr
+                    else {
+                        oTarget[sKey] = (
+                            iDepth !== 0 && core.is.obj(oCurrent[sKey]) ?
+                            core.extend(iDepth - 1, {}, oCurrent[sKey]) :
+                            oCurrent[sKey]
+                        );
+                    }
                 }
             }
         }
@@ -1064,6 +1080,7 @@ var result6 = core.resolve(neek2, "camp.bell", "blah"); // === "blah" with neek2
 		Varient representing the result of the passed function.
 		About:
 		Based on http://underscorejs.org/docs/underscore.html
+        Returns a function, that, when invoked, will only be triggered at most once during a given window of time. Normally, the throttled function will run as much as it can, without ever going more than once per wait duration; but if you’d like to disable the execution on the leading edge, pass {leading: false}. To disable execution on the trailing edge, ditto.
 		See Also:
 		<core.fn>, <core.fn.once>, <core.fn.poll>, <core.fn.call>, <core.fn.debounce>
         */
