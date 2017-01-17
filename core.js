@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2017-01-14',
+            $ver: '0.8.2017-01-16',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -62,6 +62,7 @@ License: MIT
     */
     core.resolve = function (/*bForceCreate, oObject, vPath|a_sPath, vValue*/) {
         var vReturnVal, vValue, vPath, oObject, a_sPath, i, bCurrentIsObj, bHaveValue, bForceCreate,
+            oIsObjOptions = { allowFn: true },
             a = arguments
         ;
 
@@ -89,7 +90,7 @@ License: MIT
         }
 
         //# Now that the passed oObject is known, set our vReturnVal accordingly
-        vReturnVal = (core.is.obj(oObject) ? oObject : _undefined);
+        vReturnVal = (core.is.obj(oObject, oIsObjOptions) ? oObject : _undefined);
 
         //# If the passed oObject .is.obj and vPath .is.str or .is.arr, populate our a_sPath
         if (vReturnVal && (core.is.str(vPath) || (core.is.arr(vPath, true) && core.is.str(vPath[0])))) {
@@ -97,7 +98,7 @@ License: MIT
 
             //# Traverse the a_sPath
             for (i = 0; i < a_sPath.length; i++) {
-                bCurrentIsObj = core.is.obj(vReturnVal);
+                bCurrentIsObj = core.is.obj(vReturnVal, oIsObjOptions);
 
                 //# If the bCurrentIsObj
                 if (bCurrentIsObj) {
@@ -178,7 +179,7 @@ License: MIT
         }
 
         //# Ensure our oTarget is an object
-        oTarget = (core.is.obj(oTarget) ? oTarget : {});
+        oTarget = (core.is.obj(oTarget, { allowFn: true }) ? oTarget : {});
 
         //# Traverse the passed source objects
         for (/*i = i*/; i < a.length; i++) {
@@ -424,43 +425,32 @@ License: MIT
         fn: function (f) {
             return core.mk.bool(_Object_prototype_toString.call(f) === '[object Function]');
         }, //# is.fn
-
+        
 
         /*
 		Function: obj
 		Determines if the passed value is an object.
 		Parameters:
 		o - The varient to interrogate.
-		bDisallowEmptyObject - Boolean value representing if empty objects are to be ignored.
-        a_sRequiredKeys - 
+        oOptions - Object representing the following optional settings:
+            oOptions.allowFn - Boolean value representing if functions are to be allowed.
+		    oOptions.nonEmpty - Boolean value representing if empty objects are to be ignored.
+            oOptions.requiredKeys - Array of Strings listing the keys required to be present in the object.
 		Returns:
 		Boolean value representing if the value is an object.
 		See Also:
 		<core.is>, <core.mk.obj>, <core.resolve>
 		*/
-        obj: function (o /*, [bDisallowEmptyObject], [a_sRequiredKeys] */) {
-            var a_sRequiredKeys, i,
-                bDisallowEmptyObject = _false,
-                bReturnVal = core.mk.bool(o && o === Object(o) && !core.is.fn(o))
+        obj: function (o, oOptions) {
+            var i,
+                a_sRequiredKeys = core.resolve(oOptions, "requiredKeys"),
+                bDisallowEmptyObject = (core.resolve(oOptions, "nonEmpty") === _true),
+                bAllowFn = (core.resolve(oOptions, "allowFn") === _true),
+                bReturnVal = core.mk.bool(o && o === Object(o) && (bAllowFn || !core.is.fn(o)))
             ;
 
             //# If the passed o(bject) is an Object
             if (bReturnVal) {
-                //# If we got more than one argument, traverse them setting bDisallowEmptyObject and a_sRequiredKeys as we go
-                if (arguments.length > 1) {
-                    for (i = 1; i < arguments.length; i++) {
-                        //# If the current argument .is.true, set bDisallowEmptyObject
-                        //#     NOTE: getOwnPropertyNames is IE9+
-                        if (core.is.true(arguments[i])) {
-                            bDisallowEmptyObject = core.is.fn(Object.getOwnPropertyNames);
-                        }
-                        //# Else if the current argument .is.arr, set a_sRequiredKeys
-                        else if (core.is.arr(arguments[i])) {
-                            a_sRequiredKeys = arguments[i];
-                        }
-                    }
-                }
-
                 //# Reset our bReturnVal based on bDisallowEmptyObject
                 bReturnVal = core.mk.bool(!bDisallowEmptyObject || Object.getOwnPropertyNames(o).length !== 0);
 
