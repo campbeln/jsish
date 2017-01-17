@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2017-01-16',
+            $ver: '0.8.2017-01-17',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -443,9 +443,10 @@ License: MIT
 		*/
         obj: function (o, oOptions) {
             var i,
-                a_sRequiredKeys = core.resolve(oOptions, "requiredKeys"),
-                bDisallowEmptyObject = (core.resolve(oOptions, "nonEmpty") === _true),
-                bAllowFn = (core.resolve(oOptions, "allowFn") === _true),
+                oSettings = (oOptions && oOptions === Object(oOptions) ? oOptions : {}),
+                a_sRequiredKeys = oSettings.requiredKeys,
+                bDisallowEmptyObject = (oSettings.nonEmpty === _true),
+                bAllowFn = (oSettings.allowFn === _true),
                 bReturnVal = core.mk.bool(o && o === Object(o) && (bAllowFn || !core.is.fn(o)))
             ;
 
