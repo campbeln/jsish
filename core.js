@@ -15,11 +15,11 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2017-01-24',
+            $ver: '0.8.2017-01-24a',
             $ish: true
         },
     	_window = window,                                       //# code-golf
-        _undefined = undefined,                                 //# code-golf
+        _undefined /*= undefined*/,                             //# code-golf
         _true = true,                                           //# code-golf
         _false = false,                                         //# code-golf
         _Object_prototype_toString = Object.prototype.toString  //# code-golf
@@ -28,6 +28,7 @@ License: MIT
 
     //# Polyfills
     Date.now || (Date.now = function () { return new Date; });
+    //Object.keys
 
 
     /*
@@ -78,7 +79,7 @@ License: MIT
                 vValue = a[3];
             }
         } else {
-            bForceCreate = _false
+            bForceCreate = _false;
             oObject = a[0];
             vPath = a[1];
 
@@ -1207,7 +1208,7 @@ License: MIT
                 }
                     // Didn't match and too much time, reject!
                 else if (core.is.fn(fnErrback)) {
-                    fnErrback(new Error('timed out for ' + fn + ': ' + arguments), vArgument);
+                    fnErrback(new Error('timed out for ' + fnCallback + ': ' + arguments), vArgument);
                 }
             }();
         }, //# poll
@@ -1456,8 +1457,8 @@ License: MIT
 				        vAutoSetConfig.path = sPath;
 				        vAutoSetConfig.domain = sDomain;
 
-				        //# .escape the .string, set the max-age and path and toss it into the .cookie collection
-				        document.cookie = sName + "=" + escape($returnValue.string()) +
+				        //# .encodeURIComponent the .string, set the max-age and path and toss it into the .cookie collection
+				        document.cookie = sName + "=" + encodeURIComponent($returnValue.string()) +
 							'; path=' + sPath +
 							(iMaxAge > 0 ? "; max-age=" + iMaxAge : "") +
 							(dExpires ? "; expires=" + dExpires.toUTCString() : "") +
@@ -1469,7 +1470,7 @@ License: MIT
 				        return _true;
 				    },
 				    remove: function () {
-				        //# .escape the .string, set the max-age and path and toss it into the .cookie collection
+				        //# .encodeURIComponent the .string, set the max-age and path and toss it into the .cookie collection
 				        //$returnValue.data = null;
 				        delete oOnUnload[sName];
 				        core.data.arr.remove(oOnUnload.$keys, sName);
@@ -1490,7 +1491,7 @@ License: MIT
                 for (i = 0; i < a_sCookies.length; i++) {
                     j = a_sCookies[i].indexOf("=");
                     if (sName === a_sCookies[i].substr(0, j).replace(/^\s+|\s+$/g, "")) {
-                        $returnValue.original = unescape(a_sCookies[i].substr(j + 1));
+                        $returnValue.original = decodeURIComponent(a_sCookies[i].substr(j + 1));
 
                         //oModel = core.mk.json($returnValue.original);
                         //oModel = core.fn.tryCatch(function() {
@@ -1765,7 +1766,7 @@ License: MIT
 
                     //# If the sUrl has a query string, .deserialize it into our oReturnVal
                     if (i > -1) {
-                        oReturnVal = deserialize(sUrl.substr(i + 1))
+                        oReturnVal = deserialize(sUrl.substr(i + 1));
                     }
                 }
 
@@ -2044,7 +2045,7 @@ License: MIT
 
             //# TODO rename to rm
             remove: function (vSource, vKeys, bSetToUndefined) {
-                var i, bReturnVal;
+                var bReturnVal;
 
                 //# If the caller passed in an .is.str, reset vKeys to an array
                 if (core.is.str(vKeys, _true)) {
@@ -2212,7 +2213,7 @@ License: MIT
 
                 //# 
                 filter: function (a_oData, oQuery, bUseCoercion) {
-                    var a_sKeys = Objects.keys(oQuery),
+                    var a_sKeys = Object.keys(oQuery),
                         a_oReturnVal, bIsMatch, i, j
                     ;
 
