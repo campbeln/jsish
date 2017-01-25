@@ -15,7 +15,7 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2017-01-17',
+            $ver: '0.8.2017-01-24',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -692,7 +692,15 @@ License: MIT
 		<core.mk>
 		*/
         obj: function (o, oDefault) {
-            return (core.is.obj(o) ?
+            var bFnToObj = (core.is.fn(o) && core.is.obj(o, { nonEmpty: _true, allowFn: _true }));
+
+            //# If the passed o(bject) .is.fn and the .fn .hasOwnProperty's, .extend those .properties into a new object to return to the caller
+            //#     NOTE: This has the effect of forcing the .hasOwnProperty .properties set on a .is.fn to be accessable as a standard object (but non-reference types of course get disconnected from the original object/function reference)
+            if (bFnToObj) {
+                o = core.extend({}, o);
+            }
+
+            return (bFnToObj || core.is.obj(o) ?
                 o :
                 (arguments.length > 1 ? oDefault : {})
             );
