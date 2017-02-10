@@ -16,7 +16,7 @@ License: MIT
             //locate: function,
             //$path: '',
             $unstable: {},
-            $ver: '0.8.2017-02-09b',
+            $ver: '0.8.2017-02-10',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -1907,7 +1907,7 @@ License: MIT
 
                 core.fn.call(vCallback.fn, this, [bSuccess, oTextData, vCallback.arg, $xhr]);
             });
-            $xhr.responseType = "document";
+            //$xhr.responseType = "document";
             $xhr.send();
         }; //# core.$unstable.include
     }(); //# core.net.ajax
