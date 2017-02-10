@@ -16,7 +16,7 @@ License: MIT
             //locate: function,
             //$path: '',
             $unstable: {},
-            $ver: '0.8.2017-02-09a',
+            $ver: '0.8.2017-02-09b',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -1838,7 +1838,7 @@ License: MIT
 
                 //# GET the sUrl
                 $xhr.open(sVerb, sUrl, (bAsync === _true));
-                $xhr.send();
+                //$xhr.send();
             }
             //# Else we were unable to collect the $xhr, so signal a failure to the vCallback.fn
             else {
@@ -1851,16 +1851,16 @@ License: MIT
         
         //# 
         function doGet(sUrl, vCallback) {
-            xhr(sUrl, "GET", oOptions.async, vCallback);
+            xhr(sUrl, "GET", oOptions.async, vCallback).send();
         }
         function doPost(sUrl, vCallback) {
-            xhr(sUrl, "POST", oOptions.async, vCallback);
+            xhr(sUrl, "POST", oOptions.async, vCallback).send();
         }
         function doPut(sUrl, vCallback) {
-            xhr(sUrl, "PUT", oOptions.async, vCallback);
+            xhr(sUrl, "PUT", oOptions.async, vCallback).send();
         }
         function doDelete(sUrl, vCallback) {
-            xhr(sUrl, "DELETE", oOptions.async, vCallback);
+            xhr(sUrl, "DELETE", oOptions.async, vCallback).send();
         }
         
         
@@ -1889,6 +1889,8 @@ License: MIT
 
         //# 
         core.$unstable.include = function (sUrl, vCallback) {
+            var $xhr;
+
             //# If a function was passed rather than an object, object-ize it (else we assume its an object with at least a .fn)
             if (core.is.fn(vCallback)) {
                 vCallback = { fn: vCallback, arg: null };
@@ -1898,13 +1900,15 @@ License: MIT
             }
 
             //# 
-            xhr(sUrl, "GET", false, function (bSuccess, oTextData, vArg, $xhr) {
+            $xhr = xhr(sUrl, "GET", false, function (bSuccess, oTextData, vArg, $xhr) {
                 if (bSuccess) {
                     _document.write(oTextData.text);
                 }
 
                 core.fn.call(vCallback.fn, this, [bSuccess, oTextData, vCallback.arg, $xhr]);
             });
+            $xhr.responseType = "document";
+            $xhr.send();
         }; //# core.$unstable.include
     }(); //# core.net.ajax
 
