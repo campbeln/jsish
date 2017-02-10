@@ -15,10 +15,12 @@ License: MIT
             //extend: function,
             //locate: function,
             //$path: '',
-            $ver: '0.8.2017-01-24a',
+            $unstable: {},
+            $ver: '0.8.2017-02-09',
             $ish: true
         },
     	_window = window,                                       //# code-golf
+    	_document = document,                                   //# code-golf
         _undefined /*= undefined*/,                             //# code-golf
         _true = true,                                           //# code-golf
         _false = false,                                         //# code-golf
@@ -261,7 +263,7 @@ License: MIT
 
         //# If we didn't find a top-level property of the _window, look to the querystring of the .js
         if (!bFound) {
-            vTarget = document.getElementsByTagName("SCRIPT");
+            vTarget = _document.getElementsByTagName("SCRIPT");
 
             //# Traverse the SCRIPT tags, pulling the .src and .indexOf the ?domtarget=
             for (i = 0; i < vTarget.length; i++) {
@@ -1273,7 +1275,7 @@ License: MIT
             sUrl - String representing the target URL to ping.
             */
             ping: function(sUrl) {
-                if (!_iframe) _iframe = document.createElement('iframe');
+                if (!_iframe) _iframe = _document.createElement('iframe');
                 _iframe.src = sUrl;
             }, //# ping
 
@@ -1289,7 +1291,7 @@ License: MIT
             String representing the absolute URL.
             */
             absoluteUrl: function (sUrl) {
-                if (!_a) _a = document.createElement('a');
+                if (!_a) _a = _document.createElement('a');
                 _a.href = sUrl;
                 return _a.href;
             } //# absoluteUrl
@@ -1458,7 +1460,7 @@ License: MIT
 				        vAutoSetConfig.domain = sDomain;
 
 				        //# .encodeURIComponent the .string, set the max-age and path and toss it into the .cookie collection
-				        document.cookie = sName + "=" + encodeURIComponent($returnValue.string()) +
+				        _document.cookie = sName + "=" + encodeURIComponent($returnValue.string()) +
 							'; path=' + sPath +
 							(iMaxAge > 0 ? "; max-age=" + iMaxAge : "") +
 							(dExpires ? "; expires=" + dExpires.toUTCString() : "") +
@@ -1474,7 +1476,7 @@ License: MIT
 				        //$returnValue.data = null;
 				        delete oOnUnload[sName];
 				        core.data.arr.remove(oOnUnload.$keys, sName);
-				        document.cookie = sName + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;" + ' path=' + (vAutoSetConfig.path || "/");
+				        _document.cookie = sName + "=; expires=Thu, 01 Jan 1970 00:00:01 GMT;" + ' path=' + (vAutoSetConfig.path || "/");
 				        return _true;
 				    }
 				}
@@ -1484,7 +1486,7 @@ License: MIT
             //#     NOTE: This is placed in a function so that the a_sCookies array will be dropped after execution
             function find() {
                 var i, j,
-					a_sCookies = document.cookie.split(";")
+					a_sCookies = _document.cookie.split(";")
                 ;
 
                 //# Loop thru the values in .cookie looking for the passed sName, setting $returnValue.original if it's found
@@ -1823,7 +1825,10 @@ License: MIT
                             ($xhr.status === 200 || ($xhr.status === 0 && sUrl.substr(0, 7) === "file://")),
                             {
                                 text: $xhr.responseText,
-                                data: core.fn.tryCatch(JSON.parse, null, $xhr.responseText /*, _undefined, _false */)
+                                data: core.fn.tryCatch(JSON.parse, null, $xhr.responseText /*, _undefined, _false */),
+                                url: sUrl,
+                                verb: sVerb,
+                                async: bAsync
                             },
                             vCallback.arg,
                             $xhr
@@ -1881,6 +1886,26 @@ License: MIT
             update: doPost,
             'delete': doDelete
         });
+
+        //# 
+        core.$unstable.include = function (sUrl, vCallback) {
+            //# If a function was passed rather than an object, object-ize it (else we assume its an object with at least a .fn)
+            if (core.is.fn(vCallback)) {
+                vCallback = { fn: vCallback, arg: null };
+            }
+            else {
+                vCallback = core.mk.obj(vCallback);
+            }
+
+            //# 
+            xhr(sUrl, "GET", false, function (bSuccess, oTextData, vArg, $xhr) {
+                if (bSuccess) {
+                    _document.write(oTextData.text);
+                }
+
+                vCallback.fn(bSuccess, oTextData, vCallback.arg, $xhr);                
+            });
+        }; //# core.$unstable.include
     }(); //# core.net.ajax
 
 
