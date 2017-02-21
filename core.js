@@ -16,7 +16,7 @@ License: MIT
             //locate: function,
             //$path: '',
             $unstable: {},
-            $ver: '0.8.2017-02-20b',
+            $ver: '0.8.2017-02-20c',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -1814,8 +1814,8 @@ License: MIT
                 vCallback = { fn: vCallback, arg: null };
             }
 
-            //# If we were able to collect an $xhr object
-            if ($xhr) {
+            //# If we were able to collect an $xhr object and we have an sUrl
+            if ($xhr && core.is.str(sUrl, _true)) {
                 //# Setup the $xhr callback
                 //$xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
                 $xhr.onreadystatechange = function () {
@@ -1941,7 +1941,7 @@ License: MIT
                 );
                 oOptions.replace = domCurrent;
 
-                core.$unstable.include(oOptions);
+                core.$unstable.include(domCurrent.getAttribute("src"), oOptions);
             }
         };
     }(); //# core.net.ajax
