@@ -16,7 +16,7 @@ License: MIT
             //locate: function,
             //$path: '',
             $unstable: {},
-            $ver: '0.8.2017-02-20e',
+            $ver: '0.8.2017-02-20f',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -1922,7 +1922,7 @@ License: MIT
             if (bAsync) {
                 $xhr.responseType = "document";
             }
-            $xhr.setRequestHeader('Content-type', 'text/html; charset=utf-8')
+            $xhr.setRequestHeader('Content-type', 'text/plain; charset=ISO-8859-1');
             $xhr.send();
         }; //# core.$unstable.include
 
