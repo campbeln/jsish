@@ -16,7 +16,7 @@ License: MIT
             //locate: function,
             //$path: '',
             $unstable: {},
-            $ver: '0.8.2017-02-20',
+            $ver: '0.8.2017-02-20a',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -1889,14 +1889,14 @@ License: MIT
 
         //# 
         core.$unstable.include = function (sUrl, vCallback, bAsync) {
-            var $xhr;
+            var $xhr, _div;
 
             //# 
             bAsync = (bAsync === _true);
 
             //# If a function was passed rather than an object, object-ize it (else we assume its an object with at least a .fn)
             if (core.is.fn(vCallback)) {
-                vCallback = { fn: vCallback, arg: null };
+                vCallback = { fn: vCallback, arg: null, replace: false };
             }
             else {
                 vCallback = core.mk.obj(vCallback);
@@ -1905,7 +1905,14 @@ License: MIT
             //# 
             $xhr = xhr(sUrl, "GET", bAsync, function (bSuccess, oTextData, vArg, $xhr) {
                 if (bSuccess) {
-                    _document.write(oTextData.text);
+                    if (core.is.dom(vCallback.replace)) {
+                        _div = document.createElement("div");
+                        _div.innerHTML = oTextData.text;
+                        vCallback.replace.parentNode.replaceChild(_div, vCallback.replace);
+                    }
+                    else {
+                        _document.write(oTextData.text);
+                    }
                 }
 
                 core.fn.call(vCallback.fn, this, [bSuccess, oTextData, vCallback.arg, $xhr]);
@@ -1928,11 +1935,13 @@ License: MIT
                 domCurrent = a_domIncludes[i];
                 sOnload = domCurrent.getAttribute("onload");
 
-                if (core.is.str(sOnload, _true)) {
-                    oOptions = core.mk.json(sOnload, {
-                        fn: _window[sOnload]
-                    });
-                }
+                oOptions = (core.is.str(sOnload, _true) ?
+                    core.mk.json(sOnload, { fn: _window[sOnload] }) :
+                    {}
+                );
+                oOptions.replace = domCurrent;
+
+                core.$unstble.include(oOptions);
             }
         };
     }(); //# core.net.ajax
