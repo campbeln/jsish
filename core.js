@@ -16,7 +16,7 @@ License: MIT
             //locate: function,
             //$path: '',
             $unstable: {},
-            $ver: '0.8.2017-02-10',
+            $ver: '0.8.2017-02-20',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -1888,8 +1888,11 @@ License: MIT
         });
 
         //# 
-        core.$unstable.include = function (sUrl, vCallback) {
+        core.$unstable.include = function (sUrl, vCallback, bAsync) {
             var $xhr;
+
+            //# 
+            bAsync = (bAsync === _true);
 
             //# If a function was passed rather than an object, object-ize it (else we assume its an object with at least a .fn)
             if (core.is.fn(vCallback)) {
@@ -1900,16 +1903,38 @@ License: MIT
             }
 
             //# 
-            $xhr = xhr(sUrl, "GET", false, function (bSuccess, oTextData, vArg, $xhr) {
+            $xhr = xhr(sUrl, "GET", bAsync, function (bSuccess, oTextData, vArg, $xhr) {
                 if (bSuccess) {
                     _document.write(oTextData.text);
                 }
 
                 core.fn.call(vCallback.fn, this, [bSuccess, oTextData, vCallback.arg, $xhr]);
             });
-            //$xhr.responseType = "document";
+
+            //# 
+            if (bAsync) {
+                $xhr.responseType = "document";
+            }
             $xhr.send();
         }; //# core.$unstable.include
+
+        core.$unstable.includeDOM = function (sSelector) {
+            var i, domCurrent, oOptions, sOnload,
+                a_domIncludes = _document.querySelectorAll(core.is.str(sSelector, _true) ? sSelector : "INCLUDE[src]")
+            ;
+
+            //# 
+            for (i = 0; i < a_domIncludes.length; i++) {
+                domCurrent = a_domIncludes[i];
+                sOnload = domCurrent.getAttribute("onload");
+
+                if (core.is.str(sOnload, _true)) {
+                    oOptions = core.mk.json(sOnload, {
+                        fn: _window[sOnload]
+                    });
+                }
+            }
+        };
     }(); //# core.net.ajax
 
 
