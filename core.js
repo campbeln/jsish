@@ -16,7 +16,7 @@ License: MIT
             //locate: function,
             //$path: '',
             $unstable: {},
-            $ver: '0.8.2017-02-20a',
+            $ver: '0.8.2017-02-20b',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -1941,7 +1941,7 @@ License: MIT
                 );
                 oOptions.replace = domCurrent;
 
-                core.$unstble.include(oOptions);
+                core.$unstable.include(oOptions);
             }
         };
     }(); //# core.net.ajax
