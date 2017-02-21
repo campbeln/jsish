@@ -1922,6 +1922,7 @@ License: MIT
             if (bAsync) {
                 $xhr.responseType = "document";
             }
+            $xhr.setRequestHeader('Content-type', 'text/html; charset=utf-8')
             $xhr.send();
         }; //# core.$unstable.include
 
