@@ -16,7 +16,7 @@ License: MIT
             //locate: function,
             //$path: '',
             $unstable: {},
-            $ver: '0.8.2017-02-20f',
+            $ver: '0.8.2017-03-03',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -1016,6 +1016,12 @@ License: MIT
 	*/
     core.fn = {
         /*
+        */
+        convert: function (oArguments) {
+            return Array.prototype.slice.call(oArguments);
+        },
+
+        /*
 		Function: call
 		Safely calls the passed function.
 		Parameters:
@@ -1800,7 +1806,7 @@ License: MIT
         //# Wrapper for an XHR AJAX call
         function xhr(sUrl, sVerb, bAsync, vCallback) {
             /* global ActiveXObject: false */ //# JSHint "ActiveXObject variable undefined" error supressor
-            var $xhr,
+            var $xhr, bValidRequest,
                 XHRConstructor = (XMLHttpRequest || ActiveXObject)
             ;
 
@@ -1814,8 +1820,11 @@ License: MIT
                 vCallback = { fn: vCallback, arg: null };
             }
 
+            //# Determine if this is a bValidRequest
+            bValidRequest = ($xhr && core.is.str(sUrl, _true));
+
             //# If we were able to collect an $xhr object and we have an sUrl
-            if ($xhr && core.is.str(sUrl, _true)) {
+            if (bValidRequest) {
                 //# Setup the $xhr callback
                 //$xhr.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
                 $xhr.onreadystatechange = function () {
@@ -1835,17 +1844,32 @@ License: MIT
                         );
                     }
                 };
-
-                //# GET the sUrl
-                $xhr.open(sVerb, sUrl, (bAsync === _true));
-                //$xhr.send();
             }
             //# Else we were unable to collect the $xhr, so signal a failure to the vCallback.fn
             else {
-                vCallback.fn(_false, null, vCallback.arg, $xhr);
+                core.fn.call(vCallback.fn, [_false, null, vCallback.arg, $xhr]);
             }
 
-            return $xhr;
+            return {
+                xhr: $xhr,
+                send: function(fnHook) {
+                    //# If we were able to collect an $xhr object and we have an sUrl, .open and .send the request now
+                    if (bValidRequest) {
+                        $xhr.open(sVerb, sUrl, (bAsync === _true));
+
+                        //# 
+                        if (core.is.fn(fnHook)) {
+                            fnHook();
+                        }
+                        else {
+                            //$xhr.setRequestHeader('Content-type', 'text/plain; charset=utf-8');
+                            $xhr.overrideMimeType('text/plain; charset=utf-8');
+                        }
+                        
+                        $xhr.send();
+                    }
+                }
+            };
         } //# xhr
         
         
@@ -1868,7 +1892,7 @@ License: MIT
         core.extend(core.net, {
             ajax: {
                 options: doOptions,
-                //xhr: xhr,
+                xhr: xhr,
 
                 //# Setup the HTTP Verb interfaces
                 put: doPut,
@@ -1886,13 +1910,24 @@ License: MIT
             update: doPost,
             'delete': doDelete
         });
+    }(); //# core.net.ajax
 
+
+    /*
+    ####################################################################################################
+    Class: core.dom
+    DOM-manipulation functionality.
+    Requires:
+    <core.is>, <core.net>, <core.net.ajax>
+    ####################################################################################################
+    */
+    !function () {
         //# 
-        core.$unstable.include = function (sUrl, vCallback, bAsync) {
-            var $xhr, _div;
+        function include(sUrl, vCallback, bAsync) {
+            var $xhr, _template;
 
-            //# 
-            bAsync = (bAsync === _true);
+            //# Default bAsync to _true unless it's specificially set to _false
+            bAsync = (bAsync !== _false);
 
             //# If a function was passed rather than an object, object-ize it (else we assume its an object with at least a .fn)
             if (core.is.fn(vCallback)) {
@@ -1903,33 +1938,66 @@ License: MIT
             }
 
             //# 
-            $xhr = xhr(sUrl, "GET", bAsync, function (bSuccess, oTextData, vArg, $xhr) {
+            $xhr = core.net.ajax.xhr(sUrl, "GET", bAsync, function (bSuccess, oTextData, vArg, $xhr) {
+                var a__scripts, _currentScript, _script, i;
+
                 if (bSuccess) {
                     if (core.is.dom(vCallback.replace)) {
-                        _div = document.createElement("div");
-                        _div.innerHTML = oTextData.text;
-                        vCallback.replace.parentNode.replaceChild(_div, vCallback.replace);
+                        _template = document.createElement("div");
+                        _template.innerHTML = oTextData.text;
+                        _template = _template.firstElementChild;
+
+                        vCallback.replace.parentNode.replaceChild(_template, vCallback.replace);
+                        //vCallback.replace.appendChild(_template);
+
+                        a__scripts = _template.getElementsByTagName("script");
+                        
+                        for (i = 0; i < a__scripts.length; i++) {
+                            _currentScript = a__scripts[i];
+                            _script = document.createElement("script");
+
+                            if (core.is.str(_currentScript.src, _true)) {
+                                _script.src = _currentScript.src;
+                            }
+                            else {
+                                _script.text = (_currentScript.text || _currentScript.textContent || _currentScript.innerHTML || "");
+                            }
+                            
+                            _currentScript.parentNode.replaceChild(_script, _currentScript);
+                        }  
                     }
                     else {
                         _document.write(oTextData.text);
                     }
                 }
 
-                core.fn.call(vCallback.fn, this, [bSuccess, oTextData, vCallback.arg, $xhr]);
+                core.fn.call(vCallback.fn, this, [bSuccess, (_template || oTextData), vCallback.arg, $xhr]);
             });
 
             //# 
             if (bAsync) {
                 $xhr.responseType = "document";
             }
-            $xhr.setRequestHeader('Content-type', 'text/plain; charset=ISO-8859-1');
-            $xhr.send();
-        }; //# core.$unstable.include
 
-        core.$unstable.includeDOM = function (sSelector) {
-            var i, domCurrent, oOptions, sOnload,
-                a_domIncludes = _document.querySelectorAll(core.is.str(sSelector, _true) ? sSelector : "INCLUDE[src]")
-            ;
+            $xhr.send();
+        } //# include
+
+        //# 
+        function includeDOM(vDomReferences) {
+            var i, domCurrent, oOptions, sOnload, a_domIncludes;
+
+            //# If the caller pass in a .is.dom reference, set it into an array for a_domIncludes
+            if (core.is.dom(vDomReferences)) {
+                a_domIncludes = [vDomReferences];
+            }
+            //# Else if the caller (probably) passed in an .is.arr of .is.dom references, set it into a_domIncludes
+            else if (core.is.arr(vDomReferences) && core.is.dom(vDomReferences[0])) {
+                a_domIncludes = vDomReferences
+            }
+            //# Else use the passed vDomReferences as a selector if it .is.str or default to a selector to populate a_domIncludes
+            else {
+                a_domIncludes = _document.querySelectorAll(core.is.str(vDomReferences, _true) ? vDomReferences : "INCLUDE[src]");
+            }
 
             //# 
             for (i = 0; i < a_domIncludes.length; i++) {
@@ -1937,16 +2005,28 @@ License: MIT
                 sOnload = domCurrent.getAttribute("onload");
 
                 oOptions = (core.is.str(sOnload, _true) ?
-                    core.mk.json(sOnload, { fn: _window[sOnload] }) :
+                    core.mk.json(sOnload, { fn: core.resolve(_window, sOnload) }) :
                     {}
                 );
                 oOptions.replace = domCurrent;
 
-                core.$unstable.include(domCurrent.getAttribute("src"), oOptions, _true);
+                include(domCurrent.getAttribute("src"), oOptions, _true);
+            }
+        } //# includeDOM
+
+
+        //# 
+        core.dom = {
+            include: function (/*vDomReferences | sUrl, vCallback, bAsync*/) {
+                if (arguments.length === 1) {
+                    includeDOM(arguments[0]);
+                }
+                else {
+                    core.fn.call(include, this, core.fn.convert(arguments));
+                }
             }
         };
-    }(); //# core.net.ajax
-
+    }(); //# core.dom
 
     /*
     ####################################################################################################
