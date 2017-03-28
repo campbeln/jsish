@@ -16,7 +16,7 @@ License: MIT
             //locate: function,
             //$path: '',
             $unstable: {},
-            $ver: '0.8.2017-03-03',
+            $ver: '0.8.2017-03-28',
             $ish: true
         },
     	_window = window,                                       //# code-golf
@@ -1022,6 +1022,17 @@ License: MIT
         },
 
         /*
+        */
+        extend: function (fn, vProperties) {
+            return core.extend(fn, {
+                    $extended: function (sKey) {
+                        return (arguments.length ? fn.hasOwnProperty(sKey) : _true);
+                    }
+                }, (core.is.fn(vProperties) ? vProperties() : vProperties)
+            );
+        },
+
+        /*
 		Function: call
 		Safely calls the passed function.
 		Parameters:
@@ -1950,7 +1961,7 @@ License: MIT
                         vCallback.replace.parentNode.replaceChild(_template, vCallback.replace);
                         //vCallback.replace.appendChild(_template);
 
-                        a__scripts = _template.getElementsByTagName("script");
+                        a__scripts = _template.querySelectorAll("script:not([ignore])");
                         
                         for (i = 0; i < a__scripts.length; i++) {
                             _currentScript = a__scripts[i];
@@ -1981,6 +1992,7 @@ License: MIT
 
             $xhr.send();
         } //# include
+
 
         //# 
         function includeDOM(vDomReferences) {
@@ -2017,6 +2029,7 @@ License: MIT
 
         //# 
         core.dom = {
+            //# 
             include: function (/*vDomReferences | sUrl, vCallback, bAsync*/) {
                 if (arguments.length === 1) {
                     includeDOM(arguments[0]);
@@ -2024,7 +2037,48 @@ License: MIT
                 else {
                     core.fn.call(include, this, core.fn.convert(arguments));
                 }
-            }
+            }, //# include
+
+            class: core.fn.extend(
+                function (el, className) {
+                    if (el.classList) {
+                        return el.classList.contains(className);
+                    }
+                    else {
+                        return !!el.className.match(new RegExp('(\\s|^)' + className + '(\\s|$)'));
+                    }
+                }, {
+                    has: function (el, className) {
+                        return core.dom.class(el, className);
+                    },
+                    add: function addClass(el, className) {
+                        if (el.classList) {
+                            el.classList.add(className);
+                        }
+                        else if (!hasClass(el, className)) {
+                            el.className += " " + className;
+                        }
+                    },
+                    rm: function (el, className) {
+                        if (el.classList) {
+                            el.classList.remove(className);
+                        }
+                        else if (hasClass(el, className)) {
+                            el.className = el.className.replace(new RegExp('(\\s|^)' + className + '(\\s|$)'), ' ');
+                        }
+                    },
+                    toggle: function (el, className) {
+                        var fnClass = core.dom.class;
+
+                        if (fnClass(el, className)) {
+                            fnClass.rm(el, className);
+                        }
+                        else {
+                            fnClass.add(el, className);
+                        }
+                    }
+                }
+            )
         };
     }(); //# core.dom
 
@@ -2185,6 +2239,11 @@ License: MIT
                 }
 
                 return core.data.map(vSource, oMapping);
+            },
+
+            //# 
+            has: function (vSource, sKey) {
+                return (core.is.fn(core.resolve(vSource, hasOwnPropery)) && vSource.hasOwnPropery(sKey));
             },
 
             //# TODO rename to rm
