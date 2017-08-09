@@ -9,27 +9,34 @@ License: MIT
 !function () {
     'use strict';
 
-    var oTarget,
-    	core = {
-            //resolve: function,
-            //extend: function,
-            //locate: function,
-            //$path: '',
-            $unstable: {},
-            $ver: '0.8.2017-03-28',
-            $ish: true
-        },
-    	_window = window,                                       //# code-golf
-    	_document = document,                                   //# code-golf
-        _undefined /*= undefined*/,                             //# code-golf
-        _true = true,                                           //# code-golf
-        _false = false,                                         //# code-golf
-        _Object_prototype_toString = Object.prototype.toString  //# code-golf
-    ; //# core
+    var _window = window,                                                           //# code-golf
+    	_document = document,                                                       //# code-golf
+        _undefined /*= undefined*/,                                                 //# code-golf
+        _true = true,                                                               //# code-golf
+        _false = false,                                                             //# code-golf
+        _Object_prototype_toString = Object.prototype.toString,                     //# code-golf
+        _document_querySelector = _document.querySelector.bind(_document),          //# code-golf
+        _document_querySelectorAll = _document.querySelectorAll.bind(_document),    //# code-golf
+    	core = function ish(sSelector, bAll) {
+            var vReturnVal;
 
+            //# 
+            if (bAll === _true) {
+                vReturnVal = core.mk.arr(_document_querySelectorAll(sSelector));
+            }
+            else {
+                vReturnVal = _document_querySelector(sSelector);
+            }
+
+            return vReturnVal;
+        } //# core
+    ;
+
+    //# Set the .$ver on core (done here so it's at the top of the file for easy editing)
+    core.$ver = '2017-08-09';
 
     //# Polyfills
-    Date.now || (Date.now = function () { return new Date; });
+    Date.now = (Date.now || function () { return new Date; });
     //Object.keys
 
 
@@ -202,15 +209,15 @@ License: MIT
                             oTarget[sKey].push(
                                 iDepth !== 0 && core.is.obj(oCurrent[sKey][j]) ?
                                 core.extend(iDepth - 1, {}, oCurrent[sKey][j]) :
-                                oCurrent[sKey][j]                              
+                                oCurrent[sKey][j]
                             );
                         }
                     }
                     //# Else the oCurrent sKey isn't an .arr
                     else {
                         oTarget[sKey] = (
-                            iDepth !== 0 && core.is.obj(oCurrent[sKey]) ?
-                            core.extend(iDepth - 1, {}, oCurrent[sKey]) :
+                            /*iDepth !== 0 &&*/ core.is.obj(oCurrent[sKey]) && !core.is.dom(oCurrent[sKey]) && oTarget[sKey] !== oCurrent[sKey] ?
+                            core.extend((iDepth !== 0 ? iDepth - 1 : _false), oTarget[sKey], oCurrent[sKey]) :
                             oCurrent[sKey]
                         );
                     }
@@ -222,68 +229,37 @@ License: MIT
     }; //# core.extend
 
 
-    /*
-    Function: locate
-    Locates the first window-level object variable that contains the requested property, resolving the path contained within that property.
-    Parameters:
-    sProperty - String representing the requested property.
-    Returns:
-    Object containing two properties; the full path to the target reference and the target the path references.
-    About:
-    This function allows library authors to give their users the ability to soft-configure where the library attaches its functionality (e.g. `window.usersAppObject.library` rather than simply `window.library`).
-    */
-    core.locate = function locate(sProperty) {
-        var vCurrent, vTarget, sKey, i,
-            bFound = false
+    core.import = function (vNamespace) {
+
+    };
+
+    core.include = function(sSrc, oAttributes, fnCallback) {
+        var sKey,
+            _script = _document.createElement("script")
         ;
 
-        //# Traverse all of the top-level properties of the _window
-        for (sKey in _window) {
-            vCurrent = _window[sKey];
+        //# 
+        _script.type = "text/javascript";
+        _script.src = sSrc;
+        _script.onload = fnCallback;
 
-            //# If the current sKey is a native property, its entry .is.obj and its got our sProperty
-            if (_window.hasOwnProperty(sKey) && core.is.obj(vCurrent) && sProperty in vCurrent) {
-                vTarget = vCurrent[sProperty];
-
-                //# If the user specified a path, prepend the _window-level sKey onto our sProperty
-                //#     NOTE: We make the assumption that the path is under the current sKey
-                if (core.is.str(vTarget, _true)) {
-                    sProperty = sKey + "." + vTarget;
-                }
-                //# Else the current sKey is the target object for our functionality, so return the sKey
-                else {
-                    sProperty = sKey;
-                }
-
-                //# Fall from the loop as we have found what we are looking for
-                bFound = true;
-                break;
-            }
-        }
-
-        //# If we didn't find a top-level property of the _window, look to the querystring of the .js
-        if (!bFound) {
-            vTarget = _document.getElementsByTagName("SCRIPT");
-
-            //# Traverse the SCRIPT tags, pulling the .src and .indexOf the ?domtarget=
-            for (i = 0; i < vTarget.length; i++) {
-                vCurrent = core.queryString.parse(vTarget[i].src);
-                sKey = core.data.getKey(sProperty, vCurrent, true);
-
-                //# If the sProperty was found on the current .src, reset it to its value and fall from the loop
-                if (core.is.str(sKey, true)) {
-                    sProperty = sKey;
-                    break;
+        //# 
+        if (core.is.obj(oAttributes)) {
+            for (sKey in oAttributes) {
+                if (oAttributes.hasOwnProperty(sKey)) {
+                    _script.setAttribute(sKey, oAttributes[sKey]);
                 }
             }
         }
 
-        //# Return the .path and the (optionally created) .ref to the caller
-        return {
-            path: sProperty,
-            ref: core.resolve(_true, _window, sProperty)
-        };
-    }; //# core.locate
+        _document.body.appendChild(_script);
+    };
+    core.include.css = function (sHref) {
+        var _link = _document.createElement("link");
+        _link.rel = "stylesheet";
+        _link.href = sHref;
+        _document.body.appendChild(_link);
+    }; //# core.include
 
 
     /*
@@ -493,6 +469,53 @@ License: MIT
 
 
         /*
+        Function: arrOf
+        Determines if the passed value is an array of type based on the passed test function.
+        Parameters:
+        a - The varient to interrogate.
+        fnTest - Function returning true/false that tests each value for type.
+        Returns:
+        Boolean value representing if the value is an array of type.
+        */
+        arrOf: function (a, fnTest) {
+            var i,
+                bReturnVal = (core.is.arr(a, _true) && core.is.fn(fnTest))
+            ;
+
+            //# If the arguments are properly reconized traverse the passed a(rray), fnTest'ing each current value as we go (flipping our bReturnVal and falling from the loop on a failure)
+            if (bReturnVal) {
+                for (i = 0; i < a.length; i++) {
+                    if (!fnTest(a[i])) {
+                        bReturnVal = _false;
+                        break;
+                    }
+                }
+            }
+
+            return bReturnVal;
+        }, //# is.arrOf
+
+
+        /*
+        Function: list
+        Determines if the passed value is a list type (e.g. HTMLCollection|NodeList|Arguments|Object with Object to support <IE9).
+        Parameters:
+        n - The varient to interrogate.
+        Returns:
+        Boolean value representing if the value is a list type.
+        */
+        list: function (n) {
+            return (
+                typeof n === 'object' &&
+                typeof n.length === 'number' &&
+                /^\[object (HTMLCollection|NodeList|Object|Arguments)\]$/.test(
+                    Object.prototype.toString.call(n)
+                )
+            );
+        }, //# is.list
+
+
+        /*
         Function: val
         Determines if the passed value is set (i.e. !== undefined || null).
         Parameters:
@@ -665,20 +688,23 @@ License: MIT
 
         /*
 		Function: arr
-		Safely forces the passed array reference into an array.
+		Safely forces the passed array or list reference into an array.
 		Parameters:
 		a - The varient to interrogate.
 		a_vDefault - The default value to return if casting fails.
 		Returns:
-		Integer representing the age in years.
+		Array representing the updated array reference.
 		See Also:
 		<core.mk>
 		*/
         arr: function (a, a_vDefault) {
+            //# Preconvert a list reference into an array
+            a = (core.is.list(a) ? Array.prototype.slice.call(a) : a);
+
             return (core.is.arr(a) ?
                 a :
 				(arguments.length > 1 ? a_vDefault : [])
-			);
+            );
         }, //# mk.arr
 
 
@@ -790,13 +816,41 @@ License: MIT
 
 
         /*
+		Function: dom
+		Safely parses the passed value into a DOM element.
+		Parameters:
+		x - The varient to interrogate. Can be a CSS Selector (used by document.querySelector), jQuery reference (x[0] will be returned) or DOM element.
+		_default - The default DOM element to return if casting fails.
+		Returns:
+		DOM element represented by the passed value, or _default if interrogation failed.
+		See Also:
+		<core.mk>
+        */
+        dom: function (x, _default) {
+            var _returnVal = (arguments.length > 1 ? _default : _document.createElement("div"));
+
+            //# 
+            if (core.is.str(x)) {
+                _returnVal = _document_querySelector(x);
+            }
+            else if (core.is.dom(x)) {
+                _returnVal = x;
+            }
+            else if (x && x[0] && core.is.dom(x[0])) {
+                _returnVal = x[0];
+            }
+
+            return _returnVal;
+        },
+
+        /*
 		Function: json
 		Safely parses the passed value as a JSON string into an object or stringify's the passed object into a JSON string.
 		Parameters:
 		v - The varient to interrogate.
 		vDefault - The default value to return if casting fails.
 		Returns:
-		Object containing the parsed JSON data, string containing the stringified object, or undefined if parsing failed.
+		Object containing the parsed JSON data, string containing the stringified object, or vDefault if parsing failed.
 		See Also:
 		<core.mk>, <core.mk.obj>
 		*/
@@ -1841,7 +1895,7 @@ License: MIT
                 $xhr.onreadystatechange = function () {
                     //# If the request is finished and the .responseText is ready
                     if ($xhr.readyState === 4) {
-                        vCallback.fn(
+                        vCallback.fn( /* bSuccess, oData, vArg, $xhr */
                             ($xhr.status === 200 || ($xhr.status === 0 && sUrl.substr(0, 7) === "file://")),
                             {
                                 text: $xhr.responseText,
@@ -1950,32 +2004,15 @@ License: MIT
 
             //# 
             $xhr = core.net.ajax.xhr(sUrl, "GET", bAsync, function (bSuccess, oTextData, vArg, $xhr) {
-                var a__scripts, _currentScript, _script, i;
-
                 if (bSuccess) {
                     if (core.is.dom(vCallback.replace)) {
-                        _template = document.createElement("div");
+                        _template = _document.createElement("div");
                         _template.innerHTML = oTextData.text;
                         _template = _template.firstElementChild;
-
                         vCallback.replace.parentNode.replaceChild(_template, vCallback.replace);
                         //vCallback.replace.appendChild(_template);
 
-                        a__scripts = _template.querySelectorAll("script:not([ignore])");
-                        
-                        for (i = 0; i < a__scripts.length; i++) {
-                            _currentScript = a__scripts[i];
-                            _script = document.createElement("script");
-
-                            if (core.is.str(_currentScript.src, _true)) {
-                                _script.src = _currentScript.src;
-                            }
-                            else {
-                                _script.text = (_currentScript.text || _currentScript.textContent || _currentScript.innerHTML || "");
-                            }
-                            
-                            _currentScript.parentNode.replaceChild(_script, _currentScript);
-                        }  
+                        core.dom.script.load(_template, core.dom.include.options.scriptSelector);
                     }
                     else {
                         _document.write(oTextData.text);
@@ -1995,6 +2032,7 @@ License: MIT
 
 
         //# 
+        //#     Example: <include src="path/to/file.html" onload="jsFunction | sJSON">
         function includeDOM(vDomReferences) {
             var i, domCurrent, oOptions, sOnload, a_domIncludes;
 
@@ -2004,11 +2042,11 @@ License: MIT
             }
             //# Else if the caller (probably) passed in an .is.arr of .is.dom references, set it into a_domIncludes
             else if (core.is.arr(vDomReferences) && core.is.dom(vDomReferences[0])) {
-                a_domIncludes = vDomReferences
+                a_domIncludes = vDomReferences;
             }
             //# Else use the passed vDomReferences as a selector if it .is.str or default to a selector to populate a_domIncludes
             else {
-                a_domIncludes = _document.querySelectorAll(core.is.str(vDomReferences, _true) ? vDomReferences : "INCLUDE[src]");
+                a_domIncludes = _document_querySelectorAll(core.is.str(vDomReferences, _true) ? vDomReferences : "INCLUDE[src]");
             }
 
             //# 
@@ -2017,9 +2055,10 @@ License: MIT
                 sOnload = domCurrent.getAttribute("onload");
 
                 oOptions = (core.is.str(sOnload, _true) ?
-                    core.mk.json(sOnload, { fn: core.resolve(_window, sOnload) }) :
+                    core.mk.json(sOnload, { fn: sOnload }) :
                     {}
                 );
+                oOptions.fn = core.resolve(_window, oOptions.fn);
                 oOptions.replace = domCurrent;
 
                 include(domCurrent.getAttribute("src"), oOptions, _true);
@@ -2030,15 +2069,398 @@ License: MIT
         //# 
         core.dom = {
             //# 
-            include: function (/*vDomReferences | sUrl, vCallback, bAsync*/) {
-                if (arguments.length === 1) {
+            include: core.extend(function (/*vDomReferences | sUrl, vCallback, bAsync*/) {
+                if (arguments.length <= 1) {
                     includeDOM(arguments[0]);
                 }
                 else {
                     core.fn.call(include, this, core.fn.convert(arguments));
                 }
-            }, //# include
+            }, {
+                options: {
+                    scriptSelector: "script:not([ignore])"
+                }
+            }), //# include
 
+            //#
+            script: {
+                //# Integrate logic with add
+                load: function (vBaseElement, oOptions) {
+                    var l__scripts, _currentScript, _script, i,
+                        _element = core.mk.dom(vBaseElement, null),
+                        bReturnVal = core.is.dom(_element)
+                    ;
+
+                    //# Ensure the passed oOptions .is.obj
+                    oOptions = core.mk.obj(oOptions);
+
+                    //#
+                    if (bReturnVal) {
+                        l__scripts = _element.querySelectorAll(oOptions.selector || "script");
+                        bReturnVal = core.is.list(l__scripts, _true);
+
+                        //# 
+                        if (bReturnVal) {
+                            //# 
+                            //#     TODO: Add oOptions.evalScript because it's faster
+                            for (i = 0; i < l__scripts.length; i++) {
+                                _currentScript = l__scripts[i];
+                                _script = _document.createElement("script");
+
+                                if (core.is.str(_currentScript.src, _true)) {
+                                    _script.src = _currentScript.src;
+                                }
+                                else {
+                                    _script.text = (_currentScript.text || _currentScript.textContent || _currentScript.innerHTML || "");
+                                }
+                                
+                                _currentScript.parentNode.replaceChild(_script, _currentScript);
+                            }  
+                        }
+                    }
+
+                    return bReturnVal;
+                }, //# load
+
+                find: function (sFilename, oOptions) {
+                    var sPath, iLocation, i, bCaseSensitive,
+                        l__scripts = _document.getElementsByTagName("SCRIPT"),
+                        _returnVal /*= undefined */
+                    ;
+
+                    //# Ensure the passed oOptions .is.obj then determine if we are to be bCaseSensitive
+                    oOptions = core.mk.obj(oOptions);
+                    bCaseSensitive = (oOptions.caseSensitive === _false ? _false : _true);
+
+                    //# If the caller passed in a valid sFilename
+                    if (core.is.str(sFilename, _true)) {
+                        //# Convert sFilename based on the passed bCaseSensitive and prefix a "/" if necessary
+                        sFilename = (bCaseSensitive ? sFilename : sFilename.toLowerCase());
+                        sFilename = (oOptions.allowPartialFilename === _true || sFilename[0] === "/" ? "" : "/") + sFilename;
+
+                        //# Traverse the SCRIPT tags, pulling the .src and .indexOf the sFilename while converting for bCaseSensitive
+                        for (i = 0; i < l__scripts.length; i++) {
+                            sPath = l__scripts[i].src.split("?")[0];
+                            sPath = (bCaseSensitive ? sPath : sPath.toLowerCase());
+                            iLocation = sPath.indexOf(sFilename);
+
+                            //# If the sFilename is in the last position, set our _returnVal and fall from the loop
+                            if (iLocation === (sPath.length - sFilename.length)) {
+                                _returnVal = l__scripts[i];
+                                break;
+                            }
+                        }
+                    }
+
+                    return _returnVal;
+                }, //# find
+
+                //# 
+                add: function (/* oOptions|sSrc, oOptions */) {
+                    var sKey, oOptions,
+                        vArg1 = arguments[0],
+                        _script = _document.createElement("script")
+                    ;
+
+                    //# 
+                    if (core.is.obj(vArg1)) {
+                        oOptions = core.mk.obj(arguments[0]);
+                        _script.text = oOptions.code;
+                    }
+                    else {
+                        oOptions = core.mk.obj(arguments[1]);
+                        _script.src = vArg1;
+                    }
+
+                    //# 
+                    _script.type = "text/javascript";
+                    _script.onload = oOptions.callback;
+
+                    //# 
+                    if (core.is.obj(oOptions.attributes)) {
+                        for (sKey in oOptions.attributes) {
+                            if (oOptions.attributes.hasOwnProperty(sKey)) {
+                                _script.setAttribute(sKey, oOptions.attributes[sKey]);
+                            }
+                        }
+                    }
+
+                    _document.body.appendChild(_script);
+                }, //# add
+
+                //# Pulls the metadata provided within the SCRIPT tag
+                //#     TODO: Is this needed with core.dom.options?
+                options: function (oOptions) {
+                    var _script;
+
+                    //# Ensure the passed oOptions .is.obj then .find our _script
+                    oOptions = core.mk.obj(oOptions);
+                    _script = (oOptions.currentScript !== _false ? //# As long as the .currentScript isn't false, use it or _document's, else .find it based on .filename
+                        (core.is.dom(oOptions.currentScript) ? oOptions.currentScript : _document.currentScript) :
+                        core.dom.script.find(oOptions.filename, oOptions)
+                    );
+
+                    //# 
+                    return (core.is.dom(_script) ?
+                        {
+                            dom: _script,
+                            querystring: core.fn.call(core.resolve(core, "queryString.parse"), this, _script.src),
+                            options: core.dom.options(_script)
+                        } :
+                        _undefined
+                    );
+                } //# options
+            }, //# script
+
+            //# 
+            options: function (vTarget) {
+                var vOptions, sOptions,
+                    _element = core.mk.dom(vTarget),
+                    vReturnVal /*= undefined*/
+                ;
+
+                //# If we were able to locate the vTarget
+                if (core.is.dom(_element)) {
+                    //# Process the sOptions/vOptions, first trying to .resolve the reference in our _window then as .json and finially calling any function references
+                    sOptions = _element.getAttribute("options");
+                    vOptions = core.resolve(_window, sOptions);
+                    vReturnVal = core.fn.call(vOptions, _window, _element) || vOptions || core.mk.json(sOptions) || sOptions;
+                }
+
+                return vReturnVal;
+            }, //# options
+
+            //# 
+            template: core.extend(function (vTarget, sTemplateName, oOptions) {
+                var _compiled, sID,
+                    _template = _document_querySelector("TEMPLATE[name='" + sTemplateName + "']"),
+                    _target = core.mk.dom(vTarget),
+                    oContext /*= undefined*/
+                ;
+
+                //# If we could locate the referenced _target and _template, ensure we have an .is.obj for the passed oOptions
+                if (core.is.dom(_target) && core.is.dom(_template)) {
+                    oOptions = core.mk.obj(oOptions);
+                    oContext = core.mk.obj(oOptions.context);
+
+                    //# 
+                    if (oOptions.replace !== false) {
+                        _compiled = _document.createElement("div");
+                        _compiled.innerHTML = _template.innerHTML;
+                        _target.parentNode.replaceChild(_compiled, _target);
+                        _target = _compiled;
+                    }
+                    else {
+                        _target.innerHTML = _template.innerHTML;
+                    }
+
+                    //# 
+                    sID = core.dom.getId(sTemplateName);
+                    _target.setAttribute('id', sID);
+                    oContext.$metadata = {
+                        element: _target,
+                        id: sID,
+                        options: oOptions,
+                        template: _template
+                    };
+                    _target.context = oContext;
+                    core.dom.script.load(_target, oOptions.scriptSelector);
+                    core.fn.call(oOptions.callback, _target, [_target, oContext, oOptions]);
+                }
+                else if (core.is.num(oOptions.poll)) {
+                    // core.fn.poll(vTest, fnCallback, fnErrback, iTimeout, iInterval, vArgument);
+                    core.fn.poll(
+                        function () { //# test
+                            return core.is.dom(_document_querySelector("TEMPLATE[name='" + sTemplateName + "']"));
+                        },
+                        function () { //# callback
+                            core.dom.template(vTarget, sTemplateName, oOptions);
+                        },
+                        null, //# errback
+                        oOptions.poll,
+                        100
+                    )
+                }
+                else {
+                    console.log("ERROR: No DOM objects matching TEMPLATE[name='" + sTemplateName + "'] and/or " + vTarget);
+                }
+            }, {
+                context: function (vSelector) {
+                    var _element = core.mk.dom(vSelector),
+                        oContext = core.dom.getByLineage(_element, "context", { test: 'prop' })
+                    ;
+                    return core.resolve(oContext, "value");
+                }, //# context
+
+                //# 
+                //#     NOTE: Super dumb/1-line version of https://github.com/sindresorhus/multiline from https://stackoverflow.com/questions/805107/creating-multiline-strings-in-javascript
+                inline: function (fnTemplate) {
+                    return fnTemplate.toString().slice(14, -3);
+                } //# inline
+            }), //# template
+
+            //# 
+            getByLineage: function () {
+                //# 
+                function byAttribute(_element, sAttributeName, oOptions) {
+                    var sValue, bIgnoreBlanks;
+
+                    //# 
+                    oOptions = core.mk.obj(oOptions);
+                    bIgnoreBlanks = (oOptions.ignoreBlanks === _false ? _false : _true);
+
+                    //# 
+                    if (_element.hasAttribute(sAttributeName)) {
+                        sValue = _element.getAttribute(sAttributeName);
+
+                        if (!bIgnoreBlanks || sValue) {
+                            return {
+                                //element: _element,
+                                value: sValue
+                            };
+                        }
+                    }
+                } //# byAttribute
+
+                //# 
+                function byProperty(_element, sPropertyName, oOptions) {
+                    var sValue, bIgnoreBlanks;
+
+                    //# 
+                    oOptions = core.mk.obj(oOptions);
+                    bIgnoreBlanks = (oOptions.ignoreBlanks === _false ? _false : _true);
+
+                    //# 
+                    if (_element.hasOwnProperty(sPropertyName)) {
+                        sValue = _element[sPropertyName];
+
+                        if (!bIgnoreBlanks || sValue) {
+                            return {
+                                //element: _element,
+                                value: sValue
+                            };
+                        }
+                    }
+                } //# byProperty
+
+                //# 
+                function byBoth(_element, sTarget, oOptions) {
+                    return byAttribute(_element, sTarget, oOptions) || byProperty(_element, sTarget, oOptions);
+                } //# byBoth
+
+                //# 
+                function get(vElement, sTarget, oOptions) {
+                    var iMaxDepth, bIgnoreBlanks, oTest, bCustomTest, fnTest,
+                        _element = core.mk.dom(vElement, null),
+                        oReturnVal = {
+                            element: undefined,
+                            value: undefined,
+                            depth: 0
+                        }
+                    ;
+
+                    //# 
+                    oOptions = core.mk.obj(oOptions);
+                    iMaxDepth = core.mk.int(oOptions.maxDepth, -1);
+                    bIgnoreBlanks = (oOptions.ignoreBlanks === _false ? _false : _true);
+                    bCustomTest = core.is.fn(oOptions.test);
+                    fnTest = (
+                        bCustomTest ?
+                        oOptions.test :
+                        function (sTest) {
+                            switch (core.mk.str(sTest).substr(0, 1).toLowerCase()) {
+                                case "p": { //# property
+                                    return byProperty;
+                                }
+                                case "b": { //# both
+                                    return byBoth;
+                                }
+                                //case "a": //# attribute
+                                default: {
+                                    return byAttribute;
+                                }
+                            }
+                        }(oOptions.test)
+                    );
+                    
+                    //# 
+                    if (bCustomTest || core.is.str(sTarget, _true)) {
+                        while (core.is.dom(_element)) {
+                            oTest = fnTest(_element, sTarget, oOptions);
+
+                            //# 
+                            if (core.is.obj(oTest)) {
+                                oReturnVal.element = _element;
+                                oReturnVal.value = oTest.value;
+                                //core.extend(oReturnVal, oTest);
+                                break;
+                            }
+
+                            //# 
+                            if (iMaxDepth === 0) {
+                                break;
+                            }
+
+                            //# 
+                            _element = _element.parentElement;
+                            oReturnVal.depth++;
+                            iMaxDepth--;
+                        }
+                    }
+
+                    return oReturnVal;
+                } //# get
+
+                //# 
+                return core.extend(get, {
+                    //get: get,
+                    attribute: byAttribute,
+                    property: byProperty,
+                    both: byBoth
+                });
+            }(), //# getByLineage
+
+            //# 
+            getId: function (sPrefix) {
+                var sID;
+
+                sPrefix = core.mk.str(sPrefix, "ish_");
+                
+                do {
+                    sID = sPrefix + Math.random().toString(36).substr(2,5);
+                } while (_document.getElementById(sID));
+
+                return sID;
+            }, //# id
+
+            //# 
+            css: {
+                add: function (/* oOptions|sHref, oOptions */) {
+                    var _element,
+                        _head = document.head || document.getElementsByTagName('HEAD')[0],
+                        vArg1 = arguments[0]
+                    ;
+
+                    if (core.is.obj(vArg1)) {
+                        _element = document.createElement('style');
+                        _element.type = 'text/css';
+                        if (_element.styleSheet){
+                            _element.styleSheet.cssText = vArg1.code;
+                        } else {
+                            _element.appendChild(document.createTextNode(vArg1.code));
+                        }
+                    }
+                    else {
+                        _element = _document.createElement("link");
+                        _element.rel = "stylesheet";
+                        _element.href = vArg1;
+                    }
+                    
+                    _head.appendChild(_element);
+                }
+            }, //# css
+
+            //# 
             class: core.fn.extend(
                 function (el, className) {
                     if (el.classList) {
@@ -2055,7 +2477,7 @@ License: MIT
                         if (el.classList) {
                             el.classList.add(className);
                         }
-                        else if (!hasClass(el, className)) {
+                        else if (!core.dom.class.has(el, className)) {
                             el.className += " " + className;
                         }
                     },
@@ -2063,7 +2485,7 @@ License: MIT
                         if (el.classList) {
                             el.classList.remove(className);
                         }
-                        else if (hasClass(el, className)) {
+                        else if (core.dom.class.has(el, className)) {
                             el.className = el.className.replace(new RegExp('(\\s|^)' + className + '(\\s|$)'), ' ');
                         }
                     },
@@ -2081,6 +2503,7 @@ License: MIT
             )
         };
     }(); //# core.dom
+
 
     /*
     ####################################################################################################
@@ -2243,7 +2666,13 @@ License: MIT
 
             //# 
             has: function (vSource, sKey) {
-                return (core.is.fn(core.resolve(vSource, hasOwnPropery)) && vSource.hasOwnPropery(sKey));
+                var bReturnVal = _false;
+
+                try {
+                    bReturnVal = (core.fn.call(vSource.hasOwnProperty, this, [sKey]) === _true);
+                } catch(e) {}
+
+                return bReturnVal;
             },
 
             //# TODO rename to rm
@@ -2485,66 +2914,162 @@ License: MIT
             } //# str
 
         }; //# core.data
-    }();
+    }(); //# core.data
+
+
+    /*
+    ####################################################################################################
+	Class: core.event
+	Event logic.
+    Requires:
+    <core.data>
+    ####################################################################################################
+	*/
+    !function () {
+        var oData = {};
+        
+        function fire(sEvent /*, ..arguments*/) {
+            var i,
+                a_fnEvent = oData[sEvent],
+                bReturnVal = core.is.arr(a_fnEvent, true)
+            ;
+
+            if (bReturnVal) {
+                for (i = 0; i < a_fnEvent.length; i++) {
+                    core.fn.call(a_fnEvent[i], this, core.fn.convert(arguments));
+                }
+            }
+
+            return bReturnVal;
+        }
+
+        core.event = core.extend(fire, {
+            fire: fire,
+
+            watch: function (sEvent, fnCallback) {
+                var bReturnVal = core.is.fn(fnCallback);
+
+                if (fnCallback) {
+                    (oData[sEvent] = oData[sEvent] || [])
+                        .push(fnCallback)
+                    ;
+                }
+
+                return bReturnVal;
+            }, //# watch
+
+            unwatch: function (sEvent, fnCallback) {
+                return core.data.arr.remove(oData[sEvent], fnCallback);
+            } //# unwatch
+        });
+    }(); //# core.event
+
 
 
     //##################################################
     //# Procedural code
     //##################################################
-    //# .locate our _window variable oTarget.ref and set our .$path 
-    oTarget = core.locate("ish");
-    core.$path = oTarget.path;
+    //# Optionally create then .extend our _window variable to expose core as the developer defined on the script's querystring or in the SCRIPT[options]
+    //#     NOTE: Since document.currentScript is not universally supported, we look for ?ish on a SCRIPT[src] to locate the .currentScript
+    !function () {
+        var l__scripts, oQuerystring, i,
+            _script = _document.currentScript,
+            oOptions = {},
+            sPath = "ish"
+        ;
 
-    //# First overwrite any core functionality with oTarget.ref's existing functionality, then update the oTarget.ref with all of the functionality
-    core.extend(core, oTarget.ref);
-    core.extend(oTarget.ref, core);
+        //# If there is no document.currentScript, we need to search all of the l__scripts
+        if (!_script) {
+            l__scripts = _document.getElementsByTagName("SCRIPT");
+
+            //# Traverse the SCRIPT tags, pulling the current _script and oQuerystring as we go
+            for (i = 0; i < l__scripts.length; i++) {
+                _script = l__scripts[i];
+                oQuerystring = core.queryString.parse(_script.src) || {};
+
+                //# If the oQuerystring contains the ?ish flag (held in the pseudo-borrowed sPath), fall from the loop
+                if (oQuerystring.hasOwnProperty(sPath)) {
+                    break;
+                }
+                else { //# TODO: Fix
+                    _script = _undefined;
+                    oQuerystring = _undefined;
+                }
+            }
+        }
+
+        //# If we've been able to locate our _script tag
+        if (_script) {
+            //# Parse the .json oOptions and reset the sPath to the developer-defined value in either the oQuerystring or oOptions (defaulting back to "ish" is nothing is defined) and fall from the loop
+            oOptions = core.mk.json(_script.getAttribute("options"));
+            oQuerystring = oQuerystring || core.queryString.parse(_script.src) || {}; //# TODO: Fix
+            sPath = oQuerystring.ish || oOptions.ish || sPath;
+        }
+
+        //# .extend core with the $ish object while overwriting any core functionality with the sPath's existing functionality under our _window (optionally creating it if it doesn't already exist)
+        core.extend(core, core.resolve(_true, _window, sPath), {
+            $ish: {
+                options: oOptions,
+                script: _script,
+                path: sPath,
+                lib: _true
+            }
+        });
+
+        //# Now that core has all of the defined functionality, reset our _window object's reference so that the globally accessable object is a refrence to core rather than its original object reference
+        core.resolve(_window, sPath, core);
+
+        //# Ensure there is a reference to core available on the first (only) HTML tag so that other scripts can auto-resolve
+        _document.getElementsByTagName("HTML")[0].ish = core;
+    }(); //# Procedural code
+
 }();
 
 
 /*
 
-map: function (vSource, vMapping) {
-    var i,
-        bIsFn = core.is.fn(vMapping),
-        bIsObj = core.is.obj(vMapping),
-        a_sKeys = (bIsObj ? Object.keys(vMapping) : null),
-        vReturnVal / *= undefined* /,
-        fnMapObj = (
-            bIsFn ?
-            vMapping :
-            function mapObj(oSource) {
-                var sKey, i,
-                    oReturnVal = {}
-                ;
+    map: function (vSource, vMapping) {
+        var i,
+            bIsFn = core.is.fn(vMapping),
+            bIsObj = core.is.obj(vMapping),
+            a_sKeys = (bIsObj ? Object.keys(vMapping) : null),
+            vReturnVal / *= undefined* /,
+            fnMapObj = (
+                bIsFn ?
+                vMapping :
+                function mapObj(oSource) {
+                    var sKey, i,
+                        oReturnVal = {}
+                    ;
 
-                for (i = 0; i < a_sKeys.length; i++) {
-                    sKey = a_sKeys[i];
-                    oReturnVal[vMapping[sKey]] = oSource[sKey];
+                    for (i = 0; i < a_sKeys.length; i++) {
+                        sKey = a_sKeys[i];
+                        oReturnVal[vMapping[sKey]] = oSource[sKey];
+                    }
+
+                    return oReturnVal;
                 }
+            )
+        ;
 
-                return oReturnVal;
+        //# If the passed vMapping bIsFn or bIsObj
+        if (bIsFn || bIsObj) {
+            //# If the passed vSource .is.arr, set our vReturnVal to an array
+            if (core.is.arr(vSource)) {
+                vReturnVal = [];
+
+                //# Traverse the vSource, .push'ing each .fnMapObj into our vReturnVal
+                for (i = 0; i < vSource.length; i++) {
+                    vReturnVal.push(fnMapObj(vSource[i]));
+                }
             }
-        )
-    ;
-
-    //# If the passed vMapping bIsFn or bIsObj
-    if (bIsFn || bIsObj) {
-        //# If the passed vSource .is.arr, set our vReturnVal to an array
-        if (core.is.arr(vSource)) {
-            vReturnVal = [];
-
-            //# Traverse the vSource, .push'ing each .fnMapObj into our vReturnVal
-            for (i = 0; i < vSource.length; i++) {
-                vReturnVal.push(fnMapObj(vSource[i]));
+            //# Else if the passed vSource .is.obj, .fnMapObj directly into our vReturnVal
+            else if (core.is.obj(vSource)) {
+                vReturnVal = fnMapObj(vSource);
             }
         }
-        //# Else if the passed vSource .is.obj, .fnMapObj directly into our vReturnVal
-        else if (core.is.obj(vSource)) {
-            vReturnVal = fnMapObj(vSource);
-        }
-    }
 
-    return vReturnVal;
-}, //# map
+        return vReturnVal;
+    }, //# map
 
 */
