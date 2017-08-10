@@ -3045,7 +3045,7 @@ License: MIT
         ;
 
         function tempFix() {
-            var vCurrent, vTarget, sKey
+            var vCurrent, vTarget, sKey,
                 sReturnVal = ""
             ;
 
