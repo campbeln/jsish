@@ -2966,6 +2966,72 @@ License: MIT
 
 
 
+
+    /*
+    Function: locate
+    Locates the first window-level object variable that contains the requested property, resolving the path contained within that property.
+    Parameters:
+    sProperty - String representing the requested property.
+    Returns:
+    Object containing two properties; the full path to the target reference and the target the path references.
+    About:
+    This function allows library authors to give their users the ability to soft-configure where the library attaches its functionality (e.g. `window.usersAppObject.library` rather than simply `window.library`).
+    */
+    core.locate = function locate(sProperty) {
+        var vCurrent, vTarget, sKey, i,
+            bFound = false
+        ;
+
+        //# Traverse all of the top-level properties of the _window
+        for (sKey in _window) {
+            vCurrent = _window[sKey];
+
+            //# If the current sKey is a native property, its entry .is.obj and its got our sProperty
+            if (_window.hasOwnProperty(sKey) && core.is.obj(vCurrent) && sProperty in vCurrent) {
+                vTarget = vCurrent[sProperty];
+
+                //# If the user specified a path, prepend the _window-level sKey onto our sProperty
+                //#     NOTE: We make the assumption that the path is under the current sKey
+                if (core.is.str(vTarget, _true)) {
+                    sProperty = sKey + "." + vTarget;
+                }
+                //# Else the current sKey is the target object for our functionality, so return the sKey
+                else {
+                    sProperty = sKey;
+                }
+
+                //# Fall from the loop as we have found what we are looking for
+                bFound = true;
+                break;
+            }
+        }
+
+        //# If we didn't find a top-level property of the _window, look to the querystring of the .js
+        if (!bFound) {
+            vTarget = _document.getElementsByTagName("SCRIPT");
+
+            //# Traverse the SCRIPT tags, pulling the .src and .indexOf the ?domtarget=
+            for (i = 0; i < vTarget.length; i++) {
+                vCurrent = core.queryString.parse(vTarget[i].src);
+                sKey = core.data.getKey(sProperty, vCurrent, true);
+
+                //# If the sProperty was found on the current .src, reset it to its value and fall from the loop
+                if (core.is.str(sKey, true)) {
+                    sProperty = sKey;
+                    break;
+                }
+            }
+        }
+
+        //# Return the .path and the (optionally created) .ref to the caller
+        return {
+            path: sProperty,
+            ref: core.resolve(_true, _window, sProperty)
+        };
+    }; //# core.locate
+
+
+
     //##################################################
     //# Procedural code
     //##################################################
@@ -3004,6 +3070,33 @@ License: MIT
             oOptions = core.mk.json(_script.getAttribute("options"));
             oQuerystring = oQuerystring || core.queryString.parse(_script.src) || {}; //# TODO: Fix
             sPath = oQuerystring.ish || oOptions.ish || sPath;
+        }
+        //# Temp-fix
+        else {
+            var vCurrent, vTarget, sKey;
+
+            //# Traverse all of the top-level properties of the _window
+            for (sKey in _window) {
+                vCurrent = _window[sKey];
+
+                //# If the current sKey is a native property, its entry .is.obj and its got our sProperty
+                if (_window.hasOwnProperty(sKey) && core.is.obj(vCurrent) && vCurrent.hasOwnProperty("ish")) {
+                    vTarget = vCurrent.ish;
+
+                    //# If the user specified a path, prepend the _window-level sKey onto our sProperty
+                    //#     NOTE: We make the assumption that the path is under the current sKey
+                    if (core.is.str(vTarget, _true)) {
+                        sPath = sKey + "." + vTarget;
+                    }
+                    //# Else the current sKey is the target object for our functionality, so return the sKey
+                    else {
+                        sPath = sKey;
+                    }
+
+                    //# Fall from the loop as we have found what we are looking for
+                    break;
+                }
+            }
         }
 
         //# .extend core with the $ish object while overwriting any core functionality with the sPath's existing functionality under our _window (optionally creating it if it doesn't already exist)
