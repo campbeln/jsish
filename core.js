@@ -33,7 +33,7 @@ License: MIT
     ;
 
     //# Set the .$ver on core (done here so it's at the top of the file for easy editing)
-    core.$ver = '2017-08-09';
+    core.$ver = '2017-08-10';
 
     //# Polyfills
     Date.now = (Date.now || function () { return new Date; });
@@ -3084,7 +3084,7 @@ License: MIT
                     vTarget = vCurrent.ish;
 
                     //# If the user specified a path, prepend the _window-level sKey onto our sProperty
-                    //#     NOTE: We make the assumption that the path is under the current sKey
+                    //#     NOTE: We make the assumption that the sPath is under the current sKey
                     if (core.is.str(vTarget, _true)) {
                         sPath = sKey + "." + vTarget;
                     }
