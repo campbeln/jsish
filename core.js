@@ -3041,8 +3041,39 @@ License: MIT
         var l__scripts, oQuerystring, i,
             _script = _document.currentScript,
             oOptions = {},
-            sPath = "ish"
+            sPath = tempFix() || "ish"
         ;
+
+        function tempFix() {
+            var vCurrent, vTarget, sKey
+                sReturnVal = ""
+            ;
+
+            //# Traverse all of the top-level properties of the _window
+            for (sKey in _window) {
+                vCurrent = _window[sKey];
+
+                //# If the current sKey is a native property, its entry .is.obj and its got our sProperty
+                if (_window.hasOwnProperty(sKey) && core.is.obj(vCurrent) && vCurrent.hasOwnProperty("ish")) {
+                    vTarget = vCurrent.ish;
+
+                    //# If the user specified a path, prepend the _window-level sKey onto our sProperty
+                    //#     NOTE: We make the assumption that the sPath is under the current sKey
+                    if (core.is.str(vTarget, _true)) {
+                        sReturnVal = sKey + "." + vTarget;
+                    }
+                    //# Else the current sKey is the target object for our functionality, so return the sKey
+                    else {
+                        sReturnVal = sKey;
+                    }
+
+                    //# Fall from the loop as we have found what we are looking for
+                    break;
+                }
+            }
+
+            return sReturnVal;
+        }
 
         //# If there is no document.currentScript, we need to search all of the l__scripts
         if (!_script) {
@@ -3070,33 +3101,6 @@ License: MIT
             oOptions = core.mk.json(_script.getAttribute("options"));
             oQuerystring = oQuerystring || core.queryString.parse(_script.src) || {}; //# TODO: Fix
             sPath = oQuerystring.ish || oOptions.ish || sPath;
-        }
-        //# Temp-fix
-        else {
-            var vCurrent, vTarget, sKey;
-
-            //# Traverse all of the top-level properties of the _window
-            for (sKey in _window) {
-                vCurrent = _window[sKey];
-
-                //# If the current sKey is a native property, its entry .is.obj and its got our sProperty
-                if (_window.hasOwnProperty(sKey) && core.is.obj(vCurrent) && vCurrent.hasOwnProperty("ish")) {
-                    vTarget = vCurrent.ish;
-
-                    //# If the user specified a path, prepend the _window-level sKey onto our sProperty
-                    //#     NOTE: We make the assumption that the sPath is under the current sKey
-                    if (core.is.str(vTarget, _true)) {
-                        sPath = sKey + "." + vTarget;
-                    }
-                    //# Else the current sKey is the target object for our functionality, so return the sKey
-                    else {
-                        sPath = sKey;
-                    }
-
-                    //# Fall from the loop as we have found what we are looking for
-                    break;
-                }
-            }
         }
 
         //# .extend core with the $ish object while overwriting any core functionality with the sPath's existing functionality under our _window (optionally creating it if it doesn't already exist)
