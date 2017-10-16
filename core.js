@@ -3053,23 +3053,25 @@ License: MIT
             for (sKey in _window) {
                 vCurrent = _window[sKey];
 
-                //# If the current sKey is a native property, its entry .is.obj and its got our sProperty
-                if (_window.hasOwnProperty(sKey) && core.is.obj(vCurrent) && vCurrent.hasOwnProperty("ish")) {
-                    vTarget = vCurrent.ish;
+                try {
+                    //# If the current sKey is a native property, its entry .is.obj and its got our sProperty
+                    if (_window.hasOwnProperty(sKey) && core.is.obj(vCurrent) && vCurrent.hasOwnProperty("ish")) {
+                        vTarget = vCurrent.ish;
 
-                    //# If the user specified a path, prepend the _window-level sKey onto our sProperty
-                    //#     NOTE: We make the assumption that the sPath is under the current sKey
-                    if (core.is.str(vTarget, _true)) {
-                        sReturnVal = sKey + "." + vTarget;
-                    }
-                    //# Else the current sKey is the target object for our functionality, so return the sKey
-                    else {
-                        sReturnVal = sKey;
-                    }
+                        //# If the user specified a path, prepend the _window-level sKey onto our sProperty
+                        //#     NOTE: We make the assumption that the sPath is under the current sKey
+                        if (core.is.str(vTarget, _true)) {
+                            sReturnVal = sKey + "." + vTarget;
+                        }
+                        //# Else the current sKey is the target object for our functionality, so return the sKey
+                        else {
+                            sReturnVal = sKey;
+                        }
 
-                    //# Fall from the loop as we have found what we are looking for
-                    break;
-                }
+                        //# Fall from the loop as we have found what we are looking for
+                        break;
+                    }
+                } catch (e) {}
             }
 
             return sReturnVal;
