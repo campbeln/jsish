@@ -7,14 +7,14 @@
 !function (core) {
     'use strict';
 
-    
+
     /*
     ####################################################################################################
     Class: core.css
     CSS-manipulation functionality.
     Requires:
-    <core.resolve>, <core.extend>, 
-    <core.type.arr.is>, 
+    <core.resolve>, <core.extend>,
+    <core.type.arr.is>,
     <core.type.dom.mk>, <core.type.str.mk>, <core.type.obj.mk>, <core.type.int.mk>
     ####################################################################################################
     */

@@ -27,11 +27,11 @@
         //# add(the)OopDataType d(erivedFrom), defaulting to []
         //#     NOTE: Setting up a .watch for the .event isn't necessary as the added data type will be defaulted to [] automajicially
         _this.addOopDataType("d", []);
-        //core.io.event.watch("ish.oop._setOopEntry", function (/*sEventName, vTarget, oProtected*/) {
+        //core.io.event.watch("ish.oop._setOopEntry", function (/*vTarget, oProtected*/) {
         //    oOopData.d.push([]);
         //});
 
-        
+
         return {
             /*
             Implementation of multiple inheirtance for Javascript

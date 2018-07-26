@@ -1,11 +1,9 @@
-/*
-####################################################################################################
-Class: ish
-ishJS Functionality (Q: Are you using Vanilla Javascript? A: ...ish)
-By: Nick Campbell
-License: MIT
-####################################################################################################
-*/
+/** ################################################################################################
+ * @class ish
+ * @classdesc ishJS Functionality (Q: Are you using Vanilla Javascript? A: ...ish)
+ * @author Nick Campbell
+ * @license MIT
+################################################################################################# */
 !function (core) {
     'use strict';
 
@@ -16,11 +14,6 @@ License: MIT
         _document_querySelector = _document.querySelector.bind(_document),          //# code-golf
         _document_querySelectorAll = _document.querySelectorAll.bind(_document)     //# code-golf
     ;
-
-    //# 
-    if (!core.type.fn.is(core.io.net.xhr)) {
-        core.require(['ish.io.net']/*, function (a_oScripts, bAllLoaded) {}, { onerror: function (_script) {} }*/);
-    }
 
 
     /*
@@ -82,7 +75,7 @@ License: MIT
             _replace = _replace || core.type.dom.mk(oOptions.replace, _undefined);
 
             //# Configure the $xhr to retrieve the .src
-            $xhr = core.io.net.xhr(oOptions.src, "GET", oOptions.async, function (bSuccess, oTextData, vArg, $xhr) {
+            $xhr = core.io.net.xhr("GET", oOptions.async, oOptions.src, function (bSuccess, oTextData, vArg, $xhr) {
                 if (bSuccess) {
                     _template = core.type.dom.mk(oTextData.text, core.type.dom.mk("<div>" + oTextData.text + "</div>"));
 
@@ -174,6 +167,12 @@ License: MIT
 
             return vReturnVal;
         } //# get
+
+
+        //# .require any missing .prereqs
+        core.type.ish.prereqs("ish.ui.dom", {
+            'ish.io.net': !core.type.fn.is(core.io.net.xhr)
+        } /*, {}*/);
 
         //#
         oDOM = core.extend(get, {
@@ -312,7 +311,7 @@ License: MIT
                 ;
 
                 //# If we were able to locate the vTarget
-                if (core.type.dom.type(_element)) {
+                if (core.type.dom.is(_element)) {
                     //# Process the sOptions/vOptions, first trying to .resolve the reference in our _window then as .json and finially calling any function references
                     sOptions = _element.getAttribute("options");
                     vOptions = core.resolve(_window, sOptions);
@@ -342,7 +341,7 @@ License: MIT
 
                     //#
                     function error() {
-                        core.io.console.err("ish.ui.dom.component: No DOM objects matching TEMPLATE[name='" + sTemplateName + "'] and/or " + vTarget);
+                        core.io.console.error("ish.ui.dom.component: No DOM objects matching TEMPLATE[name='" + sTemplateName + "'] and/or " + vTarget);
                     }
 
                     //# Ensure we have an .is.obj for the passed oOptions

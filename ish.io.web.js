@@ -9,6 +9,7 @@
 
     var _window = window,                                                           //# code-golf
         _document = document,                                                       //# code-golf
+        _null = null,                                                               //# code-golf
         _undefined /*= undefined*/                                                  //# code-golf
     ;
 
@@ -18,9 +19,9 @@
 	Class: core.io.web
     Input/Output-based Web functionality.
     Requires:
-    <core.resolve>, 
-    <core.type.obj.is>, <core.type.str.is>, <core.type.fn.is>, <core.type.arr.is>, 
-    <core.type.json.mk>, <core.type.str.mk>, <core.type.int.mk>, <core.type.obj.mk>, 
+    <core.resolve>,
+    <core.type.obj.is>, <core.type.str.is>, <core.type.fn.is>, <core.type.arr.is>,
+    <core.type.json.mk>, <core.type.str.mk>, <core.type.int.mk>, <core.type.obj.mk>,
     <core.type.fn.call>, <core.type.arr.rm>, <core.type.obj.get>,
     ~<core.io.log.warn>
     ####################################################################################################
@@ -221,7 +222,7 @@
             Class: core.web.queryString
             Parses the referenced cookie and returns an object to manage it.
             Requires:
-            <core.type.*.is>, <core.type.*.mk>, <core.type.fn>, 
+            <core.type.*.is>, <core.type.*.mk>, <core.type.fn>,
             ~<core.io.log.warn>
             ####################################################################################################
             */

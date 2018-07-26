@@ -7,13 +7,6 @@
 !function (core) {
     'use strict';
 
-    //# 
-    if (!core.type.fn.is(core.io.net.get)) {
-        core.require(['ish.io.net']/*, function (a_oScripts, bAllLoaded) {}, { onerror: function (_script) {} }*/);
-    }
-    if (!core.type.fn.is(core.type.str.cmp)) {
-        core.require(['ish.type-ex']/*, function (a_oScripts, bAllLoaded) {}, { onerror: function (_script) {} }*/);
-    }
 
     /*
     ####################################################################################################
@@ -22,65 +15,70 @@
     Requires:
     <core.extend>, <core.resolve>, 
     <core.type.fn.is>, <core.type.obj.is>, <core.type.arr.is>, <core.type.str.is>, 
-    ~<core.io.net.get>, <core.type.str.cmp>
+    ~<core.io.net.get>, ~<core.type.str.cmp>
     ####################################################################################################
     */
-    core.oop.partial(core.type, {
+    core.oop.partial(core.type, function (/*oProtected*/) {
+        var oEnums = {};
+
         //#
-        enum: function () {
-            var oEnums = {};
+        function processOptions(vOptions) {
+            var oReturnVal = core.extend({
+                    asEntry: (vOptions === true)
+                    //compare: function (x, y) {
+                    //    return (x === y);
+                    //}
+                }, vOptions)
+            ;
 
-            //#
-            function processOptions(vOptions) {
-                var oReturnVal = core.extend({
-                        asEntry: (vOptions === true)
-                        //compare: function (x, y) {
-                        //    return (x === y);
-                        //}
-                    }, vOptions)
-                ;
+            //# If the vOptions had "i" set in the .compare, reset it to be .caseInsensitive
+            if (oReturnVal.compare === "i") {
+                oReturnVal.compare = core.type.str.cmp;
+            }
+            //# Else if .compare !.is.fn then set it to the default .compare'son function
+            else if (!core.type.fn.is(oReturnVal.compare)) {
+                oReturnVal.compare = function (x, y) {
+                    return (x === y);
+                };
+            }
 
-                //# If the vOptions had "i" set in the .compare, reset it to be .caseInsensitive
-                if (core.type.str.cmp(oReturnVal.compare, "i")) {
-                    oReturnVal.compare = core.type.str.cmp;
-                }
-                //# Else if .compare !.is.fn then set it to the default .compare'son function
-                else if (!core.type.fn.is(oReturnVal.compare)) {
-                    oReturnVal.compare = function (x, y) {
-                        return (x === y);
-                    };
-                }
+            return oReturnVal;
+        } //# processOptions
 
-                return oReturnVal;
-            } //# processOptions
+        //#
+        function xcoder(sEnumName, sValue, vOptions, fnCompare) {
+            var i,
+                oReturnVal = {
+                    val: sValue,
+                    desc: sValue,
+                    found: false
+                },
+                a_oEnum = core.resolve(oEnums, sEnumName)
+            ;
 
-            //#
-            function xcoder(sEnumName, sValue, vOptions, fnCompare) {
-                var i,
-                    oReturnVal = {
-                        val: sValue,
-                        desc: sValue,
-                        found: false
-                    },
-                    a_oEnum = core.resolve(oEnums, sEnumName)
-                ;
-
-                //# If the sEnumName is valid, traverse it looking for a matching .val, setting our oReturnVal if found
-                if (core.type.obj.is(a_oEnum)) {
-                    //#
-                    for (i = 0; i < a_oEnum.length; i++) {
-                        if (fnCompare(a_oEnum[i], vOptions)) {
-                            oReturnVal = a_oEnum[i];
-                            break;
-                        }
+            //# If the sEnumName is valid, traverse it looking for a matching .val, setting our oReturnVal if found
+            if (core.type.obj.is(a_oEnum)) {
+                //#
+                for (i = 0; i < a_oEnum.length; i++) {
+                    if (fnCompare(a_oEnum[i], vOptions)) {
+                        oReturnVal = a_oEnum[i];
+                        break;
                     }
                 }
+            }
 
-                return oReturnVal;
-            } //# xcoder
+            return oReturnVal;
+        } //# xcoder
 
-            //#
-            return core.extend(
+
+        //# .require any missing .prereqs
+        core.type.ish.prereqs("ish.type.enum", {
+            'ish.io.net': !core.type.fn.is(core.io.net.get),
+            'ish.type-ex': !core.type.fn.is(core.type.str.cmp)
+        } /*, {}*/);
+
+        return {
+            enum: core.extend(
                 function (sEnum) {
                     return core.resolve(oEnums, sEnum);
                 }, {
@@ -153,8 +151,8 @@
                         };
                     } //# data.enum.interface
                 }
-            );
-        }() //# type.enum
+            )
+        };
     }); //# core.type.enum
 
 }(document.getElementsByTagName("HTML")[0].ish);

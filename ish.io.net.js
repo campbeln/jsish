@@ -24,11 +24,13 @@
                 async: true,
                 cache: true, //# true
                 useCache: false
+                //beforeSend: undefined,
+                //onreadystatechange: undefined
             }
         ;
 
         //# Wrapper for an XHR AJAX call
-        function xhr(sUrl, sVerb, bAsync, vCallback) {
+        function xhr(sVerb, bAsync, sUrl, vCallback) {
             /* global ActiveXObject: false */ //# JSHint "ActiveXObject variable undefined" error supressor
             var $xhr, bValidRequest,
                 bAbort = false,
@@ -74,7 +76,8 @@
                             url: sUrl,
                             verb: sVerb,
                             async: bAsync,
-                            aborted: bAbort
+                            aborted: bAbort,
+                            loaded: ($xhr.status === 200 || ($xhr.status === 0 && sUrl.substr(0, 7) === "file://"))
                         };
 
                         //#
@@ -83,8 +86,8 @@
                         }
 
                         //#
-                        vCallback.fn( /* bSuccess, oData, vArg, $xhr */
-                            !bAbort && ($xhr.status === 200 || ($xhr.status === 0 && sUrl.substr(0, 7) === "file://")),
+                        vCallback.fn(/* bSuccess, oData, vArg, $xhr */
+                            !bAbort && oData.loaded,
                             oData,
                             vCallback.arg,
                             $xhr
@@ -99,10 +102,25 @@
 
             return {
                 xhr: $xhr,
-                send: function(fnHook) {
+                send: function(vBody, fnHook) {
+                    var a_sKeys, i,
+                        sBody = ""
+                    ;
+
                     //# If we were able to collect an $xhr object and we have an sUrl, .open and .send the request now
                     if (bValidRequest) {
                         $xhr.open(sVerb, sUrl, !!bAsync);
+
+                        //# 
+                        if (core.type.str.is(vBody)) {
+                            sBody = vBody;
+                        }
+                        else if (core.type.obj.is(vBody)) {
+                            sBody = JSON.stringify(vBody);
+                        }
+                        else if (core.type.is.val(vBody)) {
+                            sBody = core.type.str.mk(vBody);
+                        }
 
                         //#
                         if (core.type.fn.is(fnHook)) {
@@ -110,11 +128,16 @@
                         }
                         //#
                         else {
-                            //$xhr.setRequestHeader('Content-type', 'text/plain; charset=utf-8');
-                            $xhr.overrideMimeType('text/plain; charset=utf-8');
+                            if (core.type.obj.is(vCallback.headers)) {
+                                a_sKeys = core.type.obj.ownKeys(vCallback.headers);
+                                for (i = 0; i < a_sKeys.length; i++) {
+                                    $xhr.setRequestHeader(a_sKeys[i], vCallback.headers[a_sKeys[i]]);
+                                }
+                            }
+                            $xhr.overrideMimeType(core.type.str.is(vCallback.mimeType, true) ? vCallback.mimeType : 'text/plain; charset=utf-8');
                         }
 
-                        $xhr.send();
+                        $xhr.send(sBody || null);
                     }
                 },
                 abort: function () {
@@ -137,27 +160,27 @@
 
         //#
         function doGet(sUrl, vCallback) {
-            var oReturnVal = xhr(sUrl, "GET", oXHROptions.async, vCallback);
+            var oReturnVal = xhr("GET", oXHROptions.async, sUrl, vCallback);
             oReturnVal.send();
             return oReturnVal;
         }
         function doPost(sUrl, oBody, vCallback) {
-            var oReturnVal = xhr(sUrl, "POST", oXHROptions.async, vCallback);
-            oReturnVal.send();
+            var oReturnVal = xhr("POST", oXHROptions.async, sUrl, vCallback);
+            oReturnVal.send(oBody);
             return oReturnVal;
         }
         function doPut(sUrl, oBody, vCallback) {
-            var oReturnVal = xhr(sUrl, "PUT", oXHROptions.async, vCallback);
-            oReturnVal.send();
+            var oReturnVal = xhr("PUT", oXHROptions.async, sUrl, vCallback);
+            oReturnVal.send(oBody);
             return oReturnVal;
         }
         function doDelete(sUrl, vCallback) {
-            var oReturnVal = xhr(sUrl, "DELETE", oXHROptions.async, vCallback);
+            var oReturnVal = xhr("DELETE", oXHROptions.async, sUrl, vCallback);
             oReturnVal.send();
             return oReturnVal;
         }
         function doHead(sUrl, vCallback) {
-            var oReturnVal = xhr(sUrl, "HEAD", oXHROptions.async, vCallback);
+            var oReturnVal = xhr("HEAD", oXHROptions.async, sUrl, vCallback);
             oReturnVal.send();
             return oReturnVal;
         }
@@ -170,7 +193,7 @@
                     create: doPut,
                     read: doGet,
                     update: doPost,
-                    'delete': doDelete,
+                    'delete': doDelete
                 },
 
                 cache: function (oImportCache) {

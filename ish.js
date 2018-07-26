@@ -1,9 +1,10 @@
 /** ################################################################################################
  * @class ish
  * @classdesc ishJS Functionality (Q: Are you using Vanilla Javascript? A: ...ish)
+ * @version 0.10.2018-06-27
  * @author Nick Campbell
  * @license MIT
- * @copyright (c) 2014-2018, Nick Campbell
+ * @copyright 2014-2018, Nick Campbell
 ################################################################################################# */
 !function () {
     'use strict';
@@ -22,7 +23,7 @@
         oTypeIsh = { //# Set the .ver and .target under .type.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             //is: function () {},
             //import: function () {},
-            ver: '0.10.2018-03-10',
+            ver: '0.10.2018-07-12',
             options: {
                 //script: _undefined,
                 target: "ish",
@@ -150,8 +151,28 @@
             Returns:
             Boolean value representing the truthiness of the passed varient.
             */
-            mk: function (b) {
-                return (b ? true : false);
+            mk: function (b, bDefaultVal) {
+                var bReturnVal = (b ? true : false);
+
+                //#
+                if (arguments.length > 1) {
+                    if (core.type.bool.is(b)) {
+                        bReturnVal = b;
+                    }
+                    else if (core.type.str.is(b)) {
+                        b = b.trim().toLowerCase();
+                        bReturnVal = (
+                            b === 'true' ? true : (
+                                b === 'false' ? false : bDefaultVal
+                            )
+                        );
+                    }
+                    else {
+                        bReturnVal = bDefaultVal;
+                    }
+                }
+
+                return bReturnVal;
             } //# bool.mk
         }; //# core.type.bool
 
@@ -168,7 +189,7 @@
                 var fX = core.type.float.mk(x);
                 return (core.type.num.is(x) && fX % 1 === 0);
             }, //# int.is
- 
+
             /*
             Function: mk
             Safely forces the passed value into an integer (includes implicit casting per the Javascript rules, see about section).
@@ -192,7 +213,7 @@
             */
             mk: function (i, vDefault) {
                 var iReturnVal = parseInt(i, 10);
- 
+
                 return (!isNaN(iReturnVal) ?
                     iReturnVal :
                     (arguments.length > 1 ? vDefault : 0)
@@ -213,7 +234,7 @@
                 var fX = core.type.float.mk(x);
                 return (core.type.num.is(x) && fX % 1 !== 0);
             }, //# float.is
- 
+
             /*
             Function: mk
             Safely forces the passed value into a floating point numeric value (includes implicit casting per the Javascript rules, see: <core.type.int.mk>).
@@ -251,7 +272,7 @@
                 );
             } //# num.is
 
-            //mk: 
+            //mk:
         }; //# core.type.num
 
         type.date = {
@@ -307,7 +328,7 @@
                 };
             }() //# selector.is
 
-            //mk: 
+            //mk:
         }; //# core.type.selector
 
         type.json = {
@@ -387,7 +408,7 @@
             */
             mk: function (s, sDefault) {
                 var sS = s + "";
-    
+
                 return (s && sS ?
                     sS :
                     (arguments.length > 1 ? sDefault : "")
@@ -408,7 +429,7 @@
                 return (_Object_prototype_toString.call(f) === '[object Function]');
             }, //# fn.is
 
-            //# 
+            //#
             mk: function (f, fnDefault) {
                 var vResolved,
                     fnResolve = core.resolve || function (_window, sKey) { return _window[sKey]; },
@@ -426,7 +447,7 @@
                     //# If the passed f .is a .str or .arr and we vResolved it to a .fn, reset our fnReturnVal to it
                     if (core.type.fn.is(vResolved)) {
                         fnReturnVal = vResolved;
-                    }    
+                    }
                 }
 
                 return fnReturnVal;
@@ -445,7 +466,7 @@
             */
             is: function isDom(x, bAllowSelector) {
                 //# If we are to bAllowSelector, attempt to convert x to a DOM element if its .is.str
-                x = (bAllowSelector && core.type.str.is(x, true) ? _document_querySelector(x) : x);
+                x = (bAllowSelector && core.type.str.is(x, true) ? _document_querySelector(x) || _document.getElementById(x) : x);
 
                 return (
                     x && //# core.type.is.native(x) &&
@@ -471,9 +492,12 @@
                 ;
 
                 //#
-                if (core.type.str.is(x)) {
+                //_default = _returnVal;
+
+                //#
+                if (core.type.str.is(x, true)) {
                     if (core.type.selector.is(x)) {
-                        _returnVal = _document_querySelector(x);
+                        _returnVal = _document_querySelector(x) || _document.getElementById(x) || _returnVal;
                     }
                     //# Else try to parse the passed .is.str as HTML
                     else {
@@ -561,7 +585,7 @@
                 );
             } //# list.is
 
-            //mk: 
+            //mk:
         }; //# core.type.list
 
         type.obj = {
@@ -570,27 +594,28 @@
             Determines if the passed value is an object.
             Parameters:
             o - The varient to interrogate.
-            oOptions - Object representing the following optional settings:
-                oOptions.allowFn - Boolean value representing if functions are to be allowed.
-                oOptions.nonEmpty - Boolean value representing if empty objects are to be ignored.
-                oOptions.requiredKeys - Array of Strings listing the keys required to be present in the object.
+            vOptions - Varient representing the following optional settings:
+                vOptions === true - Boolean value representing if empty objects are to be ignored.
+                vOptions.nonEmpty - Boolean value representing if empty objects are to be ignored.
+                vOptions.allowFn - Boolean value representing if functions are to be allowed.
+                vOptions.requiredKeys - Array of Strings listing the keys required to be present in the object.
             Returns:
             Boolean value representing if the value is an object.
             */
-            is: function isObj(o, oOptions) {
+            is: function isObj(o, vOptions) {
                 var i,
-                    oSettings = (oOptions && oOptions === Object(oOptions) ? oOptions : {}),
+                    oSettings = (vOptions && vOptions === Object(vOptions) ? vOptions : {}),
                     a_sRequiredKeys = oSettings.requiredKeys,
-                    bDisallowEmptyObject = !!oSettings.nonEmpty,
+                    bDisallowEmptyObject = (vOptions === true || !!oSettings.nonEmpty),
                     bAllowFn = !!oSettings.allowFn,
                     bReturnVal = !!(o && o === Object(o) && (bAllowFn || !core.type.fn.is(o)))
                 ;
-    
+
                 //# If the passed o(bject) is an Object
                 if (bReturnVal) {
                     //# Reset our bReturnVal based on bDisallowEmptyObject
                     bReturnVal = (!bDisallowEmptyObject || Object.getOwnPropertyNames(o).length !== 0);
-    
+
                     //# If we still have a valid Object and we have a_sRequiredKeys, traverse them
                     if (bReturnVal && a_sRequiredKeys) {
                         for (i = 0; i < a_sRequiredKeys.length; i++) {
@@ -602,7 +627,7 @@
                         }
                     }
                 }
-    
+
                 return bReturnVal;
             }, //# obj.is
 
@@ -678,6 +703,7 @@
     ################################################################################################# */
     core.resolve = function (/*[bForceCreate], oObject, vPath|a_sPath, [vValue]*/) {
         var vReturnVal, vValue, vPath, oObject, a_sPath, i, bCurrentIsObj, bHaveValue, bForceCreate,
+            bPathExists = true,
             oIsObjOptions = { allowFn: true },
             a = arguments
         ;
@@ -730,28 +756,30 @@
                         oObject = vReturnVal;
                         vReturnVal = oObject[a_sPath[i]] = {};
                     }
-                    //# Else the current vPath segment doesn't exist and we're not supposed to bForceCreate it, so reset our vReturnVal to undefined and fall from the loop
+                    //# Else the current vPath segment doesn't exist and we're not supposed to bForceCreate it, so reset our vReturnVal to undefined, flip bPathExists and fall from the loop
                     else {
                         vReturnVal = _undefined;
+                        bPathExists = false;
                         break;
                     }
                 }
-                //# Else if we are bForce(ing)Create
-                else if (bForceCreate) {
+                //# Else if we are bForce(ing)Create or we bHaveValue and this is the last index
+                else if (bForceCreate || (bHaveValue && i === a_sPath.length - 1)) {
                     //# Set a new object reference in vReturnVal then set it into oObject's last object reference
                     //#     NOTE: We enter the outer loop knowing the initial vReturnVal bCurrentIsObj, so there is no need to worry about a [0 - 1] index below as we will never enter this if on the first loop
                     oObject[a_sPath[i]] = vReturnVal = {};
                 }
                 //# Else if we're not on the final vPath segment
                 else if (i < a_sPath.length - 1) {
-                    //# The current vPath segment doesn't exist and we're not bForce(ing)Create, so reset our vReturnVal to undefined and fall from the loop
+                    //# The current vPath segment doesn't exist and we're not bForce(ing)Create, so reset our vReturnVal to undefined, flip bPathExists and fall from the loop
                     vReturnVal = _undefined;
+                    bPathExists = false;
                     break;
                 }
             }
 
-            //# If we bHaveValue and a valid vReturnVal, set it now
-            if (bHaveValue && vReturnVal) {
+            //# If we bHaveValue and the bPathExists, set it now
+            if (bHaveValue && bPathExists) {
                 oObject[a_sPath[a_sPath.length - 1]] = vReturnVal = vValue;
             }
         }
@@ -849,10 +877,10 @@
             },
             oAddedDataTypes = {
                 n: [],  //# n(ames)
-                d: {}   //# d(faultValues)
+                d: []   //# d(faultValues)
             },
             oReturnVal = {
-                //# 
+                //#
                 partial: function (vTarget, vPartial) {
                     var iIndex =  oOopData.i.indexOf(vTarget),
                         oProtected = (iIndex === -1 ? {} : oOopData.p[iIndex]),
@@ -877,7 +905,7 @@
                     }
                 }, //# core.oop.partial
 
-                //# 
+                //#
                 protected: function (vTarget, oProtected) {
                     //# Pass the call off to .setOopEntry
                     //#     NOTE: We don't simply expose setOopEntry as core.opp.protected because we want to gate the oAddedDateTypes feature
@@ -925,7 +953,7 @@
             }
 
             //# .fire our .event now that the oOopData is completly setup
-            //core.io.event.fire("ish.oop._setOopEntry", vTarget, oProtected);
+            //core.io.event.fire("ish.oop._setOopEntry", [vTarget, oProtected]);
         } //# setOopEntry
 
         //# Properly adds a data type to be tracked as part of oOopData
@@ -974,7 +1002,7 @@
      * @requires core.oop.partial
     ################################################################################################# */
     core.oop.partial(core.type, function (/*oProtected*/) {
-        //# 
+        //#
         function processObj(vSource, vKeys, bSetToUndefined) {
             var i,
                 //bSetToUndefined = ,
@@ -1038,6 +1066,49 @@
         this.processObj = processObj;
 
         return {
+            is: {
+                /*
+                Function: val
+                Determines if the passed value is set (i.e. !== undefined || null).
+                Parameters:
+                v - The varient to interrogate.
+                Returns:
+                Boolean value representing if the value is set.
+                */
+                val: function (v) {
+                    return (v !== _undefined && v !== _null);
+                }, //# type.is.val
+
+
+                /*
+                Function: true
+                Determines if the passed value is a truth-y value.
+                Parameters:
+                v - The truth-y value to interrogate.
+                Returns:
+                Boolean value representing if the value is a truth-y value.
+                */
+                'true': function (v) {
+                    return (v === true ?
+                        true :
+                        (v + "").trim().toLowerCase() === "true"
+                    );
+                } //# type.is.true
+            }, //# core.type.is.*
+
+            date: {
+                timestamp: function () {
+                    var _window_performance = _window.performance,
+                        _window_performance_timing = core.resolve(_window_performance, "timing")
+                    ;
+
+                    return _window_performance && _window_performance.now && _window_performance_timing && _window_performance_timing.navigationStart ?
+                            _window_performance.now() + _window_performance_timing.navigationStart :
+                            _Date_now()
+                    ;
+                } //# timestamp
+            }, //# core.type.date
+
             arr: {
                 rm: function (a_vArray, vTargets, vReplacements) {
                     var a_vReplacements, iTargetIndex, i,
@@ -1089,14 +1160,14 @@
                                 bReturnVal = false;
                                 break;
                             }
-                        }                    
+                        }
                     }
 
                     return bReturnVal;
                 } //# type.arr.of
             }, //# core.type.arr.*
 
-            
+
             obj: {
                 rm: function (vSource, vKeys, bSetToUndefined) {
                     var bReturnVal;
@@ -1114,7 +1185,7 @@
 
                     return bReturnVal;
                 }, //# type.obj.rm
-                
+
                 ownKeys: function(oSource) {
                     var i,
                         a_sReturnVal /* = _undefined */
@@ -1135,7 +1206,7 @@
 
                     return a_sReturnVal;
                 }, //# type.obj.ownKeys
-            
+
                 //#
                 get: function (oObject, sKey) {
                     var sCurrentKey,
@@ -1180,7 +1251,7 @@
 
                 //# Processes the passed options into an Object for use in core.type.fn.*
                 function processOptions(vThis, oOptions, oDefaults, iWait) {
-                    //# 
+                    //#
                     return core.extend(
                         { context: vThis },
                         oDefaults,
@@ -1226,19 +1297,19 @@
                     call: function (fn, vContext, vArguments) {
                         var vReturnVal /* = _undefined*/;
 
-                        //# 
+                        //#
                         //oOptions = processOptions(this, oOptions, {
                         //    args: _undefined
                         //    default: _undefined
                         //} /*, _undefined*/);
                         //vReturnVal = oOptions.default;
 
-                        //# 
+                        //#
                         //if (core.type.fn.is(fn)) {
                         //    vReturnVal = fn.apply(oOptions.context, oOptions.args);
                         //}
 
-                        //# 
+                        //#
                         if (core.type.fn.is(fn)) {
                             switch (arguments.length) {
                                 case 1: {
@@ -1284,7 +1355,7 @@
                     once: function (fn, oOptions) {
                         var vReturnVal;
 
-                        //# 
+                        //#
                         oOptions = processOptions(this, oOptions, {
                             rereturn: true
                         } /*, _undefined*/);
@@ -1316,7 +1387,7 @@
                         //#  WAS: function (fn, vContext, vArguments, vDefault, bReturnObj)
                         var oReturnVal;
 
-                        //# 
+                        //#
                         oOptions = processOptions(this, oOptions, {
                             //default: _undefined,
                             returnObj: false
@@ -1326,7 +1397,7 @@
                             error: _null
                         };
 
-                        //# 
+                        //#
                         return function (/*arguments*/) {
                             try {
                                 oReturnVal.result = fn.apply(oOptions.context, convert(arguments));
@@ -1367,8 +1438,8 @@
                                 if (!timeout) context = args = _null;
                             }
                         ;
-                        
-                        //# 
+
+                        //#
                         oOptions = processOptions(this, oOptions, {
                             leading: true,
                             trailing: false
@@ -1435,7 +1506,7 @@
                             }
                         ;
 
-                        //# 
+                        //#
                         oOptions = processOptions(this, oOptions, {
                             immediate: false
                         }, 500);
@@ -1476,7 +1547,7 @@
                         //#  WAS: function (vTest, fnCallback, fnErrback, iTimeout, iInterval, vArgument)
                         var _a, iEndTime; // = Number(new Date()) + (iTimeout || 2000);
 
-                        //# 
+                        //#
                         oOptions = processOptions(this, oOptions, {
                             //ontimeout: core.type.fn.noop,
                             //onsuccess: core.type.fn.noop
@@ -1484,11 +1555,11 @@
                         oOptions.timeout = core.type.int.mk(oOptions.timeout, 2000);
 
                         return function (/*arguments*/) {
-                            //# 
+                            //#
                             _a = convert(arguments);
                             iEndTime = Date.now() + oOptions.timeout;
 
-                            //# 
+                            //#
                             //#     NOTE: We need a named function below as we recurse for each .wait interval
                             !function p() {
                                 //# If the condition is met, we can .call our .onsuccess (if any)
@@ -1523,7 +1594,7 @@
         Class: core.io.console
         User reporting logic.
         Requires:
-        <core.resolve>, 
+        <core.resolve>,
         <core.type.fn.call>
         ####################################################################################################
         */
@@ -1541,7 +1612,7 @@
                     doCall("warn", arguments);
                 }, //# io.console.warn
 
-                err: function (/*arguments*/) {
+                error: function (/*arguments*/) {
                     doCall("error", arguments);
                 }, //# io.console.err
             };
@@ -1553,8 +1624,8 @@
         Class: core.io.event
         Event logic.
         Requires:
-        <core.extend>, <core.resolve>, 
-        <core.type.arr.is>, <core.type.fn.is>, 
+        <core.extend>, <core.resolve>,
+        <core.type.arr.is>, <core.type.fn.is>,
         <core.type.fn.call>, <core.type.arr.rm>, <core.type.obj.ownKeys>
         ####################################################################################################
         */
@@ -1569,7 +1640,7 @@
             } //# unwatch
 
             //#
-            function fire(sEvent /*, ..arguments*/) {
+            function fire(sEvent, a_vArguments) {
                 var i,
                     a_fnEvents = oData[sEvent],
                     bReturnVal = core.type.arr.is(a_fnEvents, true)
@@ -1582,12 +1653,12 @@
 
                 //# Set the .last arguments for this sEvent
                 //#     NOTE: We do this here so if a .watch is called after this sEvent has .fired, it can be instantly called with the .last arguments lists
-                a_fnEvents.last = arguments;
+                a_fnEvents.last = a_vArguments;
 
                 //# Traverse the a_fnEvents, throwing each into doCallback while adding its returned integer to our i(terator)
                 //#     NOTE: doCallback returns -1 if we are to unwatch the current a_fnEvents which in turn removes it from the array
                 for (i = 0; i < a_fnEvents.length; i++) {
-                    i += doCallback(sEvent, a_fnEvents[i], arguments /*, false*/);
+                    i += doCallback(sEvent, a_fnEvents[i], a_vArguments);
                 }
 
                 //# Set the .fired property on the array to true
@@ -1598,11 +1669,11 @@
             } //# fire
 
             //#
-            function doCallback(sEvent, fnCallback, _arguments) {
+            function doCallback(sEvent, fnCallback, a_vArguments) {
                 var iReturnVal = 0;
 
                 //#
-                if (unwatch === core.type.fn.call(fnCallback, this, _arguments)) { //# TODO: Refactor `this` to `this || _null`?
+                if (unwatch === core.type.fn.call(fnCallback, this, a_vArguments)) { //# TODO: Refactor `this` to `this || _null`?
                     unwatch(sEvent, fnCallback);
                     iReturnVal--;
                 }
@@ -1661,105 +1732,145 @@
     ################################################################################################# */
     core.require = function (requireJs) {
         var oRequireOptions = { //# http://requirejs.org/docs/api.html#config
-                //onappend: function (_script) {},  //# NOTE: Feature not present in requireJs
-                onerror: function (_script) {       //# NOTE: Feature not present in requireJs
-                    var oConfig = core.type.json.mk(_script.getAttribute("config"));
-                    core.io.console.err("Unable to include `" + oConfig.src + "`.");
-                },
-                waitSeconds: 7,
-                //baseUrl: "",
-                //urlArgs: "",
-                //paths: [],
-                //bundles: {}
-            }
-        ;
+            //onappend: function (_script) {},  //# NOTE: Feature not present in requireJs
+            onerror: function (_script) {       //# NOTE: Feature not present in requireJs
+                var oConfig = core.type.json.mk(_script.getAttribute("config"));
+                core.io.console.error("Unable to include `" + oConfig.src + "`.");
+            },
+            //paths: [],        //# requirejs
+            //bundles: {},      //# requirejs
+            waitSeconds: 7,
+            baseUrl: "",
+            urlArgs: ""
+        };
 
         //# 
-        //#     NOTE: The third argument `oOptions` is a feature not present in requireJs
-        function requireJsLite(a_sScripts, fnCallback, oOptions) {
-            var sBaseUrl, sUrlArgs, i,
-                a_oScripts = [],
-                iCounter = a_sScripts.length,
-                bAllLoaded = true
+        function eventHandler(a_sUrls, fnCallback, oOptions) {
+            var a_oTracker = [],
+                bAllLoaded = true,
+                iCounter = a_sUrls.length
             ;
 
-            //# 
-            oOptions = core.extend({}, oRequireOptions, oOptions);
-            sBaseUrl = oOptions.baseUrl || "";
-            sUrlArgs = oOptions.urlArgs || "";
+            //#
+            //#     NOTE: bError comes across as an oEvent .onload and .onerror
+            function loadHandler(_dom, bError, bTimedOut) {
+                //# .push the current a_sUrls into the array
+                a_oTracker.push({
+                    dom: _dom,
+                    loaded: (bError !== true),
+                    timedout: !!(bError && bTimedOut)
+                });
 
-            //# 
-            //#     NOTE: This function is used purely to provide a scope for each a_oScripts' _script and iTimeout so the events can handle them properly
-            //#     NOTE: This function has side-effects on bAllLoaded and iCounter and references sBaseUrl
-            function processScript(sSrc) {
-                var _script = _document.createElement('script'),
-                    fnOnError = function () {
-                        bAllLoaded = false;
-                        fnOnload(true);
-                    },
-                    iTimeout = setTimeout(fnOnError, oOptions.waitSeconds * 1000),
-                    fnOnload = function (bError) {  //# NOTE: bError comes across as an oEvent .onload and .onerror
-                        //# clearTimeout (if any) and .push the current a_oScripts into the array
-                        //#      NOTE: As per MDN, clearTimeout(undefined) does nothing, so we don't bother with an if() below
-                        clearTimeout(iTimeout);
-                        a_oScripts.push({
-                            dom: _script,
-                            loaded: (bError !== true)
-                        });
+                //#
+                if (bError) {
+                    core.type.fn.call(oOptions.onerror, _null, [_dom]);
+                }
 
-                        //# 
-                        if (bError === true) {
-                            core.type.fn.call(oOptions.onerror, _null, [_script]);
-                        }
+                //# If we have loaded all of our a_sUrls, .call our fnCallback
+                if (--iCounter < 1) {
+                    core.type.fn.call(fnCallback, _null, [a_oTracker, bAllLoaded]);
+                }
+            } //# loadHandler
 
-                        //# If we have loaded all of our a_oScripts, .call our fnCallback
-                        if (--iCounter < 1) {
-                            core.type.fn.call(fnCallback, _null, [a_oScripts, bAllLoaded]);
+            //#
+            function errorHandler(_dom, bTimedOut) {
+                bAllLoaded = false;
+                loadHandler(_dom, true, bTimedOut);
+            } //# errorHandler
+
+
+            //# If the passed a_sUrls is empty, .call the fnCallback now
+            //#     NOTE: .loadHandler will never be called via oReturnVal.onload/.onerror if there are no a_sUrls to process, hence the call here
+            if (iCounter < 1) {
+                core.type.fn.call(fnCallback, _null, [a_oTracker, bAllLoaded]);
+            }
+
+            //# Return the individual _dom element tracker factory to the caller
+            return function (_dom, bAlreadyLoaded) {
+                var iTimeout,
+                    oReturnVal = {
+                        onerror: function (bTimedOut) {
+                            errorHandler(_dom, bTimedOut);
+                        },
+                        onload: function () {
+                            //# clearTimeout (if any) and .push the current a_sUrls into the array
+                            //#      NOTE: As per MDN, clearTimeout(undefined) does nothing, so we don't bother with an if() below
+                            clearTimeout(iTimeout);
+                            loadHandler(_dom /*, false, false*/);
                         }
                     }
                 ;
 
-                //# 
-                _script.onload = fnOnload;
-                _script.onerror = fnOnError;
+                //#
+                if (bAlreadyLoaded) {
+                    loadHandler(_dom /*, false, false*/);
+                }
+                else {
+                    iTimeout = setTimeout(function () { oReturnVal.onerror(true); }, oOptions.waitSeconds * 1000);
+                    _dom.onload = oReturnVal.onload;
+                    _dom.onerror = oReturnVal.onerror;
+                }
 
+                return oReturnVal;
+            };
+        } //# eventHandler
+
+        //#
+        //#     NOTE: The third argument `oOptions` is a feature not present in requireJs
+        function requireJsLite(vUrls, fnCallback, oOptions) {
+            var _script, oEventHandler, sSrc, i,
                 //# <IE6thru9Support>
-                //# If our _script has .readyState defined, we need to monitor .onreadystatechange
-                //#     NOTE: Between fnIE6thru9Factory and `_script.onreadystatechange` below, it costs us 9 lines of code to support IE v6-v9
-                //#     Based on: https://www.html5rocks.com/en/tutorials/speed/script-loading/ and https://www.nczonline.net/blog/2009/07/28/the-best-way-to-load-external-javascript/
-                _script.onreadystatechange = (_script.readyState ?
-                    function () {
+                fnIE6thru9Support = function (_script) {
+                    return function () {
                         if (_script.readyState == "loaded" || _script.readyState == "complete") {
                             _script.onreadystatechange = _null;
-                            fnOnload(/*false*/);
+                            _script.onload(/*false*/);
                         }
-                    } :
-                    _null
-                );
+                    };
+                },
                 //# </IE6thru9Support>
+                a_sUrls = (core.type.arr.is(vUrls) ? vUrls : [vUrls])
+            ;
 
-                //# .setAttribute's then append the _script to our _head
-                //#     NOTE: We set the src after the events because some browsers (IE) start loading the script as soon as the src is set
-                _script.setAttribute('config', JSON.stringify({
-                    src: sSrc,
-                    baseUrl: sBaseUrl,
-                    urlArgs: sUrlArgs
-                }));
-                _script.setAttribute('type', "text/javascript");
-                _script.setAttribute('src', sBaseUrl + sSrc + sUrlArgs);
-                _head.appendChild(_script);
+            //#
+            oOptions = core.extend({}, oRequireOptions, oOptions);
+            oEventHandler = eventHandler(a_sUrls, fnCallback, oOptions);
 
-                //# Call the RequireJs non-feature .onappend now that the _script has been .appendChild'd
-                core.type.fn.call(oOptions.onappend, _null, [_script]);
-            } //# processScript
+            //# Traverse the a_sUrls, creating each _script and setTimeout'ing as we go
+            for (i = 0; i < a_sUrls.length; i++) {
+                sSrc = oOptions.baseUrl + a_sUrls[i] + oOptions.urlArgs;
+                _script = _document_querySelector("script[src='" + sSrc + "']");
 
+                //# If there was a _script already, call .onload on the oEventHandler for the _script
+                if (core.type.dom.is(_script)) {
+                    oEventHandler(_script, true).onload();
+                }
+                //# If there wasn't a _link already, build it and .appendChild
+                else {
+                    _script = _document.createElement('script');
+                    oEventHandler(_script);
 
-            //# Traverse the a_sScripts, creating each _script and setTimeout'ing as we go
-            if (core.type.arr.is(a_sScripts)) {
-                for (i = 0; i < a_sScripts.length; i++) {
-                    //# Process the current a_sScripts' src
-                    //#     NOTE: We call out to a function here to give us a scope to store the _script and iTimeout references in for the events
-                    processScript(a_sScripts[i]);
+                    //# <IE6thru9Support>
+                    //# If our _script has .readyState defined, we need to monitor .onreadystatechange
+                    //#     NOTE: In order to keep the _tcript in scope for .onreadystatechange, we use the fnIE6thru9Support Factory
+                    //#     NOTE: It costs us 9 lines of code to support IE v6-v9
+                    //#     Based on: https://www.html5rocks.com/en/tutorials/speed/script-loading/ and https://www.nczonline.net/blog/2009/07/28/the-best-way-to-load-external-javascript/
+                    _script.onreadystatechange = (_script.readyState ? fnIE6thru9Support(_script) : _null);
+                    //# </IE6thru9Support>
+
+                    //# .setAttribute's then append the _script to our _head
+                    //#     NOTE: We set the src after the events because some browsers (IE) start loading the script as soon as the src is set
+                    //_script.setAttribute('config', JSON.stringify({
+                    //    src: sSrc,
+                    //    baseUrl: oOptions.baseUrl,
+                    //    urlArgs: oOptions.urlArgs
+                    //}));
+                    _script.setAttribute('type', "text/javascript");
+                    _script.setAttribute('src', sSrc);
+                    _head.appendChild(_script);
+
+                    //# Call the RequireJs non-feature .onappend now that the _script has been .appendChild'd
+                    core.type.fn.call(oOptions.onappend, _null, [_script]);
                 }
             }
         } //# requireJsLite
@@ -1772,28 +1883,28 @@
         requireJs = core.type.fn.mk(requireJs, requireJsLite);
         //requireJs.config(oOptions);
 
-        //# 
+        //#
         core.extend(oTypeIsh, {
             'import': function (a_sImport, oOptions) {
                 var i,
                     a_sUrls = []
                 ;
-    
+
                 //# If we have scripts to a_sImport
-                //# <script type="text/javascript" src="js/ish/ish.js" ish='{ "target": "$z", "plugins": { "import": ["lib.ui","app.notes","app.ui"], "baseUrl": "js/ish/", "cache": false } }'></script>
+                //# <script type="text/javascript" src="js/ish/ish.js" ish='{ "target": "$z", "plugins": { "import": ["lib.ui","app.tags","app.ui"], "baseUrl": "js/ish/", "cache": false } }'></script>
                 if (core.type.arr.is(a_sImport, true)) {
                     //# Traverse each script to a_sImport, creating a new SCRIPT tag for each
                     for (i = 0; i < a_sImport.length; i++) {
                         a_sUrls.push(a_sImport[i] + ".js");
                     }
-    
-                    //# 
+
+                    //#
                     oOptions = core.extend({}, oTypeIsh.options.plugins, oOptions);
-                    core.require.config({
+                    core.require.config({ //# TODO: Remove core.require.config setting here, add oOptions to .queue
                         waitSeconds: 7,
                         baseUrl: oOptions.baseUrl,
                         urlArgs: (oOptions.cache === false ?
-                            "?nocache=" + Date.now() : 
+                            "?nocache=" + Date.now() :
                             ""
                         ),
                         onappend: function (_script) {
@@ -1807,61 +1918,214 @@
                         }
                     });
                 }
-            } //# type.ish.import
-        }); //# core.type.ish.import
+            }, //# type.ish.import
 
-        //# 
-        return core.extend(requireJs, {
-            lite: (requireJs === requireJsLite),
-
-            //# Soft-configured version of requireJs's bundles/shim
-            //#     NOTE: This allows us to dynamicially define any "bundles" we require at runtime, allowing us to load scripts in the required order
-            queue: function (a_vModules, fnCallback) {
-                var vCurrent,
-                    i = 0,
-                    iLength = core.type.int.mk(core.resolve(a_vModules, "length"), 0),
-                    bAllLoaded = (iLength > 0),
-                    a_oResults = []
+            //#
+            prereqs: function (sSource, oPreReqs, oOptions) {
+                var i,
+                    a_sIncludes = [],
+                    a_sKeys = core.type.obj.ownKeys(oPreReqs)
                 ;
 
-                //# 
-                function doLoad() {
-                    vCurrent = a_vModules[i++];
-                    
-                    //# Call requireJs to load the vCurrent a_vModules, copying its returned arguments into vCurrent on callback (code-golf)
-                    requireJs(core.type.arr.mk(vCurrent, [vCurrent]), function (a_oScripts, bEntryAllLoaded) {
-                        //# 
-                        if (requireJs.lite) {
-                            a_oResults.push({
-                                dom: a_oScripts,
-                                loaded: bEntryAllLoaded
-                            });
-                            if (bEntryAllLoaded === false) {
-                                bAllLoaded = false;
-                            }
+                //# If we got a_sKeys from the passed oPreReqs, traverse them .push'ing each truthy value into a_sIncludes
+                if (core.type.arr.is(a_sKeys, true)) {
+                    for (i = 0; i < a_sKeys.length; i++) {
+                        if (oPreReqs[a_sKeys[i]]) {
+                            a_sIncludes.push(a_sKeys[i] + ".js");
                         }
-    
-                        //# Recurse if we still have a_vModules to process, else call loaded
-                        (i < iLength ? doLoad() : loaded(arguments));
-                    });
-                } //# doLoad
+                    }
+
+                    //# If we have some a_sIncludes, .require them now while passing in the SCRIPT[ish] options while we go
+                    if (a_sIncludes.length > 0) {
+                        core.require.scripts(a_sIncludes,
+                            function (/*a_oScripts, bAllLoaded*/) {},
+                            core.extend({
+                                onerror: function (_script) {
+                                    core.io.console.error(sSource + ": Unable to load '" + _script.src + "'.");
+                                }
+                            }, core.type.ish.options.plugins, oOptions)
+                        );
+                    }
+                }
+            } //# type.ish.prereqs
+        }); //# core.type.ish.import
+
+        //#
+        return core.extend(
+            function (vUrls, fnCallback, oOptions) {
+                var i,
+                    bLoadedAll = true,
+                    a_sUrls = (core.type.arr.is(vUrls) ? vUrls : [vUrls]),
+                    a_sScripts = [],
+                    a_sCSS = [],
+                    a_sLinks = [],
+                    fnCollateResults = function (a_sProcessedUrls, bAllLoaded) {
+                        //# If the a_sProcessedUrls have values, .concat them into our (reset) a_sUrls and recalculate bLoadedAll
+                        if (core.type.arr.is(a_sProcessedUrls, true)) {
+                            a_sUrls = a_sUrls.concat(a_sProcessedUrls);
+                            bLoadedAll = (bLoadedAll && bAllLoaded);
+                        }
+
+                        //# If all of the series have returned, fnCallback
+                        if (--i < 1) {
+                            core.type.fn.call(fnCallback, _null, [a_sUrls, bLoadedAll]);
+                        }
+                    }
+                ;
+
+                //# Traverse the a_sUrls, sorting each into their related arrays
+                for (i = 0; i < a_sUrls.length; i++) {
+                    switch (core.type.str.mk(a_sUrls[i]).match(/\.([^\./\?\#]+)($|\?|\#)/)[1].toLowerCase()) {
+                        case "js": {
+                            a_sScripts.push(a_sUrls[i]);
+                            break;
+                        }
+                        case "css": {
+                            a_sCSS.push(a_sUrls[i]);
+                            break;
+                        }
+                        default: {
+                            a_sLinks.push(a_sUrls[i]);
+                        }
+                    }
+                }
+
+                //# Now that we've sorted the passed a_sUrls, reset them and i for the checks below
+                a_sUrls = [];
+                i = 0;
+
+                //# If we have values, inc i and call the series or fnCollateResults if they're all empty
+                if (core.type.arr.is(a_sScripts, true)) {
+                    i++;
+                    requireJs(a_sScripts, fnCollateResults, oOptions);
+                }
+                if (core.type.arr.is(a_sCSS, true)) {
+                    i++;
+                    core.require.css(a_sCSS, fnCollateResults, oOptions);
+                }
+                if (core.type.arr.is(a_sLinks, true)) {
+                    i++;
+                    core.require.link(a_sLinks, fnCollateResults, oOptions);
+                }
+                if (i < 1) {
+                    fnCollateResults(/*[], true*/);
+                }
+            }, {
+                scripts: requireJs,
+                config: requireJsLite.config,
+                lite: (requireJs === requireJsLite),
+
+                //# Soft-configured version of requireJs's bundles/shim
+                //#     NOTE: This allows us to dynamicially define any "bundles" we require at runtime, allowing us to load scripts in the required order
+                queue: function (a_vModules, fnCallback) {
+                    var vCurrent,
+                        i = 0,
+                        iLength = core.type.int.mk(core.resolve(a_vModules, "length"), 0),
+                        bAllLoaded = (iLength > 0),
+                        a_oResults = []
+                    ;
+
+                    //#
+                    function doLoad() {
+                        vCurrent = a_vModules[i++];
+
+                        //# Call requireJs to load the vCurrent a_vModules, copying its returned arguments into vCurrent on callback (code-golf)
+                        requireJs(core.type.arr.mk(vCurrent, [vCurrent]), function (a_oScripts, bEntryAllLoaded) {
+                            //#
+                            if (requireJs.lite) {
+                                a_oResults.push({
+                                    dom: a_oScripts,
+                                    loaded: bEntryAllLoaded
+                                });
+                                if (bEntryAllLoaded === false) {
+                                    bAllLoaded = false;
+                                }
+                            }
+
+                            //# Recurse if we still have a_vModules to process, else call loaded
+                            (i < iLength ? doLoad() : loaded(arguments));
+                        });
+                    } //# doLoad
+
+                    //#
+                    function loaded(_a) {
+                        //# Run our fnCallback with the above collected a_oResults (if any)
+                        core.type.fn.call(fnCallback, _null,
+                            (requireJs.lite ?
+                                [a_oResults, bAllLoaded] :
+                                _a
+                            )
+                        );
+                    } //# loaded
+
+
+                    //# If the caller passed in valid a_vModules, kick off doLoad else call loaded to return a null result to the fnCallback
+                    (bAllLoaded ? doLoad() : loaded());
+                }, //# queue
 
                 //# 
-                function loaded(_a) {
-                    //# Run our fnCallback with the above collected a_oResults (if any)
-                    core.type.fn.call(fnCallback, _null,
-                        (requireJs.lite ?
-                            [a_oResults, bAllLoaded] :
-                            _a
-                        )
-                    );
-                } //# loaded
+                link: function (vUrls, fnCallback, oOptions) {
+                    var _link, oEventHandler, oHandler, oCurrent, i,
+                        a_sUrls = (core.type.arr.is(vUrls) ? vUrls : [vUrls])
+                    ;
 
+                    //# Ensure the passed oOptions .obj.is, defaulting the values and including the oRequireOptions as we go
+                    oOptions = core.extend({
+                        rel: "",
+                        type: "",   //# SEE: https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types
+                        media: ""   //# SEE: https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries
+                    }, oRequireOptions, oOptions);
+                    oEventHandler = eventHandler(a_sUrls, fnCallback, oOptions);
 
-                //# If the caller passed in valid a_vModules, kick off doLoad else call loaded to return a null result to the fnCallback
-                (bAllLoaded ? doLoad() : loaded());
-            } //# queue
-        });
+                    //# Traverse the a_sUrls, pulling the oCurrent value and any existing _link's as we go
+                    for (i = 0; i < a_sUrls.length; i++) {
+                        oCurrent = core.type.obj.mk(a_sUrls[i], { href: a_sUrls[i] });
+                        oCurrent.href = oOptions.baseUrl + oCurrent.href + oOptions.urlArgs;
+                        _link = _document_querySelector("link[href='" + oCurrent.href + "']");
+
+                        //# If there was a _link already, call .onload on the oEventHandler for the _link
+                        if (core.type.dom.is(_link)) {
+                            oEventHandler(_link, true).onload();
+                        }
+                        //# If there wasn't a _link already, build it and .appendChild
+                        else {
+                            _link = _document.createElement('link');
+                            oHandler = oEventHandler(_link);
+
+                            //# <NonLinkOnloadSupport>
+                            //#
+                            if (!('onload' in _link)) {
+                                oHandler.i = document.createElement("img"); //# img
+                                oHandler.i.onerror = oHandler.onload;
+                                oHandler.i.src = oCurrent.href;
+                            }
+                            //# </NonLinkOnloadSupport>
+
+                            //# 
+                            _link.rel = oCurrent.rel || oOptions.rel;
+                            _link.type = oCurrent.type || oOptions.type;
+                            _link.href = oCurrent.href;
+                            _link.media = oCurrent.media || oOptions.media;
+                            _head.appendChild(_link);
+
+                            //# Call the RequireJs non-feature .onappend now that the _script has been .appendChild'd
+                            core.type.fn.call(oOptions.onappend, _null, [_link]);
+                        }
+                    }
+                }, //# link
+
+                //# 
+                css: function (vUrls, fnCallback, oOptions) {
+                    //# Ensure the passed oOptions .obj.is, defaulting the values as we go
+                    //#     NOTE: We skip oRequireOptions as that is done within core.require.link
+                    core.require.link(vUrls, fnCallback, core.extend({
+                        rel: "stylesheet",
+                        type: "text/css",
+                        media: "all"
+                    }, oOptions));
+                } //# css
+            }
+        );
     }(_window.require); //# core.require
 
 
@@ -1870,6 +2134,41 @@
      * @desc Stub-object for User Interface-based functionality.
     ################################################################################################# */
     core.ui = {
+        //# Based on: https://stackoverflow.com/a/36929383/235704
+        scrollTo: function (vElement, bSetHash) {
+            var _element = core.type.dom.mk(vElement, null),
+                bReturnVal = (_element !== null), // _element && core.type.fn.is(_element.getBoundingClientRect)), //# .fn.is probably not req: https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
+                doScroll = function (iLastJump) {
+                    var iScroll = parseInt(_element.getBoundingClientRect().top * 0.2);
+
+                    _document.body.scrollTop += iScroll;
+                    _document.documentElement.scrollTop += iScroll;
+
+                    if (!iLastJump || iLastJump > Math.abs(iScroll)) {
+                        setTimeout(function() {
+                            doScroll(Math.abs(iScroll));
+                        }, 20);
+                    }
+                    else if (bSetHash && core.type.str.is(vElement)) {
+                        location.hash = "#" + vElement;
+                    }
+                } //# doScroll
+            ;
+
+            //#
+            if (bReturnVal) {
+                doScroll();
+            }
+
+            return bReturnVal;
+        },
+
+        clearSelection: function ()
+        {
+            if (_window.getSelection) {_window.getSelection().removeAllRanges();}
+            else if (_document.selection) {_document.selection.empty();}
+        }
+
         /*
         //############################################################
         //# Determines if the referenced elements overlap in the 2D plane.
@@ -1937,7 +2236,7 @@
                     register: function (fn) {
                         var bReturnVal = core.type.fn.is(fn);
 
-                        //# 
+                        //#
                         if (bReturnVal) {
                             fnSyncer = fn;
                         }
@@ -1960,57 +2259,10 @@
     //########
 
 
-    /** ################################################################################################
-     * @namespace core.is|mk|fn
-     * @desc Temp Mappings to old locations (core.is, core.mk, core.fn)
-     * @todo REMOVE
-    ################################################################################################# */
-    !function () {
-        core.is = {
-            str: core.type.str.is,
-            date: core.type.date.is,
-            int: core.type.int.is,
-            float: core.type.float.is,
-            bool: core.type.bool.is,
-            obj: core.type.obj.is,
-            arr: core.type.arr.is,
-    
-            json: core.type.json.is,
-            dom: core.type.dom.is,
-    
-            num: core.type.num.is,
-            fn: core.type.fn.is,
-    
-            type: core.type.is,
-            val: core.type.is.val,
-            'true': core.type.is.true,
-            native: core.type.is.native,
-    
-            list: core.type.list.is,
-            selector: core.type.selector.is
-        }; //# core.is
-
-        core.mk = {
-            str: core.type.str.mk,
-            date: core.type.date.mk,
-            int: core.type.int.mk,
-            float: core.type.float.mk,
-            bool: core.type.bool.mk,
-            obj: core.type.obj.mk,
-            arr: core.type.arr.mk,
-    
-            json: core.type.json.mk,
-            dom: core.type.dom.mk
-        }; //# core.mk
-
-        core.fn = core.type.fn;    
-    }(); //# Temp Mappings
-
-
     //##################################################################################################
     //# Procedural code
     //# Requires:
-    //# <core.extend>, <core.resolve>, 
+    //# <core.extend>, <core.resolve>,
     //# <core.type.dom.is>,
     //# <core.type.json.mk>
     //##################################################################################################
@@ -2027,9 +2279,19 @@
         //# Set the .ish.script (if any)
         core.type.ish.script = _script;
 
-        //# If we were able to locate our _script tag and it has .json'd [ish] options, parse them
-        if (_script && core.type.json.is(_script.getAttribute(sTarget))) {
-            core.extend(oOptions, core.type.json.mk(_script.getAttribute(sTarget)));
+        //# If we were able to locate our _script tag, .getAttribute its [ish] into sTemp
+        if (_script) {
+            sTemp = _script.getAttribute(sTarget);
+
+            //# If the _script[ish] .getAttribute .is .json, .extend it into our oOptions
+            if (core.type.json.is(sTemp)) {
+                core.extend(oOptions, core.type.json.mk(sTemp));
+            }
+            //# Else if the _script[ish] .getAttribute .is a .str, attempt to .resolve it under the _window then .extend it into our oOptions
+            else if (core.type.str.is(sTemp, true)) {
+                core.extend(oOptions, core.resolve(_window, sTemp));
+            }
+            //# TODO: Enable an AJAX request to a config JSON?
 
             //# Reset the .plugins.baseUrl to the developer-defined inline value (if any, borrowing sTemp as we go)
             sTemp = oOptions.plugins.baseUrl || _script.src;
@@ -2052,7 +2314,7 @@
         }
 
         //# If we found the first _html tag, ensure there is a reference to core available on it tag so that other scripts can auto-resolve
-        //#     TODO: Error is not found?
+        //#     TODO: Error if not found?
         if (core.type.dom.is(_html)) {
             _html.ish = core;
             //_html[sTarget] = core;

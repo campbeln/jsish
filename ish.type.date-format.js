@@ -96,7 +96,8 @@
         //# Last Updated: April 19, 2006
         function weekOfYear_Simple(dDateTime, eStartOfWeek) {
             var iDaysInFirstWeek = 7,
-                eJan1 = (new Date(dDateTime.getFullYear(), 0, 1)).getDay()
+                dDate = core.type.date.mk(dDateTime, 0),
+                eJan1 = (new Date(dDate.getFullYear(), 0, 1)).getDay()
             ;
 
             //#### If eJan1 differs from the eStartOf(the)Week
@@ -108,7 +109,7 @@
             }
 
             //#### Determine and return the .WeekOfYear_Simple based on the passed dDateTime's .DayOfYear, less the iDaysIn(the)FirstWeek +1 (to allow for the first week)
-            return Math.ceil((oDate.dayOfYear(dDateTime) - iDaysInFirstWeek) / 7) + 1;
+            return Math.ceil((oDate.dayOfYear(dDate) - iDaysInFirstWeek) / 7) + 1;
         } //# weekOfYear_Simple
 
 
@@ -163,11 +164,10 @@
                     oDecoders.$.push(sDecode);
                 } //# register
 
+                dDateTime = core.type.date.mk(dDateTime, null);
 
                 //# If we were passed a valid dDateTime and sFormat
                 if (core.type.date.is(dDateTime) && core.type.str.is(sFormat, true)) {
-                    dDateTime = core.type.date.mk(dDateTime);
-
                     //#### Borrow the use of i to store the month day, setting $D, $DD and $S accordingly
                     i = dDateTime.getDate();
                     register("$D", i);
@@ -181,9 +181,10 @@
                     register("$WWWW", oConfig.WWWW[i]);
 
                     //#### Borrow the use of i to store the month, setting $M, $MM, $MMM and $MMMM accordingly
+                    //####     NOTE: .getMonth is 0-based
                     i = dDateTime.getMonth();
-                    register("$M", i);
-                    register("$MM", fnLpad(i, '0', 2));
+                    register("$M", i + 1);
+                    register("$MM", fnLpad(i + 1, '0', 2));
                     register("$MMM", oConfig.MMM[i]);
                     register("$MMMM", oConfig.MMMM[i]);
 

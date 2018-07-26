@@ -22,34 +22,36 @@
             clickClass: "fa-check"
         };
 
-        //# 
+        //#
         function clipboard($element, vValue) {
             var _element = $element[0],
                 oClipboard = new ClipboardJs(_element, {
                     text: function (/*_element*/) {
-                        $element.removeClass(oClipboardOptions.iconClass);
-                        $element.addClass(oClipboardOptions.clickClass);
-    
-                        setTimeout(function() {
-                            $element.removeClass(oClipboardOptions.clickClass);
-                            $element.addClass(oClipboardOptions.iconClass);
-                            //_element.clipboard.destroy();
-                        }, oClipboardOptions.clickTimeout);
-    
+                        if (core.type.fn.is($element.removeClass)) {
+                            $element.removeClass(oClipboardOptions.iconClass);
+                            $element.addClass(oClipboardOptions.clickClass);
+
+                            setTimeout(function() {
+                                $element.removeClass(oClipboardOptions.clickClass);
+                                $element.addClass(oClipboardOptions.iconClass);
+                                //_element.clipboard.destroy();
+                            }, oClipboardOptions.clickTimeout);
+                        }
+
                         return (core.is.fn(vValue) ? vValue($element) : vValue);
                     }
                 })
             ;
-    
-            //# 
+
+            //#
             _element.clipboard = oClipboard;
-    
+
             /*
             oClipboard.on('success', function (e) {
                 console.log(e);
                 //e.stopPropagation();
             });
-    
+
             oClipboard.on('error', function (e) {
                 console.log(e);
                 //e.stopPropagation();
