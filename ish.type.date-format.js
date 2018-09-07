@@ -331,4 +331,4 @@
         };
     }); //# core.type.date
 
-}(document.getElementsByTagName("HTML")[0].ish);
+}(document.querySelector("SCRIPT[ish]").ish);

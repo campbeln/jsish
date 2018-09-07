@@ -7,7 +7,7 @@
 !function (core) {
     'use strict';
 
-    
+
     /*
     ####################################################################################################
     Class: core.type.fn.overload
@@ -145,4 +145,4 @@
         };
     }); //# core.oop.overload
 
-}(document.getElementsByTagName("HTML")[0].ish);
+}(document.querySelector("SCRIPT[ish]").ish);

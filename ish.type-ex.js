@@ -810,16 +810,82 @@
             */
 
             //# cp
-            dom: {
-                // eq:
-                // cmp:
+            dom: function () {
+                function pender(vDomParent, vDomToAdd, bPrepend) {
+                    var i,
+                        _parent = core.type.dom.mk(vDomParent, null),
+                        _domToAdd = core.type.dom.mk(vDomToAdd, null),
+                        bReturnVal = !!(_parent && vDomToAdd)
+                    ;
 
-                cp: function (x, bDeepCopy) {
-                    if (core.type.dom.is(x) && core.type.fn.is(x.cloneNode)) {
-                        return x.cloneNode(core.type.bool.mk(bDeepCopy));
+                    //# If we have a _parent and _domToAdd, bPrepend or .appendChild it
+                    if (bReturnVal) {
+                        if (core.type.arr.is(vDomToAdd)) {
+                            //#
+                            if (bPrepend) {
+                                for (i = vDomToAdd.length; i > 0; i--) {
+                                    _domToAdd = core.type.dom.mk(vDomToAdd[i], null);
+                                    _domToAdd && _parent.insertBefore(_domToAdd, _parent.childNodes[0]);
+                                }
+                            }
+                            //#
+                            else {
+                                for (i = 0; i < vDomToAdd.length; i++) {
+                                    _domToAdd = core.type.dom.mk(vDomToAdd[i], null);
+                                    _domToAdd && _parent.appendChild(_domToAdd);
+                                }
+                            }
+                        }
+                        //#
+                        else if (core.type.dom.is(_domToAdd)) {
+                            (bPrepend ?
+                                _parent.insertBefore(_domToAdd, _parent.childNodes[0]) :
+                                _parent.appendChild(_domToAdd)
+                            );
+                        }
                     }
-                } //# type.dom.cp
-            }, //# core.type.dom
+
+                    return bReturnVal;
+                } //# pender
+
+                return {
+                    // eq:
+                    // cmp:
+
+                    cp: function (x, bDeepCopy) {
+                        if (core.type.dom.is(x) && core.type.fn.is(x.cloneNode)) {
+                            return x.cloneNode(core.type.bool.mk(bDeepCopy));
+                        }
+                    }, //# type.dom.cp
+
+                    prepend: function (vDomParent, vDomToAdd) {
+                        return pender(vDomParent, vDomToAdd, true);
+                    }, //# type.dom.prepend
+
+                    append: function (vDomParent, vDomToAdd) {
+                        return pender(vDomParent, vDomToAdd /*, false*/);
+                    }, //# type.dom.append
+
+                    replace: function (vTarget, vReplacement) {
+                        var _target = core.type.dom.mk(vTarget, null),
+                            _replacement = (vReplacement ? core.type.dom.parse(vReplacement)[0] : null), //# TODO: add looping
+                            bReturnVal = !!(_target && _target.parentNode)
+                        ;
+
+                        //# If the _target and _replacement are valid, .replaceChild now
+                        if (bReturnVal) {
+                            if (_replacement) {
+                                _target.parentNode.replaceChild(_replacement, _target);
+                            }
+                            else {
+                                _target.remove();
+                            }
+                        }
+
+                        return bReturnVal;
+                    } //# type.dom.replace
+                };
+            }(), //# core.type.dom
 
             //# cmp, cp, unique, matches, randomize, of, countOf, sort
             arr: {
@@ -1183,4 +1249,4 @@
         };
     }); //# core.type
 
-}(document.getElementsByTagName("HTML")[0].ish);
+}(document.querySelector("SCRIPT[ish]").ish);

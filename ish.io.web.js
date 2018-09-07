@@ -445,4 +445,6 @@
         }
     }); //# core.io.web
 
-}(document.getElementsByTagName("HTML")[0].ish);
+    core.io.event.fire("ish.web");
+
+}(document.querySelector("SCRIPT[ish]").ish);

@@ -215,4 +215,4 @@
         }
     }); //# core.type.num
 
-}(document.getElementsByTagName("HTML")[0].ish);
+}(document.querySelector("SCRIPT[ish]").ish);

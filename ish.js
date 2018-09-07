@@ -1,7 +1,7 @@
 /** ################################################################################################
  * @class ish
  * @classdesc ishJS Functionality (Q: Are you using Vanilla Javascript? A: ...ish)
- * @version 0.10.2018-06-27
+ * @version 0.10.2018-09-03
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2018, Nick Campbell
@@ -23,7 +23,7 @@
         oTypeIsh = { //# Set the .ver and .target under .type.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             //is: function () {},
             //import: function () {},
-            ver: '0.10.2018-07-12',
+            ver: '0.10.2018-09-03',
             options: {
                 //script: _undefined,
                 target: "ish",
@@ -35,7 +35,6 @@
                 }
             },
             expectedErrorHandler: function expectedErrorHandler(/*e*/) {}
-            //script: _document_currentScript || _document_querySelector("SCRIPT[" + core.type.ish.target + "]"),
         },
         oInterfaces = {
             pub: function () {
@@ -139,7 +138,7 @@
             Boolean value representing if the value is a boolean value.
             */
             is: function isBool(b) {
-                //return (b === true || b === false);
+                //return (b === _true || b === _false);
                 return (_Object_prototype_toString.call(b) === '[object Boolean]');
             }, //# bool.is
 
@@ -148,6 +147,7 @@
             Safely forces the passed varient into a boolean value.
             Parameters:
             b - The varient to interrogate.
+            bDefaultVal - The default value to return if casting fails.
             Returns:
             Boolean value representing the truthiness of the passed varient.
             */
@@ -196,6 +196,7 @@
             Parameters:
             i - The varient to interrogate.
             vDefault - The default value to return if casting fails.
+            iRadix - Integer between 2 and 36 that represents the radix (the base in mathematical numeral systems) of the above mentioned string.
             Returns:
             Integer representing the passed value.
             About:
@@ -211,8 +212,8 @@
             > "$12 monkeys!" === undefined
             In short, the first non-whitespace numeric characters are used in the cast, until any non-numeric character is hit.
             */
-            mk: function (i, vDefault) {
-                var iReturnVal = parseInt(i, 10);
+            mk: function (i, vDefault, iRadix) {
+                var iReturnVal = parseInt(i, (iRadix > 1 && iRadix < 37 ? iRadix : 10));
 
                 return (!isNaN(iReturnVal) ?
                     iReturnVal :
@@ -267,7 +268,7 @@
             is: function isNum(x) {
                 return (
                     /^[-0-9]?[0-9]*(\.[0-9]{1,})?$/.test(x) &&
-                    !isNaN(parseFloat(x, 10)) &&
+                    !isNaN(parseFloat(x)) &&
                     isFinite(x)
                 );
             } //# num.is
@@ -454,76 +455,148 @@
             } //# fn.mk
         }; //# core.type.fn
 
-        type.dom = {
-            /*
-            Function: is
-            Determines if the passed value is a DOM reference.
-            Parameters:
-            x - The varient to interrogate.
-            bAllowSelector - Boolean value representing if CSS selectors that successfully resolve to DOM elements are to be included in the test.
-            Returns:
-            Boolean value representing if the value is a DOM reference.
-            */
-            is: function isDom(x, bAllowSelector) {
-                //# If we are to bAllowSelector, attempt to convert x to a DOM element if its .is.str
-                x = (bAllowSelector && core.type.str.is(x, true) ? _document_querySelector(x) || _document.getElementById(x) : x);
+        type.dom = function () {
+            var a_oWrapMap = {
+                _:      [1, "<div>", "</div>"],
+                option: [1, "<select multiple='multiple'>", "</select>"],
+                legend: [1, "<fieldset>", "</fieldset>"],
+                area:   [1, "<map>", "</map>"],
+                param:  [1, "<object>", "</object>"],
+                thead:  [1, "<table>", "</table>"],
+                tr:     [2, "<table><tbody>", "</tbody></table>"],
+                col:    [2, "<table><tbody></tbody><colgroup>", "</colgroup></table>"],
+                td:     [3, "<table><tbody><tr>", "</tr></tbody></table>"],
+                body:   [0, "", ""]
+            };
+            a_oWrapMap.optgroup = a_oWrapMap.option;
+            a_oWrapMap.th = a_oWrapMap.td;
+            a_oWrapMap.tbody = a_oWrapMap.tfoot = a_oWrapMap.colgroup = a_oWrapMap.caption = a_oWrapMap.thead;
 
-                return (
-                    x && //# core.type.is.native(x) &&
-                    core.type.str.is(x.tagName) &&
-                    x.tagName !== "" &&
-                    //core.type.fn.is(x.cloneNode) &&
-                    core.type.fn.is(x.getAttribute)
-                );
-            }, //# dom.is
+            return {
+                /*
+                Function: is
+                Determines if the passed value is a DOM reference.
+                Parameters:
+                x - The varient to interrogate.
+                bAllowSelector - Boolean value representing if CSS selectors that successfully resolve to DOM elements are to be included in the test.
+                Returns:
+                Boolean value representing if the value is a DOM reference.
+                */
+                is: function isDom(x, bAllowSelector) {
+                    //# If we are to bAllowSelector, attempt to convert x to a DOM element if its .is.str
+                    x = (bAllowSelector && core.type.str.is(x, true) ? _document_querySelector(x) || _document.getElementById(x) : x);
 
-            /*
-            Function: mk
-            Safely parses the passed value into a DOM element.
-            Parameters:
-            x - The varient to interrogate. Can be a CSS Selector (used by document.querySelector), jQuery reference (x[0] will be returned), HTML string defining a single root element or DOM element.
-            _default - The default DOM element to return if casting fails.
-            Returns:
-            DOM element represented by the passed value, or _default if interrogation failed.
-            */
-            mk: function (x, _default) {
-                var _div = _document.createElement("div"),
-                    _returnVal = (arguments.length > 1 ? _default : _div)
-                ;
+                    return (
+                        x && //# core.type.is.native(x) &&
+                        core.type.str.is(x.tagName) &&
+                        x.tagName !== "" &&
+                        //core.type.fn.is(x.cloneNode) &&
+                        core.type.fn.is(x.getAttribute)
+                    );
+                }, //# dom.is
 
-                //#
-                //_default = _returnVal;
+                /*
+                Function: mk
+                Safely parses the passed value into a DOM element.
+                Parameters:
+                x - The varient to interrogate. Can be a CSS Selector (used by document.querySelector), jQuery reference (x[0] will be returned), HTML string defining a single root element or DOM element.
+                _default - The default DOM element to return if casting fails.
+                Returns:
+                DOM element represented by the passed value, or _default if interrogation failed.
+                */
+                mk: function (x, _default) {
+                    var _div = _document.createElement("div"),
+                        _returnVal = (arguments.length > 1 ? _default : _div)
+                    ;
 
-                //#
-                if (core.type.str.is(x, true)) {
-                    if (core.type.selector.is(x)) {
-                        _returnVal = _document_querySelector(x) || _document.getElementById(x) || _returnVal;
-                    }
-                    //# Else try to parse the passed .is.str as HTML
-                    else {
-                        _div.innerHTML = x;
+                    //#
+                    if (core.type.str.is(x, true)) {
+                        x = x.trim();
 
-                        //# If we were able to parse a single non-#text node, set it into our _returnVal
-                        //# TODO: Make testing more betterer
-                        if (_div.childNodes.length <= 2 && _div.childNodes[0].nodeType !== 3) {
-                            _returnVal = _div.childNodes[0];
+                        //# If the passed x .is a .selector, try and collect it
+                        if (core.type.selector.is(x)) {
+                            _returnVal = _document_querySelector(x) || _document.getElementById(x) || _returnVal;
                         }
-                        //# Else if our _returnVal was defaulted to the _div above, reset the _div's .innerHTML
+                        //# Else try to parse the passed .is.str as HTML
                         else {
-                            _div.innerHTML = "";
-                        }
-                    }
-                }
-                else if (core.type.dom.is(x)) {
-                    _returnVal = x;
-                }
-                else if (x && x[0] && core.type.dom.is(x[0])) {
-                    _returnVal = x[0];
-                }
+                            _div.innerHTML = x;
 
-                return _returnVal;
-            } //# dom.mk
-        }; //# core.type.dom
+                            //# If we were able to parse a single non-#text node, set it into our _returnVal
+                            //# TODO: Make testing more betterer
+                            if (_div.childNodes.length <= 2 && _div.childNodes[0].nodeType !== 3) {
+                                _returnVal = _div.childNodes[0];
+                            }
+                            //# Else if our _returnVal was defaulted to the _div above, reset the _div's .innerHTML
+                            else {
+                                _div.innerHTML = "";
+                            }
+                        }
+                        //# Else try to .parse the passed .is.str as HTML
+                        //else {
+                        //    _returnVal = core.type.dom.parse(x, true) || _returnVal;
+                        //}
+                    }
+                    else if (core.type.dom.is(x)) {
+                        _returnVal = x;
+                    }
+                    else if (x && x[0] && core.type.dom.is(x[0])) {
+                        _returnVal = x[0];
+                    }
+
+                    return _returnVal;
+                }, //# dom.mk
+
+                /*
+                Function: parse
+                Safely parses the passed value into a DOM element.
+                Parameters:
+                sHTML -
+                bFirstElementOnly -
+                Returns:
+                DOM element represented by the passed value, or _default if interrogation failed.
+                */
+                //#     Based on: http://krasimirtsonev.com/blog/article/Revealing-the-magic-how-to-properly-convert-HTML-string-to-a-DOM-element
+                parse: function (sHTML, bFirstElementOnly) {
+                    var _returnVal, a_vMap, sTag, bBodyTag, i;
+
+                    //# .trim any empty leading/trailing #text nodes then safely determine the first sTag (if any) within the passed sHTML
+                    //#     NOTE: /g(lobal) only returns the first <tag> for whatever reason!?
+                    sHTML = core.type.str.mk(sHTML).trim();
+                    sTag = core.type.str.mk(
+                        (/<([^\/!]\w*)[\s\S]*?>/g.exec(sHTML) || {})[1]
+                    ).toLowerCase();
+
+                    //# Determine if this is a bBodyTag, the a_vMap entry then construct our _returnVal including its .innerHTML
+                    //#     NOTE: While we can and do parse multiple elements/nodes, we only look at the first sTag to determine the a_vMap
+                    a_vMap = a_oWrapMap[sTag] || a_oWrapMap._;
+                    bBodyTag = (sTag === 'body');
+                    //var _dom = (bBodyTag ? _document.implementation.createDocument('http://www.w3.org/1999/xhtml', 'html', _null) : _null);
+                    _returnVal = _document.createElement(bBodyTag ? 'html' : 'div');
+                    _returnVal.innerHTML = a_vMap[1] + sHTML + a_vMap[2];
+
+                    //# If the sHTML is a bBodyTag, reset our _returnVal an array containing it
+                    //#     NOTE: Use of Element.querySelector(...) below limits this to IE8+ without the polyfill, see: https://caniuse.com/#feat=queryselector
+                    if (bBodyTag) {
+                        _returnVal = [_returnVal.querySelector(sTag)];
+                    }
+                    //# Else set the i(ndex) and traverse down the a_vMap elements to collect the parsed sHTML
+                    else {
+                        i = a_vMap[0];
+                        while (i-- /* > 0*/) {
+                            _returnVal = _returnVal.children[0];
+                        }
+
+                        //# Reset our _returnVal to an array of its first .child(ren) if we're supposed to return the bFirstElementOnly else to all its .childNodes
+                        _returnVal = (bFirstElementOnly ?
+                            [_returnVal.children[0]] :
+                            core.type.arr.mk(_returnVal.childNodes)
+                        );
+                    }
+
+                    return (bFirstElementOnly ? _returnVal[0] : _returnVal);
+                } //# dom.parse
+            };
+        }(); //# core.type.dom
 
         type.arr = {
             /*
@@ -1322,7 +1395,7 @@
                                     break;
                                 }
                                 default: {
-                                    vReturnVal = fn.apply(vContext, convert(vArguments));
+                                    vReturnVal = fn.apply(vContext || core.resolve(vArguments, "this"), convert(vArguments));
                                     //break;
                                 }
                             }
@@ -1673,7 +1746,7 @@
                 var iReturnVal = 0;
 
                 //#
-                if (unwatch === core.type.fn.call(fnCallback, this, a_vArguments)) { //# TODO: Refactor `this` to `this || _null`?
+                if (unwatch === core.type.fn.call(fnCallback, _undefined, a_vArguments)) {
                     unwatch(sEvent, fnCallback);
                     iReturnVal--;
                 }
@@ -1744,7 +1817,7 @@
             urlArgs: ""
         };
 
-        //# 
+        //#
         function eventHandler(a_sUrls, fnCallback, oOptions) {
             var a_oTracker = [],
                 bAllLoaded = true,
@@ -2063,7 +2136,7 @@
                     (bAllLoaded ? doLoad() : loaded());
                 }, //# queue
 
-                //# 
+                //#
                 link: function (vUrls, fnCallback, oOptions) {
                     var _link, oEventHandler, oHandler, oCurrent, i,
                         a_sUrls = (core.type.arr.is(vUrls) ? vUrls : [vUrls])
@@ -2101,7 +2174,7 @@
                             }
                             //# </NonLinkOnloadSupport>
 
-                            //# 
+                            //#
                             _link.rel = oCurrent.rel || oOptions.rel;
                             _link.type = oCurrent.type || oOptions.type;
                             _link.href = oCurrent.href;
@@ -2114,7 +2187,7 @@
                     }
                 }, //# link
 
-                //# 
+                //#
                 css: function (vUrls, fnCallback, oOptions) {
                     //# Ensure the passed oOptions .obj.is, defaulting the values as we go
                     //#     NOTE: We skip oRequireOptions as that is done within core.require.link
@@ -2212,39 +2285,59 @@
      * @requires core.type.fn.is
     ################################################################################################# */
     core.lib = function () {
-        var fnSyncer;
+        var fnSyncer, fnBinder;
 
         return core.extend(oInterfaces.pub(), {
-            sync: core.extend(
-                function (fnCallback, oOptions) {
-                    var bValidRequest = core.type.fn.is(fnCallback) && core.type.fn.is(fnSyncer),
-                        fnSyncerWrapped = function () {
-                            var vResult = fnSyncer(fnCallback);
-                            return (oOptions.asResult ? vResult : bValidRequest); //# bValidRequest === true
+            ui: {
+                sync: core.extend(
+                    function (fnCallback, oOptions) {
+                        var bValidRequest = core.type.fn.is(fnCallback) && core.type.fn.is(fnSyncer),
+                            fnSyncerWrapped = function () {
+                                var vResult = fnSyncer(fnCallback);
+                                return (oOptions.asResult ? vResult : bValidRequest); //# bValidRequest === true
+                            }
+                        ;
+
+                        //# Ensure the passed oOptions is an .obj
+                        oOptions = core.type.obj.mk(oOptions);
+
+                        //# If we have a bValidRequest, return either fnSyncerWrapped or fnSyncerWrapped's result else return bValidRequest (false) to the caller
+                        return (bValidRequest ?
+                            (oOptions.asFn ? fnSyncerWrapped : fnSyncerWrapped()) :
+                            bValidRequest //# bValidRequest === false
+                        );
+                    }, {
+                        register: function (fn) {
+                            var bReturnVal = core.type.fn.is(fn);
+
+                            //#
+                            if (bReturnVal) {
+                                fnSyncer = fn;
+                            }
+
+                            return bReturnVal;
+                        } //# core.lib.ui.sync.register
+                    }
+                ), //# core.lib.ui.sync
+
+                bind: core.extend(
+                    function (vDom, oContext) {
+                        return core.type.fn.call(fnBinder, _null, [vDom, oContext]);
+                        //return fnBinder(vDom, oContext);
+                    }, {
+                        register: function (fn) {
+                            var bReturnVal = core.type.fn.is(fn);
+
+                            //#
+                            if (bReturnVal) {
+                                fnBinder = fn;
+                            }
+
+                            return bReturnVal;
                         }
-                    ;
-
-                    //# Ensure the passed oOptions is an .obj
-                    oOptions = core.type.obj.mk(oOptions);
-
-                    //# If we have a bValidRequest, return either fnSyncerWrapped or fnSyncerWrapped's result else return bValidRequest (false) to the caller
-                    return (bValidRequest ?
-                        (oOptions.asFn ? fnSyncerWrapped : fnSyncerWrapped()) :
-                        bValidRequest //# bValidRequest === false
-                    );
-                }, {
-                    register: function (fn) {
-                        var bReturnVal = core.type.fn.is(fn);
-
-                        //#
-                        if (bReturnVal) {
-                            fnSyncer = fn;
-                        }
-
-                        return bReturnVal;
-                    } //# core.lib.sync.register
-                }
-            ) //# core.lib.sync
+                    }
+                ) //# core.lib.ui.bind
+            }
         });
     }(); //# core.lib
 
@@ -2270,54 +2363,79 @@
     //#     NOTE: Since document.currentScript is not universally supported, we look for SCRIPT[ish] as a fallback
     !function /*init*/() {
         var sTemp,
+            bProcessAttribute = false,
             oOptions = oTypeIsh.options,
             sTarget = oOptions.target,
-            _script = _document_currentScript || _document_querySelector("SCRIPT[" + sTarget + "]"),
-            _html = _document.getElementsByTagName("HTML")[0]
+            _script = _document_currentScript || _document_querySelector("SCRIPT[" + sTarget + "]")
         ;
 
-        //# Set the .ish.script (if any)
-        core.type.ish.script = _script;
+        //#
+        function process(bProcessAttribute) {
+            //# If we have an  _script[ish] to process
+            if (bProcessAttribute) {
+                //# Reset the .plugins.baseUrl to the developer-defined inline value (if any, borrowing sTemp as we go)
+                sTemp = oOptions.plugins.baseUrl || _script.src;
+                oOptions.plugins.baseUrl = sTemp.substr(0, sTemp.lastIndexOf("/") + 1);
 
-        //# If we were able to locate our _script tag, .getAttribute its [ish] into sTemp
-        if (_script) {
+                //# .import any .plugins defined in our oOptions (flagging them as .importedBy SCRIPT[sTarget])
+                core.type.ish.import(oOptions.plugins.import, core.extend({
+                    importedBy: "SCRIPT[" + sTarget + "]"
+                }, oOptions.plugins));
+
+                //# Reset our sTarget to the developer-defined inline value (if any)
+                //#     NOTE: This is done here and not in the `if` above so that all _script's are attributed with [ish]
+                sTarget = oOptions.target;
+            }
+
+            //# If bProcessAttribute isn't _null and we have a sTarget, overwrite core functionality with any existing functionality under _window[sTarget], then reset the _window object's reference so that the globally accessable object is a refrence to core rather than its original object reference
+            //#     NOTE: We need to create the window[sTarget] in the .resolve(true, ...) below in case it is not already defined, else the .resolve will fail.
+            if (core.type.bool.is(bProcessAttribute) && core.type.str.is(sTarget, true)) {
+                core.extend(core, core.resolve(true, _window, sTarget));
+                core.resolve(_window, sTarget, core);
+            }
+        } //# process
+
+
+        //# If we were able to locate our _script tag and a _script[ish] attribute is present, .getAttribute its [ish] into sTemp
+        if (_script && _script.hasAttribute(sTarget)) {
             sTemp = _script.getAttribute(sTarget);
 
-            //# If the _script[ish] .getAttribute .is .json, .extend it into our oOptions
-            if (core.type.json.is(sTemp)) {
-                core.extend(oOptions, core.type.json.mk(sTemp));
+            //# If the _script[ish] .getAttribute .is a non-null .str
+            if (core.type.str.is(sTemp, true)) {
+                //# If the _script[ish] .getAttribute .is .json, .extend it into our oOptions
+                if (core.type.json.is(sTemp)) {
+                    core.extend(oOptions, core.type.json.mk(sTemp));
+                    bProcessAttribute = true;
+                }
+                //# Else if the value of _script[ish] is under our _window, .extend it into our oOptions
+                else if (core.type.obj.is(core.resolve(_window, sTemp))) {
+                    core.extend(oOptions, core.resolve(_window, sTemp));
+                    bProcessAttribute = true;
+                }
+                //# Else attempt to load the value of _script[ish] as a JSON file, flag bProcessAttribute to skip the .process below and .extend it into our oOptions on bSuccess
+                else {
+                    bProcessAttribute = _null;
+                    core.io.net.get(sTemp, function (bSuccess, oResponse /*, vArg, $xhr*/) {
+                        core.extend(oOptions, bSuccess ? oResponse.data : _null);
+                        process(bSuccess);
+                    });
+                }
             }
-            //# Else if the _script[ish] .getAttribute .is a .str, attempt to .resolve it under the _window then .extend it into our oOptions
-            else if (core.type.str.is(sTemp, true)) {
-                core.extend(oOptions, core.resolve(_window, sTemp));
+        }
+        //# Else the _script is missing or the _document_currentScript isn't attributed with [ish]
+        else {
+            //# If the _script is missing, dummy one up with .createElement then .appendChild it
+            if (!_script) {
+                _script = _document.createElement("SCRIPT");
+                _head.appendChild(_script);
             }
-            //# TODO: Enable an AJAX request to a config JSON?
 
-            //# Reset the .plugins.baseUrl to the developer-defined inline value (if any, borrowing sTemp as we go)
-            sTemp = oOptions.plugins.baseUrl || _script.src;
-            oOptions.plugins.baseUrl = sTemp.substr(0, sTemp.lastIndexOf("/") + 1);
-
-            //# .import any .plugins defined in our oOptions (flagging them as .importedBy SCRIPT[sTarget])
-            core.type.ish.import(oOptions.plugins.import, core.extend({
-                importedBy: "SCRIPT[" + sTarget + "]"
-            }, oOptions.plugins));
-
-            //# Reset our sTarget to the developer-defined inline value (if any)
-            sTarget = oOptions.target;
+            //# Set _script[ish] so other scripts can auto-resolve
+            _script.setAttribute(sTarget, "");
         }
 
-        //# If we have a sTarget, overwrite core functionality with any existing functionality under _window[sTarget], then reset the _window object's reference so that the globally accessable object is a refrence to core rather than its original object reference
-        //#     NOTE: We need to create the window[sTarget] in the .resolve(true, ...) below in case it is not already defined, else the .resolve will fail.
-        if (core.type.str.is(sTarget, true)) {
-            core.extend(core, core.resolve(true, _window, sTarget));
-            core.resolve(_window, sTarget, core);
-        }
-
-        //# If we found the first _html tag, ensure there is a reference to core available on it tag so that other scripts can auto-resolve
-        //#     TODO: Error if not found?
-        if (core.type.dom.is(_html)) {
-            _html.ish = core;
-            //_html[sTarget] = core;
-        }
+        //# Ensure there is a reference to core available on our _script tag so that other scripts can auto-resolve it then .process
+        _script[sTarget] = core;
+        process(bProcessAttribute);
     }(); //# Procedural code
 }();

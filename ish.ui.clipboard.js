@@ -4,68 +4,65 @@
  * @author Nick Campbell
  * @license MIT
 ################################################################################################# */
-!function (core, ClipboardJs) {
-    'use strict';
+!function (core) {
+    "use strict";
 
-    /*
-    ####################################################################################################
-    Class: core.ui.clipboard
-    Clipboard-based functionality.
-    Requires:
-    <core.extend>
-    ####################################################################################################
-    */
-    core.oop.partial(core.ui, function (/*oProtected*/) {
-        var oClipboardOptions = {
-            clickTimeout: 1000,
-            iconClass: "fa-clipboard",
-            clickClass: "fa-check"
-        };
-
-        //#
-        function clipboard($element, vValue) {
-            var _element = $element[0],
-                oClipboard = new ClipboardJs(_element, {
-                    text: function (/*_element*/) {
-                        if (core.type.fn.is($element.removeClass)) {
-                            $element.removeClass(oClipboardOptions.iconClass);
-                            $element.addClass(oClipboardOptions.clickClass);
-
-                            setTimeout(function() {
-                                $element.removeClass(oClipboardOptions.clickClass);
-                                $element.addClass(oClipboardOptions.iconClass);
-                                //_element.clipboard.destroy();
-                            }, oClipboardOptions.clickTimeout);
-                        }
-
-                        return (core.is.fn(vValue) ? vValue($element) : vValue);
-                    }
-                })
-            ;
+    //# Build the core.lib.ui.clipboard wrapper around ClipboardJS's implementation
+    //#     NOTE: core.require includes the required scripts/CSS then runs the provided function
+    core.require(["js/ish/ish.ui.css.js", "js/clipboard.min.js"], function (/*a_sUrls, bAllLoaded*/) {
+        /*
+        ####################################################################################################
+        Class: core.ui.clipboard
+        Clipboard-based functionality.
+        Requires:
+        <core.extend>
+        ####################################################################################################
+        */
+        core.oop.partial(core.ui, function (/*oProtected*/) {
+            var oClipboardOptions = {
+                clickTimeout: 1000,
+                iconClass: "fa-clipboard",
+                clickClass: "fa-check"
+            };
 
             //#
-            _element.clipboard = oClipboard;
+            function clipboard(_element, vValue) {
+                //#
+                _element.clipboard = new window.Clipboard(_element, {
+                    text: function (/*_element*/) {
+                        core.ui.css.class.rm(_element, oClipboardOptions.iconClass);
+                        core.ui.css.class.add(_element, oClipboardOptions.clickClass);
 
-            /*
-            oClipboard.on('success', function (e) {
-                console.log(e);
-                //e.stopPropagation();
-            });
+                        setTimeout(function() {
+                            core.ui.css.class.rm(_element, oClipboardOptions.clickClass);
+                            core.ui.css.class.add(_element, oClipboardOptions.iconClass);
+                            //_element.clipboard.destroy();
+                        }, oClipboardOptions.clickTimeout);
 
-            oClipboard.on('error', function (e) {
-                console.log(e);
-                //e.stopPropagation();
-            });
-            */
-        } //# clipboard
+                        return (core.is.fn(vValue) ? vValue(_element) : vValue);
+                    }
+                });
+                /*
+                _element.clipboard.on('success', function (e) {
+                    console.log(e);
+                    //e.stopPropagation();
+                });
 
-        return {
-            clipboard: core.extend(clipboard, {
-                options: function (oOptions) {
-                    oClipboardOptions = core.extend(oClipboardOptions, oOptions);
-                }
-            })
-        };
-    }); //# core.ui.clipboard
+                _element.clipboard.on('error', function (e) {
+                    console.log(e);
+                    //e.stopPropagation();
+                });
+                */
+            } //# clipboard
 
-}(document.getElementsByTagName("HTML")[0].ish, window.Clipboard);
+            return {
+                clipboard: core.extend(clipboard, {
+                    options: function (oOptions) {
+                        oClipboardOptions = core.extend(oClipboardOptions, oOptions);
+                    }
+                })
+            };
+        }); //# core.ui.clipboard
+    }, { baseUrl: "" }); //# core.ui.clipboard
+
+}(document.querySelector("SCRIPT[ish]").ish);
