@@ -30,7 +30,7 @@
                 function resolveScript(_script) {
                     var a__scripts;
 
-                    if (!core.is.dom(_script)) {
+                    if (!core.type.dom.is(_script)) {
                         a__scripts = document.getElementsByTagName( 'script' );
                         _script = a__scripts[a__scripts.length];
                     }
@@ -42,10 +42,10 @@
                 //#
                 function doRetry(oData, oBucket, bFromError) {
                     var oReturnVal,
-                        iRetryMS = core.fn.call(oBucket.retry, this, [oData, oBucket, bFromError])
+                        iRetryMS = core.type.fn.call(oBucket.retry, this, [oData, oBucket, bFromError])
                     ;
 
-                    if (core.is.num(iRetryMS) && iRetryMS > 0) {
+                    if (core.type.num.is(iRetryMS) && iRetryMS > 0) {
                         //oReturnVal = core.lib.ui.sync(oBucket.refresh, iRetryMS);
                         oReturnVal = core.lib.ng.$timeout(oBucket.refresh, iRetryMS);
                     }
@@ -63,7 +63,7 @@
                     _component = _documentCurrentScript.parentElement;
                     sName = _component.getAttribute("id");
                     eCategory = (sName.indexOf("/") > -1 ? sName.split("/")[0] : "none");
-                    oReturnVal = !core.is.fn(getBucketBuilder(sName, eCategory));
+                    oReturnVal = !core.type.fn.is(getBucketBuilder(sName, eCategory));
 
                     //# If we have a new eCategory/sName pair to .register
                     if (oReturnVal) {
@@ -88,16 +88,16 @@
 
                                         $end: function (bSuccess, bRetry, a_vRecords) {
                                             core.extend(oBucket, {
-                                                success: core.mk.bool(bSuccess),
+                                                success: core.type.bool.mk(bSuccess),
                                                 loading: false,
-                                                retrying: core.mk.bool(bRetry),
+                                                retrying: core.type.bool.mk(bRetry),
                                                 requestMS: (Date.now() - iTimer),
-                                                records: core.mk.arr(a_vRecords)
+                                                records: core.type.arr.mk(a_vRecords)
                                             });
                                         }, //# $end
 
                                         template: function (sType) {
-                                            return core.resolve(oBucket, ["element", "component", "templates", core.mk.str(sType, "default")]);
+                                            return core.resolve(oBucket, ["element", "component", "templates", core.type.str.mk(sType, "default")]);
                                         },
 
                                         $document: document,
@@ -136,7 +136,7 @@
 
                 //#
                 function deregister(sName, eCategory) {
-                    var bReturnVal = core.is.fn(getBucketBuilder(sName, eCategory));
+                    var bReturnVal = core.type.fn.is(getBucketBuilder(sName, eCategory));
 
                     if (bReturnVal) {
                         delete oData[eCategory][sName];
@@ -161,13 +161,13 @@
                     }, //# category
 
                     exists: function (sName, eCategory) {
-                        return core.is.fn(getBucketBuilder(sName, eCategory));
+                        return core.type.fn.is(getBucketBuilder(sName, eCategory));
                     },
 
                     //#
                     render: function (sName, eCategory, oOptions) {
                         var _element,
-                            oBucket = core.fn.call(getBucketBuilder(sName, eCategory), this, oOptions),
+                            oBucket = core.type.fn.call(getBucketBuilder(sName, eCategory), this, oOptions),
                             _wrapper = document.createElement("div"),
                             oRequests = {}
                         ;
@@ -175,7 +175,7 @@
                         //#
                         oBucket.cancel = function () {
                             //#
-                            core.fn.call(core.resolve(oRequests.get, "cancel"));
+                            core.type.fn.call(core.resolve(oRequests.get, "cancel"));
                             //core.lib.ui.sync.cancel(oRequests.retry); //# TODO: check!?!
                             core.lib.ng.$timeout.cancel(oRequests.retry); //# TODO: check!?!
                             core.lib.ng.$timeout.cancel(oRequests.get); //# TODO: check!?!
@@ -192,7 +192,7 @@
                                 sUrl = oBucket.fnUrlBuilder(oBucket.config || _element.component || core.app.data, oBucket);
 
                                 //#
-                                if (core.is.str(sUrl, true)) {
+                                if (core.type.str.is(sUrl, true)) {
                                     oBucket.$start();
 
                                     //#
@@ -200,8 +200,8 @@
                                         function (data) {
                                             oBucket.model = data;
                                             oBucket.error = null;
-                                            oBucket.results = (core.is.fn(oBucket.resolve) ? oBucket.resolve(data, oBucket) : core.resolve(data, core.mk.str(oBucket.resolve)));
-                                            //oBucket.show = core.is.arr(oBucket.records, true);
+                                            oBucket.results = (core.type.fn.is(oBucket.resolve) ? oBucket.resolve(data, oBucket) : core.resolve(data, core.type.str.mk(oBucket.resolve)));
+                                            //oBucket.show = core.type.arr.is(oBucket.records, true);
                                             oRequests.retry = doRetry(data, oBucket, false);
                                             oBucket.$end(true, oRequests.retry, oBucket.records);
                                         },
@@ -242,7 +242,7 @@
                         $z.resolve(true, _element, "component.bucket", oBucket);
 
                         //#
-                        core.fn.call(oBucket.onRender, this, [oBucket]);
+                        core.type.fn.call(oBucket.onRender, this, [oBucket]);
                         return oBucket;
                     } //# render
                 });

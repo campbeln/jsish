@@ -411,19 +411,19 @@ window.cn = function (sSelector) {
                 fnCallback = fnCallback || core.lib.ng.themeCallback;
 
                 //# If the caller didn't pass in a sTheme, collect it from the $cookie
-                if (!core.is.str(sTheme, true)) {
+                if (!core.type.str.is(sTheme, true)) {
                     sTheme = ($cookie.data.theme || $cookie.original);
                 }
 
                 /*
                 $z.type.fn.poll(
                     function () {
-                        return $z.is.obj($z.resolve($z, "app.data.selected"), { nonEmpty: true });
+                        return $z.type.obj.is($z.resolve($z, "app.data.selected"), { nonEmpty: true });
                     },
                     {
                         onsuccess: function () {
                             oTheme.css = { "body": { "backgroundColor": "#1e2127", "color": "#A8B8A0", "aColor": "#44a8b6", "aHoverColor": "#4d9cee", "fontFamily": "Trebuchet MS" }, "branding": { "color": "#44a8b6", "aColor": "#DDDDDD", "aHoverColor": "#6ea34f", "fontFamily": "Geneva", "string": "Zone Cruncher" }, "searchcount": { "color": "#8ABA67", "aColor": "#8ABA67", "aHoverColor": "#FFFFFF" }, "footer": { "color": "#4e6733", "backgroundColor": "#383d4e", "acolor": "#8ABA67", "ahovercolor": "#FFFFFF" }, "results": { "borderRadius": "5px", "boxShadow": "0px 0px 1px 1px rgba(185,89,216, .6)" }, "lessemphasis": { "color": "#383d4e", "fontSize": "14px", "fontWeight": "bold" }, "lowemphasis": { "color": "rgba(214,83,95,0.7)", "fontSize": "14px", "fontWeight": "normal" }, "faint": { "opacity": "0.6", "color": "#A8B8A0", "fontSize": "14px", "fontWeight": "bold" }, "dnamesearch": { "imgoff": "transparent-500x200-off.png", "imgon": "transparent-500x200-on.png", "boxShadow": "0px 0px 1px 1px rgba(138,186,103,0.8)" }, "ipsearch": { "imgoff": "transparent-500x200-off.png", "imgon": "transparent-500x200-on.png", "boxShadow": "0px 0px 1px 1px rgba(138,186,103,0.8)" }, "tr": { "altRowBackgroundColor": "rgba(190,219,190,0.15 )" }, "brandlogo": { "height": "" }, "tagbox": { "boxShadow": "0px 0px 1px 1px rgba(223,181,75, .8)", "borderRadius": "5px" }, "statusbox": { "boxShadow": "0px 0px 1px 1px rgba(223,181,75, .8)", "borderRadius": "5px" } };
-                            core.fn.call(fnCallback, oTheme, [true]);
+                            core.type.fn.call(fnCallback, oTheme, [true]);
                         },
                         timeout: 7500,
                         wait: 500
@@ -461,7 +461,7 @@ window.cn = function (sSelector) {
             set: function (sTheme) {
                 var oTheme = core.app.theme,    //#code-golf
                     $cookie = oTheme.$cookie,   //#code-golf
-                    bReload = (core.is.str(sTheme, true) && !core.type.str.cmp(sTheme, $cookie.data.theme))
+                    bReload = (core.type.str.is(sTheme, true) && !core.type.str.cmp(sTheme, $cookie.data.theme))
                 ;
 
                 //# Set the $cookie's .theme then .set the $cookie
@@ -647,7 +647,7 @@ window.cn = function (sSelector) {
             set: function (sDomain, bIsNS) {
                 core.lib.ui.sync(function () {
                     core.app.data.selected.Domain = core.app.domain.mk(sDomain);
-                    core.app.data.selected.isNS = core.mk.bool(bIsNS, false);
+                    core.app.data.selected.isNS = core.type.bool.mk(bIsNS, false);
                 });
             } //# core.app.domain.set
         }, //# core.app.domain
@@ -938,7 +938,7 @@ window.cn = function (sSelector) {
                     bCompleteRequest = true,
                     oRequest = core.lib.ng.$http[sType.toLowerCase()](processUrl(sUrl)),
                     fnFinally = function(fnFinal) {
-                        $z.fn.call(fnFinal, this, bCompleteRequest);
+                        $z.type.fn.call(fnFinal, this, bCompleteRequest);
                     }
                 ;
 
@@ -948,7 +948,7 @@ window.cn = function (sSelector) {
                     ;
 
                     //#
-                    sUrl = core.mk.str(sUrl);
+                    sUrl = core.type.str.mk(sUrl);
                     if (sUrl.indexOf("/cgi-bin/") === 0 || sUrl.indexOf("/search/") === 0 || sUrl.indexOf("/1220-mapi/") === 0) {
                         sReturnVal = sUrl;
                     }
@@ -960,7 +960,7 @@ window.cn = function (sSelector) {
                 } //# processUrl
 
                 //#
-                if ($z.is.str(sMetricsTarget, true)) {
+                if ($z.type.str.is(sMetricsTarget, true)) {
                     oMetrics = core.app.status();
                     core.app.data.$scope[sMetricsTarget] = oMetrics();
                 }
@@ -971,17 +971,17 @@ window.cn = function (sSelector) {
                         oRequest.then(
                             function () {
                                 if (bCompleteRequest) {
-                                    $z.fn.call(oMetrics.stop);
+                                    $z.type.fn.call(oMetrics.stop);
                                     core.app.data.$scope[sMetricsTarget] = oMetrics();
-                                    $z.fn.call(fnSuccess, this, Array.prototype.slice.call(arguments));
+                                    $z.type.fn.call(fnSuccess, this, Array.prototype.slice.call(arguments));
                                 }
                                 fnFinally(fnFinal);
                             },
                             function () {
                                 if (bCompleteRequest) {
-                                    $z.fn.call(oMetrics.err);
+                                    $z.type.fn.call(oMetrics.err);
                                     core.app.data.$scope[sMetricsTarget] = oMetrics();
-                                    $z.fn.call(fnError, this, Array.prototype.slice.call(arguments));
+                                    $z.type.fn.call(fnError, this, Array.prototype.slice.call(arguments));
                                 }
                                 fnFinally(fnFinal);
                             },
@@ -1018,8 +1018,8 @@ window.cn = function (sSelector) {
                 if (core.type.str.cmp(oReturnVal.compare, "i")) {
                     oReturnVal.compare = core.type.str.cmp;
                 }
-                //# Else if .compare !.is.fn then set it to the default .compare'son function
-                else if (!core.is.fn(oReturnVal.compare)) {
+                //# Else if .compare !.is .fn then set it to the default .compare'son function
+                else if (!core.type.fn.is(oReturnVal.compare)) {
                     oReturnVal.compare = function (x, y) {
                         return (x === y);
                     };
@@ -1039,7 +1039,7 @@ window.cn = function (sSelector) {
                 ;
 
                 //# If the sPicklistName is valid, traverse it looking for a matching .val, setting our oReturnVal if found
-                if (core.is.obj(a_oPicklist)) {
+                if (core.type.obj.is(a_oPicklist)) {
                     //#
                     for (i = 0; i < a_oPicklist.length; i++) {
                         if (fnCompare(a_oPicklist[i], vOptions)) {
@@ -1089,7 +1089,7 @@ window.cn = function (sSelector) {
 
                         //#
                         core.app.picklists.$exists = function (sPicklistName) {
-                            return core.is.arr(core.resolve(core.app.picklists, sPicklistName), true);
+                            return core.type.arr.is(core.resolve(core.app.picklists, sPicklistName), true);
                         }; //# core.app.picklists.$exists
 
                         //#
@@ -1353,8 +1353,8 @@ window.cn = function (sSelector) {
                         reverse: false
                     });
 
-                    //# If the sColumn .is.str, then this is a user ng-click event
-                    if (core.is.str(sColumn)) {
+                    //# If the sColumn .is .str, then this is a user ng-click event
+                    if (core.type.str.is(sColumn)) {
                         //# Reset the .column and .reverse based on the passed sColumn
                         oSectionData.reverse = (
                             arguments.length === 2 ?
@@ -1378,12 +1378,12 @@ window.cn = function (sSelector) {
                         }
                     );
 
-                    if (core.is.str(sTitle, true)) {
+                    if (core.type.str.is(sTitle, true)) {
                         oSectionData.desc = sTitle;
                     }
 
                     //# If this is a call from the filter filter, set the .column and .prompt for the .criteria
-                    if (core.is.obj($event)) {
+                    if (core.type.obj.is($event)) {
                         oSectionData.column = sColumn; //# $event.target.getAttribute("data-column");
                         core.lib.modal.prompt("Search '" + (sTitle || oSectionData.column) + "' for:", function (sCriteria) {
                             if (core.type.str.is(sCriteria, true)) {
@@ -1418,17 +1418,17 @@ window.cn = function (sSelector) {
 
                 //#
                 limitTo: function(bShowMin) {
-                    var a_sLimits = core.mk.str(core.ui.dom.getByLineage(sSection, 'limitTo').value).split(":"),
+                    var a_sLimits = core.type.str.mk(core.ui.dom.getByLineage(sSection, 'limitTo').value).split(":"),
                         oSectionData = $get('limitTo', sSection, {
-                            min: core.mk.int(a_sLimits[0], 10),
-                            max: core.mk.int(a_sLimits[1], 300),
+                            min: core.type.int.mk(a_sLimits[0], 10),
+                            max: core.type.int.mk(a_sLimits[1], 300),
                             showMin: true
                         }
                     );
 
                     //#
                     if (arguments.length === 1) {
-                        oSectionData.showMin = core.mk.bool(bShowMin);
+                        oSectionData.showMin = core.type.bool.mk(bShowMin);
                     }
 
                     oSectionData.min = (oSectionData.min < 0 ? undefined : oSectionData.min);

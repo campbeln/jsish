@@ -35,7 +35,7 @@
             if (oReturnVal.compare === "i") {
                 oReturnVal.compare = core.type.str.cmp;
             }
-            //# Else if .compare !.is.fn then set it to the default .compare'son function
+            //# Else if .compare !.is .fn then set it to the default .compare'son function
             else if (!core.type.fn.is(oReturnVal.compare)) {
                 oReturnVal.compare = function (x, y) {
                     return (x === y);

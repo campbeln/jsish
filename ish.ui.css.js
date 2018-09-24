@@ -44,7 +44,7 @@
                         a_sRules = (core.type.arr.is(vRules) ? vRules : [core.type.str.mk(vRules)])
                     ;
 
-                    //# Ensure the passed oOptions .is.obj then calculate our _style and iIndex
+                    //# Ensure the passed oOptions .is .obj then calculate our _style and iIndex
                     oOptions = core.type.obj.mk(oOptions);
                     _style = core.type.dom.mk(oOptions.style, _defaultStyle);
                     iIndex = core.type.int.mk(oOptions.index, -1);

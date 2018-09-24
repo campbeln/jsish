@@ -44,7 +44,7 @@
                 oOptions = _a[1];
                 _replace = core.type.dom.mk(vFirstArg, _undefined);
 
-                //# If the vFirstArg .is.dom, pull the [src] (if any) from the DOM element to _replace
+                //# If the vFirstArg .is .dom, pull the [src] (if any) from the DOM element to _replace
                 if (_replace) {
                     vTemp = _replace.getAttribute("src") || oOptions.src;
                 }
@@ -52,7 +52,7 @@
                 else {
                     //_replace = core.type.dom.mk(oOptions.replace, _undefined);
 
-                    //# If the vFirstArg .is.str, (eventually) set it into our .src
+                    //# If the vFirstArg .is .str, (eventually) set it into our .src
                     if (core.type.str.is(vFirstArg, true)) {
                         vTemp = vFirstArg;
                     }
@@ -62,7 +62,7 @@
             else {
                 oOptions = vFirstArg;
                 _replace = core.type.dom.mk(oOptions.replace, _undefined);
-                //# If the vFirstArg .is.dom, pull the [src] (if any) from the DOM element to _replace
+                //# If the vFirstArg .is .dom, pull the [src] (if any) from the DOM element to _replace
                 if (_replace) {
                     vTemp = _replace.getAttribute("src") || oOptions.src;
                 }
@@ -130,7 +130,7 @@
                 _element = core.type.dom.mk(vBaseElement)
             ;
 
-            //# Ensure the passed oOptions .is.obj then collect the a__scripts
+            //# Ensure the passed oOptions .is .obj then collect the a__scripts
             oOptions = core.type.obj.mk(oOptions);
             a__scripts = core.type.arr.mk(_element.querySelectorAll(oOptions.selector || "SCRIPT")); //# SCRIPT:not([type='text/ng-template'])
 
@@ -257,7 +257,7 @@
                         _returnVal /*= undefined */
                     ;
 
-                    //# Ensure the passed oOptions .is.obj then determine if we are to be bCaseSensitive
+                    //# Ensure the passed oOptions .is .obj then determine if we are to be bCaseSensitive
                     oOptions = core.type.obj.mk(oOptions);
                     bCaseSensitive = (oOptions.caseSensitive !== false);
 
@@ -292,7 +292,7 @@
                         return oDOM.script.find(oOptions.filename, oOptions);
                     }
 
-                    //# Ensure the passed oOptions .is.obj
+                    //# Ensure the passed oOptions .is .obj
                     oOptions = core.type.obj.mk(oOptions);
 
                     //# As long as the .currentScript isn't false, use it or the _document's, else .find it based on .filename
@@ -344,7 +344,7 @@
                         core.io.console.error("ish.ui.dom.component: No DOM objects matching TEMPLATE[name='" + sTemplateName + "'] and/or " + vTarget);
                     }
 
-                    //# Ensure we have an .is.obj for the passed oOptions
+                    //# Ensure we have an .is .obj for the passed oOptions
                     oOptions = core.type.obj.mk(oOptions);
                     oContext = core.type.obj.mk(oOptions.context);
                     sSrc = core.type.str.mk(_target.getAttribute("src"), oOptions.src || "");

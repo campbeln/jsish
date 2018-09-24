@@ -1,7 +1,7 @@
 /** ################################################################################################
  * @class ish
  * @classdesc ishJS Functionality (Q: Are you using Vanilla Javascript? A: ...ish)
- * @version 0.10.2018-09-03
+ * @version 0.10.2018-09-07
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2018, Nick Campbell
@@ -23,7 +23,7 @@
         oTypeIsh = { //# Set the .ver and .target under .type.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             //is: function () {},
             //import: function () {},
-            ver: '0.10.2018-09-03',
+            ver: '0.10.2018-09-24',
             options: {
                 //script: _undefined,
                 target: "ish",
@@ -45,7 +45,8 @@
                 };
             }
         }, //# oInterfaces
-        core = {
+        core = function () {
+            return _document_querySelector.apply(this, arguments);
             //resolve: function () {},
             //extend: function () {},
             //require: function () {},
@@ -362,13 +363,13 @@
             mk: function (v, vDefault) {
                 var vJson = (arguments.length > 1 ? vDefault : {});
 
-                //# If the passed v(arient) .is.str, lets .parse it into an object
+                //# If the passed v(arient) .is .str, lets .parse it into an object
                 if (core.type.str.is(v, true)) {
                     try {
                         vJson = JSON.parse(v);
                     } catch (e) { oTypeIsh.expectedErrorHandler(e); }
                 }
-                //# Else if the passed v(arient) .is.boj, lets .stringify it into a string
+                //# Else if the passed v(arient) .is .boj, lets .stringify it into a string
                 else if (core.type.obj.is(v)) {
                     try {
                         vJson = JSON.stringify(v);
@@ -483,7 +484,7 @@
                 Boolean value representing if the value is a DOM reference.
                 */
                 is: function isDom(x, bAllowSelector) {
-                    //# If we are to bAllowSelector, attempt to convert x to a DOM element if its .is.str
+                    //# If we are to bAllowSelector, attempt to convert x to a DOM element if its .is .str
                     x = (bAllowSelector && core.type.str.is(x, true) ? _document_querySelector(x) || _document.getElementById(x) : x);
 
                     return (
@@ -517,7 +518,7 @@
                         if (core.type.selector.is(x)) {
                             _returnVal = _document_querySelector(x) || _document.getElementById(x) || _returnVal;
                         }
-                        //# Else try to parse the passed .is.str as HTML
+                        //# Else try to parse the passed .is .str as HTML
                         else {
                             _div.innerHTML = x;
 
@@ -531,7 +532,7 @@
                                 _div.innerHTML = "";
                             }
                         }
-                        //# Else try to .parse the passed .is.str as HTML
+                        //# Else try to .parse the passed .is .str as HTML
                         //else {
                         //    _returnVal = core.type.dom.parse(x, true) || _returnVal;
                         //}
@@ -807,7 +808,7 @@
         //# Now that the passed oObject is known, set our vReturnVal accordingly
         vReturnVal = (core.type.obj.is(oObject, oIsObjOptions) ? oObject : _undefined);
 
-        //# If the passed oObject .is.obj and vPath .is.str or .is.arr, populate our a_sPath
+        //# If the passed oObject .is .obj and vPath .is .str or .is .arr, populate our a_sPath
         if (vReturnVal && (core.type.str.is(vPath) || (core.type.arr.is(vPath, true) && core.type.str.is(vPath[0])))) {
             a_sPath = (core.type.arr.is(vPath) ? vPath : vPath.split("."));
 
@@ -881,7 +882,7 @@
             bDeepCopy = core.type.bool.is(a[0])
         ;
 
-        //# If the first argument .is.bool or .is.num, setup the local vars accordingly
+        //# If the first argument .is .bool or .is .num, setup the local vars accordingly
         if (bDeepCopy || core.type.num.is(a[0])) {
             iDepth = (bDeepCopy ? -1 : core.type.int.mk(a[0]));
             oTarget = a[1];
@@ -906,8 +907,8 @@
             for (sKey in oCurrent) {
                 //# If the current sKey is a native property of oCurrent, set it into our oTarget
                 if (Object.prototype.hasOwnProperty.call(oCurrent, sKey)) {
-                    //# If the oCurrent sKey .is.arr, setup the oTarget's sKey as a new array
-                    //#     NOTE: This is necessary as otherwise arrays are copied in as objects so things like oTarget[sKey].push don't work in the .extend'ed objects, so since arrays return true from .is.obj and array's would otherwise be copied as references in the else below, this special case is necessary
+                    //# If the oCurrent sKey .is .arr, setup the oTarget's sKey as a new array
+                    //#     NOTE: This is necessary as otherwise arrays are copied in as objects so things like oTarget[sKey].push don't work in the .extend'ed objects, so since arrays return true from .is .obj and array's would otherwise be copied as references in the else below, this special case is necessary
                     if (core.type.arr.is(oCurrent[sKey])) {
                         oTarget[sKey] = [];
 
@@ -1116,13 +1117,13 @@
                 }
             } //# doPrune
 
-            //# If the caller passed in an .is.arr vSource, traverse it passing each entry into doPrune as we go
+            //# If the caller passed in an .is .arr vSource, traverse it passing each entry into doPrune as we go
             if (core.type.arr.is(vSource, true)) {
                 for (i = 0; i < vSource.length; i++) {
                     doPrune(vSource[i], vKeys, bSetToUndefined);
                 }
             }
-            //# Else if the caller passed in an .is.obj, pass it off to doPrune
+            //# Else if the caller passed in an .is .obj, pass it off to doPrune
             else if (core.type.obj.is(vSource)) {
                 doPrune(vSource, vKeys, bSetToUndefined);
             }
@@ -1191,7 +1192,7 @@
                         bReturnVal = false
                     ;
 
-                    //# If the passed a_vArray .is.arr, set our a_vReplacements and iTotalReplacements if we bHaveReplacements
+                    //# If the passed a_vArray .is .arr, set our a_vReplacements and iTotalReplacements if we bHaveReplacements
                     if (core.type.arr.is(a_vArray, true)) {
                         if (bHaveReplacements) {
                             a_vReplacements = (core.type.arr.is(vReplacements) ? vReplacements : [vReplacements]);
@@ -1245,7 +1246,7 @@
                 rm: function (vSource, vKeys, bSetToUndefined) {
                     var bReturnVal;
 
-                    //# If the caller passed in an .is.str, reset vKeys to an array
+                    //# If the caller passed in an .is .str, reset vKeys to an array
                     if (core.type.str.is(vKeys, true)) {
                         vKeys = [vKeys];
                     }
@@ -1264,7 +1265,7 @@
                         a_sReturnVal /* = _undefined */
                     ;
 
-                    //# If the passed oSource .is.obj, collect its .keys into our a_sReturnVal
+                    //# If the passed oSource .is .obj, collect its .keys into our a_sReturnVal
                     if (core.type.obj.is(oSource)) {
                         a_sReturnVal = Object.keys(oSource);
 
@@ -2287,53 +2288,61 @@
     core.lib = function () {
         var fnSyncer, fnBinder;
 
+        function doRegister(fn, bIsSync) {
+            var bReturnVal = core.type.fn.is(fn);
+
+            //#
+            if (bReturnVal) {
+                if (bIsSync) {
+                    fnSyncer = fn;
+                }
+                else {
+                    fnBinder = fn;
+                }
+            }
+
+            return bReturnVal;
+        } //# doRegister
+
         return core.extend(oInterfaces.pub(), {
             ui: {
                 sync: core.extend(
                     function (fnCallback, oOptions) {
-                        var bValidRequest = core.type.fn.is(fnCallback) && core.type.fn.is(fnSyncer),
-                            fnSyncerWrapped = function () {
-                                var vResult = fnSyncer(fnCallback);
-                                return (oOptions.asResult ? vResult : bValidRequest); //# bValidRequest === true
-                            }
-                        ;
+                        //#
+                        function fnSyncerWrapped() {
+                            var bValidRequest = core.type.fn.is(fnCallback) && core.type.fn.is(fnSyncer),
+                                vResult = (bValidRequest ? core.type.fn.call(fnSyncer, _null, [fnCallback]) : _null)
+                            ;
+
+                            //# If this is a bValidRequest and the caller wants the vResult do it, else return the value of bValidRequest to indicate the success/failure of the fnSyncer .call above
+                            return (bValidRequest && oOptions.asResult ? vResult : bValidRequest);
+                        } //# fnSyncerWrapped
+
 
                         //# Ensure the passed oOptions is an .obj
                         oOptions = core.type.obj.mk(oOptions);
 
-                        //# If we have a bValidRequest, return either fnSyncerWrapped or fnSyncerWrapped's result else return bValidRequest (false) to the caller
-                        return (bValidRequest ?
-                            (oOptions.asFn ? fnSyncerWrapped : fnSyncerWrapped()) :
-                            bValidRequest //# bValidRequest === false
+                        //# If no arguments were sent, return the validity of fnSyncer, else return fnSyncerWrapped or its result as per .asFn
+                        return (arguments.length === 0 ?
+                            core.type.fn.is(fnSyncer) :
+                            (oOptions.asFn ? fnSyncerWrapped : fnSyncerWrapped())
                         );
                     }, {
                         register: function (fn) {
-                            var bReturnVal = core.type.fn.is(fn);
-
-                            //#
-                            if (bReturnVal) {
-                                fnSyncer = fn;
-                            }
-
-                            return bReturnVal;
-                        } //# core.lib.ui.sync.register
+                            return doRegister(fn, true);
+                        }
                     }
                 ), //# core.lib.ui.sync
 
                 bind: core.extend(
                     function (vDom, oContext) {
-                        return core.type.fn.call(fnBinder, _null, [vDom, oContext]);
-                        //return fnBinder(vDom, oContext);
+                        return (arguments.length === 0 ?
+                            core.type.fn.is(fnBinder) :
+                            core.type.fn.call(fnBinder, _null, [vDom, oContext])
+                        );
                     }, {
                         register: function (fn) {
-                            var bReturnVal = core.type.fn.is(fn);
-
-                            //#
-                            if (bReturnVal) {
-                                fnBinder = fn;
-                            }
-
-                            return bReturnVal;
+                            return doRegister(fn /*, false*/);
                         }
                     }
                 ) //# core.lib.ui.bind

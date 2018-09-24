@@ -63,7 +63,7 @@
                     oOptions = core.type.obj.mk(oOptions);
 
                     //# If we (seem) to be eval'ing a valid sPojo run it in our fnLocalEvaler, collecting the .r(esult) into our oReturnVal
-                    if (core.type.pojo.check(sPojo, (oOptions.check ? oOptions.reject : []))) {
+                    if (core.type.pojo.check(sPojo, (oOptions.check ? oOptions.reject : null))) {
                         fnLocalEvaler(oArguments, core.type.obj.is(oOptions.context, true) ?
                             { o: oOptions.context, k: core.type.obj.ownKeys(oOptions.context), c: '' } :
                             null
@@ -88,25 +88,31 @@
                 check: function (sPojo, vReject) {
                     var i,
                         bReturnVal = core.type.arr.is(vReject),
-                        a_sReject = (bReturnVal ? vReject : [
-                            "eval", "Function",
+                        a_vReject = (bReturnVal ? vReject : [
+                            /eval(\/\*.*?\*\/)?(\/\/.*?)?\(/g, /Function(\/\*.*?\*\/)?(\/\/.*?)?\(/g,
                             ".prototype.", ".constructor"
                         ])
                     ;
 
-                    //# If the borrowed bReturnVal is indicating that vReject isn't an .arr and vReject also isn't false, then ensure that functions are a_sReject'd as well
+                    //# If the borrowed bReturnVal is indicating that vReject isn't an .arr and vReject also isn't false, then ensure that functions are a_vReject'd as well
                     if (!bReturnVal && vReject !== false) {
-                        a_sReject = a_sReject.concat(["function", "=>"]);
+                        a_vReject = a_vReject.concat([/function(\/\*.*?\*\/)?(\/\/.*?)?\(/g, "=>"]);
                     }
 
-                    //# .trim the passed sPojo then reset our bReturnVal based on its value
-                    sPojo = core.type.str.mk(sPojo).trim();
+                    //# Remove all whitespace from the passed sPojo then reset our bReturnVal based on its value
+                    sPojo = core.type.str.mk(sPojo).replace(/\s/g, "");
                     bReturnVal = (sPojo && sPojo[0] === "{" && sPojo[sPojo.length - 1] === "}");
 
-                    //# If sPojo seems valid thus far, traverse the a_sReject array, flipping our bReturnVal and falling from the loop if we find any a_sReject's
+                    //# If sPojo seems valid thus far, traverse the a_vReject array, flipping our bReturnVal and falling from the loop if we find any a_vReject's
                     if (bReturnVal) {
-                        for (i = 0; i < a_sReject.length; i++) {
-                            if (sPojo.indexOf(a_sReject[i]) > -1) {
+                        for (i = 0; i < a_vReject.length; i++) {
+                            if (a_vReject[i] instanceof RegExp) {
+                                if (a_vReject[i].test(sPojo)) {
+                                    bReturnVal = false;
+                                    break;
+                                }
+                            }
+                            else if (sPojo.indexOf(a_vReject[i]) > -1) {
                                 bReturnVal = false;
                                 break;
                             }
@@ -122,7 +128,7 @@
     document.querySelector("SCRIPT[ish]").ish,
 
     //#
-    //#     NOTE: The fnLocalEvaler is placed here to limit its scope and local variables as narrowly as possible (hence the use of `arguments[0]`)
+    //#     NOTE: The fnLocalEvaler is placed here to limit its scope and local variables as narrowly as possible (hence the use of `arguments[x]`)
     function /*fnLocalEvaler*/(/* oData, oInjectData */) {
         //# If oInjectData was passed, traverse the injection .o(bject) .shift'ing off a .k(ey) at a time as we set each as a local var
         if (arguments[1]) {

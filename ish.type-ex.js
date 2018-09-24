@@ -132,7 +132,7 @@
                         bReturnVal = false
                     ;
 
-                    //# Else if the vQueryValue .is.fn, call it with fn(vTestValue, oOptions)
+                    //# Else if the vQueryValue .is .fn, call it with fn(vTestValue, oOptions)
                     if (core.type.fn.is(vQueryValue)) {
                         bReturnVal = vQueryValue(vTestValue, oOptions);
                     }
@@ -167,7 +167,7 @@
                         )
                     ;
 
-                    //# .extend the passed oOptions with the defaults (which also ensures the passed oOptions .is.obj)
+                    //# .extend the passed oOptions with the defaults (which also ensures the passed oOptions .is .obj)
                     oOptions = core.extend({
                         firstEntryOnly: false,
                         caseInsentive: false,
@@ -213,7 +213,7 @@
                                     bIsMatch = false;
                                     vCurrent = vQuery[a_sKeys[j]];
 
-                                    //# If we have an .is.arr of vQuery values to traverse, do so now
+                                    //# If we have an .is .arr of vQuery values to traverse, do so now
                                     if (core.type.arr.is(vCurrent)) {
                                         for (k = 0; k < vCurrent.length; k++) {
                                             //# If the vCurrent value matches our current a_oCollection item, flip bIsMatch and fall from the inner loop
@@ -396,7 +396,7 @@
                 eq: function (x, y) {
                     var bReturnVal = false;
 
-                    //# If the passed x and y .is.num'bers, .mk them .floats and reset our bReturnVal to their comparison
+                    //# If the passed x and y .is .num'bers, .mk them .floats and reset our bReturnVal to their comparison
                     if (core.type.num.is(x) && core.type.num.is(y)) {
                         bReturnVal = (core.type.float.mk(x) === core.type.float.mk(y));
                     }
@@ -910,7 +910,7 @@
                         iLen = (vReturnVal ? x.length : 0)
                     ;
 
-                    //# If the passed x and y .is.arr and both have the same iLen
+                    //# If the passed x and y .is .arr and both have the same iLen
                     if (vReturnVal) {
                         //# Traverse the passed arrays, flipping our vReturnVal if an index isn't === or ==
                         for (i = 0; i < iLen; i++) {
@@ -1127,7 +1127,7 @@
                     cp: function (o, vDeepCopy) {
                         var oReturnVal /* = _undefined */;
 
-                        //# If the caller passed in a valid o(bject), .extend our oReturnVal as a new .is.obj
+                        //# If the caller passed in a valid o(bject), .extend our oReturnVal as a new .is .obj
                         if (core.type.obj.is(o)) {
                             oReturnVal = (vDeepCopy ?
                                 core.extend(vDeepCopy, {}, o) :
@@ -1144,7 +1144,7 @@
                             vReturnVal /*= undefined*/
                         ;
 
-                        //# If the caller passed in an .is.arr of keys, set it into our a_sOwnKeys
+                        //# If the caller passed in an .is .arr of keys, set it into our a_sOwnKeys
                         if (core.type.arr.is(vKeysOrFromTo)) {
                             a_sOwnKeys = vKeysOrFromTo;
 
@@ -1153,15 +1153,15 @@
                                 oFromTo[a_sOwnKeys[i]] = a_sOwnKeys[i];
                             }
                         }
-                        //# Else if the caller passed in a mapping .is.obj, set it into our oFromTo definition and collect a_sOwnKeys
+                        //# Else if the caller passed in a mapping .is .obj, set it into our oFromTo definition and collect a_sOwnKeys
                         else if (core.type.obj.is(vKeysOrFromTo)) {
                             oFromTo = vKeysOrFromTo;
                             a_sOwnKeys = core.type.obj.ownKeys(oFromTo);
                         }
 
-                        //# If vKeysOrFromTo was either an .is.arr or .is.obj
+                        //# If vKeysOrFromTo was either an .is .arr or .is .obj
                         if (a_sOwnKeys) {
-                            //# If the passed vSource .is.arr, set our vReturnVal to an array
+                            //# If the passed vSource .is .arr, set our vReturnVal to an array
                             if (core.type.arr.is(vSource)) {
                                 vReturnVal = [];
 
@@ -1170,7 +1170,7 @@
                                     vReturnVal.push(doCopy(vSource[i]), oFromTo, a_sOwnKeys);
                                 }
                             }
-                            //# Else if the passed vSource .is.obj, .doCopy directly into our vReturnVal
+                            //# Else if the passed vSource .is .obj, .doCopy directly into our vReturnVal
                             else if (core.type.obj.is(vSource)) {
                                 vReturnVal = doCopy(vSource, oFromTo, a_sOwnKeys);
                             }
@@ -1186,7 +1186,7 @@
                             a_sKeys = (core.type.obj.is(oSource) ? Object.keys(oSource) : _undefined)
                         ;
 
-                        //# If the passed oSource .is.obj, traverse its a_sKeys and setup our a_vReturnVal
+                        //# If the passed oSource .is .obj, traverse its a_sKeys and setup our a_vReturnVal
                         if (a_sKeys) {
                             a_vReturnVal = [];
                             for (i = 0; i < a_sKeys.length; i++) {

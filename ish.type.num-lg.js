@@ -200,7 +200,7 @@
                     for (i = 0; i < sValue.length; i++) {
                         sCurrentChar = sValue[i]; //# .substr(i, 1)
 
-                        //#### If the sCurrentChar .is.num
+                        //#### If the sCurrentChar .is .num
                         if (core.type.num.is(sCurrentChar)) {
                             //#### If we are supposed to bStartCounting, inc our iReturnVal
                             //####    NOTE: This is done so we ignore leading 0's (trailing 0's are still counted)

@@ -429,7 +429,7 @@
                     parse: function (sUrl) {
                         var i, oReturnVal;
 
-                        //# Ensure the passed sUrl .is.str then locate the ?
+                        //# Ensure the passed sUrl .is .str then locate the ?
                         sUrl = core.type.str.mk(sUrl, document.location.search || "");
                         i = sUrl.indexOf("?");
 

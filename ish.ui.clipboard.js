@@ -39,7 +39,7 @@
                             //_element.clipboard.destroy();
                         }, oClipboardOptions.clickTimeout);
 
-                        return (core.is.fn(vValue) ? vValue(_element) : vValue);
+                        return (core.type.fn.is(vValue) ? vValue(_element) : vValue);
                     }
                 });
                 /*

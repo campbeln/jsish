@@ -35,7 +35,7 @@
         //#
         dialog: function (sTemplate, oOptions) {
             //#
-            oOptions = core.mk.obj(oOptions);
+            oOptions = core.type.obj.mk(oOptions);
 
             //#
             return core.lib.ng.ngDialog.open({
@@ -64,8 +64,40 @@
                 oData.$ordered = a_oOrdered;
             } //# component.register
 
-        } //# core.lib.ui.component
+        }, //# core.lib.ui.component
 
+
+        //#     FROM: https://stackoverflow.com/a/37421357
+        inputMask: function () {
+            // Apply filter to all inputs with data-filter:
+            var input, state,
+                inputs = document.querySelectorAll('input[mask]')
+            ;
+
+            for (input of inputs) {
+                state = {
+                    value: input.value,
+                    start: input.selectionStart,
+                    end: input.selectionEnd,
+                    pattern: RegExp('^' + input.dataset.filter + '$')
+                };
+
+                input.addEventListener('input', function (/*event*/) {
+                    if (state.pattern.test(input.value)) {
+                        state.value = input.value;
+                    }
+                    else {
+                        input.value = state.value;
+                        input.setSelectionRange(state.start, state.end);
+                    }
+                });
+
+                input.addEventListener('keydown', function (/*event*/) {
+                    state.start = input.selectionStart;
+                    state.end = input.selectionEnd;
+                });
+            }
+        }
     }); //# core.lib.ui
 
     //#
