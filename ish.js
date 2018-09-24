@@ -23,7 +23,7 @@
         oTypeIsh = { //# Set the .ver and .target under .type.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             //is: function () {},
             //import: function () {},
-            ver: '0.10.2018-09-07',
+            ver: '0.10.2018-09-24',
             options: {
                 //script: _undefined,
                 target: "ish",
@@ -45,7 +45,8 @@
                 };
             }
         }, //# oInterfaces
-        core = {
+        core = function () {
+            return _document_querySelector.apply(this, arguments);
             //resolve: function () {},
             //extend: function () {},
             //require: function () {},
