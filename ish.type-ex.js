@@ -1088,16 +1088,47 @@
                         return (ax.length - bx.length);
                     } //# naturalCompare
 
-                    function natural(a_vArray) {
+                    function natural(a_vArray, bReverse) {
                         if (core.type.arr.is(a_vArray)) {
-                            return a_vArray.sort(naturalCompare);
+                            var a_vReturnVal = a_vArray.slice(0).sort(naturalCompare);
+                            return (bReverse === true ? a_vReturnVal.reverse() : a_vReturnVal);
                         }
                     } //# natural
+
+                    //#
+                    function orderBy(a_vArray, vOptions) {
+                        var a_vReturnVal /*= undefined*/,
+                            oOptions = core.type.obj.mk(vOptions),
+                            sPath = core.type.str.mk(oOptions.path),
+                            bReverse = (oOptions.reverse === true),
+                            fnCompare = core.type.fn.mk(oOptions.compare, function (a, b) {
+                                var vA = core.resolve(a, sPath),
+                                    vB = core.resolve(b, sPath)
+                                ;
+
+                                return (
+                                    vA > vB ? (bReverse ? -1 : 1) :
+                                    vA < vB ? (bReverse ? 1 : -1) :
+                                    0
+                                );
+                            })
+                        ;
+
+                        //# If the caller passed in a valid arr.is
+                        if (core.type.arr.is(a_vArray, true)) {
+                            //# Clone the a_vArray into our a_vReturnVal
+                            a_vReturnVal = a_vArray.slice(0);
+                            a_vReturnVal.sort(fnCompare);
+                        }
+
+                        return a_vReturnVal;
+                    } //# orderBy
 
 
                     //#
                     return core.extend(natural, {
-                        natural: natural
+                        natural: natural,
+                        by: orderBy
                     });
                 }() //# type.arr.sort
             }, //# core.type.arr

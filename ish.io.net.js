@@ -72,13 +72,14 @@
                         oData = {
                             status: $xhr.status,
                             text: $xhr.responseText,
-                            data: core.type.fn.tryCatch(JSON.parse)($xhr.responseText),
+                            json: core.type.fn.tryCatch(JSON.parse)($xhr.responseText),
                             url: sUrl,
                             verb: sVerb,
                             async: bAsync,
                             aborted: bAbort,
                             loaded: ($xhr.status === 200 || ($xhr.status === 0 && sUrl.substr(0, 7) === "file://"))
                         };
+                        oData.data = oData.json; //# TODO: Remove
 
                         //#
                         if (vCallback.cache || oXHROptions.cache) {

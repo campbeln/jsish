@@ -127,11 +127,12 @@
                                 }
 
                                 //# .encodeURIComponent the .string, set the max-age and path and toss it into the .cookie collection
+                                //#     NOTE: http://www.w3.org/Protocols/rfc2109/rfc2109 - The Domain attribute specifies the domain for which the cookie is valid. An explicitly specified domain must always start with a dot.
                                 _document.cookie = sName + "=" + encodeURIComponent($returnValue.str()) +
                                     "; path=" + sPath +
                                     (iMaxAge > 0 ? "; max-age=" + iMaxAge : "") +
                                     (dExpires ? "; expires=" + dExpires.toUTCString() : "") +
-                                    (sDomain ? '; domain=' + sDomain : "") +
+                                    (sDomain ? '; domain=.' + sDomain : "") +
                                 "; ";
 
                                 //# Flip .isNew to false (as its now present on the browser)

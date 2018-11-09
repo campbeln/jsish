@@ -23,7 +23,7 @@
         oTypeIsh = { //# Set the .ver and .target under .type.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             //is: function () {},
             //import: function () {},
-            ver: '0.10.2018-09-24',
+            ver: '0.10.2018-09-07',
             options: {
                 //script: _undefined,
                 target: "ish",
@@ -45,8 +45,7 @@
                 };
             }
         }, //# oInterfaces
-        core = function () {
-            return _document_querySelector.apply(this, arguments);
+        core = {
             //resolve: function () {},
             //extend: function () {},
             //require: function () {},
@@ -2252,13 +2251,11 @@
         this.Overlap = function(oElement1, oElement2) {
             var bReturn = false;
             var iX1, iX2, iA1, iA2, iY1, iY2, iB1, iB2;
-
                 //#### Set the Y (vertical) coords
             iB1 = this.Top(oElement1);
             iB2 = iB1 + this.Height(oElement1);
             iY1 = this.Top(oElement2);
             iY2 = iY1 + this.Height(oElement2);
-
                 //#### If the elements seem to be in the way verticially
             if ((iY1 <= iB1 && iY2 > iB1) || (iY1 >= iB1 && iY1 < iB2)) {
                     //#### Set the X (horozontal) coords
@@ -2266,13 +2263,11 @@
                 iA2 = iA1 + this.Width(oElement1);
                 iX1 = this.Left(oElement2);
                 iX2 = iX1 + this.Width(oElement2);
-
                     //#### If the passed elements also overlap horozontally, flip bReturn to true
                 if ((iX1 <= iA1 && iX2 > iA1) || (iX1 >= iA1 && iX1 < iA2)) {
                     bReturn = true;
                 }
             }
-
                 //#### Return the above determined bReturn to the caller
             return bReturn;
         };*/
