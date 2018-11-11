@@ -134,7 +134,7 @@
 
                     //# Else if the vQueryValue .is .fn, call it with fn(vTestValue, oOptions)
                     if (core.type.fn.is(vQueryValue)) {
-                        bReturnVal = vQueryValue(vTestValue, oOptions);
+                        bReturnVal = vQueryValue(vTestValue, oSource, oOptions);
                     }
                     //#
                     else if (vQueryValue instanceof RegExp) {
@@ -153,7 +153,7 @@
 
                 //#
                 //# ["val1", "val2"] = core.type.query([{}, {}], ["path.to.val"])
-                //# [{}, {}] = core.type.query([{}, {}], { key: "val", key2: ["val1", "val2"] })
+                //# [{}, {}] = core.type.query([{}, {}], { key: "val", key2: ["val1", "val2"], "path.to.key3": function(vTestValue, oSourceIndex, oOptions) { return true || false; } })
                 return function (vCollection, vQuery, oOptions) {
                     var a_oCollection, vCurrent, bIsMatch, i, j, k,
                         a_oReturnVal = [],
@@ -1000,7 +1000,6 @@
 
                 unique: function (a_vArray, a_vArray2) {
                     if (core.type.arr.is(a_vArray)) {
-
                         if (arguments.length > 1 && core.type.arr.is(a_vArray2)) {
                             return a_vArray.filter(function (v) {
                                 return a_vArray2.indexOf(v) === -1;
