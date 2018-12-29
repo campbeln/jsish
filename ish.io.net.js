@@ -32,7 +32,7 @@
         //# Wrapper for an XHR AJAX call
         function xhr(sVerb, bAsync, sUrl, vCallback) {
             /* global ActiveXObject: false */ //# JSHint "ActiveXObject variable undefined" error supressor
-            var $xhr, bValidRequest,
+            var $xhr, bValidRequest, bResponseTypeText,
                 bAbort = false,
                 oData = core.resolve(oCache, [sVerb.toLowerCase(), sUrl]),
                 XHRConstructor = (XMLHttpRequest || ActiveXObject)
@@ -47,6 +47,7 @@
             if (core.type.fn.is(vCallback)) {
                 vCallback = { fn: vCallback, arg: null /*, cache: oXHROptions.cache, useCache: oXHROptions.useCache */ };
             }
+            bResponseTypeText = (!vCallback.responseType || (core.type.str.is(vCallback.responseType, true) && vCallback.responseType === "text"));
 
             //# Determine if this is a bValidRequest
             bValidRequest = ($xhr && core.type.str.is(sUrl, true));
@@ -71,13 +72,14 @@
                     if ($xhr.readyState === 4) {
                         oData = {
                             status: $xhr.status,
-                            text: $xhr.responseText,
-                            json: core.type.fn.tryCatch(JSON.parse)($xhr.responseText),
                             url: sUrl,
                             verb: sVerb,
                             async: bAsync,
                             aborted: bAbort,
-                            loaded: ($xhr.status === 200 || ($xhr.status === 0 && sUrl.substr(0, 7) === "file://"))
+                            loaded: (($xhr.status >= 200 && $xhr.status <= 299) || ($xhr.status === 0 && sUrl.substr(0, 7) === "file://")),
+                            response: $xhr[bResponseTypeText ? 'responseText' : 'response'],
+                            text: bResponseTypeText ? $xhr.responseText : null,
+                            json: bResponseTypeText ? core.type.fn.tryCatch(JSON.parse)($xhr.responseText) : null
                         };
                         oData.data = oData.json; //# TODO: Remove
 
@@ -135,7 +137,9 @@
                                     $xhr.setRequestHeader(a_sKeys[i], vCallback.headers[a_sKeys[i]]);
                                 }
                             }
-                            $xhr.overrideMimeType(core.type.str.is(vCallback.mimeType, true) ? vCallback.mimeType : 'text/plain; charset=utf-8');
+                            //$xhr.overrideMimeType(core.type.str.is(vCallback.mimeType, true) ? vCallback.mimeType : 'text/plain'); // 'application/json; charset=utf-8'
+                            $xhr.setRequestHeader('Content-Type', core.type.str.is(vCallback.contentType, true) ? vCallback.contentType : 'text/plain');
+                            $xhr.responseType = (core.type.str.is(vCallback.responseType, true) ? vCallback.responseType : 'text');
                         }
 
                         $xhr.send(sBody || null);
