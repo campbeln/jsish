@@ -638,7 +638,7 @@
         type.list = {
             /*
             Function: is
-            Determines if the passed value is a list type (e.g. HTMLCollection|NodeList|Arguments|Object with Object to support <IE9).
+            Determines if the passed value is a list type (e.g. HTMLCollection|NodeList|NamedNodeMap|Arguments|Object with Object to support <IE9).
             Parameters:
             n - The varient to interrogate.
             bIncludeObject - Boolean value representing if Objects are to be included in the test (to support <IE9).
@@ -647,8 +647,8 @@
             */
             is: function isList(n, bIncludeObject) {
                 var reTest = (bIncludeObject ?
-                    /^\[object (HTMLCollection|NodeList|Arguments|Object)\]$/ :
-                    /^\[object (HTMLCollection|NodeList|Arguments)\]$/
+                    /^\[object (HTMLCollection|NodeList|NamedNodeMap|Arguments|Object)\]$/ :
+                    /^\[object (HTMLCollection|NodeList|NamedNodeMap|Arguments)\]$/
                 );
 
                 return (
