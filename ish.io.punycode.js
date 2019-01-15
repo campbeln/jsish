@@ -341,7 +341,22 @@
     ####################################################################################################
     */
     core.oop.partial(core.io, {
-        punycode: punycode
+        punycode: {
+            decode: function (s) {
+                try {
+                    return punycode.ToUnicode(s);
+                } catch (e) {
+                    return "";
+                }
+            }, //# io.punycode.decode
+            encode: function (s) {
+                try {
+                    return punycode.ToASCII(s);
+                } catch (e) {
+                    return "";
+                }
+            } //# io.punycode.decode
+        }
     }); //# core.io.punycode
 
 }(document.querySelector("SCRIPT[ish]").ish);
