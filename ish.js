@@ -1713,7 +1713,7 @@
             } //# unwatch
 
             //#
-            function fire(sEvent, a_vArguments) {
+            function fire(sEvent, a_vArguments, fnCallback) {
                 var i,
                     a_fnEvents = oData[sEvent],
                     bReturnVal = core.type.arr.is(a_fnEvents, true)
@@ -1727,6 +1727,7 @@
                 //# Set the .last arguments for this sEvent
                 //#     NOTE: We do this here so if a .watch is called after this sEvent has .fired, it can be instantly called with the .last arguments lists
                 a_fnEvents.last = a_vArguments;
+                a_fnEvents.callback = fnCallback;
 
                 //# Traverse the a_fnEvents, throwing each into doCallback while adding its returned integer to our i(terator)
                 //#     NOTE: doCallback returns -1 if we are to unwatch the current a_fnEvents which in turn removes it from the array
@@ -1737,6 +1738,9 @@
                 //# Set the .fired property on the array to true
                 //#     NOTE: We do this after the for loop so that doCallback'd a_fnEvents can know if this is the first invocation or nots
                 a_fnEvents.fired = true;
+
+                //#
+                core.type.fn.call(fnCallback, _undefined, a_vArguments);
 
                 return bReturnVal;
             } //# fire
@@ -1757,7 +1761,7 @@
 
             //#
             oEvent = core.extend(fire, {
-                fire: fire,         //# (sEvent, ..arguments)
+                fire: fire,         //# (sEvent, a_vArguments, fnCallback)
                 unwatch: unwatch,   //# (sEvent, fnCallback)
 
                 //#
@@ -1783,6 +1787,7 @@
                         //# If the sEvent has already been .fired prior to this .watch, .doCallback now
                         if (oData[sEvent].fired) {
                             doCallback(sEvent, fnCallback, oData[sEvent].last);
+                            core.type.fn.call(oData[sEvent].callback, _undefined, oData[sEvent].last);
                         }
                     }
 
