@@ -95,7 +95,6 @@
                     for (var i; i < oOnUnload.$keys.length; i++) {
                         core.type.fn.call(oOnUnload[oOnUnload.$keys[i]]);
                     }
-
                     (e || _window.event).returnValue = _null;
                     return _null;
                 });
@@ -299,8 +298,14 @@
                     //# Setup the required local variables (using annoyingly short names which are documented in the comments below)
                     //#     NOTE: Per http://en.wikipedia.org/wiki/Query_string#Structure and the W3C both & and ; are legal delimiters for a query string, hence the RegExp below
                     var b, e, k, p, sk, v, r = {},
-                        d = function (v) { return decodeURIComponent(v).replace(/\+/g, " ") + ''; }, //# d(ecode) the v(alue)
-                        s = /([^&;=]+)=?([^&;]*)/g //# original regex that does not allow for ; as a delimiter:   /([^&=]+)=?([^&]*)/g
+			d = function (v) {
+                            try {
+                                return decodeURIComponent(v).replace(/\+/g, " ") + '';
+                            } catch (e) {
+                                return (v + '').replace(/\+/g, " ") + '';
+                            }
+                        }, //# d(ecode) the v(alue)
+			s = /([^&;=]+)=?([^&;]*)/g //# original regex that does not allow for ; as a delimiter:   /([^&=]+)=?([^&]*)/g
                     ;
 
                     //# p(ush) re-implementation
