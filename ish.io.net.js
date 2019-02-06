@@ -137,9 +137,15 @@
                                     $xhr.setRequestHeader(a_sKeys[i], vCallback.headers[a_sKeys[i]]);
                                 }
                             }
-                            $xhr.overrideMimeType(core.type.str.is(vCallback.mimeType, true) ? vCallback.mimeType : 'application/json; charset=utf-8'); // 'text/plain'
-                            $xhr.setRequestHeader('Content-Type', core.type.str.is(vCallback.contentType, true) ? vCallback.contentType : 'text/plain');
-                            $xhr.responseType = (core.type.str.is(vCallback.responseType, true) ? vCallback.responseType : 'text');
+                            if (core.type.str.is(vCallback.mimeType, true)) {
+                                $xhr.overrideMimeType(vCallback.mimeType); // 'application/json; charset=utf-8' 'text/plain'
+                            }
+                            if (core.type.str.is(vCallback.contentType, true)) {
+                                $xhr.setRequestHeader('Content-Type', vCallback.contentType); //# 'text/plain'
+                            }
+                            if (core.type.str.is(vCallback.responseType, true)) {
+                                $xhr.responseType = vCallback.responseType; //# 'text'
+                            }
                         }
 
                         $xhr.send(sBody || null);
