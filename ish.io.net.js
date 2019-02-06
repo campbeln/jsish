@@ -137,7 +137,7 @@
                                     $xhr.setRequestHeader(a_sKeys[i], vCallback.headers[a_sKeys[i]]);
                                 }
                             }
-                            //$xhr.overrideMimeType(core.type.str.is(vCallback.mimeType, true) ? vCallback.mimeType : 'text/plain'); // 'application/json; charset=utf-8'
+                            $xhr.overrideMimeType(core.type.str.is(vCallback.mimeType, true) ? vCallback.mimeType : 'text/plain'); // 'application/json; charset=utf-8'
                             $xhr.setRequestHeader('Content-Type', core.type.str.is(vCallback.contentType, true) ? vCallback.contentType : 'text/plain');
                             $xhr.responseType = (core.type.str.is(vCallback.responseType, true) ? vCallback.responseType : 'text');
                         }
