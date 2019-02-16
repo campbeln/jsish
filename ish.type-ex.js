@@ -1221,6 +1221,7 @@
                         return a_vReturnVal;
                     }, //# type.obj.toArr
 
+                    //#
                     join: function (oSource, sDelimiter) {
                         var i,
                             a_sOwnKeys = core.type.obj.ownKeys(oSource),
