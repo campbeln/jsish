@@ -650,12 +650,36 @@
                     Determines the relationship between the passed strings (implicitly casted, trimmed and compaired as case-insensitive).
                     Parameters:
                     x - The first string to compare.
-                    y - The second string to compare.
+                    y - The second string or array of string to compare.
                     Returns:
                     Truthy value representing `true` if x === y, `false` if x != y or 1 if x matches y (case-insensitive and trimmed).
                     */
                     cmp: function () {
                         var fnReturnVal = function (x, y) {
+                            var i,
+                                bReturnVal = false
+                            ;
+
+                            //# If the passed y .is an .arr, traverse it, bReturnVal'ing on the first .compare hit
+                            if (core.type.arr.is(y)) {
+                                for (i = 0; i < y.length; i++) {
+                                    bReturnVal = compare(x, y[i]);
+                                    if (bReturnVal) {
+                                        break;
+                                    }
+                                }
+                            }
+                            //# Else the passed y .is not an .arr, so bReturnVal the result of .compare
+                            else {
+                                bReturnVal = compare(x, y);
+                            }
+
+                            return bReturnVal;
+                        };
+
+
+                        //# .compare's two strings, returning truthy or false based on their relationship
+                        function compare(x, y) {
                             var vReturnVal = false,
                                 s1 = core.type.str.mk(x),
                                 s2 = core.type.str.mk(y)
@@ -671,7 +695,7 @@
                             }
 
                             return vReturnVal;
-                        };
+                        } //# compare
 
                         //#
                         return core.extend(fnReturnVal, {
