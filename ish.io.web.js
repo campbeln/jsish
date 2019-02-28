@@ -34,24 +34,26 @@
                     window_sessionStorage = _window.sessionStorage      //# code-golf
                 ;
 
-                return {
+                function get(sKey, bSession) {
+                    var sValue = (bSession ? window_sessionStorage : window_localStorage).getItem(sKey);
+
+                    return core.type.json.mk(sValue, sValue);
+                }
+
+                return core.extend(get, {
                     set: function (sKey, vValue, bSession) {
                         var sValue = (core.type.obj.is(vValue) ? core.type.json.mk(vValue, vValue) : vValue);
 
                         (bSession ? window_sessionStorage : window_localStorage).setItem(sKey, sValue);
                     },
-                    get: function (sKey, bSession) {
-                        var sValue = (bSession ? window_sessionStorage : window_localStorage).getItem(sKey);
-
-                        return core.type.json.mk(sValue, sValue);
-                    },
+                    get: get,
                     rm: function (sKey, bSession) {
                         (bSession ? window_sessionStorage : window_localStorage).removeItem(sKey);
                     },
                     clear: function (bSession) {
                         (bSession ? window_sessionStorage : window_localStorage).clear();
                     }
-                };
+                });
             }(), //# web.storage
 
 
