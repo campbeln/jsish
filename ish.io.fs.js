@@ -12,7 +12,7 @@
     Class: core.io.fs
     Filesystem-based functionality.
     Requires:
-    <core.type.obj.is>, 
+    <core.type.obj.is>,
     <core.type.obj.mk>, <core.type.str.mk>
     ####################################################################################################
     */

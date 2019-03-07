@@ -4,87 +4,98 @@
  * @author Nick Campbell
  * @license MIT
 ################################################################################################# */
-!function (core) {
+!function () {
     'use strict';
 
-    core.extend(core, {
-        test: {
-            resolve: function () {
-                /*
-                var neek = {};
-                var neek2 = { camp: { bell: true } };
-
-                var result1 = core.resolve(neek, "camp.bell"); // === undefined
-                var result2 = core.resolve(neek2, "camp.bell"); // === true
-
-                var result3 = core.resolve(true, neek, "camp.bell"); // === {} with neek now = { camp: { bell: {} } }
-                var result4 = core.resolve(true, neek, "camp.bell", "blah"); // === "blah" with neek now = { camp: { bell: "blah" } }
-
-                var result5 = core.resolve(neek, "camp.bell", "blah"); // === undefined
-                var result6 = core.resolve(neek2, "camp.bell", "blah"); // === "blah" with neek2 now = { camp: { bell: "blah" } }
-                */
-            }, //# resolve
-
-            lang: {
-                overload: function () {
+    function init(core) {
+        core.extend(core, {
+            test: {
+                resolve: function () {
                     /*
-                    window.poly = core.lang.overload(function () { console.log(-1, arguments); })
-                        .add(function () { console.log(1, arguments); }, [])
-                        .add(function () { console.log(2, arguments); }, [core.type.str.is], "s")
-                        .add(function () { console.log(3, arguments); }, [core.type.str.is, core.type.bool.is], "sb")
-                        .add(function () { console.log(4, arguments); }, [core.type.int.is], "i")
-                    ;
-                    */
-                },
+                    var neek = {};
+                    var neek2 = { camp: { bell: true } };
 
-                inherit: function () {
-                    /*
-                    window.inherit = {
-                        subClass: {
-                            fn: function () { console.log("fn.sub"); },
-                            i1: "i1.sub"
-                        },
-                        baseClass: {
-                            fn: function () { console.log("fn.base"); },
-                            fn2: function () { console.log("fn2.base"); },
-                            i1: "i1.base",
-                            i2: "i2.base"
-                        },
-                        parentClass: {
-                            fn: function () { console.log("fn.parent"); },
-                            fn2: function () { console.log("fn2.parent"); },
-                            fn3: function () { console.log("fn3.parent"); },
-                            i1: "i1.parent",
-                            i2: "i2.parent",
-                            i3: "i3.parent"
-                        },
-                        result: null
-                    };
-                    window.inherit.result = core.lang.inherit(window.inherit.subClass, window.inherit.baseClass, window.inherit.parentClass);
-                    */
-                }
-            }, //# lang
+                    var result1 = core.resolve(neek, "camp.bell"); // === undefined
+                    var result2 = core.resolve(neek2, "camp.bell"); // === true
 
-            require: function () {
-                /*
-                core.require.queue(
-                    [
-                        sBaseUrl + 'highcharts2/highcharts.js', //# 1
-                        [
-                            sBaseUrl + 'z.app.histograms.js', //# 1
-                            sBaseUrl + 'z.app.charts.js', //# 1
-                            sBaseUrl + 'highcharts2/map.js',
-                            sBaseUrl + 'highcharts2/world.js',
-                            sBaseUrl + 'highcharts2/exporting.js',
-                            sBaseUrl + 'highcharts2/drilldown.js'
-                        ]
-                    ], function () {
-                        load();
+                    var result3 = core.resolve(true, neek, "camp.bell"); // === {} with neek now = { camp: { bell: {} } }
+                    var result4 = core.resolve(true, neek, "camp.bell", "blah"); // === "blah" with neek now = { camp: { bell: "blah" } }
+
+                    var result5 = core.resolve(neek, "camp.bell", "blah"); // === undefined
+                    var result6 = core.resolve(neek2, "camp.bell", "blah"); // === "blah" with neek2 now = { camp: { bell: "blah" } }
+                    */
+                }, //# resolve
+
+                lang: {
+                    overload: function () {
+                        /*
+                        window.poly = core.lang.overload(function () { console.log(-1, arguments); })
+                            .add(function () { console.log(1, arguments); }, [])
+                            .add(function () { console.log(2, arguments); }, [core.type.str.is], "s")
+                            .add(function () { console.log(3, arguments); }, [core.type.str.is, core.type.bool.is], "sb")
+                            .add(function () { console.log(4, arguments); }, [core.type.int.is], "i")
+                        ;
+                        */
+                    },
+
+                    inherit: function () {
+                        /*
+                        window.inherit = {
+                            subClass: {
+                                fn: function () { console.log("fn.sub"); },
+                                i1: "i1.sub"
+                            },
+                            baseClass: {
+                                fn: function () { console.log("fn.base"); },
+                                fn2: function () { console.log("fn2.base"); },
+                                i1: "i1.base",
+                                i2: "i2.base"
+                            },
+                            parentClass: {
+                                fn: function () { console.log("fn.parent"); },
+                                fn2: function () { console.log("fn2.parent"); },
+                                fn3: function () { console.log("fn3.parent"); },
+                                i1: "i1.parent",
+                                i2: "i2.parent",
+                                i3: "i3.parent"
+                            },
+                            result: null
+                        };
+                        window.inherit.result = core.lang.inherit(window.inherit.subClass, window.inherit.baseClass, window.inherit.parentClass);
+                        */
                     }
-                );
-                */
-            } //# require
-        }
-    });
+                }, //# lang
 
-}(document.querySelector("SCRIPT[ish]").ish);
+                require: function () {
+                    /*
+                    core.require.queue(
+                        [
+                            sBaseUrl + 'highcharts2/highcharts.js', //# 1
+                            [
+                                sBaseUrl + 'z.app.histograms.js', //# 1
+                                sBaseUrl + 'z.app.charts.js', //# 1
+                                sBaseUrl + 'highcharts2/map.js',
+                                sBaseUrl + 'highcharts2/world.js',
+                                sBaseUrl + 'highcharts2/exporting.js',
+                                sBaseUrl + 'highcharts2/drilldown.js'
+                            ]
+                        ], function () {
+                            load();
+                        }
+                    );
+                    */
+                } //# require
+            }
+        });
+    } //# init
+
+
+    //# If we are running server-side (or possibly have been required as a CommonJS module)
+    if (typeof window === 'undefined') { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
+        module.exports = init;
+    }
+    //# Else we are running in the browser, so we need to setup the _document-based features
+    else {
+        init(document.querySelector("SCRIPT[ish]").ish);
+    }
+}();

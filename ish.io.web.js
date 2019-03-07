@@ -42,7 +42,7 @@
 
                 return core.extend(get, {
                     set: function (sKey, vValue, bSession) {
-                        var sValue = (core.type.obj.is(vValue) ? core.type.json.mk(vValue, vValue) : vValue);
+                        var sValue = (core.type.obj.is(vValue) ? core.type.json.mk(vValue, vValue) : core.type.str.mk(vValue));
 
                         (bSession ? window_sessionStorage : window_localStorage).setItem(sKey, sValue);
                     },
@@ -97,6 +97,7 @@
                     for (var i; i < oOnUnload.$keys.length; i++) {
                         core.type.fn.call(oOnUnload[oOnUnload.$keys[i]]);
                     }
+
                     (e || _window.event).returnValue = _null;
                     return _null;
                 });

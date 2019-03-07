@@ -1,35 +1,32 @@
 /** ################################################################################################
  * @class ish
  * @classdesc ishJS Functionality (Q: Are you using Vanilla Javascript? A: ...ish)
- * @version 0.10.2018-09-07
+ * @version 0.10.2019-03-06
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2018, Nick Campbell
+ * @copyright 2014-2019, Nick Campbell
 ################################################################################################# */
 !function () {
     'use strict';
 
-    var _window = window,                                                           //# code-golf
-        _document = document,                                                       //# code-golf
-        _head = _document.head,                                                     //# code-golf
-        //_body = _document.body,                                                     //# code-golf
+    var bServerside = (typeof window === 'undefined'), // this.window !== this      //# Are we running under nodeJS (or possibly have been required as a CommonJS module), SEE: https://stackoverflow.com/questions/4224606/how-to-check-whether-a-script-is-running-under-node-js
+        _root = (bServerside ? global : window),                                    //# code-golf
         _undefined /*= undefined*/,                                                 //# code-golf
         _null = null,                                                               //# code-golf
-        _document_currentScript = _document.currentScript,                          //# code-golf
         _Object_prototype_toString = Object.prototype.toString,                     //# code-golf
-        _document_querySelector = _document.querySelector.bind(_document),          //# code-golf
-        //_document_querySelectorAll = _document.querySelectorAll.bind(_document),    //# code-golf
         _Date_now = Date.now,                                                       //# code-golf
+        oPrivate = {},
         oTypeIsh = { //# Set the .ver and .target under .type.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             //is: function () {},
             //import: function () {},
-            ver: '0.10.2018-09-07',
+            ver: '0.10.2019-03-06',
+            onServer: bServerside,
             options: {
                 //script: _undefined,
                 target: "ish",
                 plugins: {
                     //import: [],
-                    //path: _document.currentScript.src,
+                    //path: "", // _document.currentScript.src,
                     //cache: false,
                     //importedBy: ""
                 }
@@ -125,6 +122,36 @@
                 return false;
             }
         }; //# type.is
+
+        /*
+        Function: range
+        Determines if the passed value is within the passed range.
+        Parameters:
+        vValue - The varient to interrogate, where the `length` property used for the numeric comparison (if present).
+        vType - Function or String denoting the type testing logic which returns `truthy` if ``vValue` is of `vType`.
+        (Optional) nMin - Numeric value representing the minimum allowed value (can be passed as `undefined` for no defined minimum).
+        (Optional) nMax - Numeric value representing the maximum allowed value (can be passed as `undefined` for no defined maximum).
+        Returns:
+        Boolean value representing if the passed value is within the passed range or `undefined` if the vType cannot be resolved to a function.
+        */
+        type.range = function (vValue, vType, nMin, nMax) {
+            var fnTest = (core.type.fn.is(vType) ? vType : core.resolve(core.type, [vType, "is"])),
+                bReturnVal = (core.type.fn.is(fnTest) ? core.type.fn.call(fnTest, null, [vValue]) : undefined)
+            ;
+
+            //# If we were able to successfully verify vValue with the fnTest, reset vValue to the numeric value to interrogate
+            if (bReturnVal) {
+                vValue = (core.type.num.is(core.resolve(vValue, "length")) ? vValue.length : vValue);
+
+                //# Reset our bReturnVal to the result of the range comparison
+                bReturnVal = (
+                    (nMin === undefined || vValue >= nMin) &&
+                    (nMax === undefined || vValue <= nMax)
+                );
+            }
+
+            return bReturnVal;
+        };
 
         //####
 
@@ -308,30 +335,6 @@
             } //# date.mk
         }; //# core.type.date
 
-        //#     NOTE: No .mk
-        type.selector = {
-            /*
-            About:
-            Based on code from: stackoverflow.com/a/42149818/235704
-            */
-            is: function isSelector() {
-                var _dummy = document.createElement('br');
-
-                return function (sSelector) {
-                    var bReturnVal = false;
-
-                    try {
-                        _dummy.querySelector(sSelector);
-                        bReturnVal = true;
-                    } catch (e) { oTypeIsh.expectedErrorHandler(e); }
-
-                    return bReturnVal;
-                };
-            }() //# selector.is
-
-            //mk:
-        }; //# core.type.selector
-
         type.json = {
             /*
             Function: is
@@ -433,7 +436,7 @@
             //#
             mk: function (f, fnDefault) {
                 var vResolved,
-                    fnResolve = core.resolve || function (_window, sKey) { return _window[sKey]; },
+                    fnResolve = core.resolve || function (_root, sKey) { return _root[sKey]; },
                     fnReturnVal = (arguments.length > 1 ? fnDefault : noop)
                 ;
 
@@ -443,7 +446,7 @@
                 }
                 //# Else we need to see if f can be vResolved
                 else {
-                    vResolved = (core.type.str.is(f) || core.type.arr.is(f) ? fnResolve(_window, f) : _undefined);
+                    vResolved = (core.type.str.is(f) || core.type.arr.is(f) ? fnResolve(_root, f) : _undefined);
 
                     //# If the passed f .is a .str or .arr and we vResolved it to a .fn, reset our fnReturnVal to it
                     if (core.type.fn.is(vResolved)) {
@@ -454,149 +457,6 @@
                 return fnReturnVal;
             } //# fn.mk
         }; //# core.type.fn
-
-        type.dom = function () {
-            var a_oWrapMap = {
-                _:      [1, "<div>", "</div>"],
-                option: [1, "<select multiple='multiple'>", "</select>"],
-                legend: [1, "<fieldset>", "</fieldset>"],
-                area:   [1, "<map>", "</map>"],
-                param:  [1, "<object>", "</object>"],
-                thead:  [1, "<table>", "</table>"],
-                tr:     [2, "<table><tbody>", "</tbody></table>"],
-                col:    [2, "<table><tbody></tbody><colgroup>", "</colgroup></table>"],
-                td:     [3, "<table><tbody><tr>", "</tr></tbody></table>"],
-                body:   [0, "", ""]
-            };
-            a_oWrapMap.optgroup = a_oWrapMap.option;
-            a_oWrapMap.th = a_oWrapMap.td;
-            a_oWrapMap.tbody = a_oWrapMap.tfoot = a_oWrapMap.colgroup = a_oWrapMap.caption = a_oWrapMap.thead;
-
-            return {
-                /*
-                Function: is
-                Determines if the passed value is a DOM reference.
-                Parameters:
-                x - The varient to interrogate.
-                bAllowSelector - Boolean value representing if CSS selectors that successfully resolve to DOM elements are to be included in the test.
-                Returns:
-                Boolean value representing if the value is a DOM reference.
-                */
-                is: function isDom(x, bAllowSelector) {
-                    //# If we are to bAllowSelector, attempt to convert x to a DOM element if its .is .str
-                    x = (bAllowSelector && core.type.str.is(x, true) ? _document_querySelector(x) || _document.getElementById(x) : x);
-
-                    return (
-                        x && //# core.type.is.native(x) &&
-                        core.type.str.is(x.tagName) &&
-                        x.tagName !== "" &&
-                        //core.type.fn.is(x.cloneNode) &&
-                        core.type.fn.is(x.getAttribute)
-                    );
-                }, //# dom.is
-
-                /*
-                Function: mk
-                Safely parses the passed value into a DOM element.
-                Parameters:
-                x - The varient to interrogate. Can be a CSS Selector (used by document.querySelector), jQuery reference (x[0] will be returned), HTML string defining a single root element or DOM element.
-                _default - The default DOM element to return if casting fails.
-                Returns:
-                DOM element represented by the passed value, or _default if interrogation failed.
-                */
-                mk: function (x, _default) {
-                    var _div = _document.createElement("div"),
-                        _returnVal = (arguments.length > 1 ? _default : _div)
-                    ;
-
-                    //#
-                    if (core.type.str.is(x, true)) {
-                        x = x.trim();
-
-                        //# If the passed x .is a .selector, try and collect it
-                        if (core.type.selector.is(x)) {
-                            _returnVal = _document_querySelector(x) || _document.getElementById(x) || _returnVal;
-                        }
-                        //# Else try to parse the passed .is .str as HTML
-                        else {
-                            _div.innerHTML = x;
-
-                            //# If we were able to parse a single non-#text node, set it into our _returnVal
-                            //# TODO: Make testing more betterer
-                            if (_div.childNodes.length <= 2 && _div.childNodes[0].nodeType !== 3) {
-                                _returnVal = _div.childNodes[0];
-                            }
-                            //# Else if our _returnVal was defaulted to the _div above, reset the _div's .innerHTML
-                            else {
-                                _div.innerHTML = "";
-                            }
-                        }
-                        //# Else try to .parse the passed .is .str as HTML
-                        //else {
-                        //    _returnVal = core.type.dom.parse(x, true) || _returnVal;
-                        //}
-                    }
-                    else if (core.type.dom.is(x)) {
-                        _returnVal = x;
-                    }
-                    else if (x && x[0] && core.type.dom.is(x[0])) {
-                        _returnVal = x[0];
-                    }
-
-                    return _returnVal;
-                }, //# dom.mk
-
-                /*
-                Function: parse
-                Safely parses the passed value into a DOM element.
-                Parameters:
-                sHTML -
-                bFirstElementOnly -
-                Returns:
-                DOM element represented by the passed value, or _default if interrogation failed.
-                */
-                //#     Based on: http://krasimirtsonev.com/blog/article/Revealing-the-magic-how-to-properly-convert-HTML-string-to-a-DOM-element
-                parse: function (sHTML, bFirstElementOnly) {
-                    var _returnVal, a_vMap, sTag, bBodyTag, i;
-
-                    //# .trim any empty leading/trailing #text nodes then safely determine the first sTag (if any) within the passed sHTML
-                    //#     NOTE: /g(lobal) only returns the first <tag> for whatever reason!?
-                    sHTML = core.type.str.mk(sHTML).trim();
-                    sTag = core.type.str.mk(
-                        (/<([^\/!]\w*)[\s\S]*?>/g.exec(sHTML) || {})[1]
-                    ).toLowerCase();
-
-                    //# Determine if this is a bBodyTag, the a_vMap entry then construct our _returnVal including its .innerHTML
-                    //#     NOTE: While we can and do parse multiple elements/nodes, we only look at the first sTag to determine the a_vMap
-                    a_vMap = a_oWrapMap[sTag] || a_oWrapMap._;
-                    bBodyTag = (sTag === 'body');
-                    //var _dom = (bBodyTag ? _document.implementation.createDocument('http://www.w3.org/1999/xhtml', 'html', _null) : _null);
-                    _returnVal = _document.createElement(bBodyTag ? 'html' : 'div');
-                    _returnVal.innerHTML = a_vMap[1] + sHTML + a_vMap[2];
-
-                    //# If the sHTML is a bBodyTag, reset our _returnVal an array containing it
-                    //#     NOTE: Use of Element.querySelector(...) below limits this to IE8+ without the polyfill, see: https://caniuse.com/#feat=queryselector
-                    if (bBodyTag) {
-                        _returnVal = [_returnVal.querySelector(sTag)];
-                    }
-                    //# Else set the i(ndex) and traverse down the a_vMap elements to collect the parsed sHTML
-                    else {
-                        i = a_vMap[0];
-                        while (i-- /* > 0*/) {
-                            _returnVal = _returnVal.children[0];
-                        }
-
-                        //# Reset our _returnVal to an array of its first .child(ren) if we're supposed to return the bFirstElementOnly else to all its .childNodes
-                        _returnVal = (bFirstElementOnly ?
-                            [_returnVal.children[0]] :
-                            core.type.arr.mk(_returnVal.childNodes)
-                        );
-                    }
-
-                    return (bFirstElementOnly ? _returnVal[0] : _returnVal);
-                } //# dom.parse
-            };
-        }(); //# core.type.dom
 
         type.arr = {
             /*
@@ -661,68 +521,93 @@
             //mk:
         }; //# core.type.list
 
-        type.obj = {
-            /*
-            Function: is
-            Determines if the passed value is an object.
-            Parameters:
-            o - The varient to interrogate.
-            vOptions - Varient representing the following optional settings:
-                vOptions === true - Boolean value representing if empty objects are to be ignored.
-                vOptions.nonEmpty - Boolean value representing if empty objects are to be ignored.
-                vOptions.allowFn - Boolean value representing if functions are to be allowed.
-                vOptions.requiredKeys - Array of Strings listing the keys required to be present in the object.
-            Returns:
-            Boolean value representing if the value is an object.
-            */
-            is: function isObj(o, vOptions) {
-                var i,
-                    oSettings = (vOptions && vOptions === Object(vOptions) ? vOptions : {}),
-                    a_sRequiredKeys = oSettings.requiredKeys,
-                    bDisallowEmptyObject = (vOptions === true || !!oSettings.nonEmpty),
-                    bAllowFn = !!oSettings.allowFn,
-                    bReturnVal = !!(o && o === Object(o) && (bAllowFn || !core.type.fn.is(o)))
-                ;
+        type.obj =function () {
+            function isObjBase(o, bAllowFn) {
+                return !!(o && o === Object(o) && (bAllowFn || !core.type.fn.is(o)));
+            }
 
-                //# If the passed o(bject) is an Object
-                if (bReturnVal) {
-                    //# Reset our bReturnVal based on bDisallowEmptyObject
-                    bReturnVal = (!bDisallowEmptyObject || Object.getOwnPropertyNames(o).length !== 0);
+            return {
+                /*
+                Function: is
+                Determines if the passed value is an object.
+                Parameters:
+                o - The varient to interrogate.
+                vOptions - Varient representing the following optional settings:
+                    vOptions === true - Boolean value representing if empty objects are to be ignored.
+                    vOptions.nonEmpty - Boolean value representing if empty objects are to be ignored.
+                    vOptions.allowFn - Boolean value representing if functions are to be allowed.
+                    vOptions.requiredKeys - Array of Strings listing the keys required to be present in the object.
+                    vOptions.interface - Object defining the keys and types.
+                Returns:
+                Boolean value representing if the value is an object.
+                */
+                is: function isObj(o, vOptions) {
+                    var i, fnTest, a_sInterfaceKeys,
+                        oSettings = (vOptions && vOptions === Object(vOptions) ? vOptions : {}),
+                        a_sRequiredKeys = oSettings.requiredKeys,
+                        oInterface = oSettings.interface,
+                        bDisallowEmptyObject = (vOptions === true || !!oSettings.nonEmpty),
+                        bReturnVal = isObjBase(o, !!oSettings.allowFn)
+                    ;
 
-                    //# If we still have a valid Object and we have a_sRequiredKeys, traverse them
-                    if (bReturnVal && a_sRequiredKeys) {
-                        for (i = 0; i < a_sRequiredKeys.length; i++) {
-                            //# If the current a_sRequiredKeys is missing from our o(bject), flip our bReturnVal and fall from the loop
-                            if (!o.hasOwnProperty(a_sRequiredKeys[0])) {
-                                bReturnVal = false;
-                                break;
+                    //# If the passed o(bject) is an Object
+                    if (bReturnVal) {
+                        //# Reset our bReturnVal based on bDisallowEmptyObject
+                        bReturnVal = (!bDisallowEmptyObject || Object.getOwnPropertyNames(o).length !== 0);
+
+                        //# If we still have a valid Object and we have a_sRequiredKeys, traverse them
+                        if (bReturnVal && core.type.arr.is(a_sRequiredKeys, true)) {
+                            for (i = 0; i < a_sRequiredKeys.length; i++) {
+                                //# If the current a_sRequiredKeys is missing from our o(bject), flip our bReturnVal and fall from the loop
+                                if (!o.hasOwnProperty(a_sRequiredKeys[0])) {
+                                    bReturnVal = false;
+                                    break;
+                                }
+                            }
+                        }
+
+                        //# If we still have a valid Object and we have an oInterface, collect it's a_sInterfaceKeys
+                        if (bReturnVal && isObjBase(oInterface)) {
+                            a_sInterfaceKeys = Object.getOwnPropertyNames(oInterface);
+
+                            //# Traverse the a_sInterfaceKeys, processing each to ensure they are present in the passed o(bject)
+                            for (i = 0; i < a_sInterfaceKeys.length; i++) {
+                                fnTest = oInterface[a_sInterfaceKeys[i]];
+                                fnTest = (core.type.fn.is(fnTest) ? fnTest : core.resolve(core.type, [a_sInterfaceKeys[i], "is"]));
+
+                                //# If the passed o(bject) doesn't have the current a_sInterfaceKeys or it's invalid per the current fnTest, reset our bReturnVal and fall from the loop
+                                if (!o.hasOwnProperty(a_sInterfaceKeys[i]) || !core.type.fn.call(fnTest, null, o[a_sInterfaceKeys[i]])) {
+                                    bReturnVal = false;
+                                    break;
+                                }
                             }
                         }
                     }
-                }
 
-                return bReturnVal;
-            }, //# obj.is
+                    return bReturnVal;
+                }, //# obj.is
 
-            /*
-            Function: mk
-            Safely forces the passed object reference into an object containing the passed path optionally set to the optional value.
-            Parameters:
-            o - The varient to interrogate.
-            sPath - String representing the path to the property.
-            (Optional) vValue - Varient representing the value to set the referenced property to.
-            Returns:
-            Object representing the updated object reference.
-            */
-            mk: function (o, oDefault) {
-                var bFnIsObj = (core.type.fn.is(o) && core.type.obj.is(o, { nonEmpty: true, allowFn: true }));
+                /*
+                Function: mk
+                Safely forces the passed object reference into an object containing the passed path optionally set to the optional value.
+                Parameters:
+                o - The varient to interrogate.
+                sPath - String representing the path to the property.
+                (Optional) vValue - Varient representing the value to set the referenced property to.
+                Returns:
+                Object representing the updated object reference.
+                */
+                mk: function (o, oDefault) {
+                    var bFnIsObj = (core.type.fn.is(o) && core.type.obj.is(o, { nonEmpty: true, allowFn: true }));
 
-                return (bFnIsObj || core.type.obj.is(o) ?
-                    o :
-                    (arguments.length > 1 ? oDefault : {})
-                );
-            }, //# obj.mk
-        }; //# core.type.obj
+                    return (bFnIsObj || core.type.obj.is(o) ?
+                        o :
+                        (arguments.length > 1 ? oDefault : {})
+                    );
+                }, //# obj.mk
+            };
+        }(); //# core.type.obj
+
 
         type.symbol = function () {
             var oSymbol = {
@@ -731,16 +616,16 @@
                 }, //# symbol.is
 
                 exists: function () {
-                    return core.type.fn.is(_window.Symbol);
+                    return core.type.fn.is(_root.Symbol);
                 } //# symbol.exists
             };
 
             //# If we have a Symbol type, add in the .mk function
-            //if (core.type.fn.is(_window.Symbol)) {
+            //if (core.type.fn.is(_root.Symbol)) {
                 oSymbol.mk = function (x, xDefault) {
                     return (core.type.symbol.is(x) ?
                         x :
-                        (arguments.length === 1 ? _window.Symbol() : xDefault)
+                        (arguments.length === 1 ? _root.Symbol() : xDefault)
                     );
                 }; //# symbol.mk
             //}
@@ -872,13 +757,14 @@
      * // `oResult.i` will equal `2`.
      * var oResult = core.data.extend({}, { i: 1 }, { i: 2 });
      * // Heavily refactored code from http://gomakethings.com/vanilla-javascript-version-of-jquery-extend/
-     * @requires core.type.bool.is, core.type.num.is, core.type.obj.is, core.type.arr.is, core.type.dom.is
+     * @requires core.type.bool.is, core.type.num.is, core.type.obj.is, core.type.arr.is, ~core.type.dom.is
      * @requires core.type.int.mk
     ################################################################################################# */
     core.extend = function (/*[vDeepCopy], oTarget, oSource, oSource2...*/) {
         var oTarget, oCurrent, sKey, iDepth, i, j,
             a = arguments,
-            bDeepCopy = core.type.bool.is(a[0])
+            bDeepCopy = core.type.bool.is(a[0]),
+            fnIsDom = (core.type.dom ? core.type.dom.is : noop)
         ;
 
         //# If the first argument .is .bool or .is .num, setup the local vars accordingly
@@ -923,7 +809,7 @@
                     //# Else the oCurrent sKey isn't an .arr
                     else {
                         oTarget[sKey] = (
-                            /*iDepth !== 0 &&*/ core.type.obj.is(oCurrent[sKey]) && !core.type.dom.is(oCurrent[sKey]) && oTarget[sKey] !== oCurrent[sKey] ?
+                            /*iDepth !== 0 &&*/ core.type.obj.is(oCurrent[sKey]) && !fnIsDom(oCurrent[sKey]) && oTarget[sKey] !== oCurrent[sKey] ?
                             core.extend((iDepth !== 0 ? iDepth - 1 : false), oTarget[sKey], oCurrent[sKey]) :
                             oCurrent[sKey]
                         );
@@ -1171,7 +1057,7 @@
 
             date: {
                 timestamp: function () {
-                    var _window_performance = _window.performance,
+                    var _window_performance = _root.performance,
                         _window_performance_timing = core.resolve(_window_performance, "timing")
                     ;
 
@@ -1259,6 +1145,7 @@
                     return bReturnVal;
                 }, //# type.obj.rm
 
+                //# Object.getOwnPropertyNames(oSource) ?
                 ownKeys: function(oSource) {
                     var i,
                         a_sReturnVal /* = _undefined */
@@ -1673,7 +1560,7 @@
         */
         console: function () {
             function doCall(sMethod, _a) {
-                core.type.fn.call(core.resolve(_window, ["console", sMethod]), _null, _a);
+                core.type.fn.call(core.resolve(_root, ["console", sMethod]), _null, _a);
             } //# doCall
 
             return {
@@ -1801,485 +1688,6 @@
 
 
     /** ################################################################################################
-     * @class core.require
-     * @classdesc Collection of RequireJS-based functionality.
-     * @requires core.extend
-     * @requires core.type.arr.is, core.type.fn.is, core.type.str.is, core.type.obj.is
-     * @requires core.type.obj.mk, core.type.fn.mk
-     * @requires core.type.fn.call, core.io.event.fire
-    ################################################################################################# */
-    core.require = function (requireJs) {
-        var oRequireOptions = { //# http://requirejs.org/docs/api.html#config
-            //onappend: function (_script) {},  //# NOTE: Feature not present in requireJs
-            onerror: function (_script) {       //# NOTE: Feature not present in requireJs
-                var oConfig = core.type.json.mk(_script.getAttribute("config"));
-                core.io.console.error("Unable to include `" + oConfig.src + "`.");
-            },
-            //paths: [],        //# requirejs
-            //bundles: {},      //# requirejs
-            waitSeconds: 7,
-            baseUrl: "",
-            urlArgs: ""
-        };
-
-        //#
-        function eventHandler(a_sUrls, fnCallback, oOptions) {
-            var a_oTracker = [],
-                bAllLoaded = true,
-                iCounter = a_sUrls.length
-            ;
-
-            //#
-            //#     NOTE: bError comes across as an oEvent .onload and .onerror
-            function loadHandler(_dom, bError, bTimedOut) {
-                //# .push the current a_sUrls into the array
-                a_oTracker.push({
-                    dom: _dom,
-                    loaded: (bError !== true),
-                    timedout: !!(bError && bTimedOut)
-                });
-
-                //#
-                if (bError) {
-                    core.type.fn.call(oOptions.onerror, _null, [_dom]);
-                }
-
-                //# If we have loaded all of our a_sUrls, .call our fnCallback
-                if (--iCounter < 1) {
-                    core.type.fn.call(fnCallback, _null, [a_oTracker, bAllLoaded]);
-                }
-            } //# loadHandler
-
-            //#
-            function errorHandler(_dom, bTimedOut) {
-                bAllLoaded = false;
-                loadHandler(_dom, true, bTimedOut);
-            } //# errorHandler
-
-
-            //# If the passed a_sUrls is empty, .call the fnCallback now
-            //#     NOTE: .loadHandler will never be called via oReturnVal.onload/.onerror if there are no a_sUrls to process, hence the call here
-            if (iCounter < 1) {
-                core.type.fn.call(fnCallback, _null, [a_oTracker, bAllLoaded]);
-            }
-
-            //# Return the individual _dom element tracker factory to the caller
-            return function (_dom, bAlreadyLoaded) {
-                var iTimeout,
-                    oReturnVal = {
-                        onerror: function (bTimedOut) {
-                            errorHandler(_dom, bTimedOut);
-                        },
-                        onload: function () {
-                            //# clearTimeout (if any) and .push the current a_sUrls into the array
-                            //#      NOTE: As per MDN, clearTimeout(undefined) does nothing, so we don't bother with an if() below
-                            clearTimeout(iTimeout);
-                            loadHandler(_dom /*, false, false*/);
-                        }
-                    }
-                ;
-
-                //#
-                if (bAlreadyLoaded) {
-                    loadHandler(_dom /*, false, false*/);
-                }
-                else {
-                    iTimeout = setTimeout(function () { oReturnVal.onerror(true); }, oOptions.waitSeconds * 1000);
-                    _dom.onload = oReturnVal.onload;
-                    _dom.onerror = oReturnVal.onerror;
-                }
-
-                return oReturnVal;
-            };
-        } //# eventHandler
-
-        //#
-        //#     NOTE: The third argument `oOptions` is a feature not present in requireJs
-        function requireJsLite(vUrls, fnCallback, oOptions) {
-            var _script, oEventHandler, sSrc, i,
-                //# <IE6thru9Support>
-                fnIE6thru9Support = function (_script) {
-                    return function () {
-                        if (_script.readyState == "loaded" || _script.readyState == "complete") {
-                            _script.onreadystatechange = _null;
-                            _script.onload(/*false*/);
-                        }
-                    };
-                },
-                //# </IE6thru9Support>
-                a_sUrls = (core.type.arr.is(vUrls) ? vUrls : [vUrls])
-            ;
-
-            //#
-            oOptions = core.extend({}, oRequireOptions, oOptions);
-            oEventHandler = eventHandler(a_sUrls, fnCallback, oOptions);
-
-            //# Traverse the a_sUrls, creating each _script and setTimeout'ing as we go
-            for (i = 0; i < a_sUrls.length; i++) {
-                sSrc = oOptions.baseUrl + a_sUrls[i] + oOptions.urlArgs;
-                _script = _document_querySelector("script[src='" + sSrc + "']");
-
-                //# If there was a _script already, call .onload on the oEventHandler for the _script
-                if (core.type.dom.is(_script)) {
-                    oEventHandler(_script, true).onload();
-                }
-                //# If there wasn't a _link already, build it and .appendChild
-                else {
-                    _script = _document.createElement('script');
-                    oEventHandler(_script);
-
-                    //# <IE6thru9Support>
-                    //# If our _script has .readyState defined, we need to monitor .onreadystatechange
-                    //#     NOTE: In order to keep the _tcript in scope for .onreadystatechange, we use the fnIE6thru9Support Factory
-                    //#     NOTE: It costs us 9 lines of code to support IE v6-v9
-                    //#     Based on: https://www.html5rocks.com/en/tutorials/speed/script-loading/ and https://www.nczonline.net/blog/2009/07/28/the-best-way-to-load-external-javascript/
-                    _script.onreadystatechange = (_script.readyState ? fnIE6thru9Support(_script) : _null);
-                    //# </IE6thru9Support>
-
-                    //# .setAttribute's then append the _script to our _head
-                    //#     NOTE: We set the src after the events because some browsers (IE) start loading the script as soon as the src is set
-                    //_script.setAttribute('config', JSON.stringify({
-                    //    src: sSrc,
-                    //    baseUrl: oOptions.baseUrl,
-                    //    urlArgs: oOptions.urlArgs
-                    //}));
-                    _script.setAttribute('type', "text/javascript");
-                    _script.setAttribute('src', sSrc);
-                    _head.appendChild(_script);
-
-                    //# Call the RequireJs non-feature .onappend now that the _script has been .appendChild'd
-                    core.type.fn.call(oOptions.onappend, _null, [_script]);
-                }
-            }
-        } //# requireJsLite
-        requireJsLite.config = function (oOptions) {
-            return core.extend(oRequireOptions, oOptions);
-        }; //# requireJsLite.config
-
-
-        //# Ensure the passed requireJs is a function (defaulting to the above-defined requireJsLite), then ensure our oOptions' are loaded into the .config
-        requireJs = core.type.fn.mk(requireJs, requireJsLite);
-        //requireJs.config(oOptions);
-
-        //#
-        core.extend(oTypeIsh, {
-            'import': function (a_sImport, oOptions) {
-                var i,
-                    a_sUrls = []
-                ;
-
-                //# If we have scripts to a_sImport
-                //# <script type="text/javascript" src="js/ish/ish.js" ish='{ "target": "$z", "plugins": { "import": ["lib.ui","app.tags","app.ui"], "baseUrl": "js/ish/", "cache": false } }'></script>
-                if (core.type.arr.is(a_sImport, true)) {
-                    //# Traverse each script to a_sImport, creating a new SCRIPT tag for each
-                    for (i = 0; i < a_sImport.length; i++) {
-                        a_sUrls.push(a_sImport[i] + ".js");
-                    }
-
-                    //#
-                    oOptions = core.extend({}, oTypeIsh.options.plugins, oOptions);
-                    core.require.config({ //# TODO: Remove core.require.config setting here, add oOptions to .queue
-                        waitSeconds: 7,
-                        baseUrl: oOptions.baseUrl,
-                        urlArgs: (oOptions.cache === false ?
-                            "?nocache=" + Date.now() :
-                            ""
-                        ),
-                        onappend: function (_script) {
-                            _script.setAttribute("importedBy", oOptions.importedBy || "type.ish.import");
-                        }
-                    });
-                    core.require.queue(a_sUrls, function (a_oResults) {
-                        //# So long as the .callback didn't return false, .fire the .event
-                        if (core.type.fn.mk(oOptions.callback)(a_oResults) !== false) {
-                            core.io.event.fire("ish.pluginsLoaded", a_oResults);
-                        }
-                    });
-                }
-            }, //# type.ish.import
-
-            //#
-            prereqs: function (sSource, oPreReqs, oOptions) {
-                var i,
-                    a_sIncludes = [],
-                    a_sKeys = core.type.obj.ownKeys(oPreReqs)
-                ;
-
-                //# If we got a_sKeys from the passed oPreReqs, traverse them .push'ing each truthy value into a_sIncludes
-                if (core.type.arr.is(a_sKeys, true)) {
-                    for (i = 0; i < a_sKeys.length; i++) {
-                        if (oPreReqs[a_sKeys[i]]) {
-                            a_sIncludes.push(a_sKeys[i] + ".js");
-                        }
-                    }
-
-                    //# If we have some a_sIncludes, .require them now while passing in the SCRIPT[ish] options while we go
-                    if (a_sIncludes.length > 0) {
-                        core.require.scripts(a_sIncludes,
-                            function (/*a_oScripts, bAllLoaded*/) {},
-                            core.extend({
-                                onerror: function (_script) {
-                                    core.io.console.error(sSource + ": Unable to load '" + _script.src + "'.");
-                                }
-                            }, core.type.ish.options.plugins, oOptions)
-                        );
-                    }
-                }
-            } //# type.ish.prereqs
-        }); //# core.type.ish.import
-
-        //#
-        return core.extend(
-            function (vUrls, fnCallback, oOptions) {
-                var i,
-                    bLoadedAll = true,
-                    a_sUrls = (core.type.arr.is(vUrls) ? vUrls : [vUrls]),
-                    a_sScripts = [],
-                    a_sCSS = [],
-                    a_sLinks = [],
-                    fnCollateResults = function (a_sProcessedUrls, bAllLoaded) {
-                        //# If the a_sProcessedUrls have values, .concat them into our (reset) a_sUrls and recalculate bLoadedAll
-                        if (core.type.arr.is(a_sProcessedUrls, true)) {
-                            a_sUrls = a_sUrls.concat(a_sProcessedUrls);
-                            bLoadedAll = (bLoadedAll && bAllLoaded);
-                        }
-
-                        //# If all of the series have returned, fnCallback
-                        if (--i < 1) {
-                            core.type.fn.call(fnCallback, _null, [a_sUrls, bLoadedAll]);
-                        }
-                    }
-                ;
-
-                //# Traverse the a_sUrls, sorting each into their related arrays
-                for (i = 0; i < a_sUrls.length; i++) {
-                    switch (core.type.str.mk(a_sUrls[i]).match(/\.([^\./\?\#]+)($|\?|\#)/)[1].toLowerCase()) {
-                        case "js": {
-                            a_sScripts.push(a_sUrls[i]);
-                            break;
-                        }
-                        case "css": {
-                            a_sCSS.push(a_sUrls[i]);
-                            break;
-                        }
-                        default: {
-                            a_sLinks.push(a_sUrls[i]);
-                        }
-                    }
-                }
-
-                //# Now that we've sorted the passed a_sUrls, reset them and i for the checks below
-                a_sUrls = [];
-                i = 0;
-
-                //# If we have values, inc i and call the series or fnCollateResults if they're all empty
-                if (core.type.arr.is(a_sScripts, true)) {
-                    i++;
-                    requireJs(a_sScripts, fnCollateResults, oOptions);
-                }
-                if (core.type.arr.is(a_sCSS, true)) {
-                    i++;
-                    core.require.css(a_sCSS, fnCollateResults, oOptions);
-                }
-                if (core.type.arr.is(a_sLinks, true)) {
-                    i++;
-                    core.require.link(a_sLinks, fnCollateResults, oOptions);
-                }
-                if (i < 1) {
-                    fnCollateResults(/*[], true*/);
-                }
-            }, {
-                scripts: requireJs,
-                config: requireJsLite.config,
-                lite: (requireJs === requireJsLite),
-
-                //# Soft-configured version of requireJs's bundles/shim
-                //#     NOTE: This allows us to dynamicially define any "bundles" we require at runtime, allowing us to load scripts in the required order
-                queue: function (a_vModules, fnCallback) {
-                    var vCurrent,
-                        i = 0,
-                        iLength = core.type.int.mk(core.resolve(a_vModules, "length"), 0),
-                        bAllLoaded = (iLength > 0),
-                        a_oResults = []
-                    ;
-
-                    //#
-                    function doLoad() {
-                        vCurrent = a_vModules[i++];
-
-                        //# Call requireJs to load the vCurrent a_vModules, copying its returned arguments into vCurrent on callback (code-golf)
-                        requireJs(core.type.arr.mk(vCurrent, [vCurrent]), function (a_oScripts, bEntryAllLoaded) {
-                            //#
-                            if (requireJs.lite) {
-                                a_oResults.push({
-                                    dom: a_oScripts,
-                                    loaded: bEntryAllLoaded
-                                });
-                                if (bEntryAllLoaded === false) {
-                                    bAllLoaded = false;
-                                }
-                            }
-
-                            //# Recurse if we still have a_vModules to process, else call loaded
-                            (i < iLength ? doLoad() : loaded(arguments));
-                        });
-                    } //# doLoad
-
-                    //#
-                    function loaded(_a) {
-                        //# Run our fnCallback with the above collected a_oResults (if any)
-                        core.type.fn.call(fnCallback, _null,
-                            (requireJs.lite ?
-                                [a_oResults, bAllLoaded] :
-                                _a
-                            )
-                        );
-                    } //# loaded
-
-
-                    //# If the caller passed in valid a_vModules, kick off doLoad else call loaded to return a null result to the fnCallback
-                    (bAllLoaded ? doLoad() : loaded());
-                }, //# queue
-
-                //#
-                link: function (vUrls, fnCallback, oOptions) {
-                    var _link, oEventHandler, oHandler, oCurrent, i,
-                        a_sUrls = (core.type.arr.is(vUrls) ? vUrls : [vUrls])
-                    ;
-
-                    //# Ensure the passed oOptions .obj.is, defaulting the values and including the oRequireOptions as we go
-                    oOptions = core.extend({
-                        rel: "",
-                        type: "",   //# SEE: https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types
-                        media: ""   //# SEE: https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries
-                    }, oRequireOptions, oOptions);
-                    oEventHandler = eventHandler(a_sUrls, fnCallback, oOptions);
-
-                    //# Traverse the a_sUrls, pulling the oCurrent value and any existing _link's as we go
-                    for (i = 0; i < a_sUrls.length; i++) {
-                        oCurrent = core.type.obj.mk(a_sUrls[i], { href: a_sUrls[i] });
-                        oCurrent.href = oOptions.baseUrl + oCurrent.href + oOptions.urlArgs;
-                        _link = _document_querySelector("link[href='" + oCurrent.href + "']");
-
-                        //# If there was a _link already, call .onload on the oEventHandler for the _link
-                        if (core.type.dom.is(_link)) {
-                            oEventHandler(_link, true).onload();
-                        }
-                        //# If there wasn't a _link already, build it and .appendChild
-                        else {
-                            _link = _document.createElement('link');
-                            oHandler = oEventHandler(_link);
-
-                            //# <NonLinkOnloadSupport>
-                            //#
-                            if (!('onload' in _link)) {
-                                oHandler.i = document.createElement("img"); //# img
-                                oHandler.i.onerror = oHandler.onload;
-                                oHandler.i.src = oCurrent.href;
-                            }
-                            //# </NonLinkOnloadSupport>
-
-                            //#
-                            _link.rel = oCurrent.rel || oOptions.rel;
-                            _link.type = oCurrent.type || oOptions.type;
-                            _link.href = oCurrent.href;
-                            _link.media = oCurrent.media || oOptions.media;
-                            _head.appendChild(_link);
-
-                            //# Call the RequireJs non-feature .onappend now that the _script has been .appendChild'd
-                            core.type.fn.call(oOptions.onappend, _null, [_link]);
-                        }
-                    }
-                }, //# link
-
-                //#
-                css: function (vUrls, fnCallback, oOptions) {
-                    //# Ensure the passed oOptions .obj.is, defaulting the values as we go
-                    //#     NOTE: We skip oRequireOptions as that is done within core.require.link
-                    core.require.link(vUrls, fnCallback, core.extend({
-                        rel: "stylesheet",
-                        type: "text/css",
-                        media: "all"
-                    }, oOptions));
-                } //# css
-            }
-        );
-    }(_window.require); //# core.require
-
-
-    /** ################################################################################################
-     * @namespace core.ui
-     * @desc Stub-object for User Interface-based functionality.
-    ################################################################################################# */
-    core.ui = {
-        //# Based on: https://stackoverflow.com/a/36929383/235704
-        scrollTo: function (vElement, bSetHash) {
-            var _element = core.type.dom.mk(vElement, null),
-                bReturnVal = (_element !== null), // _element && core.type.fn.is(_element.getBoundingClientRect)), //# .fn.is probably not req: https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
-                doScroll = function (iLastJump) {
-                    var iScroll = parseInt(_element.getBoundingClientRect().top * 0.2);
-
-                    _document.body.scrollTop += iScroll;
-                    _document.documentElement.scrollTop += iScroll;
-
-                    if (!iLastJump || iLastJump > Math.abs(iScroll)) {
-                        setTimeout(function() {
-                            doScroll(Math.abs(iScroll));
-                        }, 20);
-                    }
-                    else if (bSetHash && core.type.str.is(vElement)) {
-                        location.hash = "#" + vElement;
-                    }
-                } //# doScroll
-            ;
-
-            //#
-            if (bReturnVal) {
-                doScroll();
-            }
-
-            return bReturnVal;
-        },
-
-        clearSelection: function ()
-        {
-            if (_window.getSelection) {_window.getSelection().removeAllRanges();}
-            else if (_document.selection) {_document.selection.empty();}
-        }
-
-        /*
-        //############################################################
-        //# Determines if the referenced elements overlap in the 2D plane.
-        //#    NOTE: This function really only needs to run correctly under those browsers that have Z-Index issues with certian elements, so true cross-platform compatibility is not really required for this function
-        //############################################################
-        //# Last Updated: April 19, 2006
-        this.Overlap = function(oElement1, oElement2) {
-            var bReturn = false;
-            var iX1, iX2, iA1, iA2, iY1, iY2, iB1, iB2;
-                //#### Set the Y (vertical) coords
-            iB1 = this.Top(oElement1);
-            iB2 = iB1 + this.Height(oElement1);
-            iY1 = this.Top(oElement2);
-            iY2 = iY1 + this.Height(oElement2);
-                //#### If the elements seem to be in the way verticially
-            if ((iY1 <= iB1 && iY2 > iB1) || (iY1 >= iB1 && iY1 < iB2)) {
-                    //#### Set the X (horozontal) coords
-                iA1 = this.Left(oElement1);
-                iA2 = iA1 + this.Width(oElement1);
-                iX1 = this.Left(oElement2);
-                iX2 = iX1 + this.Width(oElement2);
-                    //#### If the passed elements also overlap horozontally, flip bReturn to true
-                if ((iX1 <= iA1 && iX2 > iA1) || (iX1 >= iA1 && iX1 < iA2)) {
-                    bReturn = true;
-                }
-            }
-                //#### Return the above determined bReturn to the caller
-            return bReturn;
-        };*/
-    }; //# core.ui
-
-
-    /** ################################################################################################
      * @namespace core.lib
      * @desc Stub-object for External Library-based functionality.
      * @requires core.extend
@@ -2361,90 +1769,774 @@
     //########
 
 
-    //##################################################################################################
-    //# Procedural code
-    //# Requires:
-    //# <core.extend>, <core.resolve>,
-    //# <core.type.dom.is>,
-    //# <core.type.json.mk>
-    //##################################################################################################
-    //# Optionally create then .extend our _window variable to expose core as the developer defined in SCRIPT[ish]'s JSON
-    //#     NOTE: Since document.currentScript is not universally supported, we look for SCRIPT[ish] as a fallback
-    !function /*init*/() {
-        var sTemp,
-            bProcessAttribute = false,
-            oOptions = oTypeIsh.options,
-            sTarget = oOptions.target,
-            _script = _document_currentScript || _document_querySelector("SCRIPT[" + sTarget + "]")
-        ;
-
-        //#
-        function process(bProcessAttribute) {
-            //# If we have an  _script[ish] to process
-            if (bProcessAttribute) {
-                //# Reset the .plugins.baseUrl to the developer-defined inline value (if any, borrowing sTemp as we go)
-                sTemp = oOptions.plugins.baseUrl || _script.src;
-                oOptions.plugins.baseUrl = sTemp.substr(0, sTemp.lastIndexOf("/") + 1);
-
-                //# .import any .plugins defined in our oOptions (flagging them as .importedBy SCRIPT[sTarget])
-                core.type.ish.import(oOptions.plugins.import, core.extend({
-                    importedBy: "SCRIPT[" + sTarget + "]"
-                }, oOptions.plugins));
-
-                //# Reset our sTarget to the developer-defined inline value (if any)
-                //#     NOTE: This is done here and not in the `if` above so that all _script's are attributed with [ish]
-                sTarget = oOptions.target;
+    //# If we are running bServerside (or possibly have been required as a CommonJS module)
+    if (bServerside) {
+        //##################################################################################################
+        //# Procedural code
+        //# Requires:
+        //# <core.extend>, <core.resolve>,
+        //# <core.type.json.mk>
+        //##################################################################################################
+        oPrivate.init = function () {
+            //# If we have access to module.exports, return our core reference
+            if (typeof module !== 'undefined' && this.module !== module && module.exports) {
+                module.exports = core;
             }
 
-            //# If bProcessAttribute isn't _null and we have a sTarget, overwrite core functionality with any existing functionality under _window[sTarget], then reset the _window object's reference so that the globally accessable object is a refrence to core rather than its original object reference
-            //#     NOTE: We need to create the window[sTarget] in the .resolve(true, ...) below in case it is not already defined, else the .resolve will fail.
-            if (core.type.bool.is(bProcessAttribute) && core.type.str.is(sTarget, true)) {
-                core.extend(core, core.resolve(true, _window, sTarget));
-                core.resolve(_window, sTarget, core);
-            }
-        } //# process
+            //# Set our sTarget in the root
+            //#     NOTE: this === `window` in the browser (which is `undefined` per above) and `global` on the server.
+            //this[oTypeIsh.options.target] = core;
+        };
+    }
+    //# Else we are running in the browser, so we need to setup the _document-based features
+    else {
+        !function () {
+            var _document = document,                                                       //# code-golf
+                _head = _document.head,                                                     //# code-golf
+                //_body = _document.body,                                                     //# code-golf
+                _document_querySelector = _document.querySelector.bind(_document)           //# code-golf
+                //_document_querySelectorAll = _document.querySelectorAll.bind(_document),    //# code-golf
+            ;
+
+            //##################################################################################################
+            //# Procedural code
+            //# Requires:
+            //# <core.extend>, <core.resolve>,
+            //# <core.type.json.mk>
+            //##################################################################################################
+            //# Optionally create then .extend our _root variable to expose core as the developer defined in SCRIPT[ish]'s JSON
+            //#     NOTE: Since document.currentScript is not universally supported, we look for SCRIPT[ish] as a fallback
+            oPrivate.init = function () {
+                var _script = _document.currentScript || _document_querySelector("SCRIPT[" + sTarget + "]"),
+                    oOptions = oTypeIsh.options,
+                    bProcessAttribute = false
+                ;
+
+                //#
+                function process(_script, bProcessAttribute) {
+                    //# If we have an  _script[ish] to process
+                    if (bProcessAttribute) {
+                        //# Reset the .plugins.baseUrl to the developer-defined inline value (if any, borrowing sTemp as we go)
+                        sTemp = oOptions.plugins.baseUrl || _script.src;
+                        oOptions.plugins.baseUrl = sTemp.substr(0, sTemp.lastIndexOf("/") + 1);
+
+                        //# .import any .plugins defined in our oOptions (flagging them as .importedBy SCRIPT[sTarget])
+                        core.type.ish.import(oOptions.plugins.import, core.extend({
+                            importedBy: "SCRIPT[" + sTarget + "]"
+                        }, oOptions.plugins));
+
+                        //# Reset our sTarget to the developer-defined inline value (if any)
+                        //#     NOTE: This is done here and not in the `if` above so that all _script's are attributed with [ish]
+                        sTarget = oOptions.target;
+                    }
+
+                    //# If bProcessAttribute isn't _null and we have a sTarget, overwrite core functionality with any existing functionality under _root[sTarget], then reset the _root object's reference so that the globally accessable object is a refrence to core rather than its original object reference
+                    //#     NOTE: We need to create the window[sTarget] in the .resolve(true, ...) below in case it is not already defined, else the .resolve will fail.
+                    if (core.type.bool.is(bProcessAttribute) && core.type.str.is(sTarget, true)) {
+                        core.extend(core, core.resolve(true, _root, sTarget));
+                        core.resolve(_root, sTarget, core);
+                    }
+                } //# process
 
 
-        //# If we were able to locate our _script tag and a _script[ish] attribute is present, .getAttribute its [ish] into sTemp
-        if (_script && _script.hasAttribute(sTarget)) {
-            sTemp = _script.getAttribute(sTarget);
+                //# If we were able to locate our _script tag and a _script[ish] attribute is present, .getAttribute its [ish] into sTemp
+                if (_script && _script.hasAttribute(sTarget)) {
+                    sTemp = _script.getAttribute(sTarget);
 
-            //# If the _script[ish] .getAttribute .is a non-null .str
-            if (core.type.str.is(sTemp, true)) {
-                //# If the _script[ish] .getAttribute .is .json, .extend it into our oOptions
-                if (core.type.json.is(sTemp)) {
-                    core.extend(oOptions, core.type.json.mk(sTemp));
-                    bProcessAttribute = true;
+                    //# If the _script[ish] .getAttribute .is a non-null .str
+                    if (core.type.str.is(sTemp, true)) {
+                        //# If the _script[ish] .getAttribute .is .json, .extend it into our oOptions
+                        if (core.type.json.is(sTemp)) {
+                            core.extend(oOptions, core.type.json.mk(sTemp));
+                            bProcessAttribute = true;
+                        }
+                        //# Else if the value of _script[ish] is under our _root, .extend it into our oOptions
+                        else if (core.type.obj.is(core.resolve(_root, sTemp))) {
+                            core.extend(oOptions, core.resolve(_root, sTemp));
+                            bProcessAttribute = true;
+                        }
+                        //# Else attempt to load the value of _script[ish] as a JSON file, flag bProcessAttribute to skip the .process below and .extend it into our oOptions on bSuccess
+                        else {
+                            bProcessAttribute = _null;
+                            core.io.net.get(sTemp, function (bSuccess, oResponse /*, vArg, $xhr*/) {
+                                core.extend(oOptions, bSuccess ? oResponse.data : _null);
+                                process(_script, bSuccess);
+                            });
+                        }
+                    }
                 }
-                //# Else if the value of _script[ish] is under our _window, .extend it into our oOptions
-                else if (core.type.obj.is(core.resolve(_window, sTemp))) {
-                    core.extend(oOptions, core.resolve(_window, sTemp));
-                    bProcessAttribute = true;
-                }
-                //# Else attempt to load the value of _script[ish] as a JSON file, flag bProcessAttribute to skip the .process below and .extend it into our oOptions on bSuccess
+                //# Else the _script is missing or the _document.currentScript isn't attributed with [ish]
                 else {
-                    bProcessAttribute = _null;
-                    core.io.net.get(sTemp, function (bSuccess, oResponse /*, vArg, $xhr*/) {
-                        core.extend(oOptions, bSuccess ? oResponse.data : _null);
-                        process(bSuccess);
-                    });
+                    //# If the _script is missing, dummy one up with .createElement then .appendChild it
+                    if (!_script) {
+                        _script = _document.createElement("SCRIPT");
+                        _head.appendChild(_script);
+                    }
+
+                    //# Set _script[ish] so other scripts can auto-resolve
+                    _script.setAttribute(sTarget, "");
                 }
-            }
-        }
-        //# Else the _script is missing or the _document_currentScript isn't attributed with [ish]
-        else {
-            //# If the _script is missing, dummy one up with .createElement then .appendChild it
-            if (!_script) {
-                _script = _document.createElement("SCRIPT");
-                _head.appendChild(_script);
-            }
 
-            //# Set _script[ish] so other scripts can auto-resolve
-            _script.setAttribute(sTarget, "");
-        }
+                //# Ensure there is a reference to core available on our _script tag so that other scripts can auto-resolve it then .process
+                _script[sTarget] = core;
+                process(_script, bProcessAttribute);
+            } //# oPrivates.init
 
-        //# Ensure there is a reference to core available on our _script tag so that other scripts can auto-resolve it then .process
-        _script[sTarget] = core;
-        process(bProcessAttribute);
-    }(); //# Procedural code
+
+            //#
+            core.type.dom = function () {
+                var a_oWrapMap = {
+                    _:      [1, "<div>", "</div>"],
+                    option: [1, "<select multiple='multiple'>", "</select>"],
+                    legend: [1, "<fieldset>", "</fieldset>"],
+                    area:   [1, "<map>", "</map>"],
+                    param:  [1, "<object>", "</object>"],
+                    thead:  [1, "<table>", "</table>"],
+                    tr:     [2, "<table><tbody>", "</tbody></table>"],
+                    col:    [2, "<table><tbody></tbody><colgroup>", "</colgroup></table>"],
+                    td:     [3, "<table><tbody><tr>", "</tr></tbody></table>"],
+                    body:   [0, "", ""]
+                };
+                a_oWrapMap.optgroup = a_oWrapMap.option;
+                a_oWrapMap.th = a_oWrapMap.td;
+                a_oWrapMap.tbody = a_oWrapMap.tfoot = a_oWrapMap.colgroup = a_oWrapMap.caption = a_oWrapMap.thead;
+
+                return {
+                    /*
+                    Function: is
+                    Determines if the passed value is a DOM reference.
+                    Parameters:
+                    x - The varient to interrogate.
+                    bAllowSelector - Boolean value representing if CSS selectors that successfully resolve to DOM elements are to be included in the test.
+                    Returns:
+                    Boolean value representing if the value is a DOM reference.
+                    */
+                    is: function isDom(x, bAllowSelector) {
+                        //# If we are to bAllowSelector, attempt to convert x to a DOM element if its .is .str
+                        x = (bAllowSelector && core.type.str.is(x, true) ? _document_querySelector(x) || _document.getElementById(x) : x);
+
+                        return (
+                            x && //# core.type.is.native(x) &&
+                            core.type.str.is(x.tagName) &&
+                            x.tagName !== "" &&
+                            //core.type.fn.is(x.cloneNode) &&
+                            core.type.fn.is(x.getAttribute)
+                        );
+                    }, //# dom.is
+
+                    /*
+                    Function: mk
+                    Safely parses the passed value into a DOM element.
+                    Parameters:
+                    x - The varient to interrogate. Can be a CSS Selector (used by document.querySelector), jQuery reference (x[0] will be returned), HTML string defining a single root element or DOM element.
+                    _default - The default DOM element to return if casting fails.
+                    Returns:
+                    DOM element represented by the passed value, or _default if interrogation failed.
+                    */
+                    mk: function (x, _default) {
+                        var _div = _document.createElement("div"),
+                            _returnVal = (arguments.length > 1 ? _default : _div)
+                        ;
+
+                        //#
+                        if (core.type.str.is(x, true)) {
+                            x = x.trim();
+
+                            //# If the passed x .is a .selector, try and collect it
+                            if (core.type.selector.is(x)) {
+                                _returnVal = _document_querySelector(x) || _document.getElementById(x) || _returnVal;
+                            }
+                            //# Else try to parse the passed .is .str as HTML
+                            else {
+                                _div.innerHTML = x;
+
+                                //# If we were able to parse a single non-#text node, set it into our _returnVal
+                                //# TODO: Make testing more betterer
+                                if (_div.childNodes.length <= 2 && _div.childNodes[0].nodeType !== 3) {
+                                    _returnVal = _div.childNodes[0];
+                                }
+                                //# Else if our _returnVal was defaulted to the _div above, reset the _div's .innerHTML
+                                else {
+                                    _div.innerHTML = "";
+                                }
+                            }
+                            //# Else try to .parse the passed .is .str as HTML
+                            //else {
+                            //    _returnVal = core.type.dom.parse(x, true) || _returnVal;
+                            //}
+                        }
+                        else if (core.type.dom.is(x)) {
+                            _returnVal = x;
+                        }
+                        else if (x && x[0] && core.type.dom.is(x[0])) {
+                            _returnVal = x[0];
+                        }
+
+                        return _returnVal;
+                    }, //# dom.mk
+
+                    /*
+                    Function: parse
+                    Safely parses the passed value into a DOM element.
+                    Parameters:
+                    sHTML -
+                    bFirstElementOnly -
+                    Returns:
+                    DOM element represented by the passed value, or _default if interrogation failed.
+                    */
+                    //#     Based on: http://krasimirtsonev.com/blog/article/Revealing-the-magic-how-to-properly-convert-HTML-string-to-a-DOM-element
+                    parse: function (sHTML, bFirstElementOnly) {
+                        var _returnVal, a_vMap, sTag, bBodyTag, i;
+
+                        //# .trim any empty leading/trailing #text nodes then safely determine the first sTag (if any) within the passed sHTML
+                        //#     NOTE: /g(lobal) only returns the first <tag> for whatever reason!?
+                        sHTML = core.type.str.mk(sHTML).trim();
+                        sTag = core.type.str.mk(
+                            (/<([^\/!]\w*)[\s\S]*?>/g.exec(sHTML) || {})[1]
+                        ).toLowerCase();
+
+                        //# Determine if this is a bBodyTag, the a_vMap entry then construct our _returnVal including its .innerHTML
+                        //#     NOTE: While we can and do parse multiple elements/nodes, we only look at the first sTag to determine the a_vMap
+                        a_vMap = a_oWrapMap[sTag] || a_oWrapMap._;
+                        bBodyTag = (sTag === 'body');
+                        //var _dom = (bBodyTag ? _document.implementation.createDocument('http://www.w3.org/1999/xhtml', 'html', _null) : _null);
+                        _returnVal = _document.createElement(bBodyTag ? 'html' : 'div');
+                        _returnVal.innerHTML = a_vMap[1] + sHTML + a_vMap[2];
+
+                        //# If the sHTML is a bBodyTag, reset our _returnVal an array containing it
+                        //#     NOTE: Use of Element.querySelector(...) below limits this to IE8+ without the polyfill, see: https://caniuse.com/#feat=queryselector
+                        if (bBodyTag) {
+                            _returnVal = [_returnVal.querySelector(sTag)];
+                        }
+                        //# Else set the i(ndex) and traverse down the a_vMap elements to collect the parsed sHTML
+                        else {
+                            i = a_vMap[0];
+                            while (i-- /* > 0*/) {
+                                _returnVal = _returnVal.children[0];
+                            }
+
+                            //# Reset our _returnVal to an array of its first .child(ren) if we're supposed to return the bFirstElementOnly else to all its .childNodes
+                            _returnVal = (bFirstElementOnly ?
+                                [_returnVal.children[0]] :
+                                core.type.arr.mk(_returnVal.childNodes)
+                            );
+                        }
+
+                        return (bFirstElementOnly ? _returnVal[0] : _returnVal);
+                    } //# dom.parse
+                };
+            }(); //# core.type.dom
+
+
+            //#     NOTE: No .mk
+            core.type.selector = {
+                /*
+                About:
+                Based on code from: stackoverflow.com/a/42149818/235704
+                */
+                is: function isSelector() {
+                    var _dummy = _document.createElement('br');
+
+                    return function (sSelector) {
+                        var bReturnVal = false;
+
+                        try {
+                            _dummy.querySelector(sSelector);
+                            bReturnVal = true;
+                        } catch (e) { oTypeIsh.expectedErrorHandler(e); }
+
+                        return bReturnVal;
+                    };
+                }() //# selector.is
+
+                //mk:
+            }; //# core.type.selector
+
+
+            /** ################################################################################################
+             * @class core.require
+             * @classdesc Collection of RequireJS-based functionality.
+             * @requires core.extend
+             * @requires core.type.arr.is, core.type.fn.is, core.type.str.is, core.type.obj.is
+             * @requires core.type.obj.mk, core.type.fn.mk
+             * @requires core.type.fn.call, core.io.event.fire
+            ################################################################################################# */
+            core.require = function (requireJs) {
+                var oRequireOptions = { //# http://requirejs.org/docs/api.html#config
+                    //onappend: function (_script) {},  //# NOTE: Feature not present in requireJs
+                    onerror: function (_script) {       //# NOTE: Feature not present in requireJs
+                        var oConfig = core.type.json.mk(_script.getAttribute("config"));
+                        core.io.console.error("Unable to include `" + oConfig.src + "`.");
+                    },
+                    //paths: [],        //# requirejs
+                    //bundles: {},      //# requirejs
+                    waitSeconds: 7,
+                    baseUrl: "",
+                    urlArgs: ""
+                };
+
+                //#
+                function eventHandler(a_sUrls, fnCallback, oOptions) {
+                    var a_oTracker = [],
+                        bAllLoaded = true,
+                        iCounter = a_sUrls.length
+                    ;
+
+                    //#
+                    //#     NOTE: bError comes across as an oEvent .onload and .onerror
+                    function loadHandler(_dom, bError, bTimedOut) {
+                        //# .push the current a_sUrls into the array
+                        a_oTracker.push({
+                            dom: _dom,
+                            loaded: (bError !== true),
+                            timedout: !!(bError && bTimedOut)
+                        });
+
+                        //#
+                        if (bError) {
+                            core.type.fn.call(oOptions.onerror, _null, [_dom]);
+                        }
+
+                        //# If we have loaded all of our a_sUrls, .call our fnCallback
+                        if (--iCounter < 1) {
+                            core.type.fn.call(fnCallback, _null, [a_oTracker, bAllLoaded]);
+                        }
+                    } //# loadHandler
+
+                    //#
+                    function errorHandler(_dom, bTimedOut) {
+                        bAllLoaded = false;
+                        loadHandler(_dom, true, bTimedOut);
+                    } //# errorHandler
+
+
+                    //# If the passed a_sUrls is empty, .call the fnCallback now
+                    //#     NOTE: .loadHandler will never be called via oReturnVal.onload/.onerror if there are no a_sUrls to process, hence the call here
+                    if (iCounter < 1) {
+                        core.type.fn.call(fnCallback, _null, [a_oTracker, bAllLoaded]);
+                    }
+
+                    //# Return the individual _dom element tracker factory to the caller
+                    return function (_dom, bAlreadyLoaded) {
+                        var iTimeout,
+                            oReturnVal = {
+                                onerror: function (bTimedOut) {
+                                    errorHandler(_dom, bTimedOut);
+                                },
+                                onload: function () {
+                                    //# clearTimeout (if any) and .push the current a_sUrls into the array
+                                    //#      NOTE: As per MDN, clearTimeout(undefined) does nothing, so we don't bother with an if() below
+                                    clearTimeout(iTimeout);
+                                    loadHandler(_dom /*, false, false*/);
+                                }
+                            }
+                        ;
+
+                        //#
+                        if (bAlreadyLoaded) {
+                            loadHandler(_dom /*, false, false*/);
+                        }
+                        else {
+                            iTimeout = setTimeout(function () { oReturnVal.onerror(true); }, oOptions.waitSeconds * 1000);
+                            _dom.onload = oReturnVal.onload;
+                            _dom.onerror = oReturnVal.onerror;
+                        }
+
+                        return oReturnVal;
+                    };
+                } //# eventHandler
+
+                //#
+                //#     NOTE: The third argument `oOptions` is a feature not present in requireJs
+                function requireJsLite(vUrls, fnCallback, oOptions) {
+                    var _script, oEventHandler, sSrc, i,
+                        //# <IE6thru9Support>
+                        fnIE6thru9Support = function (_script) {
+                            return function () {
+                                if (_script.readyState == "loaded" || _script.readyState == "complete") {
+                                    _script.onreadystatechange = _null;
+                                    _script.onload(/*false*/);
+                                }
+                            };
+                        },
+                        //# </IE6thru9Support>
+                        a_sUrls = (core.type.arr.is(vUrls) ? vUrls : [vUrls])
+                    ;
+
+                    //#
+                    oOptions = core.extend({}, oRequireOptions, oOptions);
+                    oEventHandler = eventHandler(a_sUrls, fnCallback, oOptions);
+
+                    //# Traverse the a_sUrls, creating each _script and setTimeout'ing as we go
+                    for (i = 0; i < a_sUrls.length; i++) {
+                        sSrc = oOptions.baseUrl + a_sUrls[i] + oOptions.urlArgs;
+                        _script = _document_querySelector("script[src='" + sSrc + "']");
+
+                        //# If there was a _script already, call .onload on the oEventHandler for the _script
+                        if (core.type.dom.is(_script)) {
+                            oEventHandler(_script, true).onload();
+                        }
+                        //# If there wasn't a _link already, build it and .appendChild
+                        else {
+                            _script = _document.createElement('script');
+                            oEventHandler(_script);
+
+                            //# <IE6thru9Support>
+                            //# If our _script has .readyState defined, we need to monitor .onreadystatechange
+                            //#     NOTE: In order to keep the _tcript in scope for .onreadystatechange, we use the fnIE6thru9Support Factory
+                            //#     NOTE: It costs us 9 lines of code to support IE v6-v9
+                            //#     Based on: https://www.html5rocks.com/en/tutorials/speed/script-loading/ and https://www.nczonline.net/blog/2009/07/28/the-best-way-to-load-external-javascript/
+                            _script.onreadystatechange = (_script.readyState ? fnIE6thru9Support(_script) : _null);
+                            //# </IE6thru9Support>
+
+                            //# .setAttribute's then append the _script to our _head
+                            //#     NOTE: We set the src after the events because some browsers (IE) start loading the script as soon as the src is set
+                            //_script.setAttribute('config', JSON.stringify({
+                            //    src: sSrc,
+                            //    baseUrl: oOptions.baseUrl,
+                            //    urlArgs: oOptions.urlArgs
+                            //}));
+                            _script.setAttribute('type', "text/javascript");
+                            _script.setAttribute('src', sSrc);
+                            _head.appendChild(_script);
+
+                            //# Call the RequireJs non-feature .onappend now that the _script has been .appendChild'd
+                            core.type.fn.call(oOptions.onappend, _null, [_script]);
+                        }
+                    }
+                } //# requireJsLite
+                requireJsLite.config = function (oOptions) {
+                    return core.extend(oRequireOptions, oOptions);
+                }; //# requireJsLite.config
+
+
+                //# Ensure the passed requireJs is a function (defaulting to the above-defined requireJsLite), then ensure our oOptions' are loaded into the .config
+                requireJs = core.type.fn.mk(requireJs, requireJsLite);
+                //requireJs.config(oOptions);
+
+                //#
+                core.extend(oTypeIsh, {
+                    'import': function (a_sImport, oOptions) {
+                        var i,
+                            a_sUrls = []
+                        ;
+
+                        //# If we have scripts to a_sImport
+                        //# <script type="text/javascript" src="js/ish/ish.js" ish='{ "target": "$z", "plugins": { "import": ["lib.ui","app.tags","app.ui"], "baseUrl": "js/ish/", "cache": false } }'></script>
+                        if (core.type.arr.is(a_sImport, true)) {
+                            //# Traverse each script to a_sImport, creating a new SCRIPT tag for each
+                            for (i = 0; i < a_sImport.length; i++) {
+                                a_sUrls.push(a_sImport[i] + ".js");
+                            }
+
+                            //#
+                            oOptions = core.extend({}, oTypeIsh.options.plugins, oOptions);
+                            core.require.config({ //# TODO: Remove core.require.config setting here, add oOptions to .queue
+                                waitSeconds: 7,
+                                baseUrl: oOptions.baseUrl,
+                                urlArgs: (oOptions.cache === false ?
+                                    "?nocache=" + Date.now() :
+                                    ""
+                                ),
+                                onappend: function (_script) {
+                                    _script.setAttribute("importedBy", oOptions.importedBy || "type.ish.import");
+                                }
+                            });
+                            core.require.queue(a_sUrls, function (a_oResults) {
+                                //# So long as the .callback didn't return false, .fire the .event
+                                if (core.type.fn.mk(oOptions.callback)(a_oResults) !== false) {
+                                    core.io.event.fire("ish.pluginsLoaded", a_oResults);
+                                }
+                            });
+                        }
+                    }, //# type.ish.import
+
+                    //#
+                    prereqs: function (sSource, oPreReqs, oOptions) {
+                        var i,
+                            a_sIncludes = [],
+                            a_sKeys = core.type.obj.ownKeys(oPreReqs)
+                        ;
+
+                        //# If we got a_sKeys from the passed oPreReqs, traverse them .push'ing each truthy value into a_sIncludes
+                        if (core.type.arr.is(a_sKeys, true)) {
+                            for (i = 0; i < a_sKeys.length; i++) {
+                                if (oPreReqs[a_sKeys[i]]) {
+                                    a_sIncludes.push(a_sKeys[i] + ".js");
+                                }
+                            }
+
+                            //# If we have some a_sIncludes, .require them now while passing in the SCRIPT[ish] options while we go
+                            if (a_sIncludes.length > 0) {
+                                core.require.scripts(a_sIncludes,
+                                    function (/*a_oScripts, bAllLoaded*/) {},
+                                    core.extend({
+                                        onerror: function (_script) {
+                                            core.io.console.error(sSource + ": Unable to load '" + _script.src + "'.");
+                                        }
+                                    }, core.type.ish.options.plugins, oOptions)
+                                );
+                            }
+                        }
+                    } //# type.ish.prereqs
+                }); //# core.type.ish.import
+
+                //#
+                return core.extend(
+                    function (vUrls, fnCallback, oOptions) {
+                        var i,
+                            bLoadedAll = true,
+                            a_sUrls = (core.type.arr.is(vUrls) ? vUrls : [vUrls]),
+                            a_sScripts = [],
+                            a_sCSS = [],
+                            a_sLinks = [],
+                            fnCollateResults = function (a_sProcessedUrls, bAllLoaded) {
+                                //# If the a_sProcessedUrls have values, .concat them into our (reset) a_sUrls and recalculate bLoadedAll
+                                if (core.type.arr.is(a_sProcessedUrls, true)) {
+                                    a_sUrls = a_sUrls.concat(a_sProcessedUrls);
+                                    bLoadedAll = (bLoadedAll && bAllLoaded);
+                                }
+
+                                //# If all of the series have returned, fnCallback
+                                if (--i < 1) {
+                                    core.type.fn.call(fnCallback, _null, [a_sUrls, bLoadedAll]);
+                                }
+                            }
+                        ;
+
+                        //# Traverse the a_sUrls, sorting each into their related arrays
+                        for (i = 0; i < a_sUrls.length; i++) {
+                            switch (core.type.str.mk(a_sUrls[i]).match(/\.([^\./\?#]+)($|\?|#)/)[1].toLowerCase()) {
+                                case "js": {
+                                    a_sScripts.push(a_sUrls[i]);
+                                    break;
+                                }
+                                case "css": {
+                                    a_sCSS.push(a_sUrls[i]);
+                                    break;
+                                }
+                                default: {
+                                    a_sLinks.push(a_sUrls[i]);
+                                }
+                            }
+                        }
+
+                        //# Now that we've sorted the passed a_sUrls, reset them and i for the checks below
+                        a_sUrls = [];
+                        i = 0;
+
+                        //# If we have values, inc i and call the series or fnCollateResults if they're all empty
+                        if (core.type.arr.is(a_sScripts, true)) {
+                            i++;
+                            requireJs(a_sScripts, fnCollateResults, oOptions);
+                        }
+                        if (core.type.arr.is(a_sCSS, true)) {
+                            i++;
+                            core.require.css(a_sCSS, fnCollateResults, oOptions);
+                        }
+                        if (core.type.arr.is(a_sLinks, true)) {
+                            i++;
+                            core.require.link(a_sLinks, fnCollateResults, oOptions);
+                        }
+                        if (i < 1) {
+                            fnCollateResults(/*[], true*/);
+                        }
+                    }, {
+                        scripts: requireJs,
+                        config: requireJsLite.config,
+                        lite: (requireJs === requireJsLite),
+
+                        //# Soft-configured version of requireJs's bundles/shim
+                        //#     NOTE: This allows us to dynamicially define any "bundles" we require at runtime, allowing us to load scripts in the required order
+                        queue: function (a_vModules, fnCallback) {
+                            var vCurrent,
+                                i = 0,
+                                iLength = core.type.int.mk(core.resolve(a_vModules, "length"), 0),
+                                bAllLoaded = (iLength > 0),
+                                a_oResults = []
+                            ;
+
+                            //#
+                            function doLoad() {
+                                vCurrent = a_vModules[i++];
+
+                                //# Call requireJs to load the vCurrent a_vModules, copying its returned arguments into vCurrent on callback (code-golf)
+                                requireJs(core.type.arr.mk(vCurrent, [vCurrent]), function (a_oScripts, bEntryAllLoaded) {
+                                    //#
+                                    if (requireJs.lite) {
+                                        a_oResults.push({
+                                            dom: a_oScripts,
+                                            loaded: bEntryAllLoaded
+                                        });
+                                        if (bEntryAllLoaded === false) {
+                                            bAllLoaded = false;
+                                        }
+                                    }
+
+                                    //# Recurse if we still have a_vModules to process, else call loaded
+                                    (i < iLength ? doLoad() : loaded(arguments));
+                                });
+                            } //# doLoad
+
+                            //#
+                            function loaded(_a) {
+                                //# Run our fnCallback with the above collected a_oResults (if any)
+                                core.type.fn.call(fnCallback, _null,
+                                    (requireJs.lite ?
+                                        [a_oResults, bAllLoaded] :
+                                        _a
+                                    )
+                                );
+                            } //# loaded
+
+
+                            //# If the caller passed in valid a_vModules, kick off doLoad else call loaded to return a null result to the fnCallback
+                            (bAllLoaded ? doLoad() : loaded());
+                        }, //# queue
+
+                        //#
+                        link: function (vUrls, fnCallback, oOptions) {
+                            var _link, oEventHandler, oHandler, oCurrent, i,
+                                a_sUrls = (core.type.arr.is(vUrls) ? vUrls : [vUrls])
+                            ;
+
+                            //# Ensure the passed oOptions .obj.is, defaulting the values and including the oRequireOptions as we go
+                            oOptions = core.extend({
+                                rel: "",
+                                type: "",   //# SEE: https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types
+                                media: ""   //# SEE: https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries
+                            }, oRequireOptions, oOptions);
+                            oEventHandler = eventHandler(a_sUrls, fnCallback, oOptions);
+
+                            //# Traverse the a_sUrls, pulling the oCurrent value and any existing _link's as we go
+                            for (i = 0; i < a_sUrls.length; i++) {
+                                oCurrent = core.type.obj.mk(a_sUrls[i], { href: a_sUrls[i] });
+                                oCurrent.href = oOptions.baseUrl + oCurrent.href + oOptions.urlArgs;
+                                _link = _document_querySelector("link[href='" + oCurrent.href + "']");
+
+                                //# If there was a _link already, call .onload on the oEventHandler for the _link
+                                if (core.type.dom.is(_link)) {
+                                    oEventHandler(_link, true).onload();
+                                }
+                                //# If there wasn't a _link already, build it and .appendChild
+                                else {
+                                    _link = _document.createElement('link');
+                                    oHandler = oEventHandler(_link);
+
+                                    //# <NonLinkOnloadSupport>
+                                    //#
+                                    if (!('onload' in _link)) {
+                                        oHandler.i = document.createElement("img"); //# img
+                                        oHandler.i.onerror = oHandler.onload;
+                                        oHandler.i.src = oCurrent.href;
+                                    }
+                                    //# </NonLinkOnloadSupport>
+
+                                    //#
+                                    _link.rel = oCurrent.rel || oOptions.rel;
+                                    _link.type = oCurrent.type || oOptions.type;
+                                    _link.href = oCurrent.href;
+                                    _link.media = oCurrent.media || oOptions.media;
+                                    _head.appendChild(_link);
+
+                                    //# Call the RequireJs non-feature .onappend now that the _script has been .appendChild'd
+                                    core.type.fn.call(oOptions.onappend, _null, [_link]);
+                                }
+                            }
+                        }, //# link
+
+                        //#
+                        css: function (vUrls, fnCallback, oOptions) {
+                            //# Ensure the passed oOptions .obj.is, defaulting the values as we go
+                            //#     NOTE: We skip oRequireOptions as that is done within core.require.link
+                            core.require.link(vUrls, fnCallback, core.extend({
+                                rel: "stylesheet",
+                                type: "text/css",
+                                media: "all"
+                            }, oOptions));
+                        } //# css
+                    }
+                );
+            }(_root.require); //# core.require
+
+
+            /** ################################################################################################
+            * @namespace core.ui
+            * @desc Stub-object for User Interface-based functionality.
+            ################################################################################################# */
+            core.ui = {
+                //# Based on: https://stackoverflow.com/a/36929383/235704
+                scrollTo: function (vElement, bSetHash) {
+                    var _element = core.type.dom.mk(vElement, null),
+                        bReturnVal = (_element !== null), // _element && core.type.fn.is(_element.getBoundingClientRect)), //# .fn.is probably not req: https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
+                        doScroll = function (iLastJump) {
+                            var iScroll = parseInt(_element.getBoundingClientRect().top * 0.2);
+
+                            _document.body.scrollTop += iScroll;
+                            _document.documentElement.scrollTop += iScroll;
+
+                            if (!iLastJump || iLastJump > Math.abs(iScroll)) {
+                                setTimeout(function() {
+                                    doScroll(Math.abs(iScroll));
+                                }, 20);
+                            }
+                            else if (bSetHash && core.type.str.is(vElement)) {
+                                location.hash = "#" + vElement;
+                            }
+                        } //# doScroll
+                    ;
+
+                    //#
+                    if (bReturnVal) {
+                        doScroll();
+                    }
+
+                    return bReturnVal;
+                },
+
+                clearSelection: function ()
+                {
+                    if (_root.getSelection) {_root.getSelection().removeAllRanges();}
+                    else if (_document.selection) {_document.selection.empty();}
+                }
+
+                /*
+                //############################################################
+                //# Determines if the referenced elements overlap in the 2D plane.
+                //#    NOTE: This function really only needs to run correctly under those browsers that have Z-Index issues with certian elements, so true cross-platform compatibility is not really required for this function
+                //############################################################
+                //# Last Updated: April 19, 2006
+                this.Overlap = function(oElement1, oElement2) {
+                    var bReturn = false;
+                    var iX1, iX2, iA1, iA2, iY1, iY2, iB1, iB2;
+                        //#### Set the Y (vertical) coords
+                    iB1 = this.Top(oElement1);
+                    iB2 = iB1 + this.Height(oElement1);
+                    iY1 = this.Top(oElement2);
+                    iY2 = iY1 + this.Height(oElement2);
+                        //#### If the elements seem to be in the way verticially
+                    if ((iY1 <= iB1 && iY2 > iB1) || (iY1 >= iB1 && iY1 < iB2)) {
+                            //#### Set the X (horozontal) coords
+                        iA1 = this.Left(oElement1);
+                        iA2 = iA1 + this.Width(oElement1);
+                        iX1 = this.Left(oElement2);
+                        iX2 = iX1 + this.Width(oElement2);
+                            //#### If the passed elements also overlap horozontally, flip bReturn to true
+                        if ((iX1 <= iA1 && iX2 > iA1) || (iX1 >= iA1 && iX1 < iA2)) {
+                            bReturn = true;
+                        }
+                    }
+                        //#### Return the above determined bReturn to the caller
+                    return bReturn;
+                };*/
+            }; //# core.ui
+        }();
+    }
+
+
+    //########
+
+
+    //# Procedural code
+    oPrivate.init();
 }();
