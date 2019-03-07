@@ -1809,6 +1809,7 @@
             oPrivate.init = function () {
                 var _script = _document.currentScript || _document_querySelector("SCRIPT[" + sTarget + "]"),
                     oOptions = oTypeIsh.options,
+                    sTarget = oOptions.target,
                     bProcessAttribute = false
                 ;
 
