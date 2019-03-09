@@ -90,7 +90,7 @@
 
                                         //#
                                         if (bValid) {
-                                            //# Traverse the a_vArgumentTests, processinge each to ensure they are functions (or references to )
+                                            //# Traverse the a_vArgumentTests, processing each to ensure they are functions (or references to )
                                             for (i = 0; i < iLen; i++) {
                                                 if (!core.type.fn.is(a_vArgumentTests[i])) {
                                                     a_vArgumentTests[i] = core.resolve(core.type, [a_vArgumentTests[i], "is"]);
@@ -101,7 +101,7 @@
                                             }
                                         }
 
-                                        //# If the a_vArgumentTests are bValid, set the info into oData under the a_vArgumentTests's iLen
+                                        //# If the a_vArgumentTests are bValid, set the info into oData under the a_vArgumentTests' iLen
                                         if (bValid) {
                                             oData[iLen] = oData[iLen] || [];
                                             oData[iLen].push({
@@ -117,7 +117,7 @@
                                         }
                                         //# Else one of the passed arguments was not bValid, so throw the error
                                         else {
-                                            throw "lang.overload: All tests must be functions or strings referencing `is.*`.";
+                                            throw "oop.overload: All tests must be functions or strings referencing `type.is.*`.";
                                         }
                                     }, //# overload*.add
 

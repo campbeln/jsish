@@ -170,9 +170,9 @@
 
 
         //# .require any missing .prereqs
-        core.type.ish.prereqs("ish.ui.dom", {
-            'ish.io.net': !core.type.fn.is(core.io.net.xhr)
-        } /*, {}*/);
+        //core.type.ish.prereqs("ish.ui.dom", {
+        //    'ish.io.net': !core.type.fn.is(core.resolve(core, "io.net.xhr"))
+        //} /*, {}*/);
 
         //#
         oDOM = core.extend(get, {
@@ -603,7 +603,301 @@
                 } while (_document.getElementById(sID));
 
                 return sID;
-            } //# dom.getId
+            }, //# dom.getId
+
+
+            //#
+            input: {
+                //#
+                //#     TODO: Update to: https://www.wintellect.com/data-binding-pure-javascript/
+                /*
+                function Binding(b) {
+                    _this = this
+                    this.elementBindings = []
+                    this.value = b.object[b.property]
+                    this.valueGetter = function(){
+                        return _this.value;
+                    }
+                    this.valueSetter = function(val){
+                        _this.value = val
+                        for (var i = 0; i < _this.elementBindings.length; i++) {
+                            var binding=_this.elementBindings[i]
+                            binding.element[binding.attribute] = val
+                        }
+                    }
+                    this.addBinding = function(element, attribute, event){
+                        var binding = {
+                            element: element,
+                            attribute: attribute
+                        }
+                        if (event){
+                            element.addEventListener(event, function(event){
+                                _this.valueSetter(element[attribute]);
+                            })
+                            binding.event = event
+                        }
+                        this.elementBindings.push(binding)
+                        element[attribute] = _this.value
+                        return _this
+                    }
+
+                    Object.defineProperty(b.object, b.property, {
+                        get: this.valueGetter,
+                        set: this.valueSetter
+                    });
+
+                    b.object[b.property] = this.value;
+                }
+
+
+                var obj = {a:123}
+                var myElement = document.getElementById("myText")
+                new Binding({
+                    object: obj,
+                    property: "a",
+                    element: myElement,
+                    attribute: "value",
+                    event: "keyup"
+                })
+                */
+                bind: function (vFormElements) {
+                    var a__elements, _element, a_sPath, oModel, sTarget, i;
+
+                    //# If the passed vFormElements .is a .selector, collect them via .querySelectorAll
+                    if (core.type.selector.is(vFormElements)) {
+                        a__elements = _document.querySelectorAll(vFormElements);
+                    }
+                    //# Else if the passed vFormElements is a string, attempt to .mk it a .dom then set it into a__elements
+                    else if (core.type.str.is(vFormElements)) {
+                        _element = core.type.dom.mk(vFormElements, null);
+                        a__elements = (_element ? [_element] : null);
+                    }
+                    //# Else if the passed vFormElements .is an .arr, set it into a__elements
+                    else if (core.type.arr.is(vFormElements)) {
+                        a__elements = vFormElements;
+                    }
+                    //# Else if no arguments were passed, assume a selector of [model] to populate the a__elements
+                    else if (arguments.length === 0) {
+                        a__elements = _document.querySelectorAll("[model]");
+                    }
+
+                    //# If the a__elements .is a .coll(ection) (e.g. either a .list or .arr)
+                    if (core.type.coll.is(a__elements, true)) {
+                        //# Traverse the a__elements, setting the current _element and sTarget as we go
+                        for (i = 0; i < a__elements.length; i++) {
+                            _element = a__elements[i];
+                            sTarget = _element.getAttribute("model");
+
+                            //# If the current _element and sTarget are valid
+                            if (core.type.dom.is(_element) && core.type.str.is(sTarget, true)) {
+                                if (!_element.bound) {
+                                    a_sPath = sTarget.split(".");
+                                    sTarget = a_sPath.pop();
+                                    _element.bound = true;
+                                    oModel = (core.type.arr.is(a_sPath, true) ? core.resolve(true, _window, a_sPath) : _window);
+
+                                    !function (_element, oModel, sTarget) {
+                                        Object.defineProperty(
+                                            oModel,
+                                            sTarget,
+                                            {
+                                                get: function() {
+                                                    return core.ui.dom.value(_element);
+                                                },
+                                                set: function(x) {
+                                                    core.ui.dom.value(_element, x);
+                                                    _element.onchange();
+                                                }
+                                            }
+                                        );
+                                    }(_element, oModel, sTarget);
+                                }
+                            }
+                            //#
+                            else {
+                                throw "[model] cannot be blank - " + _element.outerHTML;
+                            }
+                        }
+                    }
+                }, //# dom.input.bind
+
+
+                //#
+                value: function (vFormElement, vNewValue) {
+                    var i,
+                        vReturnVal /* = _undefined */,
+                        bSet = (arguments.length > 1),
+                        _formElement = core.type.dom.mk(vFormElement, null)
+                    ;
+
+                    //# If a (seemingly) valid _formElement was passed
+                    if (_formElement && _formElement.type) {
+                        //# Determine the _formElement's .type, collecting it's .value into our vReturnVal (optionally bSet'ing it to vNewValue as we go)
+                        switch (_formElement.type.toLowerCase()) {
+                            case 'text':
+                            case 'textarea':
+                            case 'password':
+                            case 'hidden':
+                            case 'button':
+                            case 'submit':
+                            case 'reset': {
+                                if (bSet) {
+                                    _formElement.value = vNewValue;
+                                }
+                                vReturnVal = _formElement.value;
+                                break;
+                            }
+
+                            case 'radio':
+                            case 'checkbox': {
+                                if (bSet) {
+                                    _formElement.checked = core.type.bool.mk(vNewValue, _formElement.value === vNewValue);
+                                }
+
+                                //# Set our vReturnVal based on if the _formElement is .checked
+                                vReturnVal = (_formElement.checked ? _formElement.value : "");
+                                break;
+                            }
+
+                            case 'select-one': {
+                                if (bSet) {
+                                    _formElement.value = vNewValue;
+                                }
+                                vReturnVal = _formElement.options[_formElement.selectedIndex].value;
+                                break;
+                            }
+
+                            case 'select-multiple': {
+                                //# Reset our vReturnVal to an array
+                                vReturnVal = [];
+
+                                //# If we are to bSet the vNewValue
+                                if (bSet) {
+                                    //# If the vNewValue is an array of values, traverse the _formElement's .options, .selected'ing each that has it's .value within vNewValue
+                                    if (core.type.arr.is(vNewValue)) {
+                                        for (i = 0; i < _formElement.options.length; i++) {
+                                            _formElement.options[i].selected = vNewValue.indexOf(_formElement.options[i].value) > -1;
+                                        }
+                                    }
+                                    //# Else a single value was passed, so reset the _formElement's .value
+                                    else {
+                                        _formElement.value = vNewValue;
+                                    }
+                                }
+
+                                //# Traverse the _formElement's .options
+                                for (i = 0; i < _formElement.options.length; i++) {
+                                    //# If the current .option is .selected, .push its .value into our vReturnVal
+                                    if (_formElement.options[i].selected) {
+                                        vReturnVal.push(_formElement.options[i].value);
+                                    }
+                                }
+                                break;
+                            }
+
+                            //case 'image':
+                            //case 'file':
+                        }
+
+                        return vReturnVal;
+                    }
+                } //# dom.input.value
+
+                /*
+                updated: function(sFormName, sInputName) {
+                    var a_oInput = new Array(null);
+                    var bReturn = false;
+                    var iReturnIndex = 0;
+                    var oInput, i;
+
+                        //#### Collect the oInput based on the passed arguments
+                    oInput = this.Input(sFormName, sInputName)
+
+                        //#### If the oInput was successfully collected above
+                    if (oInput) {
+                            //#### If the passed oInput represents a single input, place it into the 0th element in a_oInput
+                        if (oInput.type) {
+                            a_oInput[0] = oInput;
+                        }
+                            //#### Else the passed oInput (probably) represents multiple inputs, so it into a_oInput
+                        else {
+                            a_oInput = oInput;
+                        }
+
+                            //#### If the above determined a_oInput is an array
+                        if (! isNaN(a_oInput.length)) {
+                                //#### Traverse the above determined a_oInput
+                            for (i = 0; i < a_oInput.length; i++) {
+                                    //#### If the current a_oInput is valid
+                                if (a_oInput[i] && a_oInput[i].type) {
+                                        //#### Determine the .toLowerCase'd .type of the current a_oInput and process accordingly
+                                    switch (a_oInput[i].type.toLowerCase()) {
+                                        case 'text':
+                                        case 'textarea':
+                                        case 'password': {
+                                                //#### If the a_oInput's .value differs from its .defaultValue, reset the bReturn value to true
+                                            if (a_oInput[i].value != a_oInput[i].defaultValue) {
+                                                bReturn = true;
+                                            }
+                                            break;
+                                        }
+
+                                        case 'radio':
+                                        case 'checkbox': {
+                                                //#### If the a_oInput's .checked value differs from its .defaultChecked value, reset the bReturn value to true
+                                            if (a_oInput[i].checked != a_oInput[i].defaultChecked) {
+                                                bReturn = true;
+                                            }
+                                            break;
+                                        }
+
+                                        case 'select-one':
+                                        case 'select-multiple': {
+                                            var j;
+                                            var bDefaultValueSpecified = false;
+
+                                                //#### Traverse the a_oInput's .options to determine if the developer specified any as .defaultSelected
+                                            for (j = 0; j < a_oInput[i].options.length; j++) {
+                                                    //#### If the current .option is set as .defaultSelected, flip bDefaultValueSpecified and fall from the loop
+                                                if (a_oInput[i].options[j].defaultSelected) {
+                                                    bDefaultValueSpecified = true;
+                                                    break;
+                                                }
+                                            }
+
+                                                //#### (Re)Traverse the a_oInput's .options
+                                            for (j = 0; j < a_oInput[i].options.length; j++) {
+                                                    //#### If the developer set some .defaultSelected .options
+                                                if (bDefaultValueSpecified) {
+                                                        //#### If the a_oInput's .selected value differs from its .defaultSelected value, reset the bReturn value to true and fall from the loop
+                                                    if (a_oInput[i].options[j].selected != a_oInput[i].options[j].defaultSelected) {
+                                                        bReturn = true;
+                                                        break;
+                                                    }
+                                                }
+                                                    //#### Else there are not any .defaultSelected .options set, so if the user has selected something other then the first .option, reset the bReturn value to true
+                                                else if (a_oInput[i].options[j].selected && j != 0) {
+                                                    bReturn = true;
+                                                }
+                                            }
+                                            break;
+                                        }
+                                    }
+                                }
+
+                                    //#### If the bReturn value was flipped above, fall from the loop
+                                if (bReturn) {
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                        //#### Return the above determined bReturn value to the caller
+                    return bReturn;
+                };
+                */
+            } //# dom.input
         });
 
         return {

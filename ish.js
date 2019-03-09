@@ -521,6 +521,22 @@
             //mk:
         }; //# core.type.list
 
+        //#     NOTE: No .mk
+        type.coll = {
+            is: function (x, bDisallow0Length) {
+                bDisallow0Length = core.type.bool.mk(bDisallow0Length, false);
+
+                return (
+                    type.arr.is(x, bDisallow0Length) ||
+                    //type.obj.is(x, bDisallow0Length) ||
+                    (type.list.is(x) && (!bDisallow0Length || x.length > 0))
+                );
+            } //# coll.is
+
+            //mk:
+        }, //# core.type.coll
+
+        //#
         type.obj =function () {
             function isObjBase(o, bAllowFn) {
                 return !!(o && o === Object(o) && (bAllowFn || !core.type.fn.is(o)));
@@ -1807,7 +1823,8 @@
             //# Optionally create then .extend our _root variable to expose core as the developer defined in SCRIPT[ish]'s JSON
             //#     NOTE: Since document.currentScript is not universally supported, we look for SCRIPT[ish] as a fallback
             oPrivate.init = function () {
-                var _script = _document.currentScript || _document_querySelector("SCRIPT[" + sTarget + "]"),
+                var sTemp,
+                    _script = _document.currentScript || _document_querySelector("SCRIPT[" + sTarget + "]"),
                     oOptions = oTypeIsh.options,
                     sTarget = oOptions.target,
                     bProcessAttribute = false
