@@ -1898,7 +1898,7 @@
                 //# Ensure there is a reference to core available on our _script tag so that other scripts can auto-resolve it then .process
                 _script[sTarget] = core;
                 process(_script, bProcessAttribute);
-            } //# oPrivates.init
+            }; //# oPrivates.init
 
 
             //#
