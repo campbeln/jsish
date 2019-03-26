@@ -48,4 +48,4 @@
 
     core.fn = core.type.fn;
 
-}(document.querySelector("SCRIPT[ish]").ish);
+}(document.querySelector("SCRIPT[ish]").ish); //# Web-only

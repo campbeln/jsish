@@ -179,4 +179,4 @@
         } //# core.lib.ng.init
     }; //# core.lib.ng
 
-}(document.querySelector("SCRIPT[ish]").ish, window.angular);
+}(document.querySelector("SCRIPT[ish]").ish, window.angular); //# Web-only

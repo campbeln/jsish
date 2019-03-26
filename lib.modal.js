@@ -177,4 +177,4 @@ All references and code required to utilize tingle-modal are present below. So l
         );
     }, { baseUrl: "" }); //# core.lib.modal
 
-}(document.querySelector("SCRIPT[ish]").ish);
+}(document.querySelector("SCRIPT[ish]").ish); //# Web-only

@@ -156,4 +156,4 @@
         };
     }); //# core.ui.tooltip
 
-}(document.querySelector("SCRIPT[ish]").ish);
+}(document.querySelector("SCRIPT[ish]").ish); //# Web-only

@@ -65,4 +65,4 @@
         }); //# core.ui.clipboard
     }, { baseUrl: "" }); //# core.ui.clipboard
 
-}(document.querySelector("SCRIPT[ish]").ish);
+}(document.querySelector("SCRIPT[ish]").ish); //# Web-only

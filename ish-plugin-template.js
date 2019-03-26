@@ -4,20 +4,28 @@
  * @author Nick Campbell
  * @license MIT
 ################################################################################################# */
-!function (core) {
+!function () {
     'use strict';
 
-    
-    /*
-    ####################################################################################################
-    Class: core.?
-    X-based functionality.
-    Requires:
-    <core.extend>, 
-    ####################################################################################################
-    */
-    core.extend(core.type, {
-        
-    }); //# core.?
+    function init(core) {
+        /*
+        ####################################################################################################
+        Class: core.?
+        X-based functionality.
+        Requires:
+        <core.extend>,
+        ####################################################################################################
+        */
+        core.extend(core.type, {
+        }); //# core.?
+    }
 
-}(document.querySelector("SCRIPT[ish]").ish);
+    //# If we are running server-side (or possibly have been required as a CommonJS module)
+    if (typeof window === 'undefined') { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
+        module.exports = init;
+    }
+    //# Else we are running in the browser, so we need to setup the _document-based features
+    else {
+        init(document.querySelector("SCRIPT[ish]").ish);
+    }
+}();

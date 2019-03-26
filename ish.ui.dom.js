@@ -661,7 +661,7 @@
                 })
                 */
                 bind: function (vFormElements) {
-                    var a__elements, _element, a_sPath, oModel, sTarget, i;
+                    var a__elements, _element, a_sPath, oModel, vCurrentValue, sTarget, i;
 
                     //# If the passed vFormElements .is a .selector, collect them via .querySelectorAll
                     if (core.type.selector.is(vFormElements)) {
@@ -695,6 +695,7 @@
                                     sTarget = a_sPath.pop();
                                     _element.bound = true;
                                     oModel = (core.type.arr.is(a_sPath, true) ? core.resolve(true, _window, a_sPath) : _window);
+                                    vCurrentValue = oModel[sTarget];
 
                                     !function (_element, oModel, sTarget) {
                                         Object.defineProperty(
@@ -702,14 +703,15 @@
                                             sTarget,
                                             {
                                                 get: function() {
-                                                    return core.ui.dom.value(_element);
+                                                    return core.ui.dom.input.value(_element);
                                                 },
                                                 set: function(x) {
-                                                    core.ui.dom.value(_element, x);
+                                                    core.ui.dom.input.value(_element, x);
                                                     _element.onchange();
                                                 }
                                             }
                                         );
+                                        oModel[sTarget] = vCurrentValue;
                                     }(_element, oModel, sTarget);
                                 }
                             }
@@ -905,4 +907,4 @@
         };
     }); //# core.ui
 
-}(document.querySelector("SCRIPT[ish]").ish);
+}(document.querySelector("SCRIPT[ish]").ish); //# Web-only
