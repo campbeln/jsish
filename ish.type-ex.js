@@ -768,7 +768,8 @@
                             );
                         }, //# type.str.sub
 
-                        merge: function() {
+                        //# interpolate
+                        replace: function() {
                             var rePattern = /{([^{]+)}/g;
 
                             return function(s, oData, oOptions) {
@@ -794,7 +795,7 @@
                                     );
                                 });
                             }
-                        }() //# type.str.merge
+                        }() //# type.str.replace
                     };
                 }(), //# core.type.str
 
