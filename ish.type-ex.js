@@ -766,7 +766,35 @@
                                 (iStart < 0 ? 0 : iStart),
                                 (iEnd < 0 ? 0 : iEnd)
                             );
-                        } //# type.str.sub
+                        }, //# type.str.sub
+
+                        merge: function() {
+                            var rePattern = /{([^{]+)}/g;
+
+                            return function(s, oData, oOptions) {
+                                var reCurrentPattern, vCurrent;
+
+                                //#
+                                s = core.type.str.mk(s);
+                                oData = core.type.obj.mk(oData);
+                                oOptions = core.type.obj.mk(oOptions);
+                                reCurrentPattern = oOptions.pattern || rePattern;
+
+                                //#
+                                if (oOptions.start && oOptions.end) {
+                                    reCurrentPattern = new RegExp(oOptions.start + "([^" + oOptions.start + "]+)" + oOptions.end, "g");
+                                }
+
+                                return s.replace(reCurrentPattern, function(ignore, sKey) {
+                                    vCurrent = core.resolve(oData, sKey);
+
+                                    return (core.type.fn.is(vCurrent) ?
+                                        vCurrent() :
+                                        core.type.str.mk(vCurrent)
+                                    );
+                                });
+                            }
+                        }() //# type.str.merge
                     };
                 }(), //# core.type.str
 
