@@ -19,7 +19,7 @@
         oTypeIsh = { //# Set the .ver and .target under .type.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             //is: function () {},
             //import: function () {},
-            ver: '0.10.2019-03-06',
+            ver: '0.11.2019-03-25',
             onServer: bServerside,
             options: {
                 //script: _undefined,
