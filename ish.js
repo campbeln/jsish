@@ -323,14 +323,14 @@
             Safely forces the passed value into a date.
             Parameters:
             x - The varient to interrogate.
-            vDefault - The default value to return if casting fails.
+            dDefault - The default value to return if casting fails.
             Returns:
             Date representing the passed value.
             */
-            mk: function (x, vDefault) {
+            mk: function (x, dDefault) {
                 return (core.type.date.is(x) ?
                     new Date(x) :
-                    (arguments.length > 1 ? new Date(vDefault) : new Date())
+                    (arguments.length > 1 ? dDefault : new Date())
                 );
             } //# date.mk
         }; //# core.type.date
@@ -780,7 +780,7 @@
         var oTarget, oCurrent, sKey, iDepth, i, j,
             a = arguments,
             bDeepCopy = core.type.bool.is(a[0]),
-            fnIsDom = (core.type.dom ? core.type.dom.is : noop)
+            fnIsDom = core.type.fn.mk(core.resolve(core, "type.dom.is"))
         ;
 
         //# If the first argument .is .bool or .is .num, setup the local vars accordingly

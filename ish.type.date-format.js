@@ -150,9 +150,9 @@
                 //############################################################
                 //# Last Updated: April 19, 2006
                 format: function(dDateTime, sFormat) {
-                    var regex, vTemp, i,
+                    var vTemp, i,
                         oDecoders = {
-                            $: []
+                            $order: []
                         },
                         fnLpad = core.type.str.lpad,
                         oConfig = core.type.date.config
@@ -161,88 +161,95 @@
                     //# .registers the decoder value
                     function register(sDecode, sValue) {
                         oDecoders[sDecode] = sValue;
-                        oDecoders.$.push(sDecode);
+                        oDecoders.$order.push(sDecode);
                     } //# register
 
                     dDateTime = core.type.date.mk(dDateTime, null);
 
                     //# If we were passed a valid dDateTime and sFormat
                     if (core.type.date.is(dDateTime) && core.type.str.is(sFormat, true)) {
-                        //#### Borrow the use of i to store the month day, setting $D, $DD and $S accordingly
+                        //#### Borrow the use of i to store the month day, setting D, DD and S accordingly
                         i = dDateTime.getDate();
-                        register("$D", i);
-                        register("$DD", fnLpad(i, '0', 2));
-                        register("$S", oConfig.s[i] || oConfig.s[i % 10] || oConfig.s.x);
+                        register("D", i);
+                        register("DD", fnLpad(i, '0', 2));
+                        register("S", oConfig.s[i] || oConfig.s[i % 10] || oConfig.s.x);
 
-                        //#### Borrow the use of i to store the day of the week, setting $W, $WWW and $WWWW according to the above determined .DayOfWeek in the borrowed i
+                        //#### Borrow the use of i to store the day of the week, setting W, WWW and WWWW according to the above determined .DayOfWeek in the borrowed i
                         i = dDateTime.getDay();
-                        register("$W", i);
-                        register("$WWW", oConfig.WWW[i]);
-                        register("$WWWW", oConfig.WWWW[i]);
+                        register("W", i);
+                        register("WWW", oConfig.WWW[i]);
+                        register("WWWW", oConfig.WWWW[i]);
 
-                        //#### Borrow the use of i to store the month, setting $M, $MM, $MMM and $MMMM accordingly
+                        //#### Borrow the use of i to store the month, setting M, MM, MMM and MMMM accordingly
                         //####     NOTE: .getMonth is 0-based
                         i = dDateTime.getMonth();
-                        register("$M", i + 1);
-                        register("$MM", fnLpad(i + 1, '0', 2));
-                        register("$MMM", oConfig.MMM[i]);
-                        register("$MMMM", oConfig.MMMM[i]);
+                        register("M", i + 1);
+                        register("MM", fnLpad(i + 1, '0', 2));
+                        register("MMM", oConfig.MMM[i]);
+                        register("MMMM", oConfig.MMMM[i]);
 
-                        //#### Borrow the use of vTemp to store the .WeekOfYear, setting $w, $ww, $yy and $yyyy accordingly
+                        //#### Borrow the use of vTemp to store the .WeekOfYear, setting w, ww, yy and yyyy accordingly
                         vTemp = core.type.date.weekOfYear(dDateTime, oConfig.weekOfYear);
-                        register("$w", vTemp.w);
-                        register("$ww", fnLpad(vTemp.w, '0', 2));
+                        register("w", vTemp.w);
+                        register("ww", fnLpad(vTemp.w, '0', 2));
 
-                        //#### Reset the borrowed vTemp to store the MakeString'd .Year and then borrow i to determine its .Length, finally setting $yy and $yyyy accordingly
+                        //#### Reset the borrowed vTemp to store the MakeString'd .Year and then borrow i to determine its .Length, finally setting yy and yyyy accordingly
                         vTemp = core.type.str.mk(vTemp.yyyy);
                         i = (vTemp.length - 2);
-                        register("$yy", fnLpad(vTemp.substr(i < 0 ? 0 : i), '0', 2));
-                        register("$yyyy", vTemp);
+                        register("yy", fnLpad(vTemp.substr(i < 0 ? 0 : i), '0', 2));
+                        register("yyyy", vTemp);
 
-                        //#### Borrow the use of vTemp to store the MakeString'd .getFullYear and then borrow i to determine its .Length, finally setting $YY and $YYYY accordingly
+                        //#### Borrow the use of vTemp to store the MakeString'd .getFullYear and then borrow i to determine its .Length, finally setting YY and YYYY accordingly
                         vTemp = core.type.str.mk(dDateTime.getFullYear());
                         i = (vTemp.length - 2);
-                        register("$YY", fnLpad(vTemp.substr(i < 0 ? 0 : i), '0', 2));
-                        register("$YYYY", vTemp);
+                        register("YY", fnLpad(vTemp.substr(i < 0 ? 0 : i), '0', 2));
+                        register("YYYY", vTemp);
 
-                        //#### Borrow the use of i to store the .dayOfYear, setting $J and $JJJ accordingly
+                        //#### Borrow the use of i to store the .dayOfYear, setting J and JJJ accordingly
                         i = oDate.dayOfYear(dDateTime);
-                        register("$J", i);
-                        register("$JJJ", fnLpad(i, '0', 3));
+                        register("J", i);
+                        register("JJJ", fnLpad(i, '0', 3));
 
-                        //#### Set $E based on the current Timestamp (down converting the .getTime'd returned milliseconds into seconds)
+                        //#### Set E based on the current Timestamp (down converting the .getTime'd returned milliseconds into seconds)
                         //####    NOTE: Can debug output at http://www.argmax.com/mt_blog/archive/000328.php?ts=1058415153
-                        register("$E", parseInt(dDateTime.getTime() / 1000));
+                        register("E", parseInt(dDateTime.getTime() / 1000));
 
-                        //#### Borrow the use of i to store the 24 hour, setting $HH and $H accordingly
+                        //#### Borrow the use of i to store the 24 hour, setting HH and H accordingly
                         i = dDateTime.getHours();
-                        register("$H", i);
-                        register("$HH", fnLpad(i, '0', 2));
+                        register("H", i);
+                        register("HH", fnLpad(i, '0', 2));
 
-                        //# If the .Hour within i is before noon, set $tt to "am", else set $tt to "pm"
-                        register("$tt", oConfig.TT[(i % 12) == i ? 0 : 1]);
+                        //# If the .Hour within i is before noon, set tt to "am", else set tt to "pm"
+                        register("tt", oConfig.TT[(i % 12) === i ? 0 : 1]);
 
-                        //#### Determine the 12-hour time from the above collected .Hour (fixing 0 hours as necessary), then set $hh and $hh accordingly
+                        //#### Determine the 12-hour time from the above collected .Hour (fixing 0 hours as necessary), then set hh and hh accordingly
                         i = (i % 12 || 12);
-                        register("$h", i);
-                        register("$hh", fnLpad(i, '0', 2));
+                        register("h", i);
+                        register("hh", fnLpad(i, '0', 2));
 
-                        //#### Borrow the use of i to store the .Minute, setting $m and $mm accordingly
+                        //#### Borrow the use of i to store the .Minute, setting m and mm accordingly
                         i = dDateTime.getMinutes();
-                        register("$m", i);
-                        register("$mm", fnLpad(i, '0', 2));
+                        register("m", i);
+                        register("mm", fnLpad(i, '0', 2));
 
-                        //#### Borrow the use of i to store the .Second, setting $s and $ss accordingly
+                        //#### Borrow the use of i to store the .Second, setting s and ss accordingly
                         i = dDateTime.getSeconds();
-                        register("$s", i);
-                        register("$ss", fnLpad(i, '0', 2));
+                        register("s", i);
+                        register("ss", fnLpad(i, '0', 2));
 
-                        //#### Traverse the above defined oDecoders, replacing each ordered .$[key] with its above determined value within the passed sFormat
-                        //####    NOTE: The ordered oDecoders.$ is traversed in reverse to because definitions are set from shortest to longest (i.e. - M, MM, MMM, and MMMM)
-                        for (i = oDecoders.$.length - 1; i >= 0; i--) {
-                            vTemp = oDecoders.$[i];
-                            regex = new RegExp("\\" + vTemp, 'g');
-                            sFormat = sFormat.replace(regex, oDecoders[vTemp]);
+                        //# Traverse the above defined oDecoders, preprocessing the sFormat by replacing the user-set values with {{i}}
+                        //#     NOTE: Preprocessing is required as "m" appears in "December"
+                        for (i = oDecoders.$order.length - 1; i > -1; i--) {
+                            vTemp = oDecoders.$order[i];
+                            sFormat = sFormat.replace(new RegExp("[$]?" + vTemp, 'g'), "{{" + i + "}}"); //# Support $legacy format
+                        }
+
+                        //#### Traverse the above defined oDecoders, replacing each ordered .$order[key] with its above determined value within the passed sFormat
+                        //####    NOTE: The ordered oDecoders.$order is traversed in reverse to because definitions are set from shortest to longest (i.e. - M, MM, MMM, and MMMM)
+                        for (i = oDecoders.$order.length - 1; i > -1; i--) {
+                            vTemp = oDecoders.$order[i];
+                            sFormat = sFormat.replace(new RegExp("\\{\\{" + i + "\\}\\}", 'g'), oDecoders[vTemp]);
+                            //sFormat = sFormat.replace(new RegExp("[$]" + vTemp, 'g'), oDecoders[vTemp]);
                         }
                     }
                     //# Else something was amiss, so reset the sFormat to a null-string

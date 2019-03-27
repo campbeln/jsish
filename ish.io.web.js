@@ -399,7 +399,7 @@
                             }
                             //#
                             else {
-                                return _root.location.search;
+                                return _root.location.search.substr(1);
                             }
                         } //# getQS
 
