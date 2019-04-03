@@ -1313,7 +1313,29 @@
                             } catch(e) { core.type.ish.expectedErrorHandler(e); }
 
                             return bReturnVal;
-                        } //# type.obj.has
+                        }, //# type.obj.has
+
+                        //#
+                        prune: function (o, a_sAddlKeysToPrune) {
+                            var sCurrentKey, i,
+                                a_sOwnKeys = core.type.obj.ownKeys(o),
+                                oReturnVal = {}
+                            ;
+
+                            //#
+                            a_sAddlKeysToPrune = core.type.arr.mk(a_sAddlKeysToPrune);
+
+                            //#
+                            for (i = 0; i < a_sOwnKeys.length; i++) {
+                                sCurrentKey = a_sOwnKeys[i];
+
+                                if (o[sCurrentKey] !== undefined && a_sAddlKeysToPrune.indexOf(sCurrentKey) === -1) {
+                                    oReturnVal[sCurrentKey] = o[sCurrentKey];
+                                }
+                            }
+
+                            return oReturnVal;
+                        } //# type.obj.prune
                     };
                 }() //# core.type.obj
             };
