@@ -1142,7 +1142,6 @@
                 } //# type.arr.of
             }, //# core.type.arr.*
 
-
             obj: {
                 rm: function (vSource, vKeys, bSetToUndefined) {
                     var bReturnVal;
@@ -1606,7 +1605,7 @@
         ####################################################################################################
         */
         event: function () {
-            var oEvent,
+            var oEvent, fnDocReady,
                 oData = {}
             ;
 
@@ -1661,7 +1660,6 @@
                 return iReturnVal;
             } //# doCallback
 
-
             //#
             oEvent = core.extend(fire, {
                 fire: fire,         //# (sEvent, a_vArguments, fnCallback)
@@ -1697,6 +1695,39 @@
                     return bReturnVal;
                 } //# watch
             });
+
+            //# If we are not running on the bServerside, wire-up the jQuery's $(document).ready()-esque event
+            //#     FROM: https://github.com/jfriend00/docReady/blob/master/docready.js and https://stackoverflow.com/a/7053197/235704
+            if (!bServerside) {
+                //# Setup fnDocReady to .fire our ready event only .once
+                //#     NOTE: .once is required because we have fallback calls below that we don't want secondary calls from.
+                //#     NOTE: As this is a proxy for .fire, other calls to .fire("docready") won't be affected (not that any should be made).
+                //#     NOTE: As this is managed by .event, any late calls to .watch("docready", fn) will .fire as expected.
+                fnDocReady = core.type.fn.once(function () {
+                    oEvent.fire("docready");
+                }); //# fnDocReady
+
+                //# If the _document has already been rendered, run fnDocReady
+                //#     NOTE: IE only safe when .readyState is "complete", other browsers are safe when .readyState is "interactive"
+                if (_document.readyState === "complete" || (!_document.attachEvent && _document.readyState === "interactive")) {
+                    fnDocReady();
+                }
+                //# Else if this is a modern browser, hook the addEventListener.DOMContentLoaded event (and addEventListener.load as a fallback)
+                //#     NOTE: This event is the equivalent of jQuery's $(document).ready()
+                else if (_document.addEventListener) {
+                    _document.addEventListener("DOMContentLoaded", fnDocReady);
+                    _window.addEventListener("load", fnDocReady, false);
+                }
+                //# Else fallback to the non-modern browser (IE <= 8) attachEvent.onreadystatechange event (and attachEvent.onload as a fallback)
+                else {
+                    _document.attachEvent("onreadystatechange", function () {
+                        if (_document.readyState === "complete") {
+                            fnDocReady();
+                        }
+                    });
+                    _window.attachEvent("onload", fnDocReady);
+                }
+            }
 
             return oEvent;
         }() //# core.io.event

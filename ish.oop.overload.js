@@ -117,7 +117,7 @@
                                         }
                                         //# Else one of the passed arguments was not bValid, so throw the error
                                         else {
-                                            throw "oop.overload: All tests must be functions or strings referencing `type.is.*`.";
+                                            throw "oop.overload: All tests must be functions or strings referencing `type.*.is`.";
                                         }
                                     }, //# overload*.add
 
