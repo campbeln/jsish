@@ -878,23 +878,17 @@
                             );
                         }
                     }
-                    //# Else if the oCurrent[sKey] .is .fn, treat it as a value (rather than the object it truly is) and overwrite the oTarget[sKey]
+                    //# Else if the oCurrent[sKey] .is .fn or .native or .dom, treat it as a value (rather than the object it truly is) and overwrite the oTarget[sKey]
                     //#     NOTE: It really isn't proper to treat functions as objects as if there are properties under it to preserve, they likely apply to the overwritten "class" structure rather than having an independently important value.
                     else if (core.type.fn.is(oCurrent[sKey]) || core.type.is.native(oCurrent[sKey]) || fnIsDom(oCurrent[sKey])) {
                         oTarget[sKey] = oCurrent[sKey];
                     }
-                    //# Else determine if we need to bDeepCopy the oCurrent[sKey], setting or .extend'ing the oTarget[sKey] accordingly
+                    //# Else determine if we need to .extend the oTarget[sKey], setting or .extend'ing the oTarget[sKey] accordingly
                     //#     NOTE: If oCurrent[sKey] .is .fn, it does not replace the oTarget[sKey] but any properties it has does
                     //#     NOTE: We use the fnIsDom alias for core.type.dom.is as it's not present bServerSide thanks to no _document
                     else {
-                        bDeepCopy = (
-                            oTarget[sKey] &&
-                            oTarget[sKey] !== oCurrent[sKey] &&
-                            core.type.obj.is(oCurrent[sKey])
-                        );
-                        oTarget[sKey] = (bDeepCopy ?
+                        oTarget[sKey] = (oTarget[sKey] !== oCurrent[sKey] && core.type.obj.is(oCurrent[sKey]) ?
                             core.extend((iDepth !== 0 ? iDepth - 1 : false), oTarget[sKey], oCurrent[sKey]) :
-                            //core.extend(iDepth - 1, oTarget[sKey], oCurrent[sKey]) :
                             oCurrent[sKey]
                         );
                     }
