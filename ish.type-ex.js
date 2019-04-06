@@ -27,79 +27,10 @@
         */
         core.oop.partial(core.type, function (/*oProtected*/) {
             return {
-                //# val, true
-                is: {
-                    /*
-                    Function: native
-                    Determines if the passed value is a native Javasript function or object.
-                    Parameters:
-                    x - The varient to interrogate.
-                    Returns:
-                    Boolean value representing if the value is a native Javasript function or object.
-                    About:
-                    From: http://davidwalsh.name/essential-javascript-functions
-                    */
-                    native: function () {
-                        var toString = Object.prototype.toString,       // Used to resolve the internal `[[Class]]` of values
-                            fnToString = Function.prototype.toString,   // Used to resolve the decompiled source of functions
-                            reHostCtor = /^\[object .+?Constructor\]$/, // Used to detect host constructors (Safari > 4; really typed array specific)
-                            reNative = RegExp('^' +                     // Compile a regexp using a common native method as a template. We chose `Object#toString` because there's a good chance it is not being mucked with.
-                                String(toString)                                // Coerce `Object#toString` to a string
-                                    .replace(/[.*+?^${}()|[\]/\\]/g, '\\$&')    // Escape any special regexp characters
-                                    .replace(/toString|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') +
-                                '$'                                             // Replace mentions of `toString` with `.*?` to keep the template generic. Replace thing like `for ...` to support environments like Rhino which add extra info such as method arity.
-                            )
-                        ;
-
-                        return function (x) {
-                            var type = typeof x;
-                            return type == 'function' ?
-                                reNative.test(fnToString.call(x)) : // Use `Function#toString` to bypass x's own `toString` method and avoid being faked out.
-                                (x && type == 'object' && reHostCtor.test(toString.call(x))) || // Fallback to a host object check because some environments will represent things like typed arrays as DOM methods which may not conform to the normal native pattern.
-                                false;
-                        };
-                    }(), //# type.is.native
-                    /*native: function () {
-                        var toString = Object.prototype.toString,       // Used to resolve the internal `[[Class]]` of x
-                            fnToString = Function.prototype.toString,   // Used to resolve the decompiled source of functions
-                            reHostCtor = /^\[object .+?Constructor\]$/, // Used to detect host constructors (Safari > 4; really typed array specific)
-                            reNative = RegExp('^' +                     // Compile a regexp using a common native method as a template. We chose `Object#toString` because there's a good chance it is not being mucked with.
-                                String(toString)                                // Coerce `Object#toString` to a string
-                                    .replace(/[.*+?^${}()|[\]\/\\]/g, '\\$&')   // Escape any special regexp characters
-                                                                                // Replace mentions of `toString` with `.*?` to keep the template generic.
-                                                                                // Replace thing like `for ...` to support environments like Rhino which add extra info such as method arity.
-                                    .replace(/toString|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') +
-                                '$'
-                            )
-                        ;
-                        return function (x) {
-                            var type = typeof x;
-                            return x == 'function' ?
-                                reNative.test(fnToString.call(x)) :     // Use `Function#toString` to bypass the x's own `toString` method and avoid being faked out.
-                                                                        // Fallback to a host object check because some environments will represent things like typed arrays as DOM methods which may not conform to the normal native pattern.
-                                (x && type == 'object' && reHostCtor.test(toString.call(x))) || false
-                            ;
-                        }
-                    }(), //# type.is.native*/
-
-
-                    // Primitive Vals - Boolean, Null, Undefined, Number, String, Symbol
-                    primitive: function (x) {
-                        return (
-                            x === _null ||
-                            x === _undefined ||
-                            core.type.bool.is(x) ||
-                            core.type.num.is(x) ||
-                            core.type.str.is(x /*, false*/) ||
-                            core.type.symbol.is(x)
-                        );
-                    } //# type.is.primitive
-                }, //# core.type.is
-
                 //#
-                any: function (x, a_vValues, bUseCoserion) {
+                any: function (x, a_vValues, bUseCoercion) {
                     var i,
-                        fnTest = (bUseCoserion === true ?
+                        fnTest = (bUseCoercion === true ?
                             function (vX, vTest) {
                                 return vX == vTest;
                             } :
@@ -808,6 +739,7 @@
                     //#     SEE: https://stackoverflow.com/a/22534864/235704
                     cp: function (fn) {
                         var sKey;
+
                         //#
                         function newFn() {
                             var fnReturnVal, i,
@@ -829,6 +761,7 @@
                             //}
                             return fnReturnVal;
                         } //# newFn
+
                         //#
                         function fnReturnVal() {
                             if (this instanceof fnReturnVal) {
@@ -845,7 +778,7 @@
                         return fnReturnVal;
                     } //# type.fn.cp
                 }, //# core.type.fn
-                */
+                //*/
 
                 //# cp
                 dom: function () {

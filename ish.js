@@ -11,6 +11,7 @@
 
     var bServerside = (typeof window === 'undefined'), // this.window !== this      //# Are we running under nodeJS (or possibly have been required as a CommonJS module), SEE: https://stackoverflow.com/questions/4224606/how-to-check-whether-a-script-is-running-under-node-js
         _root = (bServerside ? global : window),                                    //# code-golf
+        _document = (bServerside ? {} : document),                                  //# code-golf
         _undefined /*= undefined*/,                                                 //# code-golf
         _null = null,                                                               //# code-golf
         _Object_prototype_toString = Object.prototype.toString,                     //# code-golf
@@ -122,6 +123,61 @@
                 return false;
             }
         }; //# type.is
+
+
+        /*
+        Function: native
+        Determines if the passed value is a native Javascript function or object.
+        Parameters:
+        x - The variant to interrogate.
+        Returns:
+        Boolean value representing if the value is a native Javascript function or object.
+        About:
+        From: http://davidwalsh.name/essential-javascript-functions
+        */
+        type.is.native = function () {
+            var toString = Object.prototype.toString,       // Used to resolve the internal `[[Class]]` of values
+                fnToString = Function.prototype.toString,   // Used to resolve the decompiled source of functions
+                reHostCtor = /^\[object .+?Constructor\]$/, // Used to detect host constructors (Safari > 4; really typed array specific)
+                reNative = RegExp('^' +                     // Compile a regexp using a common native method as a template. We chose `Object#toString` because there's a good chance it is not being mucked with.
+                    String(toString)                                // Coerce `Object#toString` to a string
+                        .replace(/[.*+?^${}()|[\]/\\]/g, '\\$&')    // Escape any special regexp characters
+                        .replace(/toString|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') +
+                    '$'                                             // Replace mentions of `toString` with `.*?` to keep the template generic. Replace thing like `for ...` to support environments like Rhino which add extra info such as method arity.
+                )
+            ;
+
+            return function (x) {
+                var type = typeof x;
+                return type == 'function' ?
+                    reNative.test(fnToString.call(x)) : // Use `Function#toString` to bypass x's own `toString` method and avoid being faked out.
+                    (x && type == 'object' && reHostCtor.test(toString.call(x))) || // Fallback to a host object check because some environments will represent things like typed arrays as DOM methods which may not conform to the normal native pattern.
+                    false;
+            };
+        }(), //# type.is.native
+        /*native: function () {
+            var toString = Object.prototype.toString,       // Used to resolve the internal `[[Class]]` of x
+                fnToString = Function.prototype.toString,   // Used to resolve the decompiled source of functions
+                reHostCtor = /^\[object .+?Constructor\]$/, // Used to detect host constructors (Safari > 4; really typed array specific)
+                reNative = RegExp('^' +                     // Compile a regexp using a common native method as a template. We chose `Object#toString` because there's a good chance it is not being mucked with.
+                    String(toString)                                // Coerce `Object#toString` to a string
+                        .replace(/[.*+?^${}()|[\]\/\\]/g, '\\$&')   // Escape any special regexp characters
+                                                                    // Replace mentions of `toString` with `.*?` to keep the template generic.
+                                                                    // Replace thing like `for ...` to support environments like Rhino which add extra info such as method arity.
+                        .replace(/toString|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') +
+                    '$'
+                )
+            ;
+            return function (x) {
+                var type = typeof x;
+                return x == 'function' ?
+                    reNative.test(fnToString.call(x)) :     // Use `Function#toString` to bypass the x's own `toString` method and avoid being faked out.
+                                                            // Fallback to a host object check because some environments will represent things like typed arrays as DOM methods which may not conform to the normal native pattern.
+                    (x && type == 'object' && reHostCtor.test(toString.call(x))) || false
+                ;
+            }
+        }(), //# type.is.native*/
+
 
         /*
         Function: range
@@ -778,9 +834,9 @@
     ################################################################################################# */
     core.extend = function (/*[vDeepCopy], oTarget, oSource, oSource2...*/) {
         var oTarget, oCurrent, sKey, iDepth, i, j,
+            fnIsDom = core.type.fn.mk(core.resolve(core, "type.dom.is")),
             a = arguments,
-            bDeepCopy = core.type.bool.is(a[0]),
-            fnIsDom = core.type.fn.mk(core.resolve(core, "type.dom.is"))
+            bDeepCopy = core.type.bool.is(a[0])
         ;
 
         //# If the first argument .is .bool or .is .num, setup the local vars accordingly
@@ -806,9 +862,9 @@
 
             //# Traverse the sKeys in the oCurrent object
             for (sKey in oCurrent) {
-                //# If the current sKey is a native property of oCurrent, set it into our oTarget
+                //# If the oCurrent[sKey] is a native property of oCurrent, set it into our oTarget
                 if (Object.prototype.hasOwnProperty.call(oCurrent, sKey)) {
-                    //# If the oCurrent sKey .is .arr, setup the oTarget's sKey as a new array
+                    //# If the oCurrent[sKey] .is .arr, setup the oTarget's sKey as a new array
                     //#     NOTE: This is necessary as otherwise arrays are copied in as objects so things like oTarget[sKey].push don't work in the .extend'ed objects, so since arrays return true from .is .obj and array's would otherwise be copied as references in the else below, this special case is necessary
                     if (core.type.arr.is(oCurrent[sKey])) {
                         oTarget[sKey] = [];
@@ -822,11 +878,23 @@
                             );
                         }
                     }
-                    //# Else the oCurrent sKey isn't an .arr
+                    //# Else if the oCurrent[sKey] .is .fn, treat it as a value (rather than the object it truly is) and overwrite the oTarget[sKey]
+                    //#     NOTE: It really isn't proper to treat functions as objects as if there are properties under it to preserve, they likely apply to the overwritten "class" structure rather than having an independently important value.
+                    else if (core.type.fn.is(oCurrent[sKey]) || core.type.is.native(oCurrent[sKey]) || fnIsDom(oCurrent[sKey])) {
+                        oTarget[sKey] = oCurrent[sKey];
+                    }
+                    //# Else determine if we need to bDeepCopy the oCurrent[sKey], setting or .extend'ing the oTarget[sKey] accordingly
+                    //#     NOTE: If oCurrent[sKey] .is .fn, it does not replace the oTarget[sKey] but any properties it has does
+                    //#     NOTE: We use the fnIsDom alias for core.type.dom.is as it's not present bServerSide thanks to no _document
                     else {
-                        oTarget[sKey] = (
-                            /*iDepth !== 0 &&*/ core.type.obj.is(oCurrent[sKey]) && !fnIsDom(oCurrent[sKey]) && oTarget[sKey] !== oCurrent[sKey] ?
+                        bDeepCopy = (
+                            oTarget[sKey] &&
+                            oTarget[sKey] !== oCurrent[sKey] &&
+                            core.type.obj.is(oCurrent[sKey])
+                        );
+                        oTarget[sKey] = (bDeepCopy ?
                             core.extend((iDepth !== 0 ? iDepth - 1 : false), oTarget[sKey], oCurrent[sKey]) :
+                            //core.extend(iDepth - 1, oTarget[sKey], oCurrent[sKey]) :
                             oCurrent[sKey]
                         );
                     }
@@ -1068,7 +1136,20 @@
                         true :
                         (v + "").trim().toLowerCase() === "true"
                     );
-                } //# type.is.true
+                }, //# type.is.true
+
+
+                // Primitive Vals - Boolean, Null, Undefined, Number, String, Symbol
+                primitive: function (x) {
+                    return (
+                        x === _null ||
+                        x === _undefined ||
+                        core.type.bool.is(x) ||
+                        core.type.num.is(x) ||
+                        core.type.str.is(x /*, false*/) ||
+                        core.type.symbol.is(x)
+                    );
+                } //# type.is.primitive
             }, //# core.type.is.*
 
             date: {
@@ -1716,7 +1797,7 @@
                 //#     NOTE: This event is the equivalent of jQuery's $(document).ready()
                 else if (_document.addEventListener) {
                     _document.addEventListener("DOMContentLoaded", fnDocReady);
-                    _window.addEventListener("load", fnDocReady, false);
+                    _root.addEventListener("load", fnDocReady, false);
                 }
                 //# Else fallback to the non-modern browser (IE <= 8) attachEvent.onreadystatechange event (and attachEvent.onload as a fallback)
                 else {
@@ -1725,7 +1806,7 @@
                             fnDocReady();
                         }
                     });
-                    _window.attachEvent("onload", fnDocReady);
+                    _root.attachEvent("onload", fnDocReady);
                 }
             }
 
@@ -1838,8 +1919,7 @@
     //# Else we are running in the browser, so we need to setup the _document-based features
     else {
         !function () {
-            var _document = document,                                                       //# code-golf
-                _head = _document.head,                                                     //# code-golf
+            var _head = _document.head,                                                     //# code-golf
                 //_body = _document.body,                                                     //# code-golf
                 _document_querySelector = _document.querySelector.bind(_document)           //# code-golf
                 //_document_querySelectorAll = _document.querySelectorAll.bind(_document),    //# code-golf
