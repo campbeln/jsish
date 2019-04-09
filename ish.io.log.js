@@ -21,6 +21,40 @@
         ####################################################################################################
         */
         core.oop.partial(core.io, function (/*oProtected*/) {
+/*
+https://www.stacktracejs.com/#!/docs/stacktrace-js
+
+var callback = function(a_oStackframes) {
+  var stringifiedStack = a_oStackframes.map(function(sf) {
+    return sf.toString();
+  }).join('\n');
+  console.log(stringifiedStack);
+};
+var errback = function(err) { console.log(err.message); };
+
+
+//# window.onerror integration
+window.onerror = function(msg, file, line, col, error) {
+    // callback is called with an Array[StackFrame]
+    StackTrace.fromError(error).then(callback).catch(errback);
+};
+
+
+//# Get stack trace from an Error
+var error = new Error('BOOM!');
+StackTrace.fromError(error).then(callback).catch(errback);
+
+
+//# Generate a stacktrace from walking arguments.callee
+StackTrace.generateArtificially().then(callback).catch(errback);
+
+
+//# Trace every time a given function is invoked
+//#     NOTE: callback is called with an Array[StackFrame] every time the wrapped interestingFn is called
+interestingFnWrapped = StackTrace.instrument(interestingFn, callback, errback)
+interestingFnUnwrapped = StackTrace.deinstrument(interestingFn);
+*/
+
             var oLog, oOptions,
                 eSeverity = {
                     error: 1,

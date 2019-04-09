@@ -7,14 +7,14 @@
 !function () {
     'use strict';
 
-    function init(core, XHRConstructor) {
+    function init(core, FetchConstructor) {
         /*
         ####################################################################################################
         Class: core.io.net
         Input/Output-based Networking functionality.
         Requires:
-        <core.resolve>, <core.extend>,
-        <core.type.fn.is>, <core.type.str.is>, <core.type.obj.is>, <core.type.fn.is>,
+        <core.resolve>, <core.extend>, 
+        <core.type.fn.is>, <core.type.str.is>, <core.type.obj.is>, <core.type.fn.is>, 
         <core.type.fn.tryCatch>, <core.type.fn.call>
         ####################################################################################################
         */
@@ -230,12 +230,12 @@
     //# If we are running server-side (or possibly have been required as a CommonJS module)
     if (typeof window === 'undefined') { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
         module.exports = function (core) {
-            init(core, require("xmlhttprequest").XMLHttpRequest);
+            init(core, require('node-fetch'));
         };
     }
     //# Else we are running in the browser, so we need to setup the _document-based features
     else {
-        /* global ActiveXObject: false */ //# JSHint "ActiveXObject variable undefined" error suppressor
-        init(document.querySelector("SCRIPT[ish]").ish, XMLHttpRequest || ActiveXObject);
+        /* global ActiveXObject: false */ //# JSHint "ActiveXObject variable undefined" error supressor
+        init(document.querySelector("SCRIPT[ish]").ish, fetch);
     }
 }();

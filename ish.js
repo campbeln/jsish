@@ -152,7 +152,8 @@
                 return type == 'function' ?
                     reNative.test(fnToString.call(x)) : // Use `Function#toString` to bypass x's own `toString` method and avoid being faked out.
                     (x && type == 'object' && reHostCtor.test(toString.call(x))) || // Fallback to a host object check because some environments will represent things like typed arrays as DOM methods which may not conform to the normal native pattern.
-                    false;
+                    false
+                ;
             };
         }(), //# type.is.native
         /*native: function () {
@@ -192,7 +193,7 @@
         */
         type.range = function (vValue, vType, nMin, nMax) {
             var fnTest = (core.type.fn.is(vType) ? vType : core.resolve(core.type, [vType, "is"])),
-                bReturnVal = (core.type.fn.is(fnTest) ? core.type.fn.call(fnTest, null, [vValue]) : undefined)
+                bReturnVal = (core.type.fn.is(fnTest) ? core.type.fn.call(fnTest, null, [vValue]) : _undefined)
             ;
 
             //# If we were able to successfully verify vValue with the fnTest, reset vValue to the numeric value to interrogate
@@ -201,8 +202,8 @@
 
                 //# Reset our bReturnVal to the result of the range comparison
                 bReturnVal = (
-                    (nMin === undefined || vValue >= nMin) &&
-                    (nMax === undefined || vValue <= nMax)
+                    (nMin === _undefined || vValue >= nMin) &&
+                    (nMax === _undefined || vValue <= nMax)
                 );
             }
 
@@ -885,9 +886,9 @@
                     }
                     //# Else determine if we need to .extend the oTarget[sKey], setting or .extend'ing the oTarget[sKey] accordingly
                     //#     NOTE: If oCurrent[sKey] .is .fn, it does not replace the oTarget[sKey] but any properties it has does
-                    //#     NOTE: We use the fnIsDom alias for core.type.dom.is as it's not present bServerSide thanks to no _document
+                    //#     NOTE: We use the fnIsDom alias for core.type.dom.is as it's not present bServerside thanks to no _document
                     else {
-                        oTarget[sKey] = (oTarget[sKey] !== oCurrent[sKey] && core.type.obj.is(oCurrent[sKey]) ?
+                        oTarget[sKey] = (oTarget[sKey] && oTarget[sKey] !== oCurrent[sKey] && core.type.obj.is(oCurrent[sKey]) ?
                             core.extend((iDepth !== 0 ? iDepth - 1 : false), oTarget[sKey], oCurrent[sKey]) :
                             oCurrent[sKey]
                         );
@@ -1260,7 +1261,7 @@
                 //#
                 get: function (oObject, sKey) {
                     var sCurrentKey,
-                        vReturnVal /* = undefined */
+                        vReturnVal /* = _undefined */
                     ;
 
                     //# If the called passed in a valid oObject, .toLowerCase our sKey

@@ -8,9 +8,9 @@
     'use strict';
 
     function init(core) {
-        var bServerSide = core.type.ish.onServer,                                       //# code-golf
-            _root = (bServerSide ? global : window),                                    //# code-golf
-            _document = (bServerSide ? {} : document),                                  //# code-golf
+        var bServerside = core.type.ish.onServer,                                       //# code-golf
+            _root = (bServerside ? global : window),                                    //# code-golf
+            _document = (bServerside ? {} : document),                                  //# code-golf
             _null = null,                                                               //# code-golf
             _undefined /*= undefined*/                                                  //# code-golf
         ;
@@ -40,7 +40,7 @@
                     ####################################################################################################
                     */
                     cookie: function () {
-                        var fnIsomorphic = (bServerSide ?
+                        var fnIsomorphic = (bServerside ?
                             function (oSources) {
                                 var oRequestHeaders = core.resolve(oSources, "request.headers"),
                                     oResponseHeaders = core.resolve(oSources, "response.headers")
@@ -394,7 +394,7 @@
                         //#
                         function getQS() {
                             //#
-                            if (bServerSide) {
+                            if (bServerside) {
                                 throw "No request.url has been provided.";
                             }
                             //#
@@ -492,7 +492,7 @@
 
 
                         //# If we are running bServerside (or possibly have been required as a CommonJS module)
-                        if (bServerSide) {
+                        if (bServerside) {
                             $lib = require('url');
 
                             fnReturnVal = function (sUrl) {
@@ -514,8 +514,8 @@
                     }() //# io.web.url
                 },
 
-                //# If we aren't running bServerSide (or possibly have been required as a CommonJS module), add in the browser-specific stuff
-                (bServerSide ? _null : {
+                //# If we aren't running bServerside (or possibly have been required as a CommonJS module), add in the browser-specific stuff
+                (bServerside ? _null : {
                     //# Aliases to window.localstorage and window.sessionStorage with automajic stringification of non-string values
                     storage: function () {
                         var window_localStorage = _root.localStorage,         //# code-golf
