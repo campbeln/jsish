@@ -96,11 +96,11 @@
                         if (core.type.arr.is(a_oData, true)) {
                             for (i = 0; i < a_oData.length; i++) {
                                 for (j = 0; j < iKeysLength; j++) {
-                                    vCurrent = core.resolve(a_oData[i], a_sKeys[j]);
+                                    vCurrent = core.resolve(a_oData[i], [a_sKeys[j]]);
 
                                     //#
                                     if (vCurrent === undefined) {
-                                        if (!core.type.obj.has(a_oData[i], a_sKeys[j])) {
+                                        if (!core.type.obj.has(a_oData[i], [a_sKeys[j]])) {
                                             vCurrent = "";
                                         }
                                     }
