@@ -969,16 +969,20 @@
                         return a_vReturnVal;
                     }, //# type.arr.cp
 
-                    unique: function (a_vArray, a_vArray2) {
+                    unique: function (a_vArray, a_vArray2, bCaseInsenstive) {
+                        bCaseInsenstive = (bCaseInsenstive === true || a_vArray2 === true);
+
                         if (core.type.arr.is(a_vArray)) {
-                            if (arguments.length > 1 && core.type.arr.is(a_vArray2)) {
+                            if (core.type.arr.is(a_vArray2)) {
                                 return a_vArray.filter(function (v) {
-                                    return a_vArray2.indexOf(v) === -1;
+                                    return (a_vArray2.indexOf(v) === -1 && (!bCaseInsenstive || a_vArray2.indexOf((v + "").toLowerCase()) === -1));
                                 });
                             }
                             else {
-                                return a_vArray.reduce(function (acc, val) {
-                                    if (acc.indexOf(val) === -1) acc.push(val);
+                                return a_vArray.reduce(function (acc, v) {
+                                    if (acc.indexOf(v) === -1 && (!bCaseInsenstive || acc.indexOf((v + "").toLowerCase()) === -1)) {
+                                        acc.push(v);
+                                    }
                                     return acc;
                                 }, []);
                             }

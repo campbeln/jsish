@@ -238,7 +238,7 @@
                         register("ss", fnLpad(i, '0', 2));
 
                         //# Traverse the above defined oDecoders, preprocessing the sFormat by replacing the user-set values with {{i}}
-                        //#     NOTE: Preprocessing is required as "m" appears in "December"
+                        //#     NOTE: Preprocessing is required as (for example) "m" appears in "December"
                         for (i = oDecoders.$order.length - 1; i > -1; i--) {
                             vTemp = oDecoders.$order[i];
                             sFormat = sFormat.replace(new RegExp("[$]?" + vTemp, 'g'), "{{" + i + "}}"); //# Support $legacy format
