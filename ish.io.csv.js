@@ -96,11 +96,12 @@
                         if (core.type.arr.is(a_oData, true)) {
                             for (i = 0; i < a_oData.length; i++) {
                                 for (j = 0; j < iKeysLength; j++) {
+                                    //# Pass in a_sKeys[j] in an array so .resolve doesn't parse it for .'s
                                     vCurrent = core.resolve(a_oData[i], [a_sKeys[j]]);
 
                                     //#
                                     if (vCurrent === undefined) {
-                                        if (!core.type.obj.has(a_oData[i], [a_sKeys[j]])) {
+                                        if (!core.type.obj.has(a_oData[i], a_sKeys[j])) {
                                             vCurrent = "";
                                         }
                                     }
@@ -116,6 +117,10 @@
                                         if (oOptions.quotes || vCurrent.indexOf(oOptions.delimiter) > -1 || vCurrent.indexOf('"') > -1 || vCurrent.indexOf('\n') > -1) {
                                             vCurrent = '"' + vCurrent.replace(/"/g, '""') + '"';
                                         }
+                                    }
+                                    //#
+                                    else if (oOptions.quotes) {
+                                        vCurrent = '"' + vCurrent + '"';
                                     }
 
                                     sReturnVal += vCurrent + ((iKeysLength - 1) === j ? "\n" : oOptions.delimiter);
