@@ -83,7 +83,7 @@
                         delimiter: ","
                     }, oOptions);
                     a_sKeys = oOptions.keys || core.type.obj.ownKeys(core.resolve(a_oData, "0"));
-                    core.type.arr.rm(a_sKeys, "$$hashKey");
+                    core.type.arr.rm(a_sKeys, "$$hashKey"); //# TODO: AngularJS specific
                     oOptions.delimiter = core.type.str.mk(oOptions.delimiter, ",");
                     oOptions.quotes = core.type.is.true(oOptions.quotes);
 
@@ -96,7 +96,7 @@
                         if (core.type.arr.is(a_oData, true)) {
                             for (i = 0; i < a_oData.length; i++) {
                                 for (j = 0; j < iKeysLength; j++) {
-                                    vCurrent = core.resolve(a_oData, [i, a_sKeys[j]]);
+                                    vCurrent = core.resolve(a_oData[i], a_sKeys[j]);
 
                                     //#
                                     if (vCurrent === undefined) {
@@ -111,11 +111,11 @@
                                     //#
                                     else if (!core.type.num.is(vCurrent)) {
                                         vCurrent = core.type.str.mk(vCurrent);
-                                    }
 
-                                    //#
-                                    if (oOptions.quotes || vCurrent.indexOf(oOptions.delimiter) > -1 || vCurrent.indexOf('"') > -1 || vCurrent.indexOf('\n') > -1) {
-                                        vCurrent = '"' + vCurrent.replace(/"/g, '""') + '"';
+                                        //#
+                                        if (oOptions.quotes || vCurrent.indexOf(oOptions.delimiter) > -1 || vCurrent.indexOf('"') > -1 || vCurrent.indexOf('\n') > -1) {
+                                            vCurrent = '"' + vCurrent.replace(/"/g, '""') + '"';
+                                        }
                                     }
 
                                     sReturnVal += vCurrent + ((iKeysLength - 1) === j ? "\n" : oOptions.delimiter);
