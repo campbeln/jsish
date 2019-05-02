@@ -1168,17 +1168,17 @@
                         has: function (vSource, vKeys) {
                             var i,
                                 a_sKeys = (core.type.arr.is(vKeys) ? vKeys : [vKeys]),
-                                bReturnVal = false
+                                bReturnVal = (vSource && vSource.hasOwnProperty)
                             ;
 
-                            //#
-                            for (i = 0; i < a_sKeys.length; i++) {
-                                try {
-                                    bReturnVal = core.type.fn.call(vSource.hasOwnProperty, this, [a_sKeys[i]]);
-                                } catch(e) {
-                                    core.type.ish.expectedErrorHandler(e);
-                                    bReturnVal = false;
-                                    break;
+                            //# If the vSource is valid, traverse the a_sKeys
+                            if (bReturnVal) {
+                                for (i = 0; i < a_sKeys.length; i++) {
+                                    //# If this a_sKeys isn't a .hasOwnProperty of vSource, unflip our bReturnVal and fall from the loop
+                                    if (!vSource.hasOwnProperty(a_sKeys[i])) {
+                                        bReturnVal = false;
+                                        break;
+                                    }
                                 }
                             }
 
