@@ -1165,12 +1165,22 @@
                         }, //# type.obj.mv
 
                         //#
-                        has: function (vSource, sKey) {
-                            var bReturnVal = false;
+                        has: function (vSource, vKeys) {
+                            var i,
+                                a_sKeys = (core.type.arr.is(vKeys) ? vKeys : [vKeys]),
+                                bReturnVal = false
+                            ;
 
-                            try {
-                                bReturnVal = core.type.fn.call(vSource.hasOwnProperty, this, [sKey]);
-                            } catch(e) { core.type.ish.expectedErrorHandler(e); }
+                            //#
+                            for (i = 0; i < a_sKeys.length; i++) {
+                                try {
+                                    bReturnVal = core.type.fn.call(vSource.hasOwnProperty, this, [a_sKeys[i]]);
+                                } catch(e) {
+                                    core.type.ish.expectedErrorHandler(e);
+                                    bReturnVal = false;
+                                    break;
+                                }
+                            }
 
                             return bReturnVal;
                         }, //# type.obj.has
@@ -1207,7 +1217,7 @@
             };
 
             //#
-            if (bServerside) {
+            if (!bServerside) {
                 //# cp
                 oReturnVal.dom = function () {
                     function pender(vDomParent, vDomToAdd, bPrepend) {
