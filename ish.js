@@ -1404,12 +1404,13 @@
                     From: http://davidwalsh.name/essential-javascript-functions
                     */
                     once: function (fn, oOptions) {
-                        var vReturnVal;
+                        var vReturnVal /*= _undefined*/;
 
                         //#
                         oOptions = processOptions(this, oOptions, {
                             rereturn: true
                         } /*, _undefined*/);
+                        oOptions.call = 0;
 
                         return function (/*arguments*/) {
                             if (core.type.fn.is(fn)) {
@@ -1417,7 +1418,7 @@
                                 fn = _null;
                             }
 
-                            return (oOptions.rereturn ? vReturnVal : _undefined);
+                            return (++oOptions.call === 1 || oOptions.rereturn ? vReturnVal : _undefined);
                         };
                     }, //# fn.once
 
@@ -1585,50 +1586,75 @@
                     fn - Function called each wait time returning truthy. On a truthy return value, oOptions.onsuccess is called (if any).
                     oOptions - Object representing the desired options:
                         oOptions.context - Varient representing the Javascript context (e.g. `this`) in which to call the function.
-                        oOptions.wait - Minimum number of miliseconds between each poll attempt (default: 500).
-                        oOptions.timeout - Maximum number of milliseconds to do the polling (Default: 2000).
-                        oOptions.onsuccess - Function to call on success.
-                        oOptions.onfailure - Function to call on failure.
+                        oOptions.wait - Function or Integer defining the minimum number of miliseconds between each poll attempt (default: 500).
+                        oOptions.retries - Integer defining the maximum number of polling attempts (default: 4).
+                        oOptions.callback - Function to call on completion, with bSuccess as the first argument.
+                        //oOptions.timeout - Maximum number of milliseconds to do the polling (default: 2000).
+                        //oOptions.onsuccess - Function to call on success.
+                        //oOptions.onfailure - Function to call on failure.
                     Returns:
                     Function that initiates the polling process.
                     About:
-                    From: http://davidwalsh.name/essential-javascript-functions
+                    Based on code from: http://davidwalsh.name/essential-javascript-functions
                     */
-                    poll: function (fn, oOptions) {
-                        //#  WAS: function (vTest, fnCallback, fnErrback, iTimeout, iInterval, vArgument)
-                        var _a, iEndTime; // = Number(new Date()) + (iTimeout || 2000);
+                    poll: !function () {
+                        function poll(fn, oOptions) {
+                            var vReturnVal, _a, iWait,
+                                iAttempts = 0
+                            ;
 
-                        //#
-                        oOptions = processOptions(this, oOptions, {
-                            //ontimeout: core.type.fn.noop,
-                            //onsuccess: core.type.fn.noop
-                        }, 100);
-                        oOptions.timeout = core.type.int.mk(oOptions.timeout, 2000);
+                            //# Ensure the passed oOptions .is an .obj, scrubbing and defaulting values as we go
+                            oOptions = core.extend({
+                                //callback: _undefined,
+                                //wait: 500,
+                                //retries: 4,
+                                context: this
+                            }, oOptions);
+                            iWait = core.type.int.mk(oOptions.wait, 500);
+                            oOptions.wait = (core.type.fn.is(oOptions.wait) ? oOptions.wait : function (/*iAttempts*/) { return iWait; });
+                            oOptions.retries = core.type.int.mk(oOptions.retries, 4);
 
-                        return function (/*arguments*/) {
-                            //#
-                            _a = convert(arguments);
-                            iEndTime = Date.now() + oOptions.timeout;
+                            return function (/*arguments*/) {
+                                //# .convert the arguments into an _a(rray)
+                                _a = convert(arguments);
 
-                            //#
-                            //#     NOTE: We need a named function below as we recurse for each .wait interval
-                            !function p() {
-                                //# If the condition is met, we can .call our .onsuccess (if any)
-                                if (core.type.fn.call(fn, oOptions.context, _a)) {
-                                    core.type.fn.call(oOptions.onsuccess, oOptions.context, _a);
-                                }
-                                //# Else if the condition isn't met but the timeout hasn't elapsed, recurse
-                                else if (Date.now() < iEndTime) { // Number(new Date())
-                                    setTimeout(p, oOptions.wait);
-                                }
-                                //# Else we've failed and timedout, so .call our .onfailure (if any)
-                                else {
-                                    core.type.fn.call(oOptions.onfailure, oOptions.context, _a);
-                                    //fnErrback(new Error('timed out for ' + fnCallback + ': ' + arguments), vArgument);
-                                }
-                            }();
-                        };
-                    } //# fn.poll
+                                //# Setup and call the polling function
+                                //#     NOTE: We need a named function below as we .setTimeout for each .wait interval
+                                !function polling() {
+                                    //# Inc our iAttempts and collect the vReturnVal
+                                    iAttempts++;
+                                    vReturnVal = core.type.fn.call(fn, oOptions.context, _a);
+
+                                    //# If we got a truthy vReturnVal from the .call above, we can .call our .callback (if any) indicating bSuccess
+                                    if (vReturnVal) {
+                                        core.type.fn.call(oOptions.callback, oOptions.context, [true, iAttempts, vReturnVal]);
+                                    }
+                                    //# Else if the condition isn't met but the timeout hasn't elapsed, .setTimeout
+                                    else if (iAttempts < oOptions.retries) {
+                                        setTimeout(polling, oOptions.wait(iAttempts));
+                                    }
+                                    //# Else we've failed and are over our iAttempts, so .call our .callback (if any) indicating !bSuccess
+                                    else {
+                                        core.type.fn.call(oOptions.callback, oOptions.context, [false, iAttempts, vReturnVal]);
+                                    }
+                                }();
+                            };
+                        } //# fn.poll
+
+                        //# Exponential backoff (i.e. intervals of 100, 200, 400, 800, 1600...)
+                        poll.expBackoff = function (iBaseInterval) {
+                            var iAttempts = 1;
+
+                            //# Force the iBaseInterval into an .int then return the exponential backoff .interval function to the caller
+                            //#     NOTE: We need to divide the iBaseInterval as we're raising 2 to the power of iAttempts below (e.g. 100 / 2 * 2^1 = 100).
+                            iBaseInterval = (core.type.int.mk(iBaseInterval, 100) / 2);
+                            return function (/*iAttempts*/) {
+                                return (iBaseInterval * Math.pow(2, iAttempts++));
+                            };
+                        }; //# fn.poll.expBackoff
+
+                        return poll;
+                    }() //# fn.poll
                 };
             }() //# core.type.fn.*
         };

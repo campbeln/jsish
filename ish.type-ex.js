@@ -1168,7 +1168,7 @@
                         has: function (vSource, vKeys) {
                             var i,
                                 a_sKeys = (core.type.arr.is(vKeys) ? vKeys : [vKeys]),
-                                bReturnVal = (vSource && vSource.hasOwnProperty)
+                                bReturnVal = (vSource && core.type.fn.is(vSource.hasOwnProperty))
                             ;
 
                             //# If the vSource is valid, traverse the a_sKeys
