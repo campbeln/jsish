@@ -1046,6 +1046,46 @@
                         return oReturnVal;
                     } //# doCopy
 
+                    function diffCompare(oOptions) {
+                        var fnCompares = [];
+                        // Truthy value representing `true` if x === y, `false` if x != y or 1 if x matches y (case-insensitive and trimmed).
+
+                        //#
+                        fnCompares.push(
+                            oOptions.useCoercion ?
+                            function (vSource, vCompare) { return vSource == vCompare; } :
+                            function (vSource, vCompare) { return vSource === vCompare; }
+                        );
+                        fnCompares.push(
+                            oOptions.caseInsensitive ? (
+                                oOptions.trim ?
+                                function (vSource, vCompare) { return !core.type.str.is(vSource) || core.type.str.cmp(vSource, vCompare); } :
+                                function (vSource, vCompare) { return !core.type.str.is(vSource) || core.type.str.ep(vSource, vCompare, true); }
+                            ) : (
+                                oOptions.trim ?
+                                function (vSource, vCompare) { return !core.type.str.is(vSource) || core.type.str.mk(vSource).trim() === core.type.str.mk(vCompare).trim(); } :
+                                function (vSource, vCompare) { return !core.type.str.is(vSource) || core.type.str.mk(vSource) === core.type.str.mk(vCompare); }
+                            )
+                        );
+
+                        //# Return the comparison wrapper function to the caller
+                        return function (vSource, vCompare) {
+                            var i,
+                                bReturnVal = false
+                            ;
+
+                            //#
+                            for (i = 0; i < fnCompares.length; i++) {
+                                if (fnCompares[i](vSource, vCompare)) {
+                                    bReturnVal = true;
+                                    break;
+                                }
+                            }
+
+                            return bReturnVal;
+                        };
+                    } //# diffCompare
+
                     return {
                         //eq: function () {}, //# type.arr.eq
 
@@ -1189,7 +1229,7 @@
                         prune: function (o, a_sAddlKeysToPrune) {
                             var sCurrentKey, i,
                                 a_sOwnKeys = core.type.obj.ownKeys(o),
-                                oReturnVal = {}
+                                oReturnVal = core.type.obj.empty()
                             ;
 
                             //#
@@ -1206,6 +1246,63 @@
 
                             return oReturnVal;
                         }, //# type.obj.prune
+
+                        //#
+                        diff: function (oSource, oCompare, oOptions) {
+                            var fnCompare, i,
+                                a_sSourceKeys = core.type.obj.ownKeys(oSource),
+                                a_sCompareKeys = core.type.obj.ownKeys(oCompare),
+                                oReturnVal = core.type.obj.empty()
+                            ;
+
+                            //# If we have a_sSourceKeys and a_sCompareKeys (which also determines that the passed oSource and oCompare .is .obj)
+                            if (core.type.arr.is(a_sSourceKeys) && core.type.arr.is(a_sCompareKeys)) {
+                                //# Set the defaults for the passed oOptions (forcing it into an .is .obj as we go) then calculate our fnCompare
+                                oOptions = core.extend({
+                                    useCoercion: true,
+                                    caseInsensitive: true,
+                                    trim: true,
+                                    includeMissingKeys: true,
+                                    caseInsensitiveKeys: true,
+                                    pruneUndefinedValues: false
+                                }, oOptions);
+                                fnCompare = diffCompare(oOptions);
+
+                                //# If we are to find .caseInsensitiveKeys, use core.type.obj.get to resolve each a_sSourceKeys
+                                if (oOptions.caseInsensitiveKeys) {
+                                    //# Traverse the a_sSourceKeys, fnCompare'ing the passed oSource to the oCompare (loading any mismatches into our oReturnVal) as we go
+                                    for (i = 0; i < a_sSourceKeys.length; i++) {
+                                        if (!fnCompare(core.type.obj.get(oSource, a_sSourceKeys[i]), core.type.obj.get(oCompare, a_sSourceKeys[i]))) {
+                                            oReturnVal[a_sSourceKeys[i]] = oCompare[a_sSourceKeys[i]];
+                                        }
+
+                                        //# .rm the current a_sSourceKeys from our a_sCompareKeys
+                                        core.type.arr.rm(a_sCompareKeys, a_sSourceKeys[i]);
+                                    }
+                                }
+                                //# Else the a_sSourceKeys are case sensitive, so resolve each a_sSourceKeys normally
+                                else {
+                                    //# Traverse the a_sSourceKeys, fnCompare'ing the passed oSource to the oCompare (loading any mismatches into our oReturnVal) as we go
+                                    for (i = 0; i < a_sSourceKeys.length; i++) {
+                                        if (!fnCompare(oSource[a_sSourceKeys[i]], oCompare[a_sSourceKeys[i]])) {
+                                            oReturnVal[a_sSourceKeys[i]] = oCompare[a_sSourceKeys[i]];
+                                        }
+
+                                        //# .rm the current a_sSourceKeys from our a_sCompareKeys
+                                        core.type.arr.rm(a_sCompareKeys, a_sSourceKeys[i]);
+                                    }
+                                }
+
+                                //# If we are to .includeMissingKeys, traverse any remaining a_sCompareKeys and set them into our oReturnVal
+                                if (oOptions.includeMissingKeys) {
+                                    for (i = 0; i < a_sCompareKeys.length; i++) {
+                                        oReturnVal[a_sCompareKeys[i]] = oCompare[a_sCompareKeys[i]];
+                                    }
+                                }
+                            }
+
+                            return (oOptions.pruneUndefinedValues ? core.type.obj.prune(oReturnVal) : oReturnVal);
+                        },
 
                         //# No object properties exist until you add them
                         //#     FROM: https://davidwalsh.name/javascript-tricks
