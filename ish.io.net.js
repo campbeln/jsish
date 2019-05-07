@@ -30,8 +30,8 @@
             ;
 
             //# Wrapper for an XHR AJAX call
-            function xhr(sVerb, bAsync, sUrl, vCallback) {
-                var $xhr, bValidRequest, bResponseTypeText,
+            function xhr(sVerb, bAsync, sUrl, vCallback, fnRetry, oBody) {
+                var $xhr, iMS, bValidRequest, bResponseTypeText,
                     bAbort = false,
                     oData = core.resolve(oCache, [sVerb.toLowerCase(), sUrl])
                 ;
@@ -86,13 +86,30 @@
                                 core.resolve(true, oCache, [sVerb.toLowerCase(), sUrl], oData);
                             }
 
+                            //# If no oData was .loaded, we haven't bAbort'ed and we have a fnRetry
+                            if (!oData.loaded && !bAbort && core.type.int.is(iMS = core.type.fn.call(fnRetry))) {
+                                setTimeout(function () {
+                                    //if (arguments.length === 6) {
+                                        xhr(sVerb, bAsync, sUrl, vCallback, fnRetry, oBody)
+                                            .send(oBody)
+                                        ;
+                                    /*}
+                                    else {
+                                        xhr(sVerb, bAsync, sUrl, vCallback, fnRetry)
+                                            .send()
+                                        ;
+                                    }*/
+                                }, iMS);
+                            }
                             //#
-                            vCallback.fn(/* bSuccess, oData, vArg, $xhr */
-                                !bAbort && oData.loaded,
-                                oData,
-                                vCallback.arg,
-                                $xhr
-                            );
+                            else {
+                                vCallback.fn(/* bSuccess, oData, vArg, $xhr */
+                                    !bAbort && oData.loaded,
+                                    oData,
+                                    vCallback.arg,
+                                    $xhr
+                                );
+                            }
                         }
                     };
                 }
@@ -112,7 +129,7 @@
                         if (bValidRequest) {
                             $xhr.open(sVerb, sUrl, !!bAsync);
 
-                            //# 
+                            //#
                             if (core.type.str.is(vBody)) {
                                 sBody = vBody;
                             }
@@ -168,30 +185,40 @@
 
 
             //#
-            function doGet(sUrl, vCallback) {
-                var oReturnVal = xhr("GET", oXHROptions.async, sUrl, vCallback);
-                oReturnVal.send();
-                return oReturnVal;
+            function doGet(fnRetry) {
+                return function (sUrl, vCallback) {
+                    var oReturnVal = xhr("GET", oXHROptions.async, sUrl, vCallback, fnRetry /*, undefined*/);
+                    oReturnVal.send();
+                    return oReturnVal;
+                };
             }
-            function doPost(sUrl, oBody, vCallback) {
-                var oReturnVal = xhr("POST", oXHROptions.async, sUrl, vCallback);
-                oReturnVal.send(oBody);
-                return oReturnVal;
+            function doPost(fnRetry) {
+                return function (sUrl, oBody, vCallback) {
+                    var oReturnVal = xhr("POST", oXHROptions.async, sUrl, vCallback, fnRetry, oBody);
+                    oReturnVal.send(oBody);
+                    return oReturnVal;
+                };
             }
-            function doPut(sUrl, oBody, vCallback) {
-                var oReturnVal = xhr("PUT", oXHROptions.async, sUrl, vCallback);
-                oReturnVal.send(oBody);
-                return oReturnVal;
+            function doPut(fnRetry) {
+                return function (sUrl, oBody, vCallback) {
+                    var oReturnVal = xhr("PUT", oXHROptions.async, sUrl, vCallback, fnRetry, oBody);
+                    oReturnVal.send(oBody);
+                    return oReturnVal;
+                };
             }
-            function doDelete(sUrl, vCallback) {
-                var oReturnVal = xhr("DELETE", oXHROptions.async, sUrl, vCallback);
-                oReturnVal.send();
-                return oReturnVal;
+            function doDelete(fnRetry) {
+                return function (sUrl, vCallback) {
+                    var oReturnVal = xhr("DELETE", oXHROptions.async, sUrl, vCallback, fnRetry /*, undefined*/);
+                    oReturnVal.send();
+                    return oReturnVal;
+                };
             }
-            function doHead(sUrl, vCallback) {
-                var oReturnVal = xhr("HEAD", oXHROptions.async, sUrl, vCallback);
-                oReturnVal.send();
-                return oReturnVal;
+            function doHead(fnRetry) {
+                return function (sUrl, vCallback) {
+                    var oReturnVal = xhr("HEAD", oXHROptions.async, sUrl, vCallback, fnRetry /*, undefined*/);
+                    oReturnVal.send();
+                    return oReturnVal;
+                };
             }
 
 
@@ -199,10 +226,10 @@
             return {
                 net: {
                     crud: {
-                        create: doPut,
-                        read: doGet,
-                        update: doPost,
-                        'delete': doDelete
+                        create: doPut(/*_undefined*/),
+                        read: doGet(/*_undefined*/),
+                        update: doPost(/*_undefined*/),
+                        'delete': doDelete(/*_undefined*/)
                     },
 
                     cache: function (oImportCache) {
@@ -214,14 +241,52 @@
                     //promise: promise,
                     //xhr.options = xhr.options,
 
-                    get: doGet,
-                    put: doPut,
-                    post: doPost,
-                    'delete': doDelete,
-                    head: doHead,
+                    get: doGet(/*_undefined*/),
+                    put: doPut(/*_undefined*/),
+                    post: doPost(/*_undefined*/),
+                    'delete': doDelete(/*_undefined*/),
+                    head: doHead(/*_undefined*/),
                     ping: function (sUrl, vCallback) {
-                        doHead(sUrl, vCallback || function (/* bSuccess, oData, vArg, $xhr */) {});
-                    }
+                        doHead(/*_undefined*/)(sUrl, vCallback || function (/* bSuccess, oData, vArg, $xhr */) {});
+                    },
+
+                    //#
+                    retry: function (oOptions) {
+                        var fnRetry, iWait;
+
+                        //#
+                        oOptions = core.extend({
+                            //wait: 500,
+                            //retries: 5
+                        }, oOptions);
+                        iWait = (core.type.int.mk(oOptions.wait, 500));
+                        oOptions.wait = (core.type.fn.is(oOptions.wait) ? oOptions.wait : function (/*iAttempts*/) { return iWait; });
+                        oOptions.retries = core.type.int.mk(oOptions.retries, 5);
+                        oOptions.attempts = 1;
+
+                        //#
+                        fnRetry = function () {
+                            return (
+                                oOptions.attempts++ < oOptions.retries ?
+                                oOptions.wait(oOptions.attempts) :
+                                null
+                            );
+                        };
+
+                        return {
+                            get: doGet(fnRetry),
+                            put: doPut(fnRetry),
+                            post: doPost(fnRetry),
+                            'delete': doDelete(fnRetry),
+                            head: doHead(fnRetry),
+                            crud: {
+                                create: doPut(fnRetry),
+                                read: doGet(fnRetry),
+                                update: doPost(fnRetry),
+                                'delete': doDelete(fnRetry)
+                            }
+                        }
+                    } //# io.net.retry
                 }
             };
         }); //# core.io.net
