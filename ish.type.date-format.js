@@ -91,7 +91,7 @@
             */
 
             //############################################################
-            //# Determines the simple week number (functionally equivlent to Excel's WeekNum) for the given date.
+            //# Determines the simple week number (functionally equivalent to Excel's WeekNum) for the given date.
             //############################################################
             //# Last Updated: April 19, 2006
             function weekOfYear_Simple(dDateTime, eStartOfWeek) {
@@ -140,7 +140,7 @@
                     WWW: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
                     WWWW: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
                     MMM: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
-                    MMMM: ["January","Febuary","March","April","May","June","July","August","September","October","November","December"],
+                    MMMM: ["January","February","March","April","May","June","July","August","September","October","November","December"],
                     TT: ["am","pm"]
                 }, //# type.date.config
 
@@ -283,7 +283,7 @@
                 //# Determines the referenced week number for the given date.
                 //############################################################
                 //# Last Updated: April 13, 2006
-                weekOfYear: function(dDateTime, eWeekOfYear) {
+                weekOfYear: function (dDateTime, eWeekOfYear) {
                     var enumWeekOfYear = oDate.enums.weekOfYear,
                         oReturnVal = {
                             w: 0,
@@ -292,8 +292,11 @@
                     ;
 
                     //# Ensure the caller passed a valid dDateTime
-                    if (core.type.date.is(dDateTime)) {
-                        //#### Redefault the oReturnVal's .yyyy to the passed dDateTime's .getFullYear and ensure eWeekOfYear is set
+                    dDateTime = core.type.date.mk(dDateTime, null);
+
+                    //# If the caller passed a valid dDateTime
+                    if (dDateTime) {
+                        //#### Re-default the oReturnVal's .yyyy to the passed dDateTime's .getFullYear and ensure eWeekOfYear is set
                         oReturnVal.yyyy = dDateTime.getFullYear();
                         eWeekOfYear = core.type.int.mk(eWeekOfYear, oDate.config.weekOfYear);
 

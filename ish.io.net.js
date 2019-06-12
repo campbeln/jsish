@@ -241,6 +241,7 @@
                     //promise: promise,
                     //xhr.options = xhr.options,
 
+                    //# GET, POST, PUT, PATCH, DELETE, HEAD + TRACE, CONNECT, OPTIONS - https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
                     get: doGet(/*_undefined*/),
                     put: doPut(/*_undefined*/),
                     post: doPost(/*_undefined*/),
@@ -249,6 +250,46 @@
                     ping: function (sUrl, vCallback) {
                         doHead(/*_undefined*/)(sUrl, vCallback || function (/* bSuccess, oData, vArg, $xhr */) {});
                     },
+
+                    ip: {
+                        is: core.extend(
+                            function (sIP) {
+                                return (
+                                    core.app.ip.is.v4(sIP) ?
+                                    4 :
+                                        core.app.ip.is.v6(sIP) ?
+                                        6 :
+                                        0
+                                );
+                            }, function () {
+                                //# Create the reIPv4 and mega reIPv6 RegEx based on the various valid patters |'ed together
+                                //#     NOTE: The RegEx's are set as RegEx's below for intellisense/highlighting/etc and not for any other reason
+                                var reIPv4 = /^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$/,
+                                    reIPv6 = new RegExp('^(?:' +
+                                        /(?:[0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}/                              .source + '|' +
+                                        /(?:[0-9a-fA-F]{1,4}:){1,7}:/                                           .source + '|' +
+                                        /(?:[0-9a-fA-F]{1,4}:){1,6}:[0-9a-fA-F]{1,4}/                           .source + '|' +
+                                        /(?:[0-9a-fA-F]{1,4}:){1,5}:(?:[0-9a-fA-F]{1,4}:)[0-9a-fA-F]{1,4}/      .source + '|' +
+                                        /(?:[0-9a-fA-F]{1,4}:){1,4}:(?:[0-9a-fA-F]{1,4}:){2}[0-9a-fA-F]{1,4}/   .source + '|' +
+                                        /(?:[0-9a-fA-F]{1,4}:){1,3}:(?:[0-9a-fA-F]{1,4}:){3}[0-9a-fA-F]{1,4}/   .source + '|' +
+                                        /(?:[0-9a-fA-F]{1,4}:){1,2}:(?:[0-9a-fA-F]{1,4}:){4}[0-9a-fA-F]{1,4}/   .source + '|' +
+                                        /(?:[0-9a-fA-F]{1,4}:){1,1}:(?:[0-9a-fA-F]{1,4}:){5}[0-9a-fA-F]{1,4}/   .source + '|' +
+                                        /::(?:(?:[0-9a-fA-F]{1,4}:){0,6}[0-9a-fA-F]{1,4})?/                     .source +
+                                    ')$'
+                                );
+
+                                return {
+                                    v4: function (sIP) {
+                                        return reIPv4.test(sIP);
+                                    }, //# core.app.ip.is.v4
+
+                                    v6: function (sIP) {
+                                        return reIPv6.test(sIP);
+                                    } //# core.app.ip.is.v6
+                                };
+                            }()
+                        ) //# core.app.ip.is
+                    }, //# core.app.ip
 
                     //#
                     retry: function (oOptions) {
@@ -286,7 +327,83 @@
                                 'delete': doDelete(fnRetry)
                             }
                         }
-                    } //# io.net.retry
+                    }, //# io.net.retry
+
+                    //# HTTP Status Codes
+                    status: {
+                        info: {
+                            continue: 100,
+                            switchingProtocols: 101,
+                            processing: 102,
+                            earlyHints: 103
+                        },
+                        success: {
+                            ok: 200,
+                            created: 201,
+                            accepted: 202,
+                            nonAuthInfo: 203,
+                            noContent: 204,
+                            resetContent: 205,
+                            partialContent: 206,
+                            multiStatus: 207,
+                            alreadyReported: 208,
+                            imUsed: 226
+                        },
+                        redirection: {
+                            multipleChoices: 300,
+                            movedPermanently: 301,
+                            found: 302,
+                            seeOther: 303,
+                            notModified: 304,
+                            useProxy: 305,
+                            switchProxy: 306,
+                            temporaryRedirect: 307,
+                            permanentRedirect: 30
+                        },
+                        clientError: {
+                            badRequest: 400,
+                            unauthorized: 401,
+                            paymentRequired: 402,
+                            forbidden: 403,
+                            notFound: 404,
+                            methodNotAllowed: 405,
+                            notAcceptable: 406,
+                            proxyAuthRequired: 407,
+                            requestTimeout: 408,
+                            conflict: 409,
+                            gone: 410,
+                            lengthRequired: 411,
+                            preconditionFailed: 412,
+                            payloadTooLarge: 413,
+                            uriTooLong: 414,
+                            unsupportedMediaType: 415,
+                            rangeNotSatisfiable: 416,
+                            expectationFailed: 417,
+                            imATeapot: 418,
+                            misdirectedRequest: 421,
+                            unprocessableEntity: 422,
+                            locked: 423,
+                            failedDependency: 424,
+                            upgradeRequired: 426,
+                            preconditionRequired: 428,
+                            tooManyRequests: 429,
+                            requestHeaderFieldsTooLarge: 431,
+                            unavailableForLegalReasons: 451
+                        },
+                        serverError: {
+                            internalServerError: 500,
+                            notImplemented: 501,
+                            badGateway: 502,
+                            serviceUnavailable: 503,
+                            gatewayTimeout: 504,
+                            httpVersionNotSupported: 505,
+                            variantAlsoNegotiates: 506,
+                            insufficientStorage: 507,
+                            loopDetected: 508,
+                            notExtended: 510,
+                            networkAuthRequired: 511
+                        }
+                    } //# io.net.status
                 }
             };
         }); //# core.io.net

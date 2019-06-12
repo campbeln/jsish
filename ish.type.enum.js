@@ -72,10 +72,10 @@
 
 
             //# .require any missing .prereqs
-            core.type.ish.prereqs("ish.type.enum", {
+            /*core.type.ish.prereqs("ish.type.enum", {
                 'ish.io.net': !core.type.fn.is(core.io.net.get),
                 'ish.type-ex': !core.type.fn.is(core.type.str.cmp)
-            } /*, {}*/);
+            } /*, {}* /);*/
 
             return {
                 enum: core.extend(

@@ -86,7 +86,7 @@
                     fnCurrent = (core.type[a_vOrder[i]] || {}).is || core.type.fn.mk(a_vOrder[i]);
 
                     //# If the passed x returns true from the fnCurrent (indicating that it's of that type), reset our fnReturnVal and fall form the loop
-                    //#     NOTE: If fnCurrent is set to .noop above, it return nothing/undefined which is interperted as false below
+                    //#     NOTE: If fnCurrent is set to .noop above, it return nothing/undefined which is interpreted as false below
                     if (fnCurrent(x)) {
                         fnReturnVal = fnCurrent;
                         break;
@@ -111,7 +111,7 @@
         Function: is
         Determines if the passed value is an instance of the passed type.
         Parameters:
-        o - The varient to interrogate.
+        o - The variant to interrogate.
         t - The type to compare to.
         Returns:
         Boolean value representing if the passed value is an instance of the passed type.
@@ -184,7 +184,7 @@
         Function: range
         Determines if the passed value is within the passed range.
         Parameters:
-        vValue - The varient to interrogate, where the `length` property used for the numeric comparison (if present).
+        vValue - The variant to interrogate, where the `length` property used for the numeric comparison (if present).
         vType - Function or String denoting the type testing logic which returns `truthy` if ``vValue` is of `vType`.
         (Optional) nMin - Numeric value representing the minimum allowed value (can be passed as `undefined` for no defined minimum).
         (Optional) nMax - Numeric value representing the maximum allowed value (can be passed as `undefined` for no defined maximum).
@@ -228,12 +228,12 @@
 
             /*
             Function: mk
-            Safely forces the passed varient into a boolean value.
+            Safely forces the passed variant into a boolean value.
             Parameters:
-            b - The varient to interrogate.
+            b - The variant to interrogate.
             bDefaultVal - The default value to return if casting fails.
             Returns:
-            Boolean value representing the truthiness of the passed varient.
+            Boolean value representing the truthiness of the passed variant.
             */
             mk: function (b, bDefaultVal) {
                 var bReturnVal = (b ? true : false);
@@ -278,7 +278,7 @@
             Function: mk
             Safely forces the passed value into an integer (includes implicit casting per the Javascript rules, see about section).
             Parameters:
-            i - The varient to interrogate.
+            i - The variant to interrogate.
             vDefault - The default value to return if casting fails.
             iRadix - Integer between 2 and 36 that represents the radix (the base in mathematical numeral systems) of the above mentioned string.
             Returns:
@@ -324,7 +324,7 @@
             Function: mk
             Safely forces the passed value into a floating point numeric value (includes implicit casting per the Javascript rules, see: <core.type.int.mk>).
             Parameters:
-            f - The varient to interrogate.
+            f - The variant to interrogate.
             vDefault - The default value to return if casting fails.
             Returns:
             Float representing the passed value.
@@ -379,7 +379,7 @@
             Function: mk
             Safely forces the passed value into a date.
             Parameters:
-            x - The varient to interrogate.
+            x - The variant to interrogate.
             dDefault - The default value to return if casting fails.
             Returns:
             Date representing the passed value.
@@ -397,7 +397,7 @@
             Function: is
             Determines if the passed value is a valid JSON string.
             Parameters:
-            s - The varient to interrogate.
+            s - The variant to interrogate.
             Returns:
             Boolean value representing if the passed value is a valid JSON string.
             */
@@ -414,7 +414,7 @@
             Function: mk
             Safely parses the passed value as a JSON string into an object or stringify's the passed object into a JSON string.
             Parameters:
-            v - The varient to interrogate.
+            v - The variant to interrogate.
             vDefault - The default value to return if casting fails.
             Returns:
             Object containing the parsed JSON data, string containing the stringified object, or vDefault if parsing failed.
@@ -422,13 +422,13 @@
             mk: function (v, vDefault) {
                 var vJson = (arguments.length > 1 ? vDefault : {});
 
-                //# If the passed v(arient) .is .str, lets .parse it into an object
+                //# If the passed v(ariant) .is .str, lets .parse it into an object
                 if (core.type.str.is(v, true)) {
                     try {
                         vJson = JSON.parse(v);
                     } catch (e) { oTypeIsh.expectedErrorHandler(e); }
                 }
-                //# Else if the passed v(arient) .is .boj, lets .stringify it into a string
+                //# Else if the passed v(ariant) .is .boj, lets .stringify it into a string
                 else if (core.type.obj.is(v)) {
                     try {
                         vJson = JSON.stringify(v);
@@ -445,7 +445,7 @@
             Determines if the passed value is a string.
             Parameters:
             s - The string to interrogate.
-            bDisallowNullString - Boolean value indicating if nullstrings are to be disallowed (e.g. "").
+            bDisallowNullString - Boolean value indicating if null-strings are to be disallowed (e.g. "").
             bTrimWhitespace - Boolean value indicating if leading and trailing whitespace is to be trimmed prior to integration.
             Returns:
             Boolean value representing if the value is a string.
@@ -462,7 +462,7 @@
             Function: mk
             Safely forces the passed value into a string.
             Parameters:
-            x - The varient to interrogate.
+            x - The variant to interrogate.
             sDefault - The default value to return if casting fails.
             Returns:
             String representing the passed value.
@@ -482,7 +482,7 @@
             Function: is
             Determines if the passed value is a function.
             Parameters:
-            f - The varient to interrogate.
+            f - The variant to interrogate.
             Returns:
             Boolean value representing if the value is a function.
             */
@@ -520,7 +520,7 @@
             Function: is
             Determines if the passed value is an array.
             Parameters:
-            a - The varient to interrogate.
+            a - The variant to interrogate.
             bDisallow0Length - Boolean value representing if zero length arrays are to be ignored.
             Returns:
             Boolean value representing if the value is an array.
@@ -535,7 +535,7 @@
             Function: mk
             Safely forces the passed array or list reference into an array.
             Parameters:
-            a - The varient to interrogate.
+            a - The variant to interrogate.
             a_vDefault - The default value to return if casting fails.
             Returns:
             Array representing the updated array reference.
@@ -557,7 +557,7 @@
             Function: is
             Determines if the passed value is a list type (e.g. HTMLCollection|NodeList|NamedNodeMap|Arguments|Object with Object to support <IE9).
             Parameters:
-            n - The varient to interrogate.
+            n - The variant to interrogate.
             bIncludeObject - Boolean value representing if Objects are to be included in the test (to support <IE9).
             Returns:
             Boolean value representing if the value is a list type.
@@ -604,8 +604,8 @@
                 Function: is
                 Determines if the passed value is an object.
                 Parameters:
-                o - The varient to interrogate.
-                vOptions - Varient representing the following optional settings:
+                o - The variant to interrogate.
+                vOptions - variant representing the following optional settings:
                     vOptions === true - Boolean value representing if empty objects are to be ignored.
                     vOptions.nonEmpty - Boolean value representing if empty objects are to be ignored.
                     vOptions.allowFn - Boolean value representing if functions are to be allowed.
@@ -664,9 +664,9 @@
                 Function: mk
                 Safely forces the passed object reference into an object containing the passed path optionally set to the optional value.
                 Parameters:
-                o - The varient to interrogate.
+                o - The variant to interrogate.
                 sPath - String representing the path to the property.
-                (Optional) vValue - Varient representing the value to set the referenced property to.
+                (Optional) vValue - variant representing the value to set the referenced property to.
                 Returns:
                 Object representing the updated object reference.
                 */
@@ -723,21 +723,28 @@
      * @desc Safely accesses (or optionally creates) an object structure, allowing access to deep properties without the need to ensure the object structure exists.
      * @param {boolean} [bForceCreate] - Indicates if the path is to be forcibly created. `false` creates the path if it does not already exist, `true` overwrites non-object parent path segments with objects (see About).
      * @param {object} oObject - The object to interrogate.
-     * @param {string|array[string]} vPath - Varient representing the path to the requested property (array or period-delimited string, e.g. "parent.child.array.0").
-     * @param {varient} [vValue] - Varient representing the value to set the referenced property to (used only when creating the path).
-     * @returns {varient} Varient representing the value at the referenced path, returning undefined if the path does not exist.
+     * @param {string|array[string]} vPath - variant representing the path to the requested property (array or period-delimited string, e.g. "parent.child.array.0").
+     * @param {variant} [vValue] - variant representing the value to set the referenced property to (used only when creating the path).
+     * @returns {variant} variant representing the value at the referenced path, returning undefined if the path does not exist.
      * @example <caption>When forcing the creation of an object structure, data can be lost if an existing non-object property is used as a parent, e.g.:</caption>
      * var neek = { nick: true };
      * var deepProp = ish.resolve(true, neek, "nick.campbell");
      * // This will overwrite the boolean property `nick` with an object reference containing the property `campbell`.
      * @requires core.type.obj.is, core.type.str.is, core.type.arr.is
     ################################################################################################# */
-    core.resolve = function (/*[bForceCreate], oObject, vPath|a_sPath, [vValue]*/) {
+    core.resolve = function (/*[core.resolve.returnMetadata], [bForceCreate], oObject, vPath|a_sPath, [vValue]*/) {
         var vReturnVal, vValue, vPath, oObject, a_sPath, i, bCurrentIsObj, bHaveValue, bForceCreate,
             bPathExists = true,
             oIsObjOptions = { allowFn: true },
-            a = arguments
+            a = Array.prototype.slice.call(arguments), //# NOTE: core.type.fn.convert(arguments) is not always available at this low-level :(
+            bReturnMetadata = (a[0] === core.resolve.returnMetadata),
+            bCreated = false
         ;
+
+        //# If a[0] is .returnMetadata, remove it from the a(rguments)
+        if (bReturnMetadata) {
+            a.shift();
+        }
 
         //# Setup our local variables based on the passed a(rguments)
         if (a[0] === true) {
@@ -786,6 +793,7 @@
                         //# Set the oObject as the last object reference and create the new object at the current vPath segment while setting vReturnVal as the current object reference
                         oObject = vReturnVal;
                         vReturnVal = oObject[a_sPath[i]] = {};
+                        bCreated = true;
                     }
                     //# Else the current vPath segment doesn't exist and we're not supposed to bForceCreate it, so reset our vReturnVal to undefined, flip bPathExists and fall from the loop
                     else {
@@ -799,6 +807,7 @@
                     //# Set a new object reference in vReturnVal then set it into oObject's last object reference
                     //#     NOTE: We enter the outer loop knowing the initial vReturnVal bCurrentIsObj, so there is no need to worry about a [0 - 1] index below as we will never enter this if on the first loop
                     oObject[a_sPath[i]] = vReturnVal = {};
+                    bCreated = true;
                 }
                 //# Else if we're not on the final vPath segment
                 else if (i < a_sPath.length - 1) {
@@ -815,15 +824,25 @@
             }
         }
 
-        return vReturnVal;
+        return (
+            bReturnMetadata ? {
+                value: vReturnVal,
+                created: bCreated,
+                existed: (bPathExists && !bCreated)
+            } :
+            vReturnVal
+        );
     }; //# core.resolve
+    //# Setup the "unique" value for .returnMetadata so it can be detected within core.resolve (borrowing noop() for the unique value)
+    //#     NOTE: Arguably this should be a Symbol rather than the borrowed noop() but the support for Symbol isn't 100%, so...
+    core.resolve.returnMetadata = noop;
 
 
     /** ################################################################################################
      * @function extend
      * @desc Merges the content of subsequent objects into the first one, overriding its original values.
-     * @param {boolean|integer} [vDeepCopy] - Indictes if a deep copy is to occur. `true` performs a deep copy, a positive integer indicates the max depth to perform a deep copy to, all other values perform a shallow copy. Default value: `false`.
-     * @param {object} oTarget - Object to recieve properties.
+     * @param {boolean|integer} [vDeepCopy] - Indicates if a deep copy is to occur. `true` performs a deep copy, a positive integer indicates the max depth to perform a deep copy to, all other values perform a shallow copy. Default value: `false`.
+     * @param {object} oTarget - Object to receive properties.
      * @param {...object} oSource - Object(s) who's properties will be copied into the target.
      * @returns {object} Object referencing the passed oTarget.
      * @example <caption>Right-most source object wins:</caption>
@@ -990,7 +1009,7 @@
                 fnSetDataType(oAddedDataTypes.n[i]);
             }
 
-            //# .fire our .event now that the oOopData is completly setup
+            //# .fire our .event now that the oOopData is completely setup
             //core.io.event.fire("ish.oop._setOopEntry", [vTarget, oProtected]);
         } //# setOopEntry
 
@@ -1001,7 +1020,7 @@
             ;
 
             //# If this is a new sName, .push it into oAddedDataTypes
-            //#     NOTE: We don't specificially track i(ndex) or p(rotected) in oAddedDataTypes even though they can be overriden, but it works as designed below even in these circumstances
+            //#     NOTE: We don't specifically track i(ndex) or p(rotected) in oAddedDataTypes even though they can be overridden, but it works as designed below even in these circumstances
             if (bReturnVal) {
                 oAddedDataTypes.n.push(sName);           //# n(ames)
                 oAddedDataTypes.d.push(vDefaultValue);   //# d(faultValues)
@@ -1109,7 +1128,7 @@
                 Function: val
                 Determines if the passed value is set (i.e. !== undefined || null).
                 Parameters:
-                v - The varient to interrogate.
+                v - The variant to interrogate.
                 Returns:
                 Boolean value representing if the value is set.
                 */
@@ -1246,7 +1265,7 @@
                     if (core.type.obj.is(oSource)) {
                         a_sReturnVal = Object.keys(oSource);
 
-                        //# Traverse the collected oCource .keys from back to front (so we can .splice them out as we go)
+                        //# Traverse the collected oSource .keys from back to front (so we can .splice them out as we go)
                         for (i = a_sReturnVal.length; i > 0; i--) {
                             //# If the current .keys isn't a .hasOwnProperty, .splice it from our a_sReturnVal
                             if (!oSource.hasOwnProperty(a_sReturnVal[i])) {
@@ -1318,7 +1337,7 @@
                     /*
                     Function: convert
                     Converts the passed argument from an arguments instance, array or single variable into an Array fit to pass to fn.apply().
-                    vArguments - Varient representing the argument(s) to convert into an array
+                    vArguments - variant representing the argument(s) to convert into an array
                     Returns:
                     Array representing the passed vArguments fit to pass to fn.apply().
                     */
@@ -1337,13 +1356,13 @@
                     Safely calls the passed function, returning the default value if the passed function is invalid.
                     Parameters:
                     fn - Function to attempt to call.
-                    vArguments - Varient representing the argument(s) to pass into the passed function
-                    vContext - Varient representing the Javascript context (e.g. `this`) in which to call the function.
+                    vArguments - variant representing the argument(s) to pass into the passed function
+                    vContext - variant representing the Javascript context (e.g. `this`) in which to call the function.
                     //oOptions - Object representing the desired options:
-                    //    oOptions.context - Varient representing the Javascript context (e.g. `this`) in which to call the function.
-                    //    oOptions.default - Varient representing the default value to return if an error occurs. Default: `undefined`.
+                    //    oOptions.context - variant representing the Javascript context (e.g. `this`) in which to call the function.
+                    //    oOptions.default - variant representing the default value to return if an error occurs. Default: `undefined`.
                     Returns:
-                    Varient representing the result of the passed function.
+                    variant representing the result of the passed function.
                     */ //# TODO: function (fn, vArguments, oOptions)
                     call: function (fn, vContext, vArguments) {
                         var vReturnVal /* = _undefined*/;
@@ -1389,10 +1408,10 @@
                     Parameters:
                     fn - Function to call once.
                     oOptions - Object representing the desired options:
-                        oOptions.context - Varient representing the Javascript context (e.g. `this`) in which to call the function.
-                        oOptions.rereturn - Boolean value representing if subsiquent calls should return the first return value (default: true).
+                        oOptions.context - variant representing the Javascript context (e.g. `this`) in which to call the function.
+                        oOptions.rereturn - Boolean value representing if subsequent calls should return the first return value (default: true).
                     Returns:
-                    Function that returns the Varient representing the result of the passed function.
+                    Function that returns the variant representing the result of the passed function.
                     About:
                     Usage -
                     > var canOnlyFireOnce = once(function () {
@@ -1429,11 +1448,11 @@
                     Parameters:
                     fn - Function to call.
                     oOptions - Object representing the desired options:
-                        oOptions.context - Varient representing the Javascript context (e.g. `this`) in which to call the function.
-                        oOptions.default - Varient representing the default value to return if an error occurs. Default: `undefined`.
+                        oOptions.context - variant representing the Javascript context (e.g. `this`) in which to call the function.
+                        oOptions.default - variant representing the default value to return if an error occurs. Default: `undefined`.
                         oOptions.returnObj - Boolean value representing if an Object is to be returned representing the result and error. Default `false`.
                     Returns:
-                    Function that returns the Varient representing the result of the passed function.
+                    Function that returns the variant representing the result of the passed function.
                     */
                     tryCatch: function (fn, oOptions) {
                         //#  WAS: function (fn, vContext, vArguments, vDefault, bReturnObj)
@@ -1468,12 +1487,12 @@
                     Parameters:
                     fn - Function to call.
                     oOptions - Object representing the desired options:
-                        oOptions.context - Varient representing the Javascript context (e.g. `this`) in which to call the function.
-                        oOptions.wait - Minimum number of miliseconds between each call (default: 500).
+                        oOptions.context - variant representing the Javascript context (e.g. `this`) in which to call the function.
+                        oOptions.wait - Minimum number of milliseconds between each call (default: 500).
                         oOptions.leading - The throttled function will run as much as possible, without ever going more than once per wait duration. If you’d like to disable the execution on the leading edge, pass {leading: false}.
                         oOptions.trailing - The throttled function will run as much as possible, without ever going more than once per wait duration. If you’d like to disable the execution on the trailing edge, pass {trailing: false}.
                     Returns:
-                    Function that returns the Varient representing the result of the passed function.
+                    Function that returns the variant representing the result of the passed function.
                     About:
                     Based on http://underscorejs.org/docs/underscore.html
                     Returns a function, that, when invoked, will only be triggered at most once during a given window of time. Normally, the throttled function will run as much as it can, without ever going more than once per wait duration; but if you’d like to disable the execution on the leading edge, pass {leading: false}. To disable execution on the trailing edge, ditto.
@@ -1527,11 +1546,11 @@
                     Parameters:
                     fn - Function to call.
                     oOptions - Object representing the desired options:
-                        oOptions.context - Varient representing the Javascript context (e.g. `this`) in which to call the function.
-                        oOptions.wait - Minimum number of miliseconds between each call (default: 500).
+                        oOptions.context - variant representing the Javascript context (e.g. `this`) in which to call the function.
+                        oOptions.wait - Minimum number of milliseconds between each call (default: 500).
                         oOptions.immediate - Execute the function the first time without waiting.
                     Returns:
-                    Function that returns the Varient representing the result of the passed function.
+                    Function that returns the variant representing the result of the passed function.
                     About:
                     Usage -
                     >    var myEfficientFn = debounce(function () {
@@ -1585,8 +1604,8 @@
                     Parameters:
                     fn - Function called each wait time returning truthy. On a truthy return value, oOptions.onsuccess is called (if any).
                     oOptions - Object representing the desired options:
-                        oOptions.context - Varient representing the Javascript context (e.g. `this`) in which to call the function.
-                        oOptions.wait - Function or Integer defining the minimum number of miliseconds between each poll attempt (default: 500).
+                        oOptions.context - variant representing the Javascript context (e.g. `this`) in which to call the function.
+                        oOptions.wait - Function or Integer defining the minimum number of milliseconds between each poll attempt (default: 500).
                         oOptions.retries - Integer defining the maximum number of polling attempts (default: 4).
                         oOptions.callback - Function to call on completion, with bSuccess as the first argument.
                         //oOptions.timeout - Maximum number of milliseconds to do the polling (default: 2000).
@@ -1641,7 +1660,7 @@
                             };
                         } //# fn.poll
 
-                        //# Exponential backoff (i.e. intervals of 100, 200, 400, 800, 1600...)
+                        //# Exponential back-off (i.e. intervals of 100, 200, 400, 800, 1600...)
                         poll.expBackoff = function (iBaseInterval) {
                             var iAttempts = 1;
 
@@ -1980,7 +1999,7 @@
                         sTarget = oOptions.target;
                     }
 
-                    //# If bProcessAttribute isn't _null and we have a sTarget, overwrite core functionality with any existing functionality under _root[sTarget], then reset the _root object's reference so that the globally accessable object is a refrence to core rather than its original object reference
+                    //# If bProcessAttribute isn't _null and we have a sTarget, overwrite core functionality with any existing functionality under _root[sTarget], then reset the _root object's reference so that the globally accessible object is a reference to core rather than its original object reference
                     //#     NOTE: We need to create the window[sTarget] in the .resolve(true, ...) below in case it is not already defined, else the .resolve will fail.
                     if (core.type.bool.is(bProcessAttribute) && core.type.str.is(sTarget, true)) {
                         core.extend(core, core.resolve(true, _root, sTarget));
@@ -2056,7 +2075,7 @@
                     Function: is
                     Determines if the passed value is a DOM reference.
                     Parameters:
-                    x - The varient to interrogate.
+                    x - The variant to interrogate.
                     bAllowSelector - Boolean value representing if CSS selectors that successfully resolve to DOM elements are to be included in the test.
                     Returns:
                     Boolean value representing if the value is a DOM reference.
@@ -2078,7 +2097,7 @@
                     Function: mk
                     Safely parses the passed value into a DOM element.
                     Parameters:
-                    x - The varient to interrogate. Can be a CSS Selector (used by document.querySelector), jQuery reference (x[0] will be returned), HTML string defining a single root element or DOM element.
+                    x - The variant to interrogate. Can be a CSS Selector (used by document.querySelector), jQuery reference (x[0] will be returned), HTML string defining a single root element or DOM element.
                     _default - The default DOM element to return if casting fails.
                     Returns:
                     DOM element represented by the passed value, or _default if interrogation failed.
@@ -2496,8 +2515,8 @@
                         config: requireJsLite.config,
                         lite: (requireJs === requireJsLite),
 
-                        //# Soft-configured version of requireJs's bundles/shim
-                        //#     NOTE: This allows us to dynamicially define any "bundles" we require at runtime, allowing us to load scripts in the required order
+                        //# Soft-configured version of requireJS's bundles/shim
+                        //#     NOTE: This allows us to dynamically define any "bundles" we require at runtime, allowing us to load scripts in the required order
                         queue: function (a_vModules, fnCallback) {
                             var vCurrent,
                                 i = 0,
@@ -2653,7 +2672,7 @@
                 /*
                 //############################################################
                 //# Determines if the referenced elements overlap in the 2D plane.
-                //#    NOTE: This function really only needs to run correctly under those browsers that have Z-Index issues with certian elements, so true cross-platform compatibility is not really required for this function
+                //#    NOTE: This function really only needs to run correctly under those browsers that have Z-Index issues with certain elements, so true cross-platform compatibility is not really required for this function
                 //############################################################
                 //# Last Updated: April 19, 2006
                 this.Overlap = function(oElement1, oElement2) {
@@ -2664,14 +2683,14 @@
                     iB2 = iB1 + this.Height(oElement1);
                     iY1 = this.Top(oElement2);
                     iY2 = iY1 + this.Height(oElement2);
-                        //#### If the elements seem to be in the way verticially
+                        //#### If the elements seem to be in the way vertically
                     if ((iY1 <= iB1 && iY2 > iB1) || (iY1 >= iB1 && iY1 < iB2)) {
-                            //#### Set the X (horozontal) coords
+                            //#### Set the X (horizontal) coords
                         iA1 = this.Left(oElement1);
                         iA2 = iA1 + this.Width(oElement1);
                         iX1 = this.Left(oElement2);
                         iX2 = iX1 + this.Width(oElement2);
-                            //#### If the passed elements also overlap horozontally, flip bReturn to true
+                            //#### If the passed elements also overlap horizontally, flip bReturn to true
                         if ((iX1 <= iA1 && iX2 > iA1) || (iX1 >= iA1 && iX1 < iA2)) {
                             bReturn = true;
                         }

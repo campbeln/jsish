@@ -188,12 +188,10 @@
                 Returns a GUID/UUID v4
                 */
                 uuid: function() {
-                    var fnReturnValue, d,
-                        _window_crypto = _root.crypto || {}
-                    ;
+                    var fnReturnValue, d;
 
                     //# If _root.Uint8Array and _root.crypto are available, use them in our fnReturnValue
-                    if (core.type.fn.is(_window_crypto.getRandomValues) && core.type.fn.is(_root.Uint8Array)) {
+                    if (core.type.fn.is(_root.Uint8Array) && core.type.fn.is(core.resolve(_root, "crypto.getRandomValues"))) {
                         fnReturnValue = function () {
                             return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
                                 return (c ^ _root.crypto.getRandomValues(new _root.Uint8Array(1))[0] & 15 >> c / 4).toString(16);
@@ -242,67 +240,6 @@
 
                     return fnReturnValue;
                 }(), //# core.type.uuid
-
-
-                /*
-                //# Setup .app.templates
-                !function() {
-                    var oTemplateData = {};
-                    core.app.templates = function (sTemplate) {
-                        return core.extend({}, core.resolve());
-                    };
-                    core.app.templates.ready = false;
-                    core.app.templates.data = oTemplateData;
-                    core.io.net.get('data/templates.json', function (bSuccess, oResponse /*, vArg, $xhr* /) {
-                        if (bSuccess) {
-                            oTemplateData = core.resolve(oResponse, "data");
-                            core.app.templates.ready = true;
-                        }
-                    });
-                }(); //# .app.templates
-                {
-                    "templates": {
-                        "threat": {
-                            "_index": "",
-                            "_type": "",
-                            "_id": "",
-                            "_score": null,
-                            "_source": {
-                                "lnotes": "",
-                                "et": "",
-                                "ev": "",
-                                "lt": "",
-                                "lv": "",
-                                "ts": 0,
-                                "lv_IPv4": [],
-                                "lv_country": [],
-                                "stat": {
-                                    "p": null,
-                                    "a": null,
-                                    "c": null
-                                }
-                            },
-                            "sort": []
-                        },
-                        "zc_generic": {
-                            "lnotes": "",
-                            "et": "",
-                            "ev": "",
-                            "lt": "",
-                            "lv": "",
-                            "ts": 0,
-                            "lv_IPv4": [],
-                            "lv_country": [],
-                            "date": 0,
-                            "stat": {
-                                "p": null,
-                                "a": null,
-                                "c": null
-                            }
-                        }
-                    }
-                }
-                */
 
 
                 //####
@@ -428,7 +365,7 @@
                     Function: age
                     Safely parses the passed value as a date of birth into the age in years.
                     Parameters:
-                    dob - The varient to interrogate.
+                    dob - The variant to interrogate.
                     Returns:
                     Integer representing the age in years.
                     */
@@ -451,7 +388,7 @@
                     Function: yyyymmdd
                     Safely parses the passed value into a string containing the international date format (YYYY/MM/DD).
                     Parameters:
-                    x - The varient to interrogate.
+                    x - The variant to interrogate.
                     dDefault - The default value to return if casting fails.
                     Returns:
                     String representing the international date format (YYYY/MM/DD).
@@ -472,7 +409,7 @@
                     Function: only
                     Safely parses the passed value into a date containing the year/month/day while replacing any time portion with midnight.
                     Parameters:
-                    x - The varient to interrogate.
+                    x - The variant to interrogate.
                     dDefault - The default value to return if casting fails.
                     Returns:
                     Date representing the year/month/day in the passed value.
@@ -509,7 +446,7 @@
                     } //# doPad
 
                     //#
-                    function doSearch(s, vCriteria, bCaseInsenstive, eMode) {
+                    function doSearch(s, vCriteria, bCaseInsensitive, eMode) {
                         var i, iLocation,
                             a_sCriteria = (core.type.arr.is(vCriteria) ? vCriteria : [vCriteria]),
                             bReturnVal = false
@@ -519,14 +456,14 @@
                         s = core.type.str.mk(s);
 
                         //#
-                        if (bCaseInsenstive) {
+                        if (bCaseInsensitive) {
                             s = s.toLowerCase();
                         }
 
                         //#
                         for (i = 0; i < a_sCriteria.length; i++) {
                             a_sCriteria[i] = core.type.str.mk(a_sCriteria[i]);
-                            iLocation = s.indexOf(bCaseInsenstive ? a_sCriteria[i].toLowerCase() : a_sCriteria[i]);
+                            iLocation = s.indexOf(bCaseInsensitive ? a_sCriteria[i].toLowerCase() : a_sCriteria[i]);
 
                             if (iLocation > -1) {
                                 switch (eMode) {
@@ -561,16 +498,16 @@
                         Parameters:
                         s - The first string to compare.
                         t - The second string to compare.
-                        (Optional) bCaseInsenstive - Boolean value indicating if the comparison is to be case insenstive.
+                        (Optional) bCaseInsensitive - Boolean value indicating if the comparison is to be case insensitive.
                         Returns:
                         Boolean value representing if the passed strings are equal.
                         */
-                        eq: function (s, t, bCaseInsenstive) {
+                        eq: function (s, t, bCaseInsensitive) {
                             s = core.type.str.mk(s, "");
                             t = core.type.str.mk(t, "");
 
-                            //# Unless specificially told not to, compare the passed string as bCaseInsenstive
-                            return (bCaseInsenstive !== false ?
+                            //# Unless specificially told not to, compare the passed string as bCaseInsensitive
+                            return (bCaseInsensitive !== false ?
                                 (s.toLowerCase() === t.toLowerCase()) :
                                 (s === t)
                             );
@@ -579,7 +516,7 @@
 
                         /*
                         Function: cmp
-                        Determines the relationship between the passed strings (implicitly casted, trimmed and compaired as case-insensitive).
+                        Determines the relationship between the passed strings (implicitly casted, trimmed and compared as case-insensitive).
                         Parameters:
                         x - The first string to compare.
                         y - The second string or array of string to compare.
@@ -676,16 +613,16 @@
                             return doPad(s, sChar, iLength, false);
                         }, //# type.str.rpad
 
-                        begins: function (s, vCriteria, bCaseInsenstive) {
-                            return doSearch(s, vCriteria, bCaseInsenstive, 1);
+                        begins: function (s, vCriteria, bCaseInsensitive) {
+                            return doSearch(s, vCriteria, bCaseInsensitive, 1);
                         }, //# type.str.begins
 
-                        ends: function (s, vCriteria, bCaseInsenstive) {
-                            return doSearch(s, vCriteria, bCaseInsenstive, -1);
+                        ends: function (s, vCriteria, bCaseInsensitive) {
+                            return doSearch(s, vCriteria, bCaseInsensitive, -1);
                         }, //# type.str.ends
 
-                        contains: function (s, vCriteria, bCaseInsenstive) {
-                            return doSearch(s, vCriteria, bCaseInsenstive /*, 0*/);
+                        contains: function (s, vCriteria, bCaseInsensitive) {
+                            return doSearch(s, vCriteria, bCaseInsensitive /*, 0*/);
                         }, //# type.str.contains
 
                         sub: function (s, iFromStart, iFromEnd) {
@@ -892,18 +829,18 @@
                         return a_vReturnVal;
                     }, //# type.arr.cp
 
-                    unique: function (a_vArray, a_vArray2, bCaseInsenstive) {
-                        bCaseInsenstive = (bCaseInsenstive === true || a_vArray2 === true);
+                    unique: function (a_vArray, a_vArray2, bCaseInsensitive) {
+                        bCaseInsensitive = (bCaseInsensitive === true || a_vArray2 === true);
 
                         if (core.type.arr.is(a_vArray)) {
                             if (core.type.arr.is(a_vArray2)) {
                                 return a_vArray.filter(function (v) {
-                                    return (a_vArray2.indexOf(v) === -1 && (!bCaseInsenstive || a_vArray2.indexOf((v + "").toLowerCase()) === -1));
+                                    return (a_vArray2.indexOf(v) === -1 && (!bCaseInsensitive || a_vArray2.indexOf((v + "").toLowerCase()) === -1));
                                 });
                             }
                             else {
                                 return a_vArray.reduce(function (acc, v) {
-                                    if (acc.indexOf(v) === -1 && (!bCaseInsenstive || acc.indexOf((v + "").toLowerCase()) === -1)) {
+                                    if (acc.indexOf(v) === -1 && (!bCaseInsensitive || acc.indexOf((v + "").toLowerCase()) === -1)) {
                                         acc.push(v);
                                     }
                                     return acc;
@@ -932,7 +869,7 @@
                     Function: of
                     Determines if the passed value is an array of type (based on the passed test function).
                     Parameters:
-                    a - The varient to interrogate.
+                    a - The variant to interrogate.
                     fnTest - Function returning true/false that tests each value for type.
                     Returns:
                     Boolean value representing if the value is an array of type.
@@ -942,7 +879,7 @@
                             bReturnVal = (core.type.arr.is(a, true) && core.type.fn.is(fnTest))
                         ;
 
-                        //# If the arguments are properly reconized traverse the passed a(rray), fnTest'ing each current value as we go (flipping our bReturnVal and falling from the loop on a failure)
+                        //# If the arguments are properly recognized traverse the passed a(rray), fnTest'ing each current value as we go (flipping our bReturnVal and falling from the loop on a failure)
                         if (bReturnVal) {
                             for (i = 0; i < a.length; i++) {
                                 if (!fnTest(a[i])) {
@@ -954,6 +891,20 @@
 
                         return bReturnVal;
                     }, //# type.arr.of
+
+                    extract: function (a_oObj, vPath) {
+                        var i, o_vReturnVal;
+
+                        //#
+                        if (core.type.arr.is(a_oObj)) {
+                            o_vReturnVal = [];
+                            for (i = 0; i < a_oObj.length; i++) {
+                                o_vReturnVal.push(core.resolve(a_oObj, vPath));
+                            }
+                        }
+
+                        return o_vReturnVal
+                    }, //# type.arr.ofKey
 
                     countOf: function(a_vArray, vValue) {
                         if (core.type.arr.is(a_vArray)) {
@@ -1046,9 +997,8 @@
                         return oReturnVal;
                     } //# doCopy
 
-                    function diffCompare(oOptions) {
+                    function objCompare(oOptions) {
                         var fnCompares = [];
-                        // Truthy value representing `true` if x === y, `false` if x != y or 1 if x matches y (case-insensitive and trimmed).
 
                         //#
                         fnCompares.push(
@@ -1059,14 +1009,30 @@
                         fnCompares.push(
                             oOptions.caseInsensitive ? (
                                 oOptions.trim ?
-                                function (vSource, vCompare) { return !core.type.str.is(vSource) || core.type.str.cmp(vSource, vCompare); } :
-                                function (vSource, vCompare) { return !core.type.str.is(vSource) || core.type.str.ep(vSource, vCompare, true); }
+                                function (vSource, vCompare) { return core.type.str.is(vSource) && core.type.str.cmp(vSource, vCompare); } :
+                                function (vSource, vCompare) { return core.type.str.is(vSource) && core.type.str.ep(vSource, vCompare, true); }
                             ) : (
                                 oOptions.trim ?
-                                function (vSource, vCompare) { return !core.type.str.is(vSource) || core.type.str.mk(vSource).trim() === core.type.str.mk(vCompare).trim(); } :
-                                function (vSource, vCompare) { return !core.type.str.is(vSource) || core.type.str.mk(vSource) === core.type.str.mk(vCompare); }
+                                function (vSource, vCompare) { return core.type.str.is(vSource) && core.type.str.mk(vSource).trim() === core.type.str.mk(vCompare).trim(); } :
+                                function (vSource, vCompare) { return core.type.str.is(vSource) && core.type.str.mk(vSource) === core.type.str.mk(vCompare); }
                             )
                         );
+
+                        //# If we are still to recurse, setup the fnCompares to do so
+                        if (core.type.int.is(oOptions.maxDepth) && oOptions.maxDepth !== 0) {
+                            fnCompares.push(
+                                function (vSource, vCompare) {
+                                    return core.type.obj.is(vSource) &&
+                                        core.type.obj.eq(vSource, vCompare, core.extend({}, oOptions, { maxDepth: oOptions.maxDepth - 1 }))
+                                    ;
+                                }
+                            );
+                        }
+
+                        //# If there is a .compare .fn in the oOptions, .push it into the fnCompares
+                        if (core.type.fn.is(oOptions.compare)) {
+                            fnCompares.push(oOptions.compare);
+                        }
 
                         //# Return the comparison wrapper function to the caller
                         return function (vSource, vCompare) {
@@ -1084,10 +1050,41 @@
 
                             return bReturnVal;
                         };
-                    } //# diffCompare
+                    } //# objCompare
 
                     return {
-                        //eq: function () {}, //# type.arr.eq
+                        //#
+                        eq: function (oSource, oCompare, oOptions) {
+                            var i,
+                                a_sSourceKeys = core.type.obj.ownKeys(oSource),
+                                a_sCompareKeys = core.type.obj.ownKeys(oCompare),
+                                bReturnVal = false
+                            ;
+
+                            //# If both oSource and oCompare's .ownkeys match (ignoring the order of the respective arrays)
+                            if (core.type.arr.cmp(a_sSourceKeys, a_sCompareKeys /*, false*/)) {
+                                //# Set the defaults for the passed oOptions (forcing it into an .is .obj as we go) then calculate our fnCompare
+                                oOptions = core.extend({
+                                    //compare: core.type.fn.noop,
+                                    useCoercion: true,
+                                    caseInsensitive: false,
+                                    trim: false,
+                                    maxDepth: 0
+                                }, oOptions);
+                                fnCompare = objCompare(oOptions);
+                                bReturnVal = true;
+
+                                //#
+                                for (i = 0; i < a_sSourceKeys.length; i++) {
+                                    if (!fnCompare(oSource[a_sSourceKeys[i]], oCompare[a_sSourceKeys[i]])) {
+                                        bReturnVal = false;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            return bReturnVal;
+                        }, //# type.obj.eq
 
                         //cmp:
 
@@ -1104,7 +1101,7 @@
                             }
 
                             return oReturnVal;
-                        }, //# cp
+                        }, //# type.obj.cp
 
                         //#
                         clone: function (vSource, vKeysOrFromTo) {
@@ -1205,19 +1202,32 @@
                         }, //# type.obj.mv
 
                         //#
-                        has: function (vSource, vKeys) {
+                        has: function (vSource, vKeys, bKeysArePaths) {
                             var i,
                                 a_sKeys = (core.type.arr.is(vKeys) ? vKeys : [vKeys]),
                                 bReturnVal = (vSource && core.type.fn.is(vSource.hasOwnProperty))
                             ;
 
-                            //# If the vSource is valid, traverse the a_sKeys
+                            //# If the vSource is valid
                             if (bReturnVal) {
-                                for (i = 0; i < a_sKeys.length; i++) {
-                                    //# If this a_sKeys isn't a .hasOwnProperty of vSource, unflip our bReturnVal and fall from the loop
-                                    if (!vSource.hasOwnProperty(a_sKeys[i])) {
-                                        bReturnVal = false;
-                                        break;
+                                //# If the bKeysArePaths traverse the a_sKeys accordingly
+                                if (bKeysArePaths) {
+                                    for (i = 0; i < a_sKeys.length; i++) {
+                                        //# If the current a_sKeys doesn't .existed in vSource, unflip our bReturnVal and fall from the loop
+                                        if (!core.resolve(core.resolve.returnMetadata, vSource, a_sKeys[i]).existed) {
+                                            bReturnVal = false;
+                                            break;
+                                        }
+                                    }
+                                }
+                                //# Else we just have to traverse the a_sKeys as-is
+                                else {
+                                    for (i = 0; i < a_sKeys.length; i++) {
+                                        //# If this a_sKeys isn't a .hasOwnProperty of vSource, unflip our bReturnVal and fall from the loop
+                                        if (!vSource.hasOwnProperty(a_sKeys[i])) {
+                                            bReturnVal = false;
+                                            break;
+                                        }
                                     }
                                 }
                             }
@@ -1259,14 +1269,15 @@
                             if (core.type.arr.is(a_sSourceKeys) && core.type.arr.is(a_sCompareKeys)) {
                                 //# Set the defaults for the passed oOptions (forcing it into an .is .obj as we go) then calculate our fnCompare
                                 oOptions = core.extend({
+                                    //compare: core.type.fn.noop,
                                     useCoercion: true,
                                     caseInsensitive: true,
                                     trim: true,
                                     includeMissingKeys: true,
                                     caseInsensitiveKeys: true,
                                     pruneUndefinedValues: false
-                                }, oOptions);
-                                fnCompare = diffCompare(oOptions);
+                                }, oOptions, { maxDepth: null });
+                                fnCompare = objCompare(oOptions);
 
                                 //# If we are to find .caseInsensitiveKeys, use core.type.obj.get to resolve each a_sSourceKeys
                                 if (oOptions.caseInsensitiveKeys) {
@@ -1303,6 +1314,29 @@
 
                             return (oOptions.pruneUndefinedValues ? core.type.obj.prune(oReturnVal) : oReturnVal);
                         },
+
+                        //#
+                        resolveFirst: function (oObject, a_vPaths) {
+                            var i, oResolved,
+                                vReturnVal /*= undefined */
+                            ;
+
+                            //# If the caller passed in valid arguments, traverse the a_vPaths
+                            if (core.type.obj.is(oObject) && core.type.arr.is(a_vPaths, true)) {
+                                for (i = 0; i < a_vPaths.length; i++) {
+                                    //# .resolve the current a_vPaths, .returnMetadata'ing into oResolved
+                                    oResolved = core.resolve(core.resolve.returnMetadata, oObject, a_vPaths[i]);
+
+                                    //# If the current a_vPaths .existed, reset our vReturnVal and fall from the loop
+                                    if (oResolved.existed) {
+                                        vReturnVal = oResolved.value;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            return vReturnVal;
+                        }, //# type.obj.resolveFirst
 
                         //# No object properties exist until you add them
                         //#     FROM: https://davidwalsh.name/javascript-tricks

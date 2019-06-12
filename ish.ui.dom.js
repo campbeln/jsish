@@ -750,7 +750,27 @@
                                 break;
                             }
 
-                            case 'radio':
+                            case 'radio': {
+                                //# Pull the group of radio buttons based on their .name then default our vReturnVal
+                                _formElement = document.querySelectorAll("input[type='radio'][name='" + _formElement.name + "']");
+                                vReturnVal = "";
+
+                                //# Traverse the (borrowed) _formElement's looking for the .checked (and new vNewValue)
+                                for (i = 0; i < _formElement.length; i++) {
+                                    if (bSet && _formElement[i].value === vNewValue) {
+                                        _formElement[i].checked = core.type.bool.mk(vNewValue, _formElement[i].value === vNewValue);
+                                    }
+
+                                    //# Set our vReturnVal based on if the current _formElement is .checked, setting our vReturnVal and falling from the loop if so
+                                    if (_formElement[i].checked) {
+                                        vReturnVal = _formElement[i].value;
+                                        break;
+                                    }
+                                }
+
+                                break;
+                            }
+
                             case 'checkbox': {
                                 if (bSet) {
                                     _formElement.checked = core.type.bool.mk(vNewValue, _formElement.value === vNewValue);

@@ -278,11 +278,11 @@
                         } //# serialize
 
 
-                        //# Parses the passed valuetoParse into a model (up to 3-dimensions deep)
+                        //# Parses the passed valueToParse into a model (up to 3-dimensions deep)
                         //#    Based on: http://jsbin.com/adali3/2/edit via http://stackoverflow.com/a/2880929/235704
                         //#    NOTE: All keys are .toLowerCase'd to make them case-insensitive(-ish) with the exception of a sub-keys named 'length', which are .toUpperCase'd
                         //#    Supports: key=val1;key=val2;newkey=val3;obj=zero;obj=one;obj[one]=1;obj[two]=2;obj[Length]=long;obj[2]=mytwo;obj=two;obj[2]=myothertwo;obj=three
-                        function deserialize(valuetoParse) {
+                        function deserialize(valueToParse) {
                             //# Setup the required local variables (using annoyingly short names which are documented in the comments below)
                             //#     NOTE: Per http://en.wikipedia.org/wiki/Query_string#Structure and the W3C both & and ; are legal delimiters for a query string, hence the RegExp below
                             var b, e, k, p, sk, v, r = {},
@@ -312,8 +312,8 @@
                                 }
                             };
 
-                            //# While we still have key-value e(ntries) in the valuetoParse via the s(earch regex)...
-                            while ( (e = s.exec(valuetoParse)) /* == truthy */) { //# while((e = s.exec(valuetoParse)) !== _null) {
+                            //# While we still have key-value e(ntries) in the valueToParse via the s(earch regex)...
+                            while ( (e = s.exec(valueToParse)) /* == truthy */) { //# while((e = s.exec(valueToParse)) !== _null) {
                                 //# Collect the open b(racket) location (if any) then set the d(ecoded) v(alue) from the above split key-value e(ntry)
                                 b = e[1].indexOf("[");
                                 v = d(e[2]);
@@ -414,7 +414,7 @@
 
                             //# Parses the query string into an object model, returning an object containing the .model and a .value function to retrieve the values (see note below).
                             //#     Supports: ?test=Hello&person=neek&person=jeff&person[]=jim&person[extra]=john&test3&nocache=1398914891264&person=frank,jim;person=aaron
-                            get: function (sKey, bCaseInsenstive) {
+                            get: function (sKey, bCaseInsensitive) {
                                 var vReturnVal;
 
                                 //# Ensure the cached $queryString is setup
@@ -428,7 +428,7 @@
                                 }
                                 //# Else we need to .get the key from the $queryString
                                 else {
-                                    vReturnVal = (bCaseInsenstive ? core.type.obj.get($queryString, sKey) : $queryString[sKey]);
+                                    vReturnVal = (bCaseInsensitive ? core.type.obj.get($queryString, sKey) : $queryString[sKey]);
                                 }
 
                                 return vReturnVal;

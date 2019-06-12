@@ -10,6 +10,21 @@
     function init(core) {
         core.extend(core, {
             test: {
+                type: {
+                    obj: {
+                        diff: function () {
+                            var o1 = { n: 1, i: 2, c: 3, k: 4, camp: "Camp" },
+                                o2 = { n: 1, e: 22, k: 4, camp: " camP " },
+                                oResult1 = { i: undefined, c: undefined, camp: " camP " },
+                                oResult2 = { i: undefined, c: undefined }
+                            ;
+
+                            //#
+                            
+                        }
+                    }
+                },
+
                 resolve: function () {
                     /*
                     var neek = {};
