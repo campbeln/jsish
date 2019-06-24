@@ -168,6 +168,16 @@
             return vReturnVal;
         } //# get
 
+        //#
+        function input_value_CheckboxOrRadio(_formElement, vNewValue, bSet) {
+            if (bSet) {
+                _formElement.checked = core.type.bool.mk(vNewValue, _formElement.value === vNewValue);
+            }
+
+            //# return based on if the _formElement is .checked
+            return (_formElement.checked ? _formElement.value : "");
+        } //# input_value_CheckboxOrRadio
+
 
         //# .require any missing .prereqs
         //core.type.ish.prereqs("ish.ui.dom", {
@@ -726,7 +736,7 @@
 
                 //#
                 value: function (vFormElement, vNewValue) {
-                    var i,
+                    var i, a__formElements,
                         vReturnVal /* = _undefined */,
                         bSet = (arguments.length > 1),
                         _formElement = core.type.dom.mk(vFormElement, null)
@@ -751,33 +761,36 @@
                             }
 
                             case 'radio': {
-                                //# Pull the group of radio buttons based on their .name then default our vReturnVal
-                                _formElement = document.querySelectorAll("input[type='radio'][name='" + _formElement.name + "']");
-                                vReturnVal = "";
+                                //# Pull the group of radio buttons based on their .name
+                                a__formElements = document.querySelectorAll("input[type='radio'][name='" + _formElement.name + "']");
 
-                                //# Traverse the (borrowed) _formElement's looking for the .checked (and new vNewValue)
-                                for (i = 0; i < _formElement.length; i++) {
-                                    if (bSet && _formElement[i].value === vNewValue) {
-                                        _formElement[i].checked = core.type.bool.mk(vNewValue, _formElement[i].value === vNewValue);
-                                    }
+                                //# If we were able to locate our related a__formElements, default our vReturnVal
+                                if (a__formElements && a__formElements.length > 0) {
+                                    vReturnVal = "";
 
-                                    //# Set our vReturnVal based on if the current _formElement is .checked, setting our vReturnVal and falling from the loop if so
-                                    if (_formElement[i].checked) {
-                                        vReturnVal = _formElement[i].value;
-                                        break;
+                                    //# Traverse the a__formElements's looking for the .checked (and new vNewValue)
+                                    for (i = 0; i < a__formElements.length; i++) {
+                                        if (bSet && a__formElements[i].value === vNewValue) {
+                                            a__formElements[i].checked = core.type.bool.mk(vNewValue, a__formElements[i].value === vNewValue);
+                                        }
+
+                                        //# Set our vReturnVal based on if the current a__formElements is .checked, setting our vReturnVal and falling from the loop if so
+                                        if (a__formElements[i].checked) {
+                                            vReturnVal = a__formElements[i].value;
+                                            break;
+                                        }
                                     }
+                                }
+                                //# Else we couldn't find our related a__formElements, so treat the _formElement as a checkbox (the old logic)
+                                else {
+                                    vReturnVal = input_value_CheckboxOrRadio(_formElement, vNewValue, bSet);
                                 }
 
                                 break;
                             }
 
                             case 'checkbox': {
-                                if (bSet) {
-                                    _formElement.checked = core.type.bool.mk(vNewValue, _formElement.value === vNewValue);
-                                }
-
-                                //# Set our vReturnVal based on if the _formElement is .checked
-                                vReturnVal = (_formElement.checked ? _formElement.value : "");
+                                vReturnVal = input_value_CheckboxOrRadio(_formElement, vNewValue, bSet);
                                 break;
                             }
 

@@ -57,12 +57,15 @@
                 ;
 
                 //# If the sEnumName is valid, traverse it looking for a matching .val, setting our oReturnVal if found
-                if (core.type.obj.is(a_oEnum)) {
+                if (core.type.arr.is(a_oEnum, true)) { //#
                     //#
                     for (i = 0; i < a_oEnum.length; i++) {
                         if (fnCompare(a_oEnum[i], vOptions)) {
                             oReturnVal = a_oEnum[i];
                             break;
+                        }
+                        else if (a_oEnum[i] === undefined) {
+                            oReturnVal.desc = a_oEnum[i].desc;
                         }
                     }
                 }
