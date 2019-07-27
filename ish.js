@@ -802,6 +802,11 @@
                         break;
                     }
                 }
+                //# Else if we have a .val in vReturnVal and the current a_sPath exists under it, set our vReturnVal to it
+                //#     NOTE: We cannot use core.type.is.val below as this is a lower-level function
+                else if (vReturnVal !== _null && vReturnVal !== _undefined && vReturnVal[a_sPath[i]]) {
+                    vReturnVal = vReturnVal[a_sPath[i]];
+                }
                 //# Else if we are bForce(ing)Create or we bHaveValue and this is the last index
                 else if (bForceCreate || (bHaveValue && i === a_sPath.length - 1)) {
                     //# Set a new object reference in vReturnVal then set it into oObject's last object reference
@@ -1130,7 +1135,7 @@
                 Parameters:
                 v - The variant to interrogate.
                 Returns:
-                Boolean value representing if the value is set.
+                Boolean value representing if the value is set (i.e. !== undefined || null).
                 */
                 val: function (v) {
                     return (v !== _undefined && v !== _null);
