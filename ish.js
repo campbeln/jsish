@@ -738,7 +738,10 @@
             oIsObjOptions = { allowFn: true },
             a = Array.prototype.slice.call(arguments), //# NOTE: core.type.fn.convert(arguments) is not always available at this low-level :(
             bReturnMetadata = (a[0] === core.resolve.returnMetadata),
-            bCreated = false
+            bCreated = false,
+            isVal = function (v) {
+                return (v !== _null && v !== _undefined);
+            }
         ;
 
         //# If a[0] is .returnMetadata, remove it from the a(rguments)
@@ -772,9 +775,11 @@
         //# Now that the passed oObject is known, set our vReturnVal accordingly
         vReturnVal = (core.type.obj.is(oObject, oIsObjOptions) ? oObject : _undefined);
 
-        //# If the passed oObject .is .obj and vPath .is .str or .is .arr, populate our a_sPath
-        if (vReturnVal && (core.type.str.is(vPath) || (core.type.arr.is(vPath, true) && core.type.str.is(vPath[0])))) {
+        //# If the passed oObject .is .obj and vPath .is .str or .is .arr
+        if (isVal(oObject) && (core.type.str.is(vPath) || (core.type.arr.is(vPath, true) && core.type.str.is(vPath[0])))) {
+            //# Populate our a_sPath and reset our vReturnVal to the passed oObject (as it may be a native type with properties)
             a_sPath = (core.type.arr.is(vPath) ? vPath : vPath.split("."));
+            vReturnVal = oObject;
 
             //# Traverse the a_sPath
             for (i = 0; i < a_sPath.length; i++) {
@@ -802,9 +807,9 @@
                         break;
                     }
                 }
-                //# Else if we have a .val in vReturnVal and the current a_sPath exists under it, set our vReturnVal to it
+                //# Else if we have an isVal in vReturnVal and the current a_sPath exists under it, set our vReturnVal to it
                 //#     NOTE: We cannot use core.type.is.val below as this is a lower-level function
-                else if (vReturnVal !== _null && vReturnVal !== _undefined && vReturnVal[a_sPath[i]]) {
+                else if (isVal(vReturnVal) && vReturnVal[a_sPath[i]] !== _undefined) {
                     vReturnVal = vReturnVal[a_sPath[i]];
                 }
                 //# Else if we are bForce(ing)Create or we bHaveValue and this is the last index
@@ -815,7 +820,7 @@
                     bCreated = true;
                 }
                 //# Else if we're not on the final vPath segment
-                else if (i < a_sPath.length - 1) {
+                else { //if (i < a_sPath.length - 1) {
                     //# The current vPath segment doesn't exist and we're not bForce(ing)Create, so reset our vReturnVal to undefined, flip bPathExists and fall from the loop
                     vReturnVal = _undefined;
                     bPathExists = false;
