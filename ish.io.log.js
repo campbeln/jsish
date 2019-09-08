@@ -116,7 +116,7 @@ interestingFnUnwrapped = StackTrace.deinstrument(interestingFn);
                 logToServer(eSeverity.log, arguments);
                 try {
                     window.console.log.apply(this, arguments); //# TODO: Refactor `this` to `this || null`?
-                } catch (e) { core.type.ish.expectedErrorHandler(e); }
+                } catch (e) { core.type.is.ish.expectedErrorHandler(e); }
             } //# toConsole
 
 
@@ -164,7 +164,7 @@ interestingFnUnwrapped = StackTrace.deinstrument(interestingFn);
                         else {
                             oLog.console.apply(this, arguments);
                         }
-                    } catch (e) { core.type.ish.expectedErrorHandler(e); }
+                    } catch (e) { core.type.is.ish.expectedErrorHandler(e); }
                 } //# warn
             });
 

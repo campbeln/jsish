@@ -13,25 +13,25 @@
         Class: core.type.num
         Additional Numeric calculation logic (range, gle and precision).
         Requires:
-        <core.type.num.is>,
+        <core.type.is.numeric>,
         <core.type.str.mk>
         ####################################################################################################
         */
-        core.oop.partial(core.type, {
-            num: {
+        core.oop.partial(core.type.is, {
+            numeric: {
                 //############################################################
                 //# Determines if the passed sNumber is within the passed range
                 //#    NOTE: "return (sNumber >= sMin && sNumber <= sMax)" would work in 99.9% of the checks we'll do with this function, but in the case of huge/tiny numbers (such as NUMERIC(x,y)'s in Oracle), this wouldn't cut it as the numbers would be too large/small to be represented in any available numeric variables
                 //############################################################
                 //# Last Updated: February 21, 2006
-                range: function(sNumber, sMin, sMax) {
+                rangeStr: function(sNumber, sMin, sMax) {
                     return (
                         //#### If the passed sNumber is greater then or equal to the passed sMin
-                        core.type.num.cmp(sNumber, sMin) >= 0 &&
+                        core.type.is.numeric.cmp(sNumber, sMin) >= 0 &&
                         //#### If the passed sNumber is less then or equal to the passed sMax
-                        core.type.num.cmp(sNumber, sMax) <= 0
+                        core.type.is.numeric.cmp(sNumber, sMax) <= 0
                     );
-                }, //# type.num.range
+                }, //# type.is.numeric.rangeStr
 
                 //############################################################
                 //# Determines if the passed sNumber is greater then, less then or equal to the passed sComparedTo
@@ -47,8 +47,8 @@
                     sComparedTo += "";
 
                         //#### Define and init the required local vars
-                    var iNumberNumericPrecision = core.type.num.precision(sNumber);
-                    var iRangeNumericPrecision = core.type.num.precision(sComparedTo);
+                    var iNumberNumericPrecision = core.type.is.numeric.precision(sNumber);
+                    var iRangeNumericPrecision = core.type.is.numeric.precision(sComparedTo);
                     var iReturn;
                     var bNumberIsPositive = (sNumber.indexOf("-") !== 0);
                     var bRangeIsPositive = (sComparedTo.indexOf("-") !== 0);
@@ -182,7 +182,7 @@
 
                         //#### Return the above determined iReturn value to the caller
                     return iReturn;
-                }, //# type.num.compare
+                }, //# type.is.numeric.compare
 
                 //############################################################
                 //# Determines the numeric precision of the passed sValue (i.e. - counts how many numeric places there are within the number, not including leading 0's)
@@ -200,8 +200,8 @@
                         for (i = 0; i < sValue.length; i++) {
                             sCurrentChar = sValue[i]; //# .substr(i, 1)
 
-                            //#### If the sCurrentChar .is .num
-                            if (core.type.num.is(sCurrentChar)) {
+                            //#### If the sCurrentChar is.numeric
+                            if (core.type.is.numeric(sCurrentChar)) {
                                 //#### If we are supposed to bStartCounting, inc our iReturnVal
                                 //####    NOTE: This is done so we ignore leading 0's (trailing 0's are still counted)
                                 bStartCounting = (sCurrentChar !== '0');
@@ -211,7 +211,7 @@
                     }
 
                     return iReturnVal;
-                } //# type.num.precision
+                } //# type.is.numeric.precision
             }
         }); //# core.type.num
     } //# init

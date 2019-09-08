@@ -8,8 +8,8 @@
     'use strict';
 
     function init(core) {
-        var bServerside = core.type.ish.onServer,                                       //# code-golf
-            _root = (core.type.ish.onServer ? global : window),                         //# code-golf
+        var bServerside = core.config.ish().onServer,                                   //# code-golf
+            _root = (bServerside ? global : window),                                    //# code-golf
             _undefined /*= undefined*/,                                                 //# code-golf
             _null = null                                                                //# code-golf
         ;
@@ -20,7 +20,7 @@
         Additional Variable Type-based functionality (type.*.cp, type.*.cmp, type.*.eq, type.*.rm, etc) plus uuid, enum and query.
         Requires:
         <core.resolve>, <core.extend>,
-        <core.type.fn.is>, <core.type.arr.is>, <core.type.obj.is>, <core.type.str.is>, <core.type.date.is>, <core.type.num.is>,
+        <core.type.fn.is>, <core.type.arr.is>, <core.type.obj.is>, <core.type.str.is>, <core.type.date.is>,
         <core.type.str.mk>, <core.type.int.mk>, <core.type.date.mk>, <core.type.float.mk>,
         <core.type.fn.call>,
         ~<core.io.net.get>
@@ -28,6 +28,73 @@
         */
         core.oop.partial(core.type, function (/*oProtected*/) {
             var oReturnVal = {
+                //#
+                is: {
+                    truthy: function (v) {
+                        return (
+                            v !== 0 &&
+                            v !== "" &&
+                            v !== NaN &&
+                            v !== _null &&
+                            v !== false &&
+                            v !== _undefined
+                        );
+                    }, //# type.is.truthy
+
+                    //# TODO: part of float?
+                    numeric: {
+                        /*
+                        Function: eq
+                        Determines if the passed numeric values are equal (includes implicit casting per the Javascript rules, see: <core.type.int.mk>).
+                        Parameters:
+                        s - The first numeric value to compare.
+                        t - The second numeric value to compare.
+                        Returns:
+                        Boolean value representing if the passed numeric values are equal.
+                        */
+                        eq: function (x, y) {
+                            var bReturnVal = false;
+
+                            //# If the passed x and y .is.numeric, .mk them .floats and reset our bReturnVal to their comparison
+                            if (core.type.is.numeric(x) && core.type.is.numeric(y)) {
+                                bReturnVal = (core.type.float.mk(x) === core.type.float.mk(y));
+                            }
+
+                            return bReturnVal;
+                        }, //# type.is.numeric.eq
+
+                        /*
+                        Function: cmp
+                        Determines the relationship between the passed numeric values (includes implicit casting per the Javascript rules, see: <core.type.int.mk>).
+                        Parameters:
+                        x - The first numeric value to compare.
+                        y - The second numeric value to compare.
+                        Returns:
+                        Nullable interger value representing -1 if x is before y, 0 if x === y, 1 if x is after y or undefined if x or y is non-numeric.
+                        */
+                        cmp: function (x, y) {
+                            var iReturnVal = _undefined,
+                                dX = core.type.float.mk(x, _null),
+                                dY = core.type.float.mk(y, _null)
+                            ;
+
+                            if (core.type.is.numeric(dX) && core.type.is.numeric(dY)) {
+                                if (dX < dY) {
+                                    iReturnVal = -1;
+                                }
+                                else if (dX > dY) {
+                                    iReturnVal = 1;
+                                }
+                                else {
+                                    iReturnVal = 0;
+                                }
+                            }
+
+                            return iReturnVal;
+                        } //# type.is.numeric.cmp
+                    } //# type.is.numeric
+                }, //# core.type.is
+
                 //#
                 any: function (x, a_vValues, bUseCoercion) {
                     var i,
@@ -243,62 +310,6 @@
 
 
                 //####
-
-                //# eq, cmp
-                num: {
-                    /*
-                    Function: eq
-                    Determines if the passed numeric values are equal (includes implicit casting per the Javascript rules, see: <core.type.int.mk>).
-                    Parameters:
-                    s - The first numeric value to compare.
-                    t - The second numeric value to compare.
-                    Returns:
-                    Boolean value representing if the passed numeric values are equal.
-                    */
-                    eq: function (x, y) {
-                        var bReturnVal = false;
-
-                        //# If the passed x and y .is .num'bers, .mk them .floats and reset our bReturnVal to their comparison
-                        if (core.type.num.is(x) && core.type.num.is(y)) {
-                            bReturnVal = (core.type.float.mk(x) === core.type.float.mk(y));
-                        }
-
-                        return bReturnVal;
-                    }, //# type.num.eq
-
-
-                    /*
-                    Function: cmp
-                    Determines the relationship between the passed numeric values (includes implicit casting per the Javascript rules, see: <core.type.int.mk>).
-                    Parameters:
-                    x - The first numeric value to compare.
-                    y - The second numeric value to compare.
-                    Returns:
-                    Nullable interger value representing -1 if x is before y, 0 if x === y, 1 if x is after y or undefined if x or y is non-numeric.
-                    */
-                    cmp: function (x, y) {
-                        var iReturnVal = _undefined,
-                            dX = core.type.float.mk(x, _null),
-                            dY = core.type.float.mk(y, _null)
-                        ;
-
-                        if (core.type.num.is(dX) && core.type.num.is(dY)) {
-                            if (dX < dY) {
-                                iReturnVal = -1;
-                            }
-                            else if (dX > dY) {
-                                iReturnVal = 1;
-                            }
-                            else {
-                                iReturnVal = 0;
-                            }
-                        }
-
-                        return iReturnVal;
-                    } //# type.num.cmp
-
-                    // cp:
-                }, //# core.type.num
 
                 //# eq, cmp, cp, age, yyyymmdd, only
                 date: {
@@ -1105,24 +1116,39 @@
 
                         //#
                         clone: function (vSource, vKeysOrFromTo) {
-                            var i, oFromTo, a_sOwnKeys,
+                            var a_sOwnKeys, i,
+                                oFromTo = {},
                                 vReturnVal /*= undefined*/
                             ;
 
-                            //# If the caller passed in an .is .arr of keys, set it into our a_sOwnKeys
-                            if (core.type.arr.is(vKeysOrFromTo)) {
-                                a_sOwnKeys = vKeysOrFromTo;
-                                oFromTo = {};
-
-                                //# Traverse a_sOwnKeys, setting each into our (flat) oFromTo definition
-                                for (i = 0; i < a_sOwnKeys.length; i++) {
-                                    oFromTo[a_sOwnKeys[i]] = a_sOwnKeys[i];
-                                }
+                            //#
+                            if (core.type.str.is(vKeysOrFromTo)) {
+                                vKeysOrFromTo = [vKeysOrFromTo];
                             }
-                            //# Else if the caller passed in a mapping .is .obj, set it into our oFromTo definition and collect a_sOwnKeys
-                            else if (core.type.obj.is(vKeysOrFromTo)) {
+
+                            //# If the caller passed in a mapping .is .obj, set it into our oFromTo definition and collect a_sOwnKeys
+                            if (core.type.obj.is(vKeysOrFromTo)) {
                                 oFromTo = vKeysOrFromTo;
                                 a_sOwnKeys = core.type.obj.ownKeys(oFromTo);
+                            }
+                            //# Else
+                            else {
+                                //# if the caller passed in an .is .arr of keys, set it into our a_sOwnKeys
+                                if (core.type.arr.is(vKeysOrFromTo)) {
+                                    a_sOwnKeys = vKeysOrFromTo;
+                                }
+                                //#
+                                else if (core.type.obj.is(vSource)) {
+                                    a_sOwnKeys = core.type.obj.ownKeys(vSource);
+                                }
+
+                                //#
+                                if (a_sOwnKeys) {
+                                    //# Traverse a_sOwnKeys, setting each into our (flat) oFromTo definition
+                                    for (i = 0; i < a_sOwnKeys.length; i++) {
+                                        oFromTo[a_sOwnKeys[i]] = a_sOwnKeys[i];
+                                    }
+                                }
                             }
 
                             //# If vKeysOrFromTo was either an .is .arr or .is .obj
@@ -1432,6 +1458,18 @@
         }); //# core.type
     } //# init
 
+    /*
+        diff: function ($assert) {
+            var o1 = { n: 1, i: 2, c: 3, k: 4, camp: "Camp" },
+                o2 = { n: 1, e: 22, k: 4, camp: " camP " },
+                oResult1 = { i: undefined, c: undefined, camp: " camP " },
+                oResult2 = { i: undefined, c: undefined }
+            ;
+
+            //#
+
+        }
+    */
 
     //# If we are running server-side (or possibly have been required as a CommonJS module)
     if (typeof window === 'undefined') { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {

@@ -107,7 +107,7 @@
             //# Collect our ngApp then .config and .run it
             var oSettings = core.extend({
                     requires: [],
-                    appName: core.type.ish.options.target + "-app",
+                    appName: core.config.ish().target + "-app",
                     ctrlName: "ctrlMain",
                     //ctrlCallback: function ($scope) {},
                     //onload: function (ngApp, angular, core_lib_ng) {}
@@ -159,7 +159,7 @@
             if (oSettings.ctrlName) {
                 ngApp.controller(oSettings.ctrlName, ['$scope', function ($scope) {
                     //# Register core in the $scope under our .target name then call .ctrlCallback
-                    $scope[core.type.ish.options.target] = core;
+                    $scope[core.config.ish().target] = core;
                     core.type.fn.call(oSettings.ctrlCallback, ngApp, arguments);
                 }]); //# ngApp.controller(oSettings.ctrlName
             }

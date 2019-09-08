@@ -85,7 +85,7 @@ window.cn = function (sSelector) {
                     Ip: sIP,
                     Mask: iMask,
                     Domain: core.type.str.mk(core.io.web.queryString.get("d", true)).split('#')[0],
-                    isns: (core.type.is.true(core.io.web.queryString.get("isns", true)) ? true : false),
+                    isns: (core.type.bool.is(core.io.web.queryString.get("isns", true), true) ? true : false),
                     Cidr: { cidr: sIP + '/' + iMask },
                     octets: function () {
                         return (core.app.data.selected.Ip || "").split(".");
@@ -379,7 +379,7 @@ window.cn = function (sSelector) {
 
                 //#
                 upload: function (vData) {
-                    var oData = core.type.obj.mk(vData, core.type.json.mk(vData, {}));
+                    var oData = core.type.obj.mk(vData);
 
                     //#
                     core.app.data.selected = oData.metadata.selected;

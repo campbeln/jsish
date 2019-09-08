@@ -141,6 +141,7 @@
                     WWWW: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
                     MMM: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
                     MMMM: ["January","February","March","April","May","June","July","August","September","October","November","December"],
+                    T: ["a","p"],
                     TT: ["am","pm"]
                 }, //# type.date.config
 
@@ -149,7 +150,7 @@
                 //# Formats the provided date based on the referenced format.
                 //############################################################
                 //# Last Updated: April 19, 2006
-                format: function(dDateTime, sFormat) {
+                format: function (dDateTime, sFormat) {
                     var vTemp, i,
                         oDecoders = {
                             $order: []
@@ -219,9 +220,6 @@
                         register("H", i);
                         register("HH", fnLpad(i, '0', 2));
 
-                        //# If the .Hour within i is before noon, set tt to "am", else set tt to "pm"
-                        register("tt", oConfig.TT[(i % 12) === i ? 0 : 1]);
-
                         //#### Determine the 12-hour time from the above collected .Hour (fixing 0 hours as necessary), then set hh and hh accordingly
                         i = (i % 12 || 12);
                         register("h", i);
@@ -236,6 +234,16 @@
                         i = dDateTime.getSeconds();
                         register("s", i);
                         register("ss", fnLpad(i, '0', 2));
+
+                        //# If the .Hour within i is before noon, set tt to "am", else set tt to "pm"
+                        register("t", oConfig.T[(i % 12) === i ? 0 : 1]);
+                        register("tt", oConfig.TT[(i % 12) === i ? 0 : 1]);
+
+                        //# Borrow the use of i to store the .getTimezoneOffset, setting zz accordingly
+                        i = -dDateTime.getTimezoneOffset();
+                        register("zzzz",
+                            (i > -1 ? '+' : '-') + fnLpad(Math.floor(Math.abs(i / 60)), '0', 2) + ':' + fnLpad(Math.floor(Math.abs(i % 60)), '0', 2)
+                        );
 
                         //# Traverse the above defined oDecoders, preprocessing the sFormat by replacing the user-set values with {{i}}
                         //#     NOTE: Preprocessing is required as (for example) "m" appears in "December"
@@ -262,11 +270,34 @@
                 }, //# type.date.format
 
 
+                /*
+                ISO 8601 including local timezone offset in ±hh:00
+                FROM: https://stackoverflow.com/a/17415677/235704
+                See: https://en.wikipedia.org/wiki/ISO_8601#Time_offsets_from_UTC
+                */
+                isoLocalString: function () {
+                    function l0Pad(i) {
+                        return core.type.str.lpad(Math.floor(Math.abs(i)), '0', 2);
+                    } //# l0Pad
+
+                    return function (dDateTime) {
+                        var dDate = core.type.date.mk(dDateTime),
+                            iTimezoneOffset = -dDate.getTimezoneOffset()
+                        ;
+
+                        return dDate.getFullYear() + '-' + l0Pad(dDate.getMonth() + 1) + '-' + l0Pad(dDate.getDate()) +
+                            'T' + l0Pad(dDate.getHours()) + ':' + l0Pad(dDate.getMinutes()) + ':' + l0Pad(dDate.getSeconds()) +
+                            (iTimezoneOffset > -1 ? '+' : '-') + l0Pad(iTimezoneOffset / 60) + ':' + l0Pad(iTimezoneOffset % 60)
+                        ;
+                    };
+                }(), //# type.date.isoLocalString
+
+
                 //############################################################
                 //# Gets the day of the year for the provided date.
                 //############################################################
                 //# Last Updated: April 12, 2006
-                dayOfYear: function(dDateTime) {
+                dayOfYear: function (dDateTime) {
                     //# If the caller passed in a valid dDateTime
                     if (core.type.date.is(dDateTime)) {
                         return Math.ceil(

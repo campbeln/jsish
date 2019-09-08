@@ -85,7 +85,7 @@
                     a_sKeys = oOptions.keys || core.type.obj.ownKeys(core.resolve(a_oData, "0"));
                     core.type.arr.rm(a_sKeys, "$$hashKey"); //# TODO: AngularJS specific
                     oOptions.delimiter = core.type.str.mk(oOptions.delimiter, ",");
-                    oOptions.quotes = core.type.is.true(oOptions.quotes);
+                    oOptions.quotes = core.type.bool.is(oOptions.quotes, true);
 
                     //#
                     if (core.type.arr.is(a_sKeys, true)) {
@@ -110,7 +110,7 @@
                                         vCurrent = JSON.stringify(vCurrent);
                                     }
                                     //#
-                                    else if (!core.type.num.is(vCurrent)) {
+                                    else if (!core.type.is.numeric(vCurrent)) {
                                         vCurrent = core.type.str.mk(vCurrent);
 
                                         //#

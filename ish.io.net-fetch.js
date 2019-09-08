@@ -39,7 +39,7 @@
                 //# IE5.5+ (ActiveXObject IE5.5-9), based on http://toddmotto.com/writing-a-standalone-ajax-xhr-javascript-micro-library/
                 try {
                     $xhr = new XHRConstructor('MSXML2.XMLHTTP.3.0');
-                } catch (e) { core.type.ish.expectedErrorHandler(e); }
+                } catch (e) { core.type.is.ish.expectedErrorHandler(e); }
 
                 //# If a function was passed rather than an object, object-ize it (else we assume its an object with at least a .fn)
                 if (core.type.fn.is(vCallback)) {

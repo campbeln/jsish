@@ -1,0 +1,94 @@
+<html>
+<head>
+</head>
+<body>
+    Test
+    <script type="text/javascript" src="test/chai.js"></script>
+
+    <script type="text/javascript" src="ish-polyfill.js"></script>
+    <script type="text/javascript" src="ish.js"
+        ish='{ "target": "ish", "plugins2": { "import": ["ish.type.date-format","ish.io.fs","ish.io.csv"], "baseUrl": "", "cache": false } }'
+    ></script>
+    <script>
+        ish.require.baseUrl = "";
+    </script>
+    <script type="text/javascript" src="ish.test.js"></script>
+    <script type="text/javascript" src="ish.type-ex.js"></script>
+    <script type="text/javascript" src="ish.type.enum.js"></script>
+    <script type="text/javascript" src="ish.type.pojo.js"></script>
+    <script type="text/javascript" src="ish.io.net.js"></script>
+    <script type="text/javascript" src="ish.io.web.js"></script>
+    <script type="text/javascript" src="ish.ui.dom.js"></script>
+
+    <!--
+    <script type="text/javascript" src="ish.ui.clipboard.js"></script>
+    <script type="text/javascript" src="ish.ui.tooltip.js"></script>
+    -->
+
+    <script type="text/javascript">
+        ish.type.enum.load({
+            clients: {}, //# Stub for client-specific values
+
+            noteTypes: [
+                { val: undefined, desc: "system" },
+                { val: 1, desc: "user" },
+                { val: 2, desc: "email" },
+                { val: 3, desc: "sms" },
+                { val: 100, desc: "warning" },
+                { val: 101, desc: "error" }
+            ]
+        });
+
+        ish.type.enum.load({
+            clients: {
+                walmart: {
+                    status: [
+                        { val: undefined, desc: "Undefined" },
+                        { val: 1, desc: "Pending" },
+                        { val: 2, desc: "InProcess" },
+                        { val: 3, desc: "Paid" },
+                        { val: 4, desc: "Failed" },
+
+                        //# Non-Walmart
+                        { val: 12, desc: "InLimbo" },
+                        { val: 13, desc: "VerifyPaid" },
+                        { val: 90, desc: "UnpaidNonDDI" }
+                    ],
+
+                    errors: [
+                        { val: undefined, desc: "Undefined" },
+                        { val: 1, desc: "RequestNotValid" },
+                        { val: 2, desc: "SecretKeyNotValid" },
+                        { val: 3, desc: "UnknownDomainException" },
+                        { val: 4, desc: "PayoutNotFound" },
+                        { val: 5, desc: "DebugLogError" },
+                        { val: 6, desc: "CurrencyNotSupported" },
+                        { val: 7, desc: "PaperworkNotFound" },
+                        { val: 8, desc: "TransactionAlreadyExists" },
+                        { val: 9, desc: "WalmartApiNotAccessible" },
+                        { val: 10, desc: "InternalServerError" },
+                        { val: 11, desc: "WalmartValidationFailed" },
+                        { val: 12, desc: "DifferentCurrency" },
+                        { val: 13, desc: "PayoutClosed" },
+                        { val: 14, desc: "AddPayoutError" },
+                        { val: 15, desc: "DriverIsDisabled" },
+
+                        { val: 100, desc: "DbConnError" }
+                    ],
+
+                    /*type: [
+                        { val: undefined, desc: "Unset" },
+                        { val: 1, desc: "Regular" },
+                        { val: 2, desc: "RegularLateAdd" },
+                        { val: 4, desc: "Immediate" }
+                    ],*/
+
+                    currency: [
+                        { val: "USD", desc: "us" }
+                    ]
+                }
+            }
+        });
+    </script>
+</body>
+</html>

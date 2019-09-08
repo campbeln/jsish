@@ -39,7 +39,7 @@
                 //# IE5.5+ (ActiveXObject IE5.5-9), based on http://toddmotto.com/writing-a-standalone-ajax-xhr-javascript-micro-library/
                 try {
                     $xhr = new XHRConstructor('MSXML2.XMLHTTP.3.0');
-                } catch (e) { core.type.ish.expectedErrorHandler(e); }
+                } catch (e) { core.type.is.ish.expectedErrorHandler(e); }
 
                 //# If a function was passed rather than an object, object-ize it (else we assume its an object with at least a .fn)
                 if (core.type.fn.is(vCallback)) {
@@ -161,6 +161,9 @@
                                 if (core.type.str.is(vCallback.responseType, true)) {
                                     $xhr.responseType = vCallback.responseType; //# 'text'
                                 }
+                                if (!vCallback.useCache) {
+                                    $xhr.setRequestHeader("Cache-Control", "no-cache, max-age=0");
+                                }
                             }
 
                             $xhr.send(sBody || null);
@@ -280,11 +283,11 @@
 
                                 return {
                                     v4: function (sIP) {
-                                        return reIPv4.test(sIP);
+                                        return reIPv4.test(sIP + "");
                                     }, //# core.app.ip.is.v4
 
                                     v6: function (sIP) {
-                                        return reIPv6.test(sIP);
+                                        return reIPv6.test(sIP + "");
                                     } //# core.app.ip.is.v6
                                 };
                             }()

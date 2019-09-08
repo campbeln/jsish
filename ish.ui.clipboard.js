@@ -9,7 +9,7 @@
 
     //# Build the core.lib.ui.clipboard wrapper around ClipboardJS's implementation
     //#     NOTE: core.require includes the required scripts/CSS then runs the provided function
-    core.require(["js/ish/ish.ui.css.js", "js/clipboard.min.js"], function (/*a_sUrls, bAllLoaded*/) {
+    core.require(["ish.ui.css.js", "js/clipboard.min.js"], function (/*a_sUrls, bAllLoaded*/) {
         /*
         ####################################################################################################
         Class: core.ui.clipboard

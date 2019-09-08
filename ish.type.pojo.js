@@ -15,7 +15,7 @@
         Additional Variable Type-based functionality (type.*.cp, type.*.cmp, type.*.eq, type.*.rm, etc) plus uuid, enum and query.
         Requires:
         <core.resolve>, <core.extend>,
-        <core.type.fn.is>, <core.type.arr.is>, <core.type.obj.is>, <core.type.str.is>, <core.type.date.is>, <core.type.num.is>,
+        <core.type.fn.is>, <core.type.arr.is>, <core.type.obj.is>, <core.type.str.is>, <core.type.date.is>,
         <core.type.str.mk>, <core.type.int.mk>, <core.type.date.mk>, <core.type.float.mk>,
         <core.type.fn.call>,
         ~<core.io.net.get>

@@ -45,7 +45,7 @@
                         iRetryMS = core.type.fn.call(oBucket.retry, this, [oData, oBucket, bFromError])
                     ;
 
-                    if (core.type.num.is(iRetryMS) && iRetryMS > 0) {
+                    if (core.type.is.numeric(iRetryMS) && iRetryMS > 0) {
                         //oReturnVal = core.lib.ui.sync(oBucket.refresh, iRetryMS);
                         oReturnVal = core.lib.ng.$timeout(oBucket.refresh, iRetryMS);
                     }

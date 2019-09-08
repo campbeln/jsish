@@ -11,7 +11,7 @@ All references and code required to utilize tingle-modal are present below. So l
 
     //# Build the core.lib.modal wrapper around TingleJS's modal implementation
     //#     NOTE: core.require includes the required scripts/CSS then runs the provided function
-    core.require(["js/ish/ish.ui.css.js", "js/tingle-modal/tingle.min.js", "js/tingle-modal/tingle.min.css"], function (/*a_sUrls, bAllLoaded*/) {
+    core.require(["ish.ui.css.js", "js/tingle-modal/tingle.min.js", "js/tingle-modal/tingle.min.css"], function (/*a_sUrls, bAllLoaded*/) {
         //# Add the required class into our body and .insertRules to tweak the .tingle-modal-box
         core.ui.css.class.add(document.getElementsByTagName("BODY")[0], "tingle-content-wrapper");
         core.ui.css.insertRules([

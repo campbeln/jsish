@@ -8,7 +8,7 @@
     'use strict';
 
     function init(core) {
-        var bServerside = core.type.ish.onServer,                                       //# code-golf
+        var bServerside = core.config.ish().onServer,                                   //# code-golf
             _root = (bServerside ? global : window),                                    //# code-golf
             _document = (bServerside ? {} : document),                                  //# code-golf
             _null = null,                                                               //# code-golf
@@ -23,8 +23,8 @@
         Requires:
         <core.resolve>,
         <core.type.obj.is>, <core.type.str.is>, <core.type.fn.is>, <core.type.arr.is>,
-        <core.type.json.mk>, <core.type.str.mk>, <core.type.int.mk>, <core.type.obj.mk>,
-        <core.type.fn.call>, <core.type.arr.rm>, <core.type.obj.get>,
+        <core.type.str.mk>, <core.type.int.mk>, <core.type.obj.mk>, <core.type.fn.call>,
+        <core.type.arr.rm>, <core.type.obj.get>,
         ~<core.io.log.warn>
         ####################################################################################################
         */
@@ -171,7 +171,7 @@
                                     j = a_sCookies[i].indexOf("=");
                                     if (cookieName(a_sCookies[i]) === sName) {
                                         $returnValue.original = decodeURIComponent(a_sCookies[i].substr(j + 1));
-                                        oModel = core.type.json.mk($returnValue.original);
+                                        oModel = core.type.obj.mk($returnValue.original);
                                         return true;
                                     }
                                 }
@@ -525,12 +525,12 @@
                         function get(sKey, bSession) {
                             var sValue = (bSession ? window_sessionStorage : window_localStorage).getItem(sKey);
 
-                            return core.type.json.mk(sValue, sValue);
+                            return core.type.obj.mk(sValue, sValue);
                         }
 
                         return core.extend(get, {
                             set: function (sKey, vValue, bSession) {
-                                var sValue = (core.type.obj.is(vValue) ? core.type.json.mk(vValue, vValue) : core.type.str.mk(vValue));
+                                var sValue = (core.type.obj.is(vValue) ? JSON.stringify(vValue) : core.type.str.mk(vValue));
 
                                 (bSession ? window_sessionStorage : window_localStorage).setItem(sKey, sValue);
                             },

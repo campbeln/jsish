@@ -18,19 +18,19 @@
         obj: core.type.obj.is,
         arr: core.type.arr.is,
 
-        json: core.type.json.is,
+        //json: core.type.json.is,
         dom: core.type.dom.is,
 
-        num: core.type.num.is,
+        //num: core.type.num.is,
         fn: core.type.fn.is,
 
         type: core.type.is,
         val: core.type.is.val,
         'true': core.type.is.true,
-        native: core.type.is.native,
+        native: core.type.is.native
 
-        list: core.type.list.is,
-        selector: core.type.selector.is
+        //selector: core.type.selector.is,
+        //list: core.type.list.is
     }; //# core.is
 
     core.mk = {
@@ -42,7 +42,7 @@
         obj: core.type.obj.mk,
         arr: core.type.arr.mk,
 
-        json: core.type.json.mk,
+        //json: core.type.json.mk,
         dom: core.type.dom.mk
     }; //# core.mk
 
