@@ -107,8 +107,8 @@
 
                             return bReturnVal;
                         } //# type.obj.pojo.check
-                    })
-                };
+                    }
+                )
             };
         }); //# core.type.obj.pojo
     } //# init
