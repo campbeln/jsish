@@ -283,13 +283,16 @@
                                             core.type.is.ish.import(["ish.test.type.is.ish.import"], {
                                                 callback: function (a_oProcessedUrls, bAllLoaded) {
                                                     $.assert(bAllLoaded === true, "bAllLoaded");
-                                                    $.assert.deepEqual(a_oProcessedUrls, ["ish.test.type.is.ish.import.js"], "bAllLoaded");
-                                                    $.results("1:3");
+                                                    $.assert(a_oProcessedUrls[0].url === "ish.test.type.is.ish.import.js", "a_oProcessedUrls.url");
+                                                    $.assert(a_oProcessedUrls[0].loaded === true, "a_oProcessedUrls.loaded");
+                                                    $.assert(a_oProcessedUrls[0].timedout === false, "a_oProcessedUrls.timedout");
+                                                    $.results("1:2");
                                                 },
                                                 onAppend: function (_dom, sUrl) {
                                                     $.assert(core.type.dom.is(_dom), "_dom");
+                                                    // TODO: bottom being used for require test as well!?
                                                     $.assert(sUrl === "ish.test.type.is.ish.import.js", "sUrl");
-                                                    $.results("2:3");
+                                                    $.results("2:2");
                                                 }
                                             });
 
