@@ -1,7 +1,7 @@
 /** ################################################################################################
  * @class ish
  * @classdesc ishJS Functionality (Q: Are you using Vanilla Javascript? A: ...ish)
- * @version 0.10.2019-03-06
+ * @version 0.12.2019-09-08
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
@@ -19,7 +19,7 @@
         oPrivate = {},
         oTypeIsIsh = { //# Set the .ver and .target under .type.is.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             config: {
-                ver: '0.11.2019-09-05',
+                ver: '0.12.2019-09-08',
                 onServer: bServerside,
                 debug: true,
                 //script: _undefined,
@@ -396,18 +396,26 @@
 
         type.date = function () {
             //#
-            function mkDate(d) {
-                var bIsDate = false;
+            function mkDate(d, bAllowNumeric) {
+                var bIsDate = _Object_prototype_toString.call(d) === "[object Date]";
 
-                //# Thanks to Symbol()s not wanting to be casted to strings or numbers (i.e. parseFloat, regexp.test, new Date), we need to wrap the test below for the benefit of ish.type()
-                try {
-                    d = new Date(d);
-                    bIsDate = true;
-                } catch (e) {}
+                //# If the passed d(ate) isn't an [object Date]
+                if (!bIsDate) {
+                    //# If the passed d(ate) .is.numeric, parse it as a float (to allow for the widest values) and reset bIsDate
+                    //#     NOTE: We have to do this before .is .str as "0" will resolve to a string
+                    if (bAllowNumeric && core.type.is.numeric(d)) {
+                        d = new Date(parseFloat(d));
+                        bIsDate = !isNaN(d.valueOf());
+                    }
+                    //# Else if the passed d(ate) .is .str, try throwing it at new Date() and reset bIsDate
+                    else if (core.type.str.is(d)) {
+                        d = new Date(d);
+                        bIsDate = !isNaN(d.valueOf());
+                    }
+                }
 
                 return {
-                    //# TODO: fix! bFuzzy?
-                    b: (bIsDate && _Object_prototype_toString.call(d) === "[object Date]" && !isNaN(d.valueOf())),
+                    b: bIsDate,
                     d: d
                 };
             } //# mkDate
@@ -415,15 +423,15 @@
 
             return {
                 /*
-                    Function: is
-                    Determines if the passed value is a date.
-                    Parameters:
-                    x - The date to interrogate.
-                    Returns:
-                    Boolean value representing if the value is a date.
-                    */
-                is: function isDate(x) {
-                    return mkDate(x).b;
+                Function: is
+                Determines if the passed value is a date.
+                Parameters:
+                x - The date to interrogate.
+                Returns:
+                Boolean value representing if the value is a date.
+                */
+                is: function isDate(x, bAllowNumeric) {
+                    return mkDate(x, bAllowNumeric).b;
                 }, //# date.is
 
                 /*
@@ -436,7 +444,7 @@
                 Date representing the passed value.
                 */
                 mk: function (x, dDefault) {
-                    var oResult = mkDate(x);
+                    var oResult = mkDate(x, true);
 
                     return (oResult.b ?
                         oResult.d :
@@ -846,10 +854,10 @@
      * @requires core.type.int.mk
     ################################################################################################# */
     core.extend = function (/*[vDeepCopy], oTarget, oSource, oSource2...*/) {
-        var oTarget, oSource, sKey, iExtendDepth, i,
+        var a_sKeys, oTarget, oSource, sKey, iExtendDepth, i, j, k,
             a = arguments,
-            fnIsDom = core.type.fn.mk(core.resolve(core, "type.dom.is")),
-            fnIsNativeProp = function (oSource, sKey) {
+            //fnIsDom = core.type.fn.mk(core.resolve(core, "type.dom.is")),
+            fnHasOwnProp = function (oSource, sKey) {
                 return Object.prototype.hasOwnProperty.call(oSource, sKey);
             }
         ;
@@ -875,39 +883,54 @@
 
         //# Ensure our oTarget is an object
         oTarget = (core.type.obj.is(oTarget, { allowFn: true }) ? oTarget : {}); //# Object(oTarget)
-        //oTarget = core.type.obj.mk(oTarget, Object(oTarget));
 
         //# Traverse the passed oSource objects
         for (/*i = i*/; i < a.length; i++) {
             oSource = a[i];
+            a_sKeys = Object.keys(oSource || {});
 
-            //# Traverse the sKeys in the oSource object
-            for (sKey in oSource) {
-                //# If the oSource[sKey] fnIsNativeProp of oSource, we'll need to set it into our oTarget
-                if (oSource[sKey] !== _undefined && fnIsNativeProp(oSource, sKey)) {
-                    //# If the oTarget[sKey] doesn't exist or .is .fn or .native or .dom, treat it as a value (rather than the object it truly is) and overwrite the oTarget[sKey]
-                    //#     NOTE: It really isn't proper to treat functions as objects as if there are properties under it to preserve, they likely apply to the overwritten "class" structure rather than having an independently important value.
-                    if (!fnIsNativeProp(oTarget, sKey) ||
-                        core.type.fn.is(oSource[sKey]) ||
-                        core.type.is.native(oSource[sKey]) ||
-                        fnIsDom(oSource[sKey])
-                    ) {
-                        oTarget[sKey] = oSource[sKey];
-                    }
-                    //#
-                    else if (iExtendDepth !== 1 && core.type.obj.is(oSource[sKey])) {
-                        oTarget[sKey] = core.extend(iExtendDepth - 1, oTarget[sKey], oSource[sKey]);
-                    }
-                    //# Else if the oSource[sKey] .is .arr, setup the oTarget's sKey as a new array
-                    //#     NOTE: This is necessary as otherwise arrays are copied in as objects so things like oTarget[sKey].push don't work in the .extend'ed objects, so since arrays return true from .is .obj and array's would otherwise be copied as references in the else below, this special case is necessary
-                    else if (core.type.arr.is(oSource[sKey])) {
-                        oTarget[sKey] = oSource[sKey].slice();
-                    }
-                    //# Else determine if we need to .extend the oTarget[sKey], setting or .extend'ing the oTarget[sKey] accordingly
-                    //#     NOTE: If oSource[sKey] .is .fn, it does not replace the oTarget[sKey] but any properties it has does
-                    //#     NOTE: We use the fnIsDom alias for core.type.dom.is as it's not present bServerside thanks to no _document
-                    else {
-                        oTarget[sKey] = oSource[sKey];
+            //# If the oSource .is a .fn and the oTarget doesn't have that sKey yet, copy it in as-is (ignoring iExtendDepth as we can't copy functions)
+            if (core.type.fn.is(oSource) && !fnHasOwnProp(oTarget, sKey)) {
+                oTarget = oSource;
+            }
+            //# Else if the oSource doesn't have any Object.keys, (safely) .warn that it's being ignored
+            /*else if (a_sKeys.length === 0) { // && (core.type.date.is(oSource) || core.type.is.native(oSource) || fnIsDom(oSource))
+                try {
+                    core.io.console.warn("ish.extend: Non-extendable source object ignored ", oSource);
+                } catch (e) {}
+            }*/
+            //# Else we have to traverse the oSource's a_sKeys
+            else if (a_sKeys.length > 0) {
+                //# Traverse the sKeys in the oSource object
+                for (j = 0; j < a_sKeys.length; j++) { // sKey in oSource
+                    sKey = a_sKeys[j];
+
+                    //# If the oSource fnHasOwnProp of sKey, we'll need to set it into our oTarget
+                    if (oSource[sKey] !== _undefined && fnHasOwnProp(oSource, sKey)) {
+                        //# If we're in the midst of a deep copy and the sKey .is an .arr, setup the oTarget[sKey] as a new array
+                        //#     NOTE: .arr goes first as []'s return true from .is .obj
+                        if (iExtendDepth !== 1 && core.type.arr.is(oSource[sKey])) {
+                            oTarget[sKey] = oSource[sKey].slice();
+
+                            //# Traverse the newly created oTarget[sKey] array, .extending any .is .obj's or .arr's as we go
+                            for (k = 0; k < oTarget[sKey].length; k++) {
+                                if (core.type.obj.is(oTarget[sKey][k]) || core.type.arr.is(oTarget[sKey][k])) {
+                                    oTarget[sKey][k] = core.extend(iExtendDepth - 1, {}, oSource[sKey][k]);
+                                }
+                            }
+                        }
+                        //# Else if we're in the midst of a deep copy and the sKey .is an .obj, .extend it into our oTarget[sKey]
+                        else if (iExtendDepth !== 1 && core.type.obj.is(oSource[sKey])) {
+                            oTarget[sKey] = core.extend(iExtendDepth - 1, oTarget[sKey], oSource[sKey]);
+                        }
+                        //#
+                        else if (core.type.date.is(oSource[sKey])) {
+                            oTarget[sKey] = new Date(oSource[sKey]);
+                        }
+                        //# Else treat the oSource[sKey] as a value, setting it into oTarget[sKey]
+                        else {
+                            oTarget[sKey] = oSource[sKey];
+                        }
                     }
                 }
             }
@@ -1144,32 +1167,32 @@
 
         //# Add type.is.ish.import into oTypeIsIsh
         //#     NOTE: Since `import` is a reserved(ish) word, we have to use []-notation
-        if (!bServerside) {
-            oTypeIsIsh.public['import'] = function (a_sImport, oOptions) {
-                var i;
+        oTypeIsIsh.public['import'] = function (a_sImport, oOptions) {
+            var i;
 
-                //# Ensure the passed a_sImport and oOptions are valid and setup
-                //#     NOTE: We don't test/gate based on a_sImport being an .arr.is because this way we ensure the ish.pluginsLoaded .event is always .fire'd
-                //#     NOTE: <script type="text/javascript" src="js/ish/ish.js" ish='{ "target": "$z", "plugins": { "import": ["lib.ui","app.tags","app.ui"], "baseUrl": "js/ish/", "cache": false } }'></script>
-                a_sImport = core.type.arr.mk(a_sImport);
-                oOptions = core.extend({
-                    callback: function (a_oProcessedUrls, bAllLoaded) {
-                        core.io.event.fire("ish.pluginsLoaded", [a_oProcessedUrls, bAllLoaded]);
-                    },
-                    onAppend: function (_dom /*, sUrl*/) {
+            //# Ensure the passed a_sImport and oOptions are valid and setup
+            //#     NOTE: We don't test/gate based on a_sImport being an .arr.is because this way we ensure the ish.pluginsLoaded .event is always .fire'd
+            //#     NOTE: <script type="text/javascript" src="js/ish/ish.js" ish='{ "target": "$z", "plugins": { "import": ["lib.ui","app.tags","app.ui"], "baseUrl": "js/ish/", "cache": false } }'></script>
+            a_sImport = core.type.arr.mk(a_sImport, [a_sImport]);
+            oOptions = core.extend({
+                callback: function (a_oProcessedUrls, bAllLoaded) {
+                    core.io.event.fire("ish.pluginsLoaded", [a_oProcessedUrls, bAllLoaded]);
+                },
+                onAppend: function (_dom /*, sUrl*/) {
+                    if (!bServerside && _dom) {
                         _dom.setAttribute("importedBy", oOptions.importedBy || "type.is.ish.import");
                     }
-                }, core.config.ish().plugins, oOptions);
-
-                //# Traverse the a_sImport's, appending `.js` to each
-                for (i = 0; i < a_sImport.length; i++) {
-                    a_sImport += ".js";
                 }
+            }, core.config.ish().plugins, oOptions);
 
-                //# .require the (now URL'd) a_sImport's
-                core.require(a_sImport, oOptions);
-            }; //# type.is.ish.import
-        }
+            //# Traverse the a_sImport's, appending `.js` to each
+            for (i = 0; i < a_sImport.length; i++) {
+                a_sImport[i] += ".js";
+            }
+
+            //# .require the (now URL'd) a_sImport's
+            core.require(a_sImport, oOptions);
+        }; //# type.is.ish.import
 
 
         /** ################################################################################################
@@ -1689,7 +1712,7 @@
                     oOptions - Object representing the desired options:
                         oOptions.context - variant representing the Javascript context (e.g. `this`) in which to call the function.
                         oOptions.wait - Minimum number of milliseconds between each call (default: 500).
-                        oOptions.immediate - Execute the function the first time without waiting.
+                        oOptions.immediate - Execute the function the first time without waiting (default: false).
                     Returns:
                     Function that returns the variant representing the result of the passed function.
                     About:
@@ -2036,7 +2059,7 @@
 
         //# If we are running bServerside (or possibly have been required as a CommonJS module)
         if (bServerside) {
-            //#
+            //# Set our fnRequire base function to run bServerside
             fnRequire = function () {
                 //#
                 function errorFactory(sInterface) {
@@ -2079,7 +2102,7 @@
 
                         //# .call the provided fnCallback (if any)
                         //#     NOTE: With the exception of .onError and .callback, all of the clientside core.require features are unused bServerside
-                        core.type.fn.run(Options.callback, [a_oProcessedUrls, bAllLoaded]);
+                        core.type.fn.run(oOptions.callback, [a_oProcessedUrls, bAllLoaded]);
                     },
                     {
                         scripts: errorFactory("scripts"),
@@ -2091,7 +2114,7 @@
         }
         //# Else we are running in the browser
         else {
-            //#
+            //# .extend the additional clientside-only options into oRequireOptions
             //#     NOTE: Only .callback and .onError are used bServerside
             core.extend(oRequireOptions, {
                 //onAppend: function (_dom, sUrl) {},
@@ -2105,7 +2128,7 @@
                 )*/
             });
 
-            //#
+            //# Set our fnRequire base function to run clientside
             fnRequire = function () {
                 var _head = _document.head,                                                     //# code-golf
                     _document_querySelector = _document.querySelector.bind(_document)           //# code-golf
@@ -2395,7 +2418,7 @@
         ################################################################################################# */
         core.config.require = core.config(oRequireOptions);
 
-        //# Return the core.require interface
+        //# Return the full core.require interface
         return core.extend(fnRequire, {
             //# Allows dynamically defined "bundles" at runtime, allowing us to load scripts in the required order
             modules: function (a_vModuleUrls, vOptions) {
@@ -2470,7 +2493,7 @@
 
             //# Set our sTarget in the root
             //#     NOTE: this === `window` in the browser (which is `undefined` per above) and `global` on the server.
-            //this[core.config.ish().target] = core; // core.config.ish().target
+            //this[core.config.ish().target] = core;
         };
     }
     //# Else we are running in the browser, so we need to setup the _document-based features
@@ -2500,6 +2523,10 @@
 
                 //#
                 function process(bProcessAttribute) {
+                    var oTarget = core.resolve(_root, sTarget),
+                        bOverride = core.type.obj.is(oTarget)
+                    ;
+
                     //# If we have an  _script[ish] to process
                     if (bProcessAttribute) {
                         //# Reset the .plugins.baseUrl to the developer-defined inline value (if any, borrowing sTemp as we go)
@@ -2516,11 +2543,18 @@
                         sTarget = oOptions.target;
                     }
 
-                    //# If bProcessAttribute isn't _null and we have a sTarget, overwrite core functionality with any existing functionality under _root[sTarget], then reset the _root object's reference so that the globally accessible object is a reference to core rather than its original object reference
-                    //#     NOTE: We need to create the window[sTarget] in the .resolve(true, ...) below in case it is not already defined, else the .resolve will fail.
-                    if (core.type.bool.is(bProcessAttribute) && core.type.str.is(sTarget, true)) {
-                        core.extend(core, core.resolve(true, _root, sTarget));
-                        core.resolve(_root, sTarget, core);
+                    //# If we have an existing oTarget under _root[sTarget] to bOverride core
+                    if (bOverride) {
+                        //# bOverride core functionality with any functionality under oTarget then also reflect those changes in the _root object's reference
+                        //#     NOTE: The .resolve to _root[sTarget] above pulls the object reference to oTarget, so this reference also need to be updated with the core functionality AFTER core has been bOverride'd by oTarget's interfaces
+                        core.extend(core, oTarget);
+                        core.extend(oTarget, core);
+                    }
+
+                    //# If bProcessAttribute isn't _null and we have a valid sTarget under _root, set the _root object's reference so that its a globally accessible object
+                    //#     NOTE: We need to create the _root[sTarget] in the .resolve(true, ...) below in case it is not already defined, else the .resolve assignment will fail.
+                    if (bProcessAttribute !== _null && core.type.str.is(sTarget, true)) {
+                        core.resolve(true, _root, sTarget, (bOverride ? oTarget : core));
                     }
                 } //# process
 
@@ -2532,7 +2566,7 @@
 
                     //# If the _script[ish] .getAttribute .is a non-null .str
                     if (core.type.str.is(sTemp, true)) {
-                        //# If the _script[ish] .getAttribute .is .json, .extend it into our oOptions
+                        //# If the _script[ish] .getAttribute .is.json, .extend it into our oOptions
                         if (core.type.str.is.json(sTemp)) {
                             core.extend(oOptions, core.type.obj.mk(sTemp));
                             bProcessAttribute = true;
@@ -2555,6 +2589,7 @@
                 //# Else the _script is missing or the _document.currentScript isn't attributed with [ish]
                 else {
                     //# If the _script is missing, dummy one up with .createElement then .appendChild it
+                    //#     NOTE: This is done so we can use the SCRIPT[ish] DOM element to collect ish in the plugins
                     if (!_script) {
                         _script = _document.createElement("SCRIPT");
                         _head.appendChild(_script);
@@ -2619,9 +2654,20 @@
                     Returns:
                     Boolean value representing if the value is a DOM reference.
                     */
-                    is: function isDom(x, bAllowSelector) {
-                        //# If we are to bAllowSelector, attempt to convert x to a DOM element if its .is .str
-                        x = (bAllowSelector && core.type.str.is(x, true) ? _document_querySelector(x) || _document.getElementById(x) : x);
+                    is: function isDom(x, vOptions) {
+                        vOptions = core.type.obj.mk(vOptions, { allowSelector: !!vOptions });
+
+                        //#
+                        if (core.type.str.is(x, true)) {
+                            //# If we are to .allowSelector, attempt to convert x to a DOM element
+                            if (vOptions.allowSelector && core.type.str.is.selector(x)) {
+                                x = _document_querySelector(x) || _document.getElementById(x);
+                            }
+                            //# Else if we are to .allowHTML, attempt to convert x to a DOM element
+                            else if (vOptions.allowHTML) {
+                                x = core.resolve(core.type.dom.parse(x), "0");
+                            }
+                        }
 
                         return (
                             x && //# core.type.is.native(x) &&
@@ -2646,7 +2692,7 @@
                             _returnVal = (arguments.length > 1 ? _default : _div)
                         ;
 
-                        //#
+                        //# If the passed x .is .str, .trim it
                         if (core.type.str.is(x, true)) {
                             x = x.trim();
 
@@ -2654,28 +2700,20 @@
                             if (core.type.str.is.selector(x)) {
                                 _returnVal = _document_querySelector(x) || _document.getElementById(x) || _returnVal;
                             }
-                            //# Else try to parse the passed .is .str as HTML
-                            else {
-                                _div.innerHTML = x;
-
-                                //# If we were able to parse a single non-#text node, set it into our _returnVal
-                                //# TODO: Make testing more betterer
-                                if (_div.childNodes.length <= 2 && _div.childNodes[0].nodeType !== 3) {
-                                    _returnVal = _div.childNodes[0];
-                                }
-                                //# Else if our _returnVal was defaulted to the _div above, reset the _div's .innerHTML
-                                else {
-                                    _div.innerHTML = "";
-                                }
-                            }
                             //# Else try to .parse the passed .is .str as HTML
-                            //else {
-                            //    _returnVal = core.type.dom.parse(x, true) || _returnVal;
-                            //}
+                            //#     NOTE: We resolve and _returnVal the first element only, hence the .resolve
+                            //#     NOTE: Since .parse will return based on a passed _default or not, we .run .parse with our own arguments to ensure proper behavior
+                            else {
+                                _returnVal = core.resolve(core.type.fn.run(core.type.dom.parse, arguments), "0") || _returnVal;
+                            }
                         }
+                        //# Else if the passed x .is .dom, set our _returnVal to it
                         else if (core.type.dom.is(x)) {
                             _returnVal = x;
                         }
+                        //# Else if the first index of the passed x .is .dom, set our _returnVal to it
+                        //#     NOTE: This is pretty much to support jQuery objects
+                        //# TODO: is this a good idea?
                         else if (x && x[0] && core.type.dom.is(x[0])) {
                             _returnVal = x[0];
                         }
@@ -2693,44 +2731,41 @@
                     DOM element represented by the passed value, or _default if interrogation failed.
                     */
                     //#     Based on: http://krasimirtsonev.com/blog/article/Revealing-the-magic-how-to-properly-convert-HTML-string-to-a-DOM-element
-                    parse: function (sHTML, bFirstElementOnly) {
-                        var _returnVal, a_vMap, sTag, bBodyTag, i;
+                    parse: function (sHTML, _default) {
+                        var a__returnVal, _dom, a_vMap, sTag, bBodyTag, i;
 
-                        //# .trim any empty leading/trailing #text nodes then safely determine the first sTag (if any) within the passed sHTML
-                        //#     NOTE: /g(lobal) only returns the first <tag> for whatever reason!?
+                        //# .trim any empty leading/trailing #text nodes then safely determine the first sTag (if any) within the passed sHTML along with if it's a bBodyTag
+                        //#     NOTE: /g(lobal) only returns the first <tag> for whatever reason(!?) but as that's the desired effect, it's all good.
                         sHTML = core.type.str.mk(sHTML).trim();
                         sTag = core.type.str.mk(
-                            (/<([^\/!]\w*)[\s\S]*?>/g.exec(sHTML) || {})[1]
+                            (/<([^\/!]\w*)[\s\S]*?>/g.exec(sHTML) || [0,''])[1]
                         ).toLowerCase();
+                        bBodyTag = (sTag === 'body');
 
-                        //# Determine if this is a bBodyTag, the a_vMap entry then construct our _returnVal including its .innerHTML
+                        //# Determine the a_vMap entry then construct our _dom including its .innerHTML
                         //#     NOTE: While we can and do parse multiple elements/nodes, we only look at the first sTag to determine the a_vMap
                         a_vMap = a_oWrapMap[sTag] || a_oWrapMap._;
-                        bBodyTag = (sTag === 'body');
                         //var _dom = (bBodyTag ? _document.implementation.createDocument('http://www.w3.org/1999/xhtml', 'html', _null) : _null);
-                        _returnVal = _document.createElement(bBodyTag ? 'html' : 'div');
-                        _returnVal.innerHTML = a_vMap[1] + sHTML + a_vMap[2];
+                        _dom = _document.createElement(bBodyTag ? 'html' : 'div');
+                        _dom.innerHTML = a_vMap[1] + sHTML + a_vMap[2];
 
-                        //# If the sHTML is a bBodyTag, reset our _returnVal an array containing it
-                        //#     NOTE: Use of Element.querySelector(...) below limits this to IE8+ without the polyfill, see: https://caniuse.com/#feat=queryselector
-                        if (bBodyTag) {
-                            _returnVal = [_returnVal.querySelector(sTag)];
-                        }
-                        //# Else set the i(ndex) and traverse down the a_vMap elements to collect the parsed sHTML
-                        else {
-                            i = a_vMap[0];
-                            while (i-- /* > 0*/) {
-                                _returnVal = _returnVal.children[0];
-                            }
-
-                            //# Reset our _returnVal to an array of its first .child(ren) if we're supposed to return the bFirstElementOnly else to all its .childNodes
-                            _returnVal = (bFirstElementOnly ?
-                                [_returnVal.children[0]] :
-                                core.type.arr.mk(_returnVal.childNodes)
-                            );
+                        //# Set the i(ndex) and traverse down the a_vMap'd elements to collect the parsed sHTML
+                        //#     NOTE: This is done to peal off the required wrapping a_oWrapMap elements from the .innerHTML above
+                        i = a_vMap[0];
+                        while (i-- /* > 0*/) {
+                            _dom = _dom.children[0];
                         }
 
-                        return (bFirstElementOnly ? _returnVal[0] : _returnVal);
+                        //# .mk .arr'd .childNodes into our a__returnVal
+                        a__returnVal = core.type.arr.mk(_dom.childNodes);
+                        a__returnVal = (
+                            core.type.arr.is(a__returnVal, true) ?
+                            a__returnVal : (
+                                arguments.length > 1 ? [_default] : _undefined
+                            )
+                        );
+
+                        return a__returnVal;
                     } //# dom.parse
                 };
             }(); //# core.type.dom

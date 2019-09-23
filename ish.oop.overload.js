@@ -25,7 +25,7 @@
             //#
             function registerAlias(fnOverload, fn, sAlias) {
                 //#
-                if (core.type.str.is(sAlias, _true) && !fnOverload[sAlias]) {
+                if (core.type.str.is(sAlias, true) && !fnOverload[sAlias]) {
                     fnOverload[sAlias] = fn;
                 }
             } //# registerAlias
@@ -57,7 +57,7 @@
                                         //# Traverse the passed a(rguments), if a .test for the current oArgumentTests fails, reset oEntry and fall from the a(rgument)s loop
                                         for (j = 0; j < a.length; j++) {
                                             if (!oArgumentTests[i].tests[j](a[j])) {
-                                                oEntry = _undefined;
+                                                oEntry = undefined;
                                                 break;
                                             }
                                         }
@@ -95,7 +95,7 @@
                                                 if (!core.type.fn.is(a_vArgumentTests[i])) {
                                                     a_vArgumentTests[i] = core.resolve(core.type, [a_vArgumentTests[i], "is"]);
                                                     if (!core.type.fn.is(a_vArgumentTests[i])) {
-                                                        bValid = _false;
+                                                        bValid = false;
                                                     }
                                                 }
                                             }
@@ -148,7 +148,7 @@
 
 
     //# If we are running server-side (or possibly have been required as a CommonJS module)
-    if (typeof window === 'undefined') { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
+    if (typeof module !== 'undefined' && this.module !== module && module.exports) {
         module.exports = init;
     }
     //# Else we are running in the browser, so we need to setup the _document-based features

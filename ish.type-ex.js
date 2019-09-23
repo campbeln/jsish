@@ -126,7 +126,7 @@
                 query: function () {
                     //#
                     function doQuery(sKey, vQueryValue, oSource, oOptions) {
-                        var vTestValue = (oOptions.caseInsentive ? core.type.obj.get(oSource, sKey) : core.resolve(oSource, sKey)),
+                        var vTestValue = (oOptions.caseInsensitive ? core.type.obj.get(oSource, sKey) : core.resolve(oSource, sKey)),
                             bReturnVal = false
                         ;
 
@@ -168,7 +168,7 @@
                         //# .extend the passed oOptions with the defaults (which also ensures the passed oOptions .is .obj)
                         oOptions = core.extend({
                             firstEntryOnly: false,
-                            caseInsentive: false,
+                            caseInsensitive: false,
                             useCoercion: false,
                             or: false,
                             setKeyAs: "$key"
