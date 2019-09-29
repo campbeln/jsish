@@ -306,15 +306,15 @@
 
                         val: function ($) {
                             $.expect(9);
-                            $.assert(!core.type.is.val(null), "!null");
-                            $.assert(!core.type.is.val(undefined), "!undefined");
-                            $.assert(core.type.is.val(false), "false");
-                            $.assert(core.type.is.val(0), "0");
-                            $.assert(core.type.is.val(NaN), "NaN");
-                            $.assert(core.type.is.val(''), "null-str");
-                            $.assert(core.type.is.val(1), "1");
-                            $.assert(core.type.is.val([]), "[]");
-                            $.assert(core.type.is.val({}), "{}");
+                            $.assert(!core.type.is.value(null), "!null");
+                            $.assert(!core.type.is.value(undefined), "!undefined");
+                            $.assert(core.type.is.value(false), "false");
+                            $.assert(core.type.is.value(0), "0");
+                            $.assert(core.type.is.value(NaN), "NaN");
+                            $.assert(core.type.is.value(''), "null-str");
+                            $.assert(core.type.is.value(1), "1");
+                            $.assert(core.type.is.value([]), "[]");
+                            $.assert(core.type.is.value({}), "{}");
                         },
 
                         primitive: function ($) {

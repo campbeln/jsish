@@ -60,6 +60,16 @@ css.* => ui.css.*
 data.csv.* => io.csv.*
 data.* => type.*
 cmp.* => type.*.cmp
+===
+type.selector.is => type.str.is.selector
+type.list.is => [REMOVED]
+type.coll.is => type.is.collection
+type.num.is => type.is.numeric
+type.json.is => type.str.is.json
+type.json.mk => type.obj.mk
+type.is.val => type.is.value
+type.enum.is.val => type.enum.is.value
+type.enum.is.desc => type.enum.is.label
 */
 
 

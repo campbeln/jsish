@@ -242,7 +242,7 @@
                                     key = e(key.trim());
 
                                     //# If the current value is null or undefined, record a null-string value
-                                    if (!core.type.is.val(value)) {
+                                    if (!core.type.is.value(value)) {
                                         returnVal += key + "=" + delimiter;
                                     }
                                     //# Else if the current key is a pseudo-Array object

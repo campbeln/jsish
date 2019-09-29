@@ -1210,16 +1210,16 @@
                 ish: oTypeIsIsh.public,
 
                 /*
-                Function: val
+                Function: value
                 Determines if the passed value is set (i.e. !== undefined || null).
                 Parameters:
                 v - The variant to interrogate.
                 Returns:
                 Boolean value representing if the value is set (i.e. !== undefined || null).
                 */
-                val: function (v) {
+                value: function (v) {
                     return (v !== _undefined && v !== _null);
-                }, //# type.is.val
+                }, //# type.is.value
 
                 // Primitive Vals - Null, Undefined, Boolean, Number, String, Symbol
                 primitive: function (x) {

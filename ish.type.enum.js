@@ -53,14 +53,14 @@
                 function xcoder(sEnumName, sValue, vOptions, fnCompare) {
                     var i,
                         oReturnVal = {
-                            val: sValue,
-                            desc: sValue,
+                            value: sValue,
+                            label: sValue,
                             notFound: true
                         },
                         a_oEnum = core.resolve(g_oEnums, sEnumName)
                     ;
 
-                    //# If the sEnumName is valid, traverse it looking for a matching .val, setting our oReturnVal if found
+                    //# If the sEnumName is valid, traverse it looking for a matching .value, setting our oReturnVal if found
                     if (core.type.arr.is(a_oEnum, true)) { //#
                         //#
                         for (i = 0; i < a_oEnum.length; i++) {
@@ -68,9 +68,9 @@
                                 oReturnVal = a_oEnum[i];
                                 break;
                             }
-                            else if (a_oEnum[i].val === undefined) {
-                                oReturnVal.val = a_oEnum[i].val;
-                                oReturnVal.desc = a_oEnum[i].desc;
+                            else if (a_oEnum[i].value === undefined) {
+                                oReturnVal.value = a_oEnum[i].value;
+                                oReturnVal.label = a_oEnum[i].label;
                                 oReturnVal.notFound = false;
                             }
                         }
@@ -89,11 +89,11 @@
                     if (core.type.arr.is(a_oEnum, true)) {
                         oReturnVal = {};
 
-                        //# Traverse our a_oEnum, entering each valid .val/.desc into our oReturnVal
+                        //# Traverse our a_oEnum, entering each valid .value/.label into our oReturnVal
                         for (i = 0; i < a_oEnum.length; i++) {
                             oCurrent = a_oEnum[i];
                             if (core.type.obj.is(oCurrent)) {
-                                oReturnVal[oCurrent.desc] = oCurrent.val;
+                                oReturnVal[oCurrent.label] = oCurrent.value;
                             }
                         }
                     }
@@ -116,33 +116,33 @@
 
                                     //#
                                     vReturnVal = xcoder(sEnum, vValue, processOptions(vOptions), function (oPicklistEntry, oOptions) {
-                                        return oOptions.compare(oPicklistEntry.desc, vValue) || oOptions.compare(oPicklistEntry.val, vValue);
+                                        return oOptions.compare(oPicklistEntry.label, vValue) || oOptions.compare(oPicklistEntry.value, vValue);
                                     });
 
-                                    return (vReturnVal.notFound !== true && vReturnVal.val !== undefined);
+                                    return (vReturnVal.notFound !== true && vReturnVal.value !== undefined);
                                 }, {
-                                    desc: function (sEnum, vValue, vOptions) {
+                                    label: function (sEnum, vValue, vOptions) {
                                         var vReturnVal;
 
                                         //#
                                         vReturnVal = xcoder(sEnum, vValue, processOptions(vOptions), function (oPicklistEntry, oOptions) {
-                                            return oOptions.compare(oPicklistEntry.desc, vValue);
+                                            return oOptions.compare(oPicklistEntry.label, vValue);
                                         });
 
-                                        return (vReturnVal.notFound !== true && vReturnVal.val !== undefined);
-                                    }, //# type.enum.is.desc
+                                        return (vReturnVal.notFound !== true && vReturnVal.value !== undefined);
+                                    }, //# type.enum.is.label
 
-                                    val: function (sEnum, vValue, vOptions) {
+                                    value: function (sEnum, vValue, vOptions) {
                                         var vReturnVal;
 
                                         //#
                                         vReturnVal = xcoder(sEnum, vValue, processOptions(vOptions), function (oPicklistEntry, oOptions) {
-                                            return oOptions.compare(oPicklistEntry.val, vValue);
+                                            return oOptions.compare(oPicklistEntry.value, vValue);
                                         });
 
-                                        return (vReturnVal.notFound !== true && vReturnVal.val !== undefined);
+                                        return (vReturnVal.notFound !== true && vReturnVal.value !== undefined);
                                     }
-                                } //# type.enum.is.val
+                                } //# type.enum.is.value
                             ), //# type.enum.is
 
                             //#
@@ -152,10 +152,10 @@
                                 //#
                                 vOptions = processOptions(vOptions);
                                 vReturnVal = xcoder(sEnum, vValue, vOptions, function (oPicklistEntry, oOptions) {
-                                    return oOptions.compare(oPicklistEntry.desc, vValue) || oOptions.compare(oPicklistEntry.val, vValue);
+                                    return oOptions.compare(oPicklistEntry.label, vValue) || oOptions.compare(oPicklistEntry.value, vValue);
                                 });
 
-                                return (vOptions.asEntry ? vReturnVal : vReturnVal.val);
+                                return (vOptions.asEntry ? vReturnVal : vReturnVal.value);
                             },
 
                             //#
@@ -165,11 +165,11 @@
                                 //#
                                 vOptions = processOptions(vOptions);
                                 oReturnVal = xcoder(sEnum, sDescription, vOptions, function (oPicklistEntry, oOptions) {
-                                    return oOptions.compare(oPicklistEntry.desc, sDescription);
+                                    return oOptions.compare(oPicklistEntry.label, sDescription);
                                 });
 
                                 //#
-                                return (vOptions.asEntry ? oReturnVal : oReturnVal.val);
+                                return (vOptions.asEntry ? oReturnVal : oReturnVal.value);
                             }, //# data.enum.encode
 
                             //#
@@ -179,11 +179,11 @@
                                 //#
                                 vOptions = processOptions(vOptions);
                                 oReturnVal = xcoder(sEnum, sValue, vOptions, function (oPicklistEntry, oOptions) {
-                                    return oOptions.compare(oPicklistEntry.val, sValue);
+                                    return oOptions.compare(oPicklistEntry.value, sValue);
                                 });
 
                                 //#
-                                return (vOptions.asEntry ? oReturnVal : oReturnVal.desc);
+                                return (vOptions.asEntry ? oReturnVal : oReturnVal.label);
                             }, //# data.enum.decode
 
                             //#
@@ -222,8 +222,8 @@
                             //#
                             interface: function () {
                                 return {
-                                    val: 0,
-                                    desc: ""
+                                    value: 0,
+                                    label: ""
                                 };
                             } //# data.enum.interface
                         }
@@ -246,21 +246,21 @@
                                             deep: {
                                                 enum: {
                                                     letters: [
-                                                        { val: undefined, desc: "unknown" },
-                                                        { val: "a", desc: "eh" },
-                                                        { val: "b", desc: "bee" },
-                                                        { val: "c", desc: "cee" },
-                                                        { val: "d", desc: "dee", more: "info" }
+                                                        { value: undefined, label: "unknown" },
+                                                        { value: "a", label: "eh" },
+                                                        { value: "b", label: "bee" },
+                                                        { value: "c", label: "cee" },
+                                                        { value: "d", label: "dee", more: "info" }
                                                     ]
                                                 }
                                             },
                                             numbers: [
-                                                { val: undefined, desc: "unknown" },
-                                                { val: 1, desc: "one" },
-                                                { val: 2, desc: "two" },
-                                                { val: 3, desc: "three" },
-                                                { val: 4, desc: "four" },
-                                                { val: 5, desc: "five" }
+                                                { value: undefined, label: "unknown" },
+                                                { value: 1, label: "one" },
+                                                { value: 2, label: "two" },
+                                                { value: 3, label: "three" },
+                                                { value: 4, label: "four" },
+                                                { value: 5, label: "five" }
                                             ]
                                         }),
                                         "type.enum.load"
@@ -272,11 +272,11 @@
                                     $.assert(core.type.enum("deep.enum.letters", true).unknown === undefined, "type.enum(deep, asObj)");
                                     $.assert(core.type.enum("numbers", true).one === 1, "type.enum(shallow, asObj)");
 
-                                    $.assert(core.type.enum("deep.enum.letters")[2].val === "b", "type.enum(deep).val");
-                                    $.assert(core.type.enum("deep.enum.letters")[3].desc === "cee", "type.enum(deep).desc");
+                                    $.assert(core.type.enum("deep.enum.letters")[2].value === "b", "type.enum(deep).value");
+                                    $.assert(core.type.enum("deep.enum.letters")[3].label === "cee", "type.enum(deep).label");
                                     $.assert(core.type.enum("deep.enum.letters")[4].more === "info", "type.enum(deep).more");
-                                    $.assert(core.type.enum("numbers")[4].val === 4, "type.enum(shallow).val");
-                                    $.assert(core.type.enum("numbers")[5].desc === "five", "type.enum(shallow).desc");
+                                    $.assert(core.type.enum("numbers")[4].value === 4, "type.enum(shallow).value");
+                                    $.assert(core.type.enum("numbers")[5].label === "five", "type.enum(shallow).label");
                                 },
 
                                 is: function ($) {
@@ -289,22 +289,22 @@
                                     $.assert(core.type.enum.is("numbers", "five"), "type.enum.is(shallow)");
                                     $.assert(!core.type.enum.is("numbers", "six"), "!type.enum.is(shallow)");
 
-                                    $.assert(core.type.enum.is.desc("deep.enum.letters", "dee"), "type.enum.is.desc(deep)");
-                                    $.assert(!core.type.enum.is.desc("deep.enum.letters", "hach"), "!type.enum.is.desc(deep)");
-                                    $.assert(core.type.enum.is.desc("numbers", "three"), "type.enum.is.desc(shallow)");
-                                    $.assert(!core.type.enum.is.desc("numbers", "seven"), "!type.enum.is.desc(shallow)");
+                                    $.assert(core.type.enum.is.label("deep.enum.letters", "dee"), "type.enum.is.label(deep)");
+                                    $.assert(!core.type.enum.is.label("deep.enum.letters", "hach"), "!type.enum.is.label(deep)");
+                                    $.assert(core.type.enum.is.label("numbers", "three"), "type.enum.is.label(shallow)");
+                                    $.assert(!core.type.enum.is.label("numbers", "seven"), "!type.enum.is.label(shallow)");
 
-                                    $.assert(core.type.enum.is.val("deep.enum.letters", "c"), "type.enum.is.val(deep)");
-                                    $.assert(!core.type.enum.is.val("deep.enum.letters", "f"), "!type.enum.is.val(deep)");
-                                    $.assert(core.type.enum.is.val("numbers", 1), "type.enum.is.val(shallow) <==>");
-                                    $.assert(core.type.enum.is.val("numbers", "2"), "type.enum.is.val(shallow)");
-                                    $.assert(!core.type.enum.is.val("numbers", "7"), "!type.enum.is.val(shallow)");
+                                    $.assert(core.type.enum.is.value("deep.enum.letters", "c"), "type.enum.is.value(deep)");
+                                    $.assert(!core.type.enum.is.value("deep.enum.letters", "f"), "!type.enum.is.value(deep)");
+                                    $.assert(core.type.enum.is.value("numbers", 1), "type.enum.is.value(shallow) <==>");
+                                    $.assert(core.type.enum.is.value("numbers", "2"), "type.enum.is.value(shallow)");
+                                    $.assert(!core.type.enum.is.value("numbers", "7"), "!type.enum.is.value(shallow)");
                                 },
 
                                 mk: function ($) {
                                     $.expect(3);
-                                    $.assert(core.type.enum.mk("numbers", "5") == 5, "type.enum.mk(shallow) <val>");
-                                    $.assert(core.type.enum.mk("numbers", "four") == 4, "type.enum.mk(shallow) <desc>");
+                                    $.assert(core.type.enum.mk("numbers", "5") == 5, "type.enum.mk(shallow) <value>");
+                                    $.assert(core.type.enum.mk("numbers", "four") == 4, "type.enum.mk(shallow) <label>");
                                     $.assert(core.type.enum.mk("numbers", "7") === undefined, "type.enum.mk(shallow) <undefined>");
                                 },
 
@@ -318,8 +318,8 @@
                                     $.expect(4);
                                     $.assert(core.type.enum.decode("numbers", 3) === "three", "type.enum.decode");
                                     $.assert(core.type.enum.decode("numbers", "7") === "unknown", "type.enum.decode unknown");
-                                    $.assert.deepEqual(core.type.enum.decode("numbers", 5, { asEntry: true }), { val: 5, desc: "five" }, "type.enum.decode asEntry");
-                                    $.assert.deepEqual(core.type.enum.decode("deep.enum.letters", "d", { asEntry: true }), { val: "d", desc: "dee", more: "info" }, "type.enum.decode asEntry 2");
+                                    $.assert.deepEqual(core.type.enum.decode("numbers", 5, { asEntry: true }), { value: 5, label: "five" }, "type.enum.decode asEntry");
+                                    $.assert.deepEqual(core.type.enum.decode("deep.enum.letters", "d", { asEntry: true }), { value: "d", label: "dee", more: "info" }, "type.enum.decode asEntry 2");
                                 }
                             } //# type.enum
                         }

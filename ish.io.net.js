@@ -136,7 +136,7 @@
                             else if (core.type.obj.is(vBody)) {
                                 sBody = JSON.stringify(vBody);
                             }
-                            else if (core.type.is.val(vBody)) {
+                            else if (core.type.is.value(vBody)) {
                                 sBody = core.type.str.mk(vBody);
                             }
 
