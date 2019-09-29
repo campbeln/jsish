@@ -309,13 +309,17 @@
                                 },
 
                                 encode: function ($) {
-                                    $.expect(1);
+                                    $.expect(2);
                                     $.assert(core.type.enum.encode("numbers", "7") === undefined, "type.enum.mk(shallow) <undefined>");
+                                    $.assert(core.type.enum.encode("numbers", "two") === 2, "type.enum.mk(shallow) 2");
                                 },
 
                                 decode: function ($) {
-                                    $.expect(1);
-                                    $.assert(false, "decode untested");
+                                    $.expect(4);
+                                    $.assert(core.type.enum.decode("numbers", 3) === "three", "type.enum.decode");
+                                    $.assert(core.type.enum.decode("numbers", "7") === "unknown", "type.enum.decode unknown");
+                                    $.assert.deepEqual(core.type.enum.decode("numbers", 5, { asEntry: true }), { val: 5, desc: "five" }, "type.enum.decode asEntry");
+                                    $.assert.deepEqual(core.type.enum.decode("deep.enum.letters", "d", { asEntry: true }), { val: "d", desc: "dee", more: "info" }, "type.enum.decode asEntry 2");
                                 }
                             } //# type.enum
                         }
@@ -326,9 +330,14 @@
     } //# init
 
 
-    //# If we are running server-side (or possibly have been required as a CommonJS module)
-    if (typeof window === 'undefined') { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
+    //# If we are running server-side
+    //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
+    if (typeof module === 'object' && module.exports) { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
         module.exports = init;
+    }
+    //# Else if we are running in an .amd environment, register as an anonymous module
+    else if (typeof define === 'function' && define.amd) {
+        define([], init);
     }
     //# Else we are running in the browser, so we need to setup the _document-based features
     else {

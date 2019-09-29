@@ -125,13 +125,12 @@
                 }
             } //# run
 
-            //#
-            $testFactory.total = 0;
-            $testFactory.run = 0;
-            $testFactory.interfaces = 0;
-
             //# Establish core.test with the initial call to .run
             fnReturnVal = function () {
+                //#
+                $testFactory.total = 0;
+                $testFactory.run = 0;
+                $testFactory.interfaces = 0;
                 run(core.test, core.config.ish().target);
 
                 return (
@@ -275,37 +274,34 @@
                                     $.assert(!core.type.is.ish({}), "!{}");
                                 }
                             },
-                            (core.config.ish().serverside ?
-                                {} :
-                                {
-                                    import: {
-                                        _: function ($) {
-                                            core.type.is.ish.import(["ish.test.type.is.ish.import"], {
-                                                callback: function (a_oProcessedUrls, bAllLoaded) {
-                                                    $.assert(bAllLoaded === true, "bAllLoaded");
-                                                    $.assert(a_oProcessedUrls[0].url === "ish.test.type.is.ish.import.js", "a_oProcessedUrls.url");
-                                                    $.assert(a_oProcessedUrls[0].loaded === true, "a_oProcessedUrls.loaded");
-                                                    $.assert(a_oProcessedUrls[0].timedout === false, "a_oProcessedUrls.timedout");
-                                                    $.results("1:2");
-                                                },
-                                                onAppend: function (_dom, sUrl) {
-                                                    $.assert(core.type.dom.is(_dom), "_dom");
-                                                    // TODO: bottom being used for require test as well!?
-                                                    $.assert(sUrl === "ish.test.type.is.ish.import.js", "sUrl");
-                                                    $.results("2:2");
-                                                }
-                                            });
+                            (core.config.ish().serverside ? null : {
+                                import: {
+                                    _: function ($) {
+                                        core.type.is.ish.import(["ish.test.type.is.ish.import"], {
+                                            callback: function (a_oProcessedUrls, bAllLoaded) {
+                                                $.assert(bAllLoaded === true, "bAllLoaded");
+                                                $.assert(a_oProcessedUrls[0].url === "ish.test.type.is.ish.import.js", "a_oProcessedUrls.url");
+                                                $.assert(a_oProcessedUrls[0].loaded === true, "a_oProcessedUrls.loaded");
+                                                $.assert(a_oProcessedUrls[0].timedout === false, "a_oProcessedUrls.timedout");
+                                                $.results("1:2");
+                                            },
+                                            onAppend: function (_dom, sUrl) {
+                                                $.assert(core.type.dom.is(_dom), "_dom");
+                                                // TODO: bottom being used for require test as well!?
+                                                $.assert(sUrl === "ish.test.type.is.ish.import.js", "sUrl");
+                                                $.results("2:2");
+                                            }
+                                        });
 
-                                            //# Flag that this a .isAsync test
-                                            return core.test.isAsync;
-                                        },
-                                        __completeTest: function (bSuccess) {
-                                            //$.assert(bSuccess === true, bSuccess);
-                                            //$.results("3:3");
-                                        }
-                                    } //# ish.import
-                                }
-                            )
+                                        //# Flag that this a .isAsync test
+                                        return core.test.isAsync;
+                                    },
+                                    __completeTest: function (bSuccess) {
+                                        //$.assert(bSuccess === true, bSuccess);
+                                        //$.results("3:3");
+                                    }
+                                } //# ish.import
+                            })
                         ), //# ish
 
                         val: function ($) {
@@ -1193,12 +1189,13 @@
                         }
                     },
 
-                    dom: (core.config.ish().serverside ? {} : {
+                    dom: (core.config.ish().serverside ? null : {
                         is: function ($) {
                             var _dom = document.createElement("br");
 
-                            $.expect(8);
+                            $.expect(30);
                             $.assert(!core.type.dom.is(function() {}), "!fn");
+                            $.assert(!core.type.dom.is([]), "!fn");
                             $.assert(!core.type.dom.is("<div></div>"), "!<dom>");
                             $.assert(core.type.dom.is("<div></div>", { allowHTML: true }), "<dom>");
                             $.assert(core.type.dom.is(_dom), "dom");
@@ -1206,12 +1203,101 @@
                             $.assert(core.type.dom.is("html > head > title", true), "selector");
                             $.assert(core.type.dom.is("html > head > title", { allowSelector: true }), "allowSelector");
                             $.assert(!core.type.dom.is("html > head > nottitle", true), "!selector");
-                        },
-                        mk: function ($) { // TODO
 
+                            $.assert(core.type.dom.is("<div", { allowHTML: true }), "<div");
+                            $.assert(core.type.dom.is("<div/>", { allowHTML: true }), "<div/>");
+                            $.assert(core.type.dom.is("<tbody><tr><td>table</td></tr></tbody>", { allowHTML: true }), "<tbody>");
+                            $.assert(core.type.dom.is("<option>1</option>", { allowHTML: true }), "<option>");
+                            $.assert(core.type.dom.mk("<optgroup><option>11</option></optgroup>", { allowHTML: true }), "<optgroup>");
+                            $.assert(core.type.dom.is("<legend>2</legend>", { allowHTML: true }), "<legend>");
+                            $.assert(core.type.dom.is("<area>3</area>", { allowHTML: true }), "<area>");
+                            $.assert(core.type.dom.is("<param>4</param>", { allowHTML: true }), "<param>");
+                            $.assert(core.type.dom.is("<thead><tr><td>5</td></tr></thead>", { allowHTML: true }), "<thead>");
+                            $.assert(core.type.dom.is("<tr><td>6</td></tr>", { allowHTML: true }), "<tr>");
+                            $.assert(core.type.dom.is("<th>55</th>", { allowHTML: true }), "<th>");
+                            $.assert(core.type.dom.is("<col>7</col>", { allowHTML: true }), "<col>");
+                            $.assert(core.type.dom.is("<colgroup><col/></colgroup>", { allowHTML: true }), "<colgroup>");
+                            $.assert(core.type.dom.is("<td>8</td>", { allowHTML: true }), "<td>");
+                            $.assert(core.type.dom.is("<body>9</body>", { allowHTML: true }), "<body>");
+                            $.assert(core.type.dom.is("<head></head>", { allowHTML: true }), "<head>");
+                            $.assert(core.type.dom.is("<caption>caption</caption>", { allowHTML: true }), "<caption>");
+                            $.assert(core.type.dom.is("<thead><tr><td>10</td></tr></thead>", { allowHTML: true }), "<thead>");
+                            $.assert(core.type.dom.is("<tbody><tr><td>11</td></tr></tbody>", { allowHTML: true }), "<tbody>");
+                            $.assert(core.type.dom.is("<tfoot><tr><td>12</td></tr></tfoot>", { allowHTML: true }), "<tfoot>");
+                            $.assert(core.type.dom.is("<neek>yea</neek>", { allowHTML: true }), "<neek>");
                         },
-                        parse: function ($) { // TODO
+                        mk: function ($) {
+                            $.expect(26);
+                            $.assert(core.type.dom.mk(function() {}, {}).tagName === undefined, "!fn");
+                            $.assert(core.type.dom.mk([], {}).tagName === undefined, "![]");
+                            $.assert(core.type.dom.mk("", null) === null, "!''");
+                            $.assert(core.type.dom.mk("div", {}).tagName !== "DIV", "!div");
 
+                            $.assert(core.type.dom.mk("<div", {}).tagName !== "DIV", "<div");
+                            $.assert(core.type.dom.mk("<div/>", {}).tagName === "DIV", "<div/>");
+                            $.assert(core.type.dom.mk("<tbody><tr><td>table</td></tr></tbody>", {}).tagName === "TBODY", "<tbody>");
+                            $.assert(core.type.dom.mk("<option>1</option>", {}).tagName === "OPTION", "<option>");
+                            $.assert(core.type.dom.mk("<optgroup><option>11</option></optgroup>", {}).tagName === "OPTGROUP", "<optgroup>");
+                            $.assert(core.type.dom.mk("<legend>2</legend>", {}).tagName === "LEGEND", "<legend>");
+                            $.assert(core.type.dom.mk("<area>3</area>", {}).tagName === "AREA", "<area>");
+                            $.assert(core.type.dom.mk("<param>4</param>", {}).tagName === "PARAM", "<param>");
+                            $.assert(core.type.dom.mk("<thead><tr><td>5</td></tr></thead>", {}).tagName === "THEAD", "<thead>");
+                            $.assert(core.type.dom.mk("<th>55</th>", {}).tagName === "TH", "<th>");
+                            $.assert(core.type.dom.mk("<tr><td>6</td></tr>", {}).tagName === "TR", "<tr>");
+                            $.assert(core.type.dom.mk("<col>7</col>", {}).tagName === "COL", "<col>");
+                            $.assert(core.type.dom.mk("<colgroup><col/></colgroup>", {}).tagName === "COLGROUP", "<colgroup>");
+                            $.assert(core.type.dom.mk("<col/>", {}).tagName === "COL", "<col/>");
+                            $.assert(core.type.dom.mk("<td>8</td>", {}).tagName === "TD", "<td>");
+                            $.assert(core.type.dom.mk("<body>9</body>", {}).tagName === "BODY", "<body>");
+                            $.assert(core.type.dom.mk("<head></head>", {}).tagName === "HEAD", "<head>");
+                            $.assert(core.type.dom.mk("<caption>caption</caption>", {}).tagName === "CAPTION", "<caption>");
+                            $.assert(core.type.dom.mk("<thead><tr><td>10</td></tr></thead>", {}).tagName === "THEAD", "<thead>");
+                            $.assert(core.type.dom.mk("<tbody><tr><td>11</td></tr></tbody>", {}).tagName === "TBODY", "<tbody>");
+                            $.assert(core.type.dom.mk("<tfoot><tr><td>12</td></tr></tfoot>", {}).tagName === "TFOOT", "<tfoot>");
+                            $.assert(core.type.dom.mk("<neek>yea</neek>", {}).tagName === "NEEK", "<neek>");
+                        },
+                        parse: function ($) {
+                            var a__test;
+
+                            $.expect(33);
+                            $.assert(core.type.dom.parse(function() {}, {})[0].tagName === undefined, "!fn");
+                            $.assert(core.type.dom.parse([], {})[0].tagName === undefined, "![]");
+                            $.assert(core.type.dom.parse("", null)[0] === null, "!''");
+                            $.assert(core.type.dom.parse("div", {})[0].tagName !== "DIV", "!div");
+
+                            $.assert(core.type.dom.parse("<span", {})[0].tagName !== "SPAN", "<span");
+                            $.assert(core.type.dom.parse("<div/>", {})[0].tagName === "DIV", "<div/>");
+                            $.assert(core.type.dom.parse("<tbody><tr><td>table</td></tr></tbody>", {})[0].tagName === "TBODY", "<tbody>");
+                            $.assert(core.type.dom.parse("<option>1</option>", {})[0].tagName === "OPTION", "<option>");
+                            $.assert(core.type.dom.parse("<optgroup><option>11</option></optgroup>", {})[0].tagName === "OPTGROUP", "<optgroup>");
+                            $.assert(core.type.dom.parse("<legend>2</legend>", {})[0].tagName === "LEGEND", "<legend>");
+                            $.assert(core.type.dom.parse("<area>3</area>", {})[0].tagName === "AREA", "<area>");
+                            $.assert(core.type.dom.parse("<param>4</param>", {})[0].tagName === "PARAM", "<param>");
+                            $.assert(core.type.dom.parse("<thead><tr><td>5</td></tr></thead>", {})[0].tagName === "THEAD", "<thead>");
+                            $.assert(core.type.dom.parse("<th>55</th>", {})[0].tagName === "TH", "<th>");
+                            $.assert(core.type.dom.parse("<tr><td>6</td></tr>", {})[0].tagName === "TR", "<tr>");
+                            $.assert(core.type.dom.parse("<col>7</col>", {})[0].tagName === "COL", "<col>");
+                            $.assert(core.type.dom.parse("<colgroup><col/></colgroup>", {})[0].tagName === "COLGROUP", "<colgroup>");
+                            $.assert(core.type.dom.parse("<col/>", {})[0].tagName === "COL", "<col/>");
+                            $.assert(core.type.dom.parse("<td>8</td>", {})[0].tagName === "TD", "<td>");
+                            $.assert(core.type.dom.parse("<body>9</body>", {})[0].tagName === "BODY", "<body>");
+                            $.assert(core.type.dom.parse("<head></head>", {})[0].tagName === "HEAD", "<head>");
+                            $.assert(core.type.dom.parse("<caption>caption</caption>", {})[0].tagName === "CAPTION", "<caption>");
+                            $.assert(core.type.dom.parse("<thead><tr><td>10</td></tr></thead>", {})[0].tagName === "THEAD", "<thead>");
+                            $.assert(core.type.dom.parse("<tbody><tr><td>11</td></tr></tbody>", {})[0].tagName === "TBODY", "<tbody>");
+                            $.assert(core.type.dom.parse("<tfoot><tr><td>12</td></tr></tfoot>", {})[0].tagName === "TFOOT", "<tfoot>");
+                            $.assert(core.type.dom.parse("<neek>yea</neek>", {})[0].tagName === "NEEK", "<neek>");
+
+                            a__test = core.type.dom.parse("<neek>1</neek><camp>2</camp><bell>3</bell>", null);
+                            $.assert(a__test.length === 3, "<neek><camp><bell>");
+                            $.assert(a__test[0].tagName === "NEEK", "<NEEK><camp><bell>");
+                            $.assert(a__test[1].tagName === "CAMP", "<neek><CAMP><bell>");
+                            $.assert(a__test[2].tagName === "BELL", "<neek><camp><BELL>");
+
+                            a__test = core.type.dom.parse("textnode", null);
+                            $.assert(a__test.length === 1, "textnode");
+                            $.assert(a__test[0].tagName !== "DIV", "textnode.tagName");
+                            $.assert(a__test[0].nodeName === "#text", "textnode.nodeName");
                         }
                     })
                 },
@@ -1309,36 +1395,52 @@
                     $.assert(oTest.o1.o2.a3[4].four !== o.o1.o2.a3[4].four, "deepcopy arr test2");
                 },
 
-                config: {}, // TODO
+                config: function ($) {
+                    var fnConfig;
+
+                    $.expect(5);
+
+                    fnConfig = ish.config({ neek: true, camp: function () { return "bell"; } });
+                    $.assert(fnConfig().neek === true, "neek");
+                    $.assert(fnConfig().camp() === "bell", "camp() === bell");
+
+                    fnConfig({ neek: false, bell: "str" });
+                    $.assert(fnConfig().neek === false, "neek 2");
+                    $.assert(fnConfig().camp() === "bell", "camp() === bell 2");
+                    $.assert(fnConfig().bell === "str", "str");
+                },
 
                 require: function () {
                     var bRequireSuccessful = false;
 
-                    return {
-                        __completeTest: function (bSuccess) {
-                            bRequireSuccessful = bSuccess;
-                        },
-                        _: function ($) {
-                            //# .require the necessary ish plugins
-                            //#     NOTE: core.require includes the required scripts/CSS then runs the provided function
-                            core.require(["ish.test.require.js"], function (a_sUrls, bAllLoaded) {
-                                $.assert(bAllLoaded === true, "bAllLoaded");
-                                $.assert(bRequireSuccessful === true, "bRequireSuccessful");
-                                $.assert(a_sUrls.length === 1, "a_sUrls");
-                                $.assert(a_sUrls[0].url === "ish.test.require.js", ".url");
-                                $.assert(a_sUrls[0].loaded === true, ".loaded");
-                                $.assert(a_sUrls[0].timedout === false, ".timedout");
-                                $.results("1:1");
-                            });
+                    return core.extend(
+                        {
+                            __completeTest: function (bSuccess) {
+                                bRequireSuccessful = bSuccess;
+                            },
+                            _: function ($) {
+                                //# .require the necessary ish plugins
+                                //#     NOTE: core.require includes the required scripts/CSS then runs the provided function
+                                core.require(["ish.test.require.js"], function (a_sUrls, bAllLoaded) {
+                                    $.assert(bAllLoaded === true, "bAllLoaded");
+                                    $.assert(bRequireSuccessful === true, "bRequireSuccessful");
+                                    $.assert(a_sUrls.length === 1, "a_sUrls");
+                                    $.assert(a_sUrls[0].url === "ish.test.require.js", ".url");
+                                    $.assert(a_sUrls[0].loaded === true, ".loaded");
+                                    $.assert(a_sUrls[0].timedout === false, ".timedout");
+                                    $.results("1:1");
+                                });
 
-                            //# Flag that this a .isAsync test
-                            return core.test.isAsync;
-                        },
-                        modules: {},
-                        scripts: {},
-                        links: {},
-                        css: {}
-                    };
+                                //# Flag that this a .isAsync test
+                                return core.test.isAsync;
+                            },
+                            modules: {} // TODO
+                        }, (core.config.ish().serverside ? null : {
+                            scripts: {},  // TODO
+                            links: {},
+                            css: {}
+                        })
+                    );
                 }(),
 
                 oop: {
@@ -1438,17 +1540,128 @@
                         $.assert(_console === window.console, "postflight");
                     },
 
-                    event: { // TODO
-                        fire: function ($) { // + _
-                            //$.expect(6);
-                            //$.assert(_console !== window.console, "preflight");
+                    event: {
+                        fire: function ($) {
+                            var i = 0,
+                                oArg = {}
+                            ;
+
+                            function fnWatcher(vArg) {
+                                i++;
+                                $.assert(vArg === oArg, "Args match");
+                            }
+
+                            //#     NOTE: The .assert within fnWatcher is called each time, hence `(1 * 2)` below
+                            $.expect(5 + (1 * 2));
+
+                            core.io.event.watch("ish.test.io.event.fire", fnWatcher);
+                            $.assert(i === 0, "not fired");
+                            core.io.event.fire("ish.test.io.event.fire", [oArg]);
+                            $.assert(i === 1, "fired 1");
+                            $.assert(core.io.event.fired("ish.test.io.event.fire") === true, "fired 1.1");
+                            core.io.event.fire("ish.test.io.event.fire", [oArg]);
+                            $.assert(i === 2, "fired 2");
+                            $.assert(core.io.event.fired("ish.test.io.event.fire") === true, "fired 2.2");
+
+                            core.io.event.unregister("ish.test.io.event.fire");
                         },
-                        unwatch: function ($) {},
-                        registered: function ($) {},
-                        fired: function ($) {},
-                        watch: function ($) {}
+                        unwatch: function ($) {
+                            var i = 0;
+
+                            function fnWatcher(vArg) {
+                                i++;
+                                return vArg;
+                            }
+
+                            $.expect(2);
+
+                            core.io.event.watch("ish.test.io.event.unwatch", fnWatcher);
+                            core.io.event.fire("ish.test.io.event.unwatch", ["watching"]);
+                            $.assert(i === 1, "watch + fire");
+                            core.io.event.unwatch("ish.test.io.event.unwatch", fnWatcher);
+                            core.io.event.fire("ish.test.io.event.unwatch", ["unwatched"]);
+                            $.assert(i === 1, "unwatch + fire");
+
+                            core.io.event.unregister("ish.test.io.event.unwatch");
+                        },
+                        registered: function ($) {
+                            function fnWatcher() {}
+
+                            $.expect(7);
+
+                            $.assert(core.io.event.registered().indexOf("docready") > -1, "[docready]");
+                            $.assert(core.io.event.registered().indexOf("ish.pluginsLoaded") > -1, "[ish.pluginsLoaded]");
+
+                            $.assert(core.io.event.registered("docready") === true, "docready");
+                            $.assert(core.io.event.registered("ish.test.io.event.registered") === false, "!ish.test.io.event.registered");
+                            core.io.event.watch("ish.test.io.event.registered", fnWatcher);
+                            $.assert(core.io.event.registered("ish.test.io.event.registered") === true, "ish.test.io.event.registered");
+
+                            $.assert(core.io.event.registered("ish.test.io.event.registered", fnWatcher) === true, "fnWatcher");
+                            $.assert(core.io.event.registered("ish.test.io.event.registered", function () {}) === false, "fn");
+
+                            core.io.event.unregister("ish.test.io.event.registered");
+                        },
+                        unregister: function ($) {
+                            var i = 0;
+
+                            function fnWatcher() {
+                                i++;
+                            }
+
+                            $.expect(5);
+                            core.io.event.watch("ish.test.io.event.unregister", fnWatcher);
+                            core.io.event.fire("ish.test.io.event.unregister");
+                            $.assert(i === 1, "watch + fire");
+                            $.assert(core.io.event.unregister("ish.test.io.event.unregister") === true, "unregister");
+                            $.assert(core.io.event.unregister("ish.test.io.event.unregister") === false, "!unregister");
+                            $.assert(core.io.event.fire("ish.test.io.event.unregister") === false, "unregister + fire");
+                            $.assert(core.io.event.unregister("ish.test.io.event.unregister") === true, "unregister 2"); //# Removes the implicitly created entry above
+                        },
+                        fired: function ($) {
+                            function fnWatcher(vArg) {
+                                return vArg;
+                            }
+
+                            $.expect(3);
+
+                            core.io.event.watch("ish.test.io.event.fired", fnWatcher);
+                            $.assert(core.io.event.fired("ish.test.io.event.fired") === false, "not fired");
+                            core.io.event.fire("ish.test.io.event.fired", ["fired"]);
+                            $.assert(core.io.event.fired("ish.test.io.event.fired") === true, "fired");
+                            core.io.event.fire("ish.test.io.event.fired", ["fired 2"]);
+                            $.assert(core.io.event.fired("ish.test.io.event.fired") === true, "still fired");
+
+                            core.io.event.unregister("ish.test.io.event.fired");
+                        },
+                        watch: function ($) {
+                            var i = 0;
+
+                            function fnWatcher() {
+                                i++;
+                            }
+
+                            $.expect(6);
+
+                            core.io.event.watch("ish.test.io.event.watch", fnWatcher);
+                            $.assert(core.io.event.fired("ish.test.io.event.watch") === false, "not watch 1.1");
+                            $.assert(i === 0, "not watch 1.2");
+                            core.io.event.fire("ish.test.io.event.watch");
+                            $.assert(core.io.event.fired("ish.test.io.event.watch") === true, "watch 1.1");
+                            $.assert(i === 1, "watch 1.2");
+                            core.io.event.fire("ish.test.io.event.watch");
+                            $.assert(core.io.event.fired("ish.test.io.event.watch") === true, "watch 2.2");
+                            $.assert(i === 2, "watch 2.2");
+
+                            core.io.event.unregister("ish.test.io.event.watch");
+                        }
                     }
                 },
+
+                /*ui: (core.config.ish().serverside ? null : { // TODO?
+                    scrollTo: function ($) {},
+                    clearSelection: function ($) {}
+                }),*/
 
                 lib: function ($) {
                     $.expect(1);
@@ -1471,12 +1684,17 @@
     } //# init
 
 
-    //# If we are running server-side (or possibly have been required as a CommonJS module)
-    if (typeof window === 'undefined') { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
+    //# If we are running server-side
+    //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
+    if (typeof module === 'object' && module.exports) { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
         module.exports = init;
+    }
+    //# Else if we are running in an .amd environment, register as an anonymous module
+    else if (typeof define === 'function' && define.amd) {
+        define([], init);
     }
     //# Else we are running in the browser, so we need to setup the _document-based features
     else {
         init(document.querySelector("SCRIPT[ish]").ish);
-    }
+	}
 }();

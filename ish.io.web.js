@@ -277,7 +277,6 @@
                             return returnVal.trim().substr(0, returnVal.length - 1);
                         } //# serialize
 
-
                         //# Parses the passed valueToParse into a model (up to 3-dimensions deep)
                         //#    Based on: http://jsbin.com/adali3/2/edit via http://stackoverflow.com/a/2880929/235704
                         //#    NOTE: All keys are .toLowerCase'd to make them case-insensitive(-ish) with the exception of a sub-keys named 'length', which are .toUpperCase'd
@@ -390,7 +389,6 @@
                             return r;
                         } //# deserialize
 
-
                         //#
                         function getQS() {
                             //#
@@ -407,6 +405,7 @@
                         //# Parses the query string into an object model, returning an object containing the .model and a .value function to retrieve the values (see note below).
                         //#     Supports: ?test=Hello&person=neek&person=jeff&person[]=jim&person[extra]=john&test3&nocache=1398914891264&person=frank,jim;person=aaron
                         return {
+                            //# TODO: Remove
                             ser: {
                                 ize: serialize,
                                 de: deserialize
@@ -452,7 +451,10 @@
 
                                 $queryString = oReturnVal || {};
                                 return $queryString;
-                            } //# parse
+                            }, //# parse
+
+                            //#
+                            stringify: serialize
                         };
                     }(), //# io.web.queryString
 
@@ -552,9 +554,14 @@
     }
 
 
-    //# If we are running server-side (or possibly have been required as a CommonJS module)
-    if (typeof window === 'undefined') { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
+    //# If we are running server-side
+    //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
+    if (typeof module === 'object' && module.exports) { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
         module.exports = init;
+    }
+    //# Else if we are running in an .amd environment, register as an anonymous module
+    else if (typeof define === 'function' && define.amd) {
+        define([], init);
     }
     //# Else we are running in the browser, so we need to setup the _document-based features
     else {

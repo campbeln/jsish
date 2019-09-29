@@ -1900,21 +1900,21 @@
             } //# unwatch
 
             //#
-            function fire(sEvent, a_vArguments, fnCallback) {
+            function fire(sEvent, a_vArguments) {
                 var i,
                     a_fnEvents = oData[sEvent],
                     bReturnVal = core.type.arr.is(a_fnEvents, true)
                 ;
 
-                //# If the passed sEvent is a .registered event
+                //# If the passed sEvent isn't a .registered event, implicitly define it now
                 if (!bReturnVal) {
+                    //# Set a_fnEvents and oData[sEvent] to an empty array, allowing us to set .last and .fired below
                     a_fnEvents = oData[sEvent] = [];
                 }
 
-                //# Set the .last arguments for this sEvent
-                //#     NOTE: We do this here so if a .watch is called after this sEvent has .fired, it can be instantly called with the .last arguments lists
+                //# Set the .last a_vArguments for this sEvent
+                //#     NOTE: We do this here so if a .watch is called after this sEvent has .fired, it can be instantly called with the .last a_vArguments
                 a_fnEvents.last = a_vArguments;
-                a_fnEvents.callback = fnCallback;
 
                 //# Traverse the a_fnEvents, throwing each into doCallback while adding its returned integer to our i(terator)
                 //#     NOTE: doCallback returns -1 if we are to unwatch the current a_fnEvents which in turn removes it from the array
@@ -1923,11 +1923,8 @@
                 }
 
                 //# Set the .fired property on the array to true
-                //#     NOTE: We do this after the for loop so that doCallback'd a_fnEvents can know if this is the first invocation or nots
+                //#     NOTE: We do this after the for loop so that doCallback'd a_fnEvents can know if this is the first invocation or not
                 a_fnEvents.fired = true;
-
-                //#
-                core.type.fn.call(fnCallback, _undefined, a_vArguments);
 
                 return bReturnVal;
             } //# fire
@@ -1951,9 +1948,49 @@
                 unwatch: unwatch,   //# (sEvent, fnCallback)
 
                 //#
-                registered: function () {
-                    return core.type.obj.ownKeys(oData);
+                registered: function (sEvent, fnCallback) {
+                    var vReturnVal;
+
+                    switch (arguments.length) {
+                        case 0: {
+                            vReturnVal = core.type.obj.ownKeys(oData);
+                            break;
+                        }
+                        case 1: {
+                            //#     NOTE: We don't require entries as events can be implicitly defined within .fire and can have all of their events .unwatch'ed
+                            vReturnVal = (
+                                core.type.str.is(sEvent, true) &&
+                                core.type.arr.is(oData[sEvent] /*, false*/)
+                            );
+                            break;
+                        }
+                        case 2: {
+                            vReturnVal = (
+                                core.type.fn.is(fnCallback) &&
+                                core.type.str.is(sEvent, true) &&
+                                core.type.arr.is(oData[sEvent], true) &&
+                                oData[sEvent].indexOf(fnCallback) > -1
+                            );
+                            break;
+                        }
+                    }
+                    return vReturnVal;
                 }, //# registered
+
+                //#
+                unregister: function (sEvent) {
+                    var bReturnVal = (
+                        core.type.str.is(sEvent, true) &&
+                        core.type.obj.is(oData[sEvent])
+                    );
+
+                    //# If the passed sEvent is within our oData, delete it
+                    if (bReturnVal) {
+                        delete oData[sEvent];
+                    }
+
+                    return bReturnVal;
+                }, //# unregister
 
                 //#
                 fired: function (sEvent) {
@@ -1964,8 +2001,8 @@
                 watch: function (sEvent, fnCallback) {
                     var bReturnVal = core.type.fn.is(fnCallback);
 
-                    //#
-                    if (fnCallback) {
+                    //# If the passed fnCallback .is a valid .fn
+                    if (bReturnVal) {
                         (oData[sEvent] = oData[sEvent] || [])
                             .push(fnCallback)
                         ;
@@ -2486,9 +2523,14 @@
         //# <core.type.obj.mk>
         //##################################################################################################
         oPrivate.init = function () {
-            //# If we have access to module.exports, return our core reference
-            if (typeof module !== 'undefined' && this.module !== module && module.exports) {
+            //# If we are running server-side
+            //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
+            if (typeof module === 'object' && module.exports) {
                 module.exports = core;
+            }
+            //# Else if we are running in an .amd environment, register as an anonymous module
+            else if (typeof define === 'function' && define.amd) {
+                define([], core);
             }
 
             //# Set our sTarget in the root
@@ -2636,10 +2678,11 @@
                     param:  [1, "<object>", "</object>"],
                     thead:  [1, "<table>", "</table>"],
                     tr:     [2, "<table><tbody>", "</tbody></table>"],
-                    col:    [2, "<table><tbody></tbody><colgroup>", "</colgroup></table>"],
+                    col:    [2, "<table><colgroup>", "</colgroup></table>"], //# was: "<table><tbody></tbody><colgroup>"
                     td:     [3, "<table><tbody><tr>", "</tr></tbody></table>"],
                     body:   [0, "", ""]
                 };
+                a_oWrapMap.head = a_oWrapMap.body;
                 a_oWrapMap.optgroup = a_oWrapMap.option;
                 a_oWrapMap.th = a_oWrapMap.td;
                 a_oWrapMap.tbody = a_oWrapMap.tfoot = a_oWrapMap.colgroup = a_oWrapMap.caption = a_oWrapMap.thead;
@@ -2732,7 +2775,7 @@
                     */
                     //#     Based on: http://krasimirtsonev.com/blog/article/Revealing-the-magic-how-to-properly-convert-HTML-string-to-a-DOM-element
                     parse: function (sHTML, _default) {
-                        var a__returnVal, _dom, a_vMap, sTag, bBodyTag, i;
+                        var a__returnVal, _dom, a_vMap, sTag, bHeadTag, bBodyTag, i;
 
                         //# .trim any empty leading/trailing #text nodes then safely determine the first sTag (if any) within the passed sHTML along with if it's a bBodyTag
                         //#     NOTE: /g(lobal) only returns the first <tag> for whatever reason(!?) but as that's the desired effect, it's all good.
@@ -2740,13 +2783,14 @@
                         sTag = core.type.str.mk(
                             (/<([^\/!]\w*)[\s\S]*?>/g.exec(sHTML) || [0,''])[1]
                         ).toLowerCase();
+                        bHeadTag = (sTag === 'head');
                         bBodyTag = (sTag === 'body');
 
                         //# Determine the a_vMap entry then construct our _dom including its .innerHTML
                         //#     NOTE: While we can and do parse multiple elements/nodes, we only look at the first sTag to determine the a_vMap
                         a_vMap = a_oWrapMap[sTag] || a_oWrapMap._;
                         //var _dom = (bBodyTag ? _document.implementation.createDocument('http://www.w3.org/1999/xhtml', 'html', _null) : _null);
-                        _dom = _document.createElement(bBodyTag ? 'html' : 'div');
+                        _dom = _document.createElement(bHeadTag || bBodyTag ? 'html' : 'div');
                         _dom.innerHTML = a_vMap[1] + sHTML + a_vMap[2];
 
                         //# Set the i(ndex) and traverse down the a_vMap'd elements to collect the parsed sHTML
@@ -2758,6 +2802,16 @@
 
                         //# .mk .arr'd .childNodes into our a__returnVal
                         a__returnVal = core.type.arr.mk(_dom.childNodes);
+
+                        //#
+                        if (bBodyTag) {
+                            a__returnVal.shift();
+                        }
+                        else if (bHeadTag) {
+                            a__returnVal.unshift();
+                        }
+
+                        //#
                         a__returnVal = (
                             core.type.arr.is(a__returnVal, true) ?
                             a__returnVal : (
