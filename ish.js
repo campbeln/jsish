@@ -1,11 +1,12 @@
 /** ################################################################################################
  * @class ish
  * @classdesc ishJS Functionality (Q: Are you using Vanilla Javascript? A: ...ish)
- * @version 0.12.2019-09-08
+ * @version 0.12.2019-09-28
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
 ################################################################################################# */
+/*jshint maxcomplexity:6 */
 !function (/*global, module, require, process, __dirname*/) {
     'use strict';
 
@@ -19,7 +20,7 @@
         oPrivate = {},
         oTypeIsIsh = { //# Set the .ver and .target under .type.is.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             config: {
-                ver: '0.12.2019-09-08',
+                ver: '0.12.2019-09-28',
                 onServer: bServerside,
                 debug: true,
                 //script: _undefined,
