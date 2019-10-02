@@ -1,15 +1,16 @@
 /** ################################################################################################
- * @class ish
- * @classdesc ishJS Functionality (Q: Are you using Vanilla Javascript? A: ...ish)
+ * Browser-based Clipboard mixin for ishJS
+ * @mixin ish.ui.clipboard
  * @author Nick Campbell
  * @license MIT
+ * @copyright 2014-2019, Nick Campbell
 ################################################################################################# */
 !function (core) {
     "use strict";
 
     //# Build the core.lib.ui.clipboard wrapper around ClipboardJS's implementation
     //#     NOTE: core.require includes the required scripts/CSS then runs the provided function
-    core.require(["ish.ui.css.js", "js/clipboard.min.js"], function (/*a_sUrls, bAllLoaded*/) {
+    core.require(["ish.ui.css.js", "libs/clipboard.min.js"], function (/*a_sUrls, bAllLoaded*/) {
         /*
         ####################################################################################################
         Class: core.ui.clipboard

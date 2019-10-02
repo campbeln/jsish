@@ -1,8 +1,9 @@
 /** ################################################################################################
- * @class ish
- * @classdesc ishJS Functionality (Q: Are you using Vanilla Javascript? A: ...ish)
+ * Framework Unit Testing mixin for ishJS
+ * @mixin ish.test
  * @author Nick Campbell
  * @license MIT
+ * @copyright 2014-2019, Nick Campbell
 ################################################################################################# */
 !function () {
     'use strict';
@@ -17,16 +18,24 @@
             var fnReturnVal,
                 $assert = chai.assert, //# https://www.chaijs.com/api/assert/
                 $testFactory = function (sCurrentPath) {
-                    var iCount = 0,
+                    var oProxy,
+                        bIsAsync = false,
+                        iExpectedAsync = 0,
+                        iCount = 0,
                         iExpected = -1
                     ;
 
                     //# Proxy is not as well supported as the rest of the code within ish, but as it's only used for testing and not production code this (very minor) limitation is acceptable.
                     //#     See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Proxy
-                    return new Proxy(
+                    return oProxy = new Proxy(
                         {
                             assert: $assert,
-                            expect: function (iExpectedTests) {
+
+                            expect: function (iExpectedTests, iAsyncCount) {
+                                iExpectedAsync = core.type.int.mk(iAsyncCount, 0);
+                                bIsAsync = (iExpectedAsync !== 0);
+                                $testFactory.totalAsync += (bIsAsync ? 1 : 0);
+
                                 if (arguments.length === 0) {
                                     if (iExpected > 0) {
                                         $assert(iCount === iExpected, "Expected " + iExpected + " tests but saw " + iCount);
@@ -38,14 +47,26 @@
                                     iCount = 0;
                                 }
                             }, //# expect
-                            results: function (sCountOf, oError) {
-                                var a_sCountOf = (sCountOf + "").split(":"),
-                                    sDescription = sCurrentPath + (
-                                        a_sCountOf.length > 1 ?
-                                        " (batch " + a_sCountOf[0] + " of " + a_sCountOf[1] + ") " + iCount + " tests" :
-                                        ""
-                                    )
-                                ;
+
+                            isAsync: function () {
+                                return bIsAsync;
+                            }, //# isAsync
+
+                            asyncTests: function (fnTests) {
+                                try {
+                                    fnTests();
+                                } catch (e) {
+                                    oProxy.results(e);
+                                }
+
+                                if (--iExpectedAsync === 0) {
+                                    $testFactory.totalAsync--;
+                                    oProxy.results(/*undefined*/);
+                                }
+                            }, //# asyncTests
+
+                            results: function (oError) {
+                                var sDescription = sCurrentPath;
 
                                 //#
                                 if (core.type.obj.is(oError)) {
@@ -54,7 +75,19 @@
                                 }
                                 //#
                                 else {
-                                    console.info("PASSED: " + sDescription);
+                                    console.info("PASSED: " + sDescription + " (" + iExpected + ")");
+                                }
+
+                                //#
+                                if ($testFactory.allRegistered && $testFactory.totalAsync === 0) {
+                                    core.io.console.log(
+                                        (
+                                        $testFactory.run === $testFactory.total ?
+                                            "SUCCESS: All " + $testFactory.total + " tests" :
+                                            "ERRORS: " + $testFactory.run + " tests of " + $testFactory.total
+                                        ) +
+                                        " passed across " + $testFactory.interfaces + " interfaces"
+                                    );
                                 }
                             } //# results
                         }, {
@@ -62,17 +95,29 @@
                                 if (sKey === "assert") {
                                     iCount++;
                                     if (iExpected > 0) { $testFactory.run++; }
+                                    if (iExpected > 0 && iCount > iExpected) {
+                                        $assert(iCount === iExpected, "Expected " + iExpected + " tests but saw " + iCount);
+                                    }
                                 }
                                 return oTarget[sKey];
                             }
                         }
                     );
-                }
+                } //# $testFactory
             ;
 
             //#
+            $testFactory.reset = function () {
+                $testFactory.total = 0;
+                $testFactory.run = 0;
+                $testFactory.interfaces = 0;
+                $testFactory.totalAsync = 0;
+                $testFactory.allRegistered = false;
+            }; //# $testFactory.reset
+
+            //#
             function run(oBase, sPath) {
-                var vCurrent, oTester, vTesterResult, sCurrentPath, i, j,
+                var vCurrent, oTester, sCurrentPath, i, j,
                     a_sOwnKeys = core.type.obj.ownKeys(oBase)
                 ;
 
@@ -104,16 +149,15 @@
                             if (core.type.fn.is(vCurrent)) {
                                 //#
                                 try {
-                                    vTesterResult = vCurrent(oTester);
-                                    oTester.expect();
-
-                                    //#
-                                    if (vTesterResult !== core.test.isAsync) {
-                                        $testFactory.interfaces++;
-                                        oTester.results(/*""*/);
+                                    vCurrent(oTester);
+                                    if (!oTester.isAsync()) {
+                                        oTester.expect();
                                     }
+
+                                    $testFactory.interfaces++;
+                                    oTester.results(/*undefined*/);
                                 } catch (e) {
-                                    oTester.results("", e);
+                                    oTester.results(e);
                                 }
                             }
                             //#
@@ -128,20 +172,13 @@
             //# Establish core.test with the initial call to .run
             fnReturnVal = function () {
                 //#
-                $testFactory.total = 0;
-                $testFactory.run = 0;
-                $testFactory.interfaces = 0;
+                $testFactory.reset();
                 run(core.test, core.config.ish().target);
+                $testFactory.allRegistered = true;
 
-                return (
-                    $testFactory.run === $testFactory.total ?
-                        "SUCCESS: All " + $testFactory.total + " non-async tests" :
-                        "ERRORS: " + $testFactory.run + " non-async tests of " + $testFactory.total
-                    ) +
-                    " passed across " + $testFactory.interfaces + " non-async interfaces"
-                ;
+                return $testFactory.total;
             }; //# core.test
-            fnReturnVal.isAsync = {};
+
             return fnReturnVal;
         }(window.chai);
 
@@ -277,28 +314,29 @@
                             (core.config.ish().serverside ? null : {
                                 import: {
                                     _: function ($) {
+                                        $.expect(4, 2);
+
                                         core.type.is.ish.import(["ish.test.type.is.ish.import"], {
                                             callback: function (a_oProcessedUrls, bAllLoaded) {
-                                                $.assert(bAllLoaded === true, "bAllLoaded");
-                                                $.assert(a_oProcessedUrls[0].url === "ish.test.type.is.ish.import.js", "a_oProcessedUrls.url");
-                                                $.assert(a_oProcessedUrls[0].loaded === true, "a_oProcessedUrls.loaded");
-                                                $.assert(a_oProcessedUrls[0].timedout === false, "a_oProcessedUrls.timedout");
-                                                $.results("1:2");
+                                                $.asyncTests(function () {
+                                                    $.assert(bAllLoaded === true, "bAllLoaded");
+                                                    $.assert(a_oProcessedUrls[0].url === "ish.test.type.is.ish.import.js", "a_oProcessedUrls.url");
+                                                    $.assert(a_oProcessedUrls[0].loaded === true, "a_oProcessedUrls.loaded");
+                                                    $.assert(a_oProcessedUrls[0].timedout === false, "a_oProcessedUrls.timedout");
+                                                });
                                             },
                                             onAppend: function (_dom, sUrl) {
-                                                $.assert(core.type.dom.is(_dom), "_dom");
-                                                // TODO: bottom being used for require test as well!?
-                                                $.assert(sUrl === "ish.test.type.is.ish.import.js", "sUrl");
-                                                $.results("2:2");
+console.log(sUrl); // TODO: Why is this called for both import and require?
+                                                $.asyncTests(function () {
+                                                    //$.assert(core.type.dom.is(_dom), "_dom");
+                                                    // TODO: bottom being used for require test as well!?
+                                                    //$.assert(sUrl === "ish.test.type.is.ish.import.js", "sUrl");
+                                                });
                                             }
                                         });
-
-                                        //# Flag that this a .isAsync test
-                                        return core.test.isAsync;
                                     },
                                     __completeTest: function (bSuccess) {
-                                        //$.assert(bSuccess === true, bSuccess);
-                                        //$.results("3:3");
+                                        //$.assert(bSuccess === true, bSuccess);=
                                     }
                                 } //# ish.import
                             })
@@ -769,6 +807,8 @@
                                 }
                             ;
 
+                            $.expect(8, 4);
+
                             oResults.t1 = { count: 0 };
                             oResults.t1.fn = core.type.fn.throttle(fnTestFactory("t1"), { wait: 50, context: { neek: true } });
                             oResults.t1.id = setInterval(function () {
@@ -776,11 +816,10 @@
                                 if (++oResults.t1.count > 49) {
                                     clearInterval(oResults.t1.id);
                                     setTimeout(function () {
-                                        try {
+                                        $.asyncTests(function () {
                                             $.assert(oResults.t1.i === 10, "wait 50");
                                             $.assert(oResults.t1.neek === true, "context");
-                                            $.results("1:4");
-                                        } catch (e) { $.results("1:4", e) }
+                                        });
                                     }, 20);
                                 }
                             }, 10);
@@ -792,11 +831,10 @@
                                 if (++oResults.t2.count > 49) {
                                     clearInterval(oResults.t2.id);
                                     setTimeout(function () {
-                                        try {
+                                        $.asyncTests(function () {
                                             $.assert(oResults.t2.i === 21, "wait 25");
                                             $.assert(oResults.t2.neek === false, "context 2");
-                                            $.results("2:4");
-                                        } catch (e) { $.results("2:4", e) }
+                                        });
                                     }, 20);
                                 }
                             }, 10);
@@ -808,11 +846,10 @@
                                 if (++oResults.t3.count > 19) {
                                     clearInterval(oResults.t3.id);
                                     setTimeout(function () {
-                                        try {
+                                        $.asyncTests(function () {
                                             $.assert(oResults.t3.i === 4, "wait 100");
                                             $.assert(oResults.t3.neek === false, "context 3");
-                                            $.results("3:4");
-                                        } catch (e) { $.results("3:4", e) }
+                                        });
                                     }, 20);
                                 }
                             }, 20);
@@ -824,17 +861,13 @@
                                 if (++oResults.t4.count > 54) {
                                     clearInterval(oResults.t4.id);
                                     setTimeout(function () {
-                                        try {
+                                        $.asyncTests(function () {
                                             $.assert(oResults.t4.i === 3, "wait 150");
                                             $.assert(oResults.t4.neek === false, "context 4");
-                                            $.results("4:4");
-                                        } catch (e) { $.results("4:4", e) }
+                                        });
                                     }, 20);
                                 }
                             }, 10);
-
-                            //# Flag that this a .isAsync test
-                            return core.test.isAsync;
                         },
 
                         debounce: function ($) {
@@ -848,6 +881,8 @@
                                 }
                             ;
 
+                            $.expect(6, 3);
+
                             oResults.t1 = { count: 0 };
                             oResults.t1.fn = core.type.fn.debounce(fnTestFactory("t1"), { wait: 50, immediate: false, context: { neek: true } });
                             oResults.t1.id = setInterval(function () {
@@ -855,11 +890,10 @@
                                 if (++oResults.t1.count > 49) {
                                     clearInterval(oResults.t1.id);
                                     setTimeout(function () {
-                                        try {
+                                        $.asyncTests(function () {
                                             $.assert(oResults.t1.i === 1, "wait 50");
                                             $.assert(oResults.t1.neek === true, "context");
-                                            $.results("1:3");
-                                        } catch (e) { $.results("1:3", e) }
+                                        });
                                     }, 75);
                                 }
                             }, 10);
@@ -871,11 +905,10 @@
                                 if (++oResults.t2.count > 49) {
                                     clearInterval(oResults.t2.id);
                                     setTimeout(function () {
-                                        try {
+                                        $.asyncTests(function () {
                                             $.assert(oResults.t2.i === 1, "wait 25");
                                             $.assert(oResults.t2.neek === false, "context 2");
-                                            $.results("2:3");
-                                        } catch (e) { $.results("2:3", e) }
+                                        });
                                     }, 50);
                                 }
                             }, 10);
@@ -887,17 +920,13 @@
                                 if (++oResults.t3.count > 4) {
                                     clearInterval(oResults.t3.id);
                                     setTimeout(function () {
-                                        try {
+                                        $.asyncTests(function () {
                                             $.assert(oResults.t3.i === 5, "wait 100");
                                             $.assert(oResults.t3.neek === false, "context 3");
-                                            $.results("3:3");
-                                        } catch (e) { $.results("3:3", e) }
+                                        });
                                     }, 20);
                                 }
                             }, 120);
-
-                            //# Flag that this a .isAsync test
-                            return core.test.isAsync;
                         },
 
                         /*
@@ -918,6 +947,8 @@
                                 }
                             ;
 
+                            $.expect(6, 3);
+
                             oResults.t1 = { count: 0 };
                             oResults.t1.fn = core.type.fn.poll(fnTestFactory("t1"), { wait: 50, immediate: false, context: { neek: true } });
                             oResults.t1.id = setInterval(function () {
@@ -925,11 +956,10 @@
                                 if (++oResults.t1.count > 49) {
                                     clearInterval(oResults.t1.id);
                                     setTimeout(function () {
-                                        try {
+                                        $.asyncTests(function () {
                                             $.assert(oResults.t1.i === 1, "wait 50");
                                             $.assert(oResults.t1.neek === true, "context");
-                                            $.results("1:3");
-                                        } catch (e) { $.results("1:3", e) }
+                                        });
                                     }, 75);
                                 }
                             }, 10);
@@ -941,11 +971,10 @@
                                 if (++oResults.t2.count > 49) {
                                     clearInterval(oResults.t2.id);
                                     setTimeout(function () {
-                                        try {
+                                        $.asyncTests(function () {
                                             $.assert(oResults.t2.i === 1, "wait 25");
                                             $.assert(oResults.t2.neek === false, "context 2");
-                                            $.results("2:3");
-                                        } catch (e) { $.results("2:3", e) }
+                                        });
                                     }, 50);
                                 }
                             }, 10);
@@ -957,17 +986,13 @@
                                 if (++oResults.t3.count > 4) {
                                     clearInterval(oResults.t3.id);
                                     setTimeout(function () {
-                                        try {
+                                        $.asyncTests(function () {
                                             $.assert(oResults.t3.i === 5, "wait 100");
                                             $.assert(oResults.t3.neek === false, "context 3");
-                                            $.results("3:3");
-                                        } catch (e) { $.results("3:3", e) }
+                                        });
                                     }, 20);
                                 }
                             }, 120);
-
-                            //# Flag that this a .isAsync test
-                            return core.test.isAsync;
                         */} // TODO
                     },
 
@@ -1227,7 +1252,7 @@
                             $.assert(core.type.dom.is("<neek>yea</neek>", { allowHTML: true }), "<neek>");
                         },
                         mk: function ($) {
-                            $.expect(26);
+                            $.expect(27);
                             $.assert(core.type.dom.mk(function() {}, {}).tagName === undefined, "!fn");
                             $.assert(core.type.dom.mk([], {}).tagName === undefined, "![]");
                             $.assert(core.type.dom.mk("", null) === null, "!''");
@@ -1239,8 +1264,8 @@
                             $.assert(core.type.dom.mk("<option>1</option>", {}).tagName === "OPTION", "<option>");
                             $.assert(core.type.dom.mk("<optgroup><option>11</option></optgroup>", {}).tagName === "OPTGROUP", "<optgroup>");
                             $.assert(core.type.dom.mk("<legend>2</legend>", {}).tagName === "LEGEND", "<legend>");
-                            $.assert(core.type.dom.mk("<area>3</area>", {}).tagName === "AREA", "<area>");
-                            $.assert(core.type.dom.mk("<param>4</param>", {}).tagName === "PARAM", "<param>");
+                            $.assert(core.type.dom.mk("<area/>", {}).tagName === "AREA", "<area>");
+                            $.assert(core.type.dom.mk("<param/>", {}).tagName === "PARAM", "<param>");
                             $.assert(core.type.dom.mk("<thead><tr><td>5</td></tr></thead>", {}).tagName === "THEAD", "<thead>");
                             $.assert(core.type.dom.mk("<th>55</th>", {}).tagName === "TH", "<th>");
                             $.assert(core.type.dom.mk("<tr><td>6</td></tr>", {}).tagName === "TR", "<tr>");
@@ -1255,6 +1280,7 @@
                             $.assert(core.type.dom.mk("<tbody><tr><td>11</td></tr></tbody>", {}).tagName === "TBODY", "<tbody>");
                             $.assert(core.type.dom.mk("<tfoot><tr><td>12</td></tr></tfoot>", {}).tagName === "TFOOT", "<tfoot>");
                             $.assert(core.type.dom.mk("<neek>yea</neek>", {}).tagName === "NEEK", "<neek>");
+                            $.assert(core.type.dom.mk("<neek>er</neek><camp>bell</camp>", {}).tagName === "DIV", "<div> wrapped <neek><camp>");
                         },
                         parse: function ($) {
                             var a__test;
@@ -1419,20 +1445,20 @@
                                 bRequireSuccessful = bSuccess;
                             },
                             _: function ($) {
+                                $.expect(6, 1);
+
                                 //# .require the necessary ish plugins
                                 //#     NOTE: core.require includes the required scripts/CSS then runs the provided function
                                 core.require(["ish.test.require.js"], function (a_sUrls, bAllLoaded) {
-                                    $.assert(bAllLoaded === true, "bAllLoaded");
-                                    $.assert(bRequireSuccessful === true, "bRequireSuccessful");
-                                    $.assert(a_sUrls.length === 1, "a_sUrls");
-                                    $.assert(a_sUrls[0].url === "ish.test.require.js", ".url");
-                                    $.assert(a_sUrls[0].loaded === true, ".loaded");
-                                    $.assert(a_sUrls[0].timedout === false, ".timedout");
-                                    $.results("1:1");
+                                    $.asyncTests(function () {
+                                        $.assert(bAllLoaded === true, "bAllLoaded");
+                                        $.assert(bRequireSuccessful === true, "bRequireSuccessful");
+                                        $.assert(a_sUrls.length === 1, "a_sUrls");
+                                        $.assert(a_sUrls[0].url === "ish.test.require.js", ".url");
+                                        $.assert(a_sUrls[0].loaded === true, ".loaded");
+                                        $.assert(a_sUrls[0].timedout === false, ".timedout");
+                                    });
                                 });
-
-                                //# Flag that this a .isAsync test
-                                return core.test.isAsync;
                             },
                             modules: {} // TODO
                         }, (core.config.ish().serverside ? null : {

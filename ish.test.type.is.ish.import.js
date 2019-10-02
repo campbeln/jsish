@@ -1,8 +1,8 @@
 /** ################################################################################################
- * @class ish
- * @classdesc ishJS Functionality (Q: Are you using Vanilla Javascript? A: ...ish)
+ * Support file for the Framework Unit Testing plugin
  * @author Nick Campbell
  * @license MIT
+ * @copyright 2014-2019, Nick Campbell
 ################################################################################################# */
 !function () {
     'use strict';

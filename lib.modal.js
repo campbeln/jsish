@@ -1,17 +1,17 @@
-/*
-External Library Wrapper Example
-
-This is an example of how to include an external library that is wrapped for easy future replacement.
-
-All references and code required to utilize tingle-modal are present below. So long as the wrapper interface is evergreened, tingle-modal can be replaced without changing any other code by switching it out for a different library in the code below. Nothing else in Zonecruncher would need to be touched.
-*/
+/** ################################################################################################
+ * Browser-based Modal mixin for ishJS
+ * @mixin ish.lib.modal
+ * @author Nick Campbell
+ * @license MIT
+ * @copyright 2014-2019, Nick Campbell
+################################################################################################# */
 !function (core) {
     "use strict";
 
 
     //# Build the core.lib.modal wrapper around TingleJS's modal implementation
     //#     NOTE: core.require includes the required scripts/CSS then runs the provided function
-    core.require(["ish.ui.css.js", "js/tingle-modal/tingle.min.js", "js/tingle-modal/tingle.min.css"], function (/*a_sUrls, bAllLoaded*/) {
+    core.require(["ish.ui.css.js", "libs/tingle-modal/tingle.min.js", "libs/tingle-modal/tingle.min.css"], function (/*a_sUrls, bAllLoaded*/) {
         //# Add the required class into our body and .insertRules to tweak the .tingle-modal-box
         core.ui.css.class.add(document.getElementsByTagName("BODY")[0], "tingle-content-wrapper");
         core.ui.css.insertRules([

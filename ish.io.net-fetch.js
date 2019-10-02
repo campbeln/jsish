@@ -1,8 +1,9 @@
 /** ################################################################################################
- * @class ish
- * @classdesc ishJS Functionality (Q: Are you using Vanilla Javascript? A: ...ish)
+ * Networking mixin for ishJS
+ * @mixin ish.io.net
  * @author Nick Campbell
  * @license MIT
+ * @copyright 2014-2019, Nick Campbell
 ################################################################################################# */
 !function () {
     'use strict';

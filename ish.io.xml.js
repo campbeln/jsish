@@ -1,3 +1,10 @@
+/** ################################################################################################
+ * XML mixin for ishJS
+ * @mixin ish.io.xml
+ * @author Nick Campbell (wrapper); Axinom; Abdulla Abdurakhmanov
+ * @license Apache License, Version 2.0
+ * @copyright 2014-2019, Nick Campbell (wrapper); 2015, Axinom; 2011-2013, Abdulla Abdurakhmanov
+################################################################################################# */
 !function (X2JS) {
     "use strict";
 

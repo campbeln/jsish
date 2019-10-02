@@ -1,3 +1,10 @@
+/** ################################################################################################
+ * Browser-based Base Libraries mixin for ishJS
+ * @mixin ish.lib
+ * @author Nick Campbell
+ * @license MIT
+ * @copyright 2014-2019, Nick Campbell
+################################################################################################# */
 !function(core) {
     "use strict"
 

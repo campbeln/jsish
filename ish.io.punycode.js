@@ -1,8 +1,9 @@
 /** ################################################################################################
- * @class ish
- * @classdesc ishJS Functionality (Q: Are you using Vanilla Javascript? A: ...ish)
- * @author some@domain.name (see: https://stackoverflow.com/questions/183485/converting-punycode-with-dash-character-to-unicode)
+ * Punycode mixin for ishJS
+ * @mixin ish.io.punycode
+ * @author Nick Campbell (wrapper); https://stackoverflow.com/users/36866/some
  * @license Public Domain
+ * @copyright 2014-2019, Nick Campbell (wrapper)
 ################################################################################################# */
 !function () {
     'use strict';

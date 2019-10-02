@@ -1,3 +1,10 @@
+/** ################################################################################################
+ * Angular mixin for ishJS
+ * @mixin ish.lib.ng
+ * @author Nick Campbell
+ * @license MIT
+ * @copyright 2014-2019, Nick Campbell
+################################################################################################# */
 !function (core, angular) {
     'use strict';
 

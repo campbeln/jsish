@@ -1,8 +1,9 @@
 /** ################################################################################################
- * @class core.ui.tooltip
- * @classdesc ishJS Functionality (Q: Are you using Vanilla Javascript? A: ...ish)
+ * Browser-based Tooltip mixin for ishJS
+ * @mixin ish.ui.tooltip
  * @author Nick Campbell
  * @license MIT
+ * @copyright 2014-2019, Nick Campbell
 ################################################################################################# */
 !function (core) {
     "use strict";

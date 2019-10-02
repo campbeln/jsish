@@ -1,8 +1,9 @@
 /** ################################################################################################
- * @class ish
- * @classdesc ishJS Functionality (Q: Are you using Vanilla Javascript? A: ...ish)
+ * Browser-based Document Object Model mixin for ishJS
+ * @mixin ish.ui.dom
  * @author Nick Campbell
  * @license MIT
+ * @copyright 2014-2019, Nick Campbell
 ################################################################################################# */
 !function (core) {
     'use strict';
@@ -53,7 +54,7 @@
                     }
                     //# Else we need to pull our DOM element to _replace from the oOptions (if any)
                     else {
-                        //_replace = core.type.dom.mk(oOptions.replace, _undefined);
+                        _replace = core.type.dom.mk(oOptions.replace, _undefined);
 
                         //# If the vFirstArg .is .str, (eventually) set it into our .src
                         if (core.type.str.is(vFirstArg, true)) {

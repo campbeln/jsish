@@ -1,9 +1,6 @@
 /*
 ####################################################################################################
-Class: ish
-ishJS Functionality (Q: Are you using Vanilla Javascript? A: ...ish)
-By: Nick Campbell
-License: MIT
+ * Polyfills for ishJS
 ####################################################################################################
 Breaking Changes:
 $ver                                    ver
@@ -70,6 +67,7 @@ type.json.mk => type.obj.mk
 type.is.val => type.is.value
 type.enum.is.val => type.enum.is.value
 type.enum.is.desc => type.enum.is.label
+type.is.ish.options => config.ish()
 */
 
 

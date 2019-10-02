@@ -1,7 +1,7 @@
 /** ################################################################################################
- * @class ish
- * @classdesc ishJS Functionality (Q: Are you using Vanilla Javascript? A: ...ish)
- * @version 0.12.2019-09-28
+ * ishJS Functionality (Q: Are you using Vanilla Javascript? A: ...ish)
+ * @module ish
+ * @version 0.12.2019-10-02
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
@@ -20,7 +20,7 @@
         oPrivate = {},
         oTypeIsIsh = { //# Set the .ver and .target under .type.is.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             config: {
-                ver: '0.12.2019-09-28',
+                ver: '0.12.2019-10-02',
                 onServer: bServerside,
                 debug: true,
                 //script: _undefined,
@@ -73,9 +73,10 @@
 
 
     /** ################################################################################################
+     * Collection of Type-based functionality.
      * @namespace core.type
-     * @desc Collection of variable Type-based functionality (`is` and `mk` only).
-     * @requires ~core.resolve (core.type.fn.mk)
+     * @variation 0
+     * @comment (`is` and `mk` only)
     ################################################################################################# */
     core.type = function () {
         //# Thanks to Symbol()s not wanting to be casted to strings or numbers (i.e. parseFloat, regexp.test, new Date), we need to wrap the test below for the benefit of ish.type()
@@ -88,9 +89,13 @@
             return s;
         }
 
-        /*
-        Determines the type of the passed argument.
-        */
+        /** #####
+         * Determines the type of the passed value.
+         * @function ish.type
+         * @param {variant} x Value to interrogate.
+         * @param {variant[]} [a_vOrder=ish.config.ish().typeOrder] Type ordering to use during interrogation.
+         * @returns {function} Value indicating the type of the passed value.
+        ######### */
         function type(x, a_vOrder) {
             var fnCurrent, vCurrent, i,
                 fnReturnVal /* = _undefined */
@@ -124,33 +129,28 @@
             return fnReturnVal;
         } //# core.type
 
-        /*
-        Function: is
-        Determines if the passed value is an instance of the passed type.
-        Parameters:
-        o - The variant to interrogate.
-        t - The type to compare to.
-        Returns:
-        Boolean value representing if the passed value is an instance of the passed type.
-        */
-        type.is = function isType(o, t) {
+        /** #####
+         * Determines if the passed value is an instance of the passed type.
+         * @function ish.type.is
+         * @param {variant} x Value to interrogate.
+         * @param {variant} t Type to use during interrogation.
+         * @returns {boolean} Value representing if the passed value is an instance of the passed type.
+        ######### */
+        type.is = function isType(x, t) {
             try {
-                return (o instanceof t);
+                return (x instanceof t);
             } catch (e) {
                 return false;
             }
         }; //# type.is
 
-        /*
-        Function: native
-        Determines if the passed value is a native Javascript function or object.
-        Parameters:
-        x - The variant to interrogate.
-        Returns:
-        Boolean value representing if the value is a native Javascript function or object.
-        About:
-        From: http://davidwalsh.name/essential-javascript-functions
-        */
+        /** #####
+         * Determines if the passed value is a native Javascript function or object.
+         * @see {@link http://davidwalsh.name/essential-javascript-functions|DavidWalsh.name}
+         * @function ish.type.is.native
+         * @param {variant} x Value to interrogate.
+         * @returns {boolean} Value representing if the passed value is a native Javascript function or object.
+        ######### */
         type.is.native = function () {
             var toString = Object.prototype.toString,       // Used to resolve the internal `[[Class]]` of values
                 fnToString = Function.prototype.toString,   // Used to resolve the decompiled source of functions
@@ -195,42 +195,38 @@
             }
         }(), //# type.is.native*/
 
-        /*
-        Function: is.collection
-        Determines if the passed value is a list type (e.g. HTMLCollection|HTMLFormControlsCollection|HTMLOptionsCollection|NodeList|NamedNodeMap|Arguments + Object to support <IE9).
-        Parameters:
-        n - The variant to interrogate.
-        vOptions - variant representing the following optional settings:
-            vOptions === true - Boolean value representing if empty collections are to be ignored.
-            vOptions.disallow0Length - Boolean value representing if empty collections are to be ignored.
-            vOptions.allowObject - Boolean value representing if Objects are to be included in the test (to support <IE9).
-            vOptions.allowArray - Boolean value representing if Arrays are to be included in the test.
-        Returns:
-        Boolean value representing if the value is a list type.
-        */
-        type.is.collection = function isCollection(n, vOptions) {
+        /** #####
+         * Determines if the passed value is a list type (e.g. HTMLCollection|HTMLFormControlsCollection|HTMLOptionsCollection|NodeList|NamedNodeMap|Arguments + Object to support <IE9).
+         * @function ish.type.is.collection
+         * @param {variant} x Value to interrogate.
+         * @param {variant} [vOptions] Value representing the following options:
+         *      @param {boolean} [vOptions=false] Value representing if empty collections are to be ignored.
+         *      @param {boolean} [vOptions.disallow0Length=false] Value representing if empty collections are to be ignored.
+         *      @param {boolean} [vOptions.allowObject=false] Value representing if Objects are to be included in the test (to support <IE9).
+         *      @param {boolean} [vOptions.allowArray=false] Value representing if Arrays are to be included in the test.
+         * @returns {boolean} Value representing if the passed value is a collection type.
+        ######### */
+        type.is.collection = function isCollection(x, vOptions) {
             var oOptions = core.type.obj.mk(vOptions),
                 bDisallow0Length = (vOptions === true || oOptions.disallow0Length)
             ;
 
             return (
-                (oOptions.allowObject && core.type.obj.is(n, { nonEmpty: bDisallow0Length })) ||
-                (oOptions.allowArray && core.type.arr.is(n, bDisallow0Length)) ||
+                (oOptions.allowObject && core.type.obj.is(x, { nonEmpty: bDisallow0Length })) ||
+                (oOptions.allowArray && core.type.arr.is(x, bDisallow0Length)) ||
                 (
-                    (n && core.type.is.numeric(n.length) && (!bDisallow0Length || n.length > 0)) &&
-                    /^\[object (HTMLCollection|HTMLFormControlsCollection|HTMLOptionsCollection|NodeList|NamedNodeMap|Arguments)\]$/.test(Object.prototype.toString.call(n))
+                    (x && core.type.is.numeric(x.length) && (!bDisallow0Length || x.length > 0)) &&
+                    /^\[object (HTMLCollection|HTMLFormControlsCollection|HTMLOptionsCollection|NodeList|NamedNodeMap|Arguments)\]$/.test(Object.prototype.toString.call(x))
                 )
             );
         }; //# type.is.collection
 
-        /*
-        Function: is.numeric
-        Determines if the passed value is a numeric value (includes implicit casting per the Javascript rules, see: <core.type.int.mk>).
-        Parameters:
-        x - The numeric value to interrogate.
-        Returns:
-        Boolean value representing if the value is a numeric value.
-        */
+        /** #####
+         * Determines if the passed value is a numeric value (includes implicit casting per the Javascript rules, see: {@link: ish.type.int.mk}).
+         * @function ish.type.is.numeric
+         * @param {variant} x Value to interrogate.
+         * @returns {boolean} Value representing if the passed value is a numeric type.
+        ######### */
         type.is.numeric = function isNumeric(x) {
             var reNumber = /^[-0-9]?[0-9]*(\.[0-9]{1,})?$/, // (bAllowCommaDecimal === true ? /^[-0-9]?[0-9]*([\.\,][0-9]{1,})?$/ : /^[-0-9]?[0-9]*(\.[0-9]{1,})?$/),
                 bReturnVal = false
@@ -248,61 +244,67 @@
             return bReturnVal;
         }; //# type.is.numeric
 
-        /*
-        */
-        type.is.ish = function isIsh(o) {
-            return (arguments.length === 0 || o === core);
+        /** #####
+         * Determines if the passed value is an `ish` instance.
+         * @function ish.type.is.ish
+         * @param {variant} x Value to interrogate.
+         * @returns {boolean} Value representing if the passed value is an `ish` instance.
+        ######### */
+        type.is.ish = function isIsh(x) {
+            return (arguments.length === 0 || x === core);
         }; //# type.is.ish
 
         //####
+        //####
 
+        /** #####
+         * Boolean-based type functionality.
+         * @namespace ish.type.bool
+        ######### */
         type.bool = {
-            /*
-            Function: is
-            Determines if the passed value is a boolean value (e.g. `true` or `false`).
-            Parameters:
-            b - The boolean value to interrogate.
-            Returns:
-            Boolean value representing if the value is a boolean value.
-            */
-            is: function isBool(b, bAllowString) {
-                var sB = mkStr(b).toLowerCase();
+            /** #####
+             * Determines if the passed value represents a boolean.
+             * @function ish.type.bool.is
+             * @param {variant} x Value to interrogate.
+             * @param {boolean} [bAllowString=false] Value representing if strings are to be considered valid.
+             * @returns {boolean} Value representing if the passed value represents a boolean.
+            ######### */
+            is: function isBool(x, bAllowString) {
+                var sB = mkStr(x).toLowerCase().trim();
 
                 return (
-                    _Object_prototype_toString.call(b) === '[object Boolean]' ||
+                    _Object_prototype_toString.call(x) === '[object Boolean]' ||
                     (bAllowString && (sB === "true" || sB === "false"))
                 );
             }, //# bool.is
 
-            /*
-            Function: mk
-            Safely forces the passed variant into a boolean value.
-            Parameters:
-            b - The variant to interrogate.
-            bDefaultVal - The default value to return if casting fails.
-            Returns:
-            Boolean value representing the truthiness of the passed variant.
-            */
-            mk: function (b, bDefaultVal) {
+            /** #####
+             * Casts the passed value into a boolean.
+             * @function ish.type.bool.mk
+             * @param {variant} x Value to interrogate.
+             * @param {variant} [vDefaultVal=truthy_value_of_x] Value representing the default return value if casting fails.
+             * @returns {boolean} Value representing the passed value as a boolean type.
+            ######### */
+            mk: function (x, vDefaultVal) {
                 var bReturnVal = (
                     arguments.length > 1 ?
-                    bDefaultVal : (
-                        b ? true : false
+                    vDefaultVal : (
+                        x ? true : false
                     )
                 );
 
-                //# Since the bReturnVal was defaulted to the bDefaultVal above, pull it's value back into our bDefaultVal
-                bDefaultVal = bReturnVal;
+                //# Since the bReturnVal was defaulted to the vDefaultVal above, pull it's value back into our vDefaultVal
+                vDefaultVal = bReturnVal;
 
                 //#
-                if (core.type.bool.is(b)) {
-                    bReturnVal = b;
+                if (core.type.bool.is(x)) {
+                    bReturnVal = x;
                 }
                 //#
-                else if (core.type.str.is(b, true)) {
-                    b = b.trim().toLowerCase();
-                    bReturnVal = (b === 'true' || (
-                        b === 'false' ? false : bDefaultVal
+                else if (core.type.str.is(x, true)) {
+                    x = x.trim().toLowerCase();
+                    bReturnVal = (x === 'true' || (
+                        x === 'false' ? false : vDefaultVal
                     ));
                 }
 
@@ -310,91 +312,94 @@
             } //# bool.mk
         }; //# core.type.bool
 
+        /** #####
+         * Integer-based type functionality.
+         * @namespace ish.type.bool
+        ######### */
         type.int = {
-            /*
-            Function: is
-            Determines if the passed value is an integer value (includes implicit casting per the Javascript rules, see: <core.type.int.mk>).
-            Parameters:
-            x - The integer to interrogate.
-            Returns:
-            Boolean value representing if the value is an integer value.
-            */
+            /** #####
+             * Determines if the passed value represents an integer (includes implicit casting per the Javascript rules, see: {@link: ish.type.int.mk}).
+             * @function ish.type.int.is
+             * @param {variant} x Value to interrogate.
+             * @returns {boolean} Value representing if the passed value represents an integer.
+            ######### */
             is: function isInt(x) {
                 var fX = core.type.float.mk(x);
                 return (core.type.is.numeric(x) && fX % 1 === 0);
             }, //# int.is
 
-            /*
-            Function: mk
-            Safely forces the passed value into an integer (includes implicit casting per the Javascript rules, see about section).
-            Parameters:
-            i - The variant to interrogate.
-            vDefault - The default value to return if casting fails.
-            iRadix - Integer between 2 and 36 that represents the radix (the base in mathematical numeral systems) of the above mentioned string.
-            Returns:
-            Integer representing the passed value.
-            About:
-            Javascript has some funky rules when it comes to casting numeric values, and they are at play in this function.
-            > "12 monkeys!" === 12
-            > "   12 monkeys!" === 12
-            > "12monkeys!" === 12
-            > "1 2 monkeys!" === 1 (not 12)
-            > "1,2 monkeys!" === 1 (not 12)
-            > "1,200 monkeys!" === 1 (not 1200)
-            > "11 - there were 12 monkeys!" === 11
-            > "twelve (12) monkeys!" === undefined
-            > "$12 monkeys!" === undefined
-            In short, the first non-whitespace numeric characters are used in the cast, until any non-numeric character is hit.
-            */
-            mk: function (i, vDefault, iRadix) {
-                var iReturnVal = parseInt(i, (iRadix > 1 && iRadix < 37 ? iRadix : 10));
+            /** #####
+             * Casts the passed value into an integer (includes implicit casting per the Javascript rules, see below).
+             *      Javascript has some funky rules when it comes to casting numeric values, and they are at play in this function.
+             *          "12 monkeys!" === 12
+             *          "   12 monkeys!" === 12
+             *          "12monkeys!" === 12
+             *          "1 2 monkeys!" === 1 (not 12)
+             *          "1,2 monkeys!" === 1 (not 12)
+             *          "1,200 monkeys!" === 1 (not 1200)
+             *          "11 - there were 12 monkeys!" === 11
+             *          "twelve (12) monkeys!" === undefined
+             *          "$12 monkeys!" === undefined
+             *      In short, the first non-whitespace numeric characters are used in the cast, until any non-numeric character is hit.
+             * @function ish.type.bool.mk
+             * @param {variant} x Value to interrogate.
+             * @param {variant} [vDefaultVal=0] Value representing the default return value if casting fails.
+             * @param {integer} [iRadix=10] Value between 2-36 that represents the radix (the base in mathematical numeral systems) passed into `parseInt`.
+             * @returns {integer} Value representing the passed value as an integer type.
+            ######### */
+            mk: function (x, vDefaultVal, iRadix) {
+                var iReturnVal = parseInt(x, (iRadix > 1 && iRadix < 37 ? iRadix : 10));
 
                 return (!isNaN(iReturnVal) ?
                     iReturnVal :
-                    (arguments.length > 1 ? vDefault : 0)
+                    (arguments.length > 1 ? vDefaultVal : 0)
                 );
             } //# int.mk
         }; //# core.type.int
 
+        /** #####
+         * Floating Point Number-based type functionality.
+         * @namespace ish.type.bool
+        ######### */
         type.float = {
-            /*
-            Function: is
-            Determines if the passed value is a floating point numeric value (includes implicit casting per the Javascript rules, see: <core.type.int.mk>).
-            Parameters:
-            x - The numeric value to interrogate.
-            Returns:
-            Boolean value representing if the value is a floating point numeric value.
-            */
+            /** #####
+             * Determines if the passed value represents a floating point number (includes implicit casting per the Javascript rules, see: {@link: ish.type.int.mk}).
+             * @function ish.type.float.is
+             * @param {variant} x Value to interrogate.
+             * @returns {boolean} Value representing if the passed value represents a floating point number.
+            ######### */
             is: function isFloat(x) {
                 var fX = core.type.float.mk(x);
                 return (core.type.is.numeric(x) && fX % 1 !== 0);
             }, //# float.is
 
-            /*
-            Function: mk
-            Safely forces the passed value into a floating point numeric value (includes implicit casting per the Javascript rules, see: <core.type.int.mk>).
-            Parameters:
-            f - The variant to interrogate.
-            vDefault - The default value to return if casting fails.
-            iRadix - Integer between 2 and 36 that represents the radix (the base in mathematical numeral systems) of the above mentioned string.
-            Returns:
-            Float representing the passed value.
-            */
-            mk: function (f, vDefault, iRadix) {
+            /** #####
+             * Casts the passed value into a floating point number (includes implicit casting per the Javascript rules, see: {@link: ish.type.int.mk}).
+             * @function ish.type.float.mk
+             * @param {variant} x Value to interrogate.
+             * @param {variant} [vDefaultVal=0] Value representing the default return value if casting fails.
+             * @param {integer} [iRadix=10] Value between 2-36 that represents the radix (the base in mathematical numeral systems) passed into `parseFloat`.
+             * @returns {float} Value representing the passed value as an floating point number type.
+            ######### */
+            mk: function (x, vDefaultVal, iRadix) {
                 var fReturnVal;
 
                 //# Thanks to Symbol()s not wanting to be casted to strings or numbers (i.e. parseFloat, regexp.test, new Date), we need to wrap the test below for the benefit of ish.type()
                 try {
-                    fReturnVal = parseFloat(f, (iRadix > 1 && iRadix < 37 ? iRadix : 10));
+                    fReturnVal = parseFloat(x, (iRadix > 1 && iRadix < 37 ? iRadix : 10));
                 } catch (e) {}
 
                 return (!isNaN(fReturnVal) ?
                     fReturnVal :
-                    (arguments.length > 1 ? vDefault : 0)
+                    (arguments.length > 1 ? vDefaultVal : 0)
                 );
             } //# float.mk
         }; //# core.type.float
 
+        /** #####
+         * Date-based type functionality.
+         * @namespace ish.type.bool
+        ######### */
         type.date = function () {
             //#
             function mkDate(d, bAllowNumeric) {
@@ -423,103 +428,107 @@
 
 
             return {
-                /*
-                Function: is
-                Determines if the passed value is a date.
-                Parameters:
-                x - The date to interrogate.
-                Returns:
-                Boolean value representing if the value is a date.
-                */
+                /** #####
+                 * Determines if the passed value represents a date.
+                 * @function ish.type.date.is
+                 * @param {variant} x Value to interrogate.
+                 * @returns {boolean} Value representing if the passed value represents a date.
+                ######### */
                 is: function isDate(x, bAllowNumeric) {
                     return mkDate(x, bAllowNumeric).b;
                 }, //# date.is
 
-                /*
-                Function: mk
-                Safely forces the passed value into a date.
-                Parameters:
-                x - The variant to interrogate.
-                dDefault - The default value to return if casting fails.
-                Returns:
-                Date representing the passed value.
-                */
-                mk: function (x, dDefault) {
+                /** #####
+                 * Casts the passed value into a date.
+                 * @function ish.type.date.mk
+                 * @param {variant} x Value to interrogate.
+                 * @param {variant} [vDefaultVal=new Date()] Value representing the default return value if casting fails.
+                 * @returns {Date} Value representing the passed value as a date type.
+                ######### */
+                mk: function (x, vDefaultVal) {
                     var oResult = mkDate(x, true);
 
                     return (oResult.b ?
                         oResult.d :
-                        (arguments.length > 1 ? dDefault : new Date())
+                        (arguments.length > 1 ? vDefaultVal : new Date())
                     );
                 } //# date.mk
             };
         }(); //# core.type.date
 
+        /** #####
+         * String-based type functionality.
+         * @namespace ish.type.bool
+        ######### */
         type.str = {
-            /*
-            Function: is
-            Determines if the passed value is a string.
-            Parameters:
-            s - The string to interrogate.
-            bDisallowNullString - Boolean value indicating if null-strings are to be disallowed (e.g. "").
-            bTrimWhitespace - Boolean value indicating if leading and trailing whitespace is to be trimmed prior to integration.
-            Returns:
-            Boolean value representing if the value is a string.
-            */
-            is: function isStr(s, bDisallowNullString, bTrimWhitespace) {
+            /** #####
+             * Determines if the passed value represents a string.
+             * @function ish.type.str.is
+             * @param {variant} x Value to interrogate.
+             * @param {boolean} [bDisallowNullString=false] Value representing if null-strings (e.g. "") are to be disallowed.
+             * @param {boolean} [bTrimWhitespace=false] Value representing if leading and trailing whitespace is to be trimmed prior to integration.
+             * @returns {boolean} Value representing if the passed value represents a string.
+            ######### */
+            is: function isStr(x, bDisallowNullString, bTrimWhitespace) {
                 return (
-                    (typeof s === 'string' || s instanceof String) &&
-                    (!bDisallowNullString || s !== "") &&
-                    (!bTrimWhitespace || mkStr(s).trim() !== "")
+                    (typeof x === 'string' || x instanceof String) &&
+                    (!bDisallowNullString || x !== "") &&
+                    (!bTrimWhitespace || mkStr(x).trim() !== "")
                 );
             }, //# str.is
 
-            /*
-            Function: mk
-            Safely forces the passed value into a string.
-            Parameters:
-            x - The variant to interrogate.
-            sDefault - The default value to return if casting fails.
-            Returns:
-            String representing the passed value.
-            */
-            mk: function (s, sDefault) {
-                var sS = (core.type.obj.is(s, { strict: true }) ? JSON.stringify(s) : mkStr(s));
+            /** #####
+             * Casts the passed value into a string.
+             * @function ish.type.str.mk
+             * @param {variant} x Value to interrogate.
+             * @param {variant} [vDefaultVal=""] Value representing the default return value if casting fails.
+             * @returns {string} Value representing the passed value as a string type.
+            ######### */
+            mk: function (x, vDefaultVal) {
+                var sS = (core.type.obj.is(x, { strict: true }) ? JSON.stringify(x) : mkStr(x));
 
-                return ((s || s === false || s === 0) && sS ?
+                return ((x || x === false || x === 0) && sS ?
                     sS :
-                    (arguments.length > 1 ? sDefault : "")
+                    (arguments.length > 1 ? vDefaultVal : "")
                 );
             } //# str.mk
         }; //# core.type.str
 
+        /** #####
+         * Function-based type functionality.
+         * @namespace ish.type.bool
+        ######### */
         type.fn = {
-            /*
-            Function: is
-            Determines if the passed value is a function.
-            Parameters:
-            f - The variant to interrogate.
-            Returns:
-            Boolean value representing if the value is a function.
-            */
-            is: function isFn(f) {
-                return (_Object_prototype_toString.call(f) === '[object Function]');
+            /** #####
+             * Determines if the passed value represents a function.
+             * @function ish.type.fn.is
+             * @param {variant} x Value to interrogate.
+             * @returns {boolean} Value representing if the passed value represents a function.
+            ######### */
+            is: function isFn(x) {
+                return (_Object_prototype_toString.call(x) === '[object Function]');
             }, //# fn.is
 
-            //#
-            mk: function (f, fnDefault) {
+            /** #####
+             * Casts the passed value into a function.
+             * @function ish.type.bool.mk
+             * @param {variant} x Value to interrogate.
+             * @param {variant} [vDefaultVal=ish.type.fn.noop] Value representing the default return value if casting fails.
+             * @returns {function} Value representing the passed value as a function type.
+            ######### */
+            mk: function (x, vDefaultVal) {
                 var vResolved,
                     fnResolve = core.resolve || function (_root, sKey) { return _root[sKey]; },
-                    fnReturnVal = (arguments.length > 1 ? fnDefault : noop)
+                    fnReturnVal = (arguments.length > 1 ? vDefaultVal : noop)
                 ;
 
-                //# If the passed f .is a .fn, reset our fnReturnVal to it
-                if (core.type.fn.is(f)) {
-                    fnReturnVal = f;
+                //# If the passed x .is a .fn, reset our fnReturnVal to it
+                if (core.type.fn.is(x)) {
+                    fnReturnVal = x;
                 }
                 //# Else we need to see if f can be vResolved
                 else {
-                    vResolved = (core.type.str.is(f) || core.type.arr.is(f) ? fnResolve(_root, f) : _undefined);
+                    vResolved = (core.type.str.is(x) || core.type.arr.is(x) ? fnResolve(_root, x) : _undefined);
 
                     //# If the passed f .is a .str or .arr and we vResolved it to a .fn, reset our fnReturnVal to it
                     if (core.type.fn.is(vResolved)) {
@@ -531,42 +540,46 @@
             } //# fn.mk
         }; //# core.type.fn
 
+        /** #####
+         * Array-based type functionality.
+         * @namespace ish.type.bool
+        ######### */
         type.arr = {
-            /*
-            Function: is
-            Determines if the passed value is an array.
-            Parameters:
-            a - The variant to interrogate.
-            bDisallow0Length - Boolean value representing if zero length arrays are to be ignored.
-            Returns:
-            Boolean value representing if the value is an array.
-            */
-            is: function isArr(a, bDisallow0Length) {
-                return (_Object_prototype_toString.call(a) === '[object Array]' &&
-                    (!bDisallow0Length || a.length > 0)
+            /** #####
+             * Determines if the passed value represents an array.
+             * @function ish.type.arr.is
+             * @param {variant} x Value to interrogate.
+             * @param {boolean} [bDisallow0Length=false] Value representing if zero length arrays are to be ignored.
+             * @returns {boolean} Value representing if the passed value represents an array.
+            ######### */
+            is: function isArr(x, bDisallow0Length) {
+                return (_Object_prototype_toString.call(x) === '[object Array]' &&
+                    (!bDisallow0Length || x.length > 0)
                 );
             }, //# arr.is
 
-            /*
-            Function: mk
-            Safely forces the passed array or list reference into an array.
-            Parameters:
-            a - The variant to interrogate.
-            a_vDefault - The default value to return if casting fails.
-            Returns:
-            Array representing the updated array reference.
-            */
-            mk: function (a, a_vDefault) {
-                //# Preconvert a list reference into an array
-                a = (core.type.is.collection(a) ? Array.prototype.slice.call(a) : a);
+            /** #####
+             * Casts the passed value into an array.
+             * @function ish.type.arr.mk
+             * @param {variant} x Value to interrogate.
+             * @param {variant} [vDefaultVal=[]] Value representing the default return value if casting fails.
+             * @returns {[]} Value representing the passed value as an array type.
+            ######### */
+            mk: function (x, vDefaultVal) {
+                //# Preconvert a .collection reference into an array
+                x = (core.type.is.collection(x) ? Array.prototype.slice.call(x) : x);
 
-                return (core.type.arr.is(a) ?
-                    a :
-                    (arguments.length > 1 ? a_vDefault : [])
+                return (core.type.arr.is(x) ?
+                    x :
+                    (arguments.length > 1 ? vDefaultVal : [])
                 );
             } //# arr.mk
         }; //# core.type.arr
 
+        /** #####
+         * Object-based type functionality.
+         * @namespace ish.type.bool
+        ######### */
         type.obj =function () {
             //#
             function mkJSON(v) {
@@ -597,23 +610,21 @@
 
 
             return {
-                /*
-                Function: is
-                Determines if the passed value is an object.
-                Parameters:
-                o - The variant to interrogate.
-                vOptions - variant representing the following optional settings:
-                    vOptions === true - Boolean value representing if empty objects are to be ignored.
-                    vOptions.strict - Boolean value representing if only [object Objects] are to be allowed.
-                    vOptions.nonEmpty - Boolean value representing if empty objects are to be ignored.
-                    vOptions.allowFn - Boolean value representing if functions are to be allowed.
-                    vOptions.allowJSON - Boolean value representing if JSON-strings are to be allowed.
-                    vOptions.requiredKeys - Array of Strings listing the keys required to be present in the object.
-                    vOptions.interface - Object defining the keys and types.
-                Returns:
-                Boolean value representing if the value is an object.
-                */
-                is: function isObj(o, vOptions) {
+                /** #####
+                 * Determines if the passed value represents an object.
+                 * @function ish.type.object.is
+                 * @param {variant} x Value to interrogate.
+                 * @param {variant} [vOptions] Value representing the following options:
+                 *      @param {boolean} [vOptions=false] Value representing if empty objects are to be ignored.
+                 *      @param {boolean} [vOptions.nonEmpty=false] Value representing if empty objects are to be ignored.
+                 *      @param {boolean} [vOptions.strict=false] Value representing if only `[object Objects]` are to be allowed.
+                 *      @param {boolean} [vOptions.allowFn=false] Value representing if functions are to be allowed.
+                 *      @param {boolean} [vOptions.allowJSON=false] Value representing if JSON-strings are to be allowed.
+                 *      @param {boolean} [vOptions.requiredKeys=undefined] Value listing the keys required to be present in the object.
+                 *      @param {boolean} [vOptions.interface=false] Value representing the required the keys and types (see: {@link: ish.type}).
+                 * @returns {boolean} Value representing if the passed value represents an object.
+                ######### */
+                is: function isObj(x, vOptions) {
                     var fnTest, a_sInterfaceKeys, i, bReturnVal,
                         oSettings = (vOptions && vOptions === Object(vOptions) ? vOptions : {}),
                         a_sRequiredKeys = oSettings.requiredKeys,
@@ -622,20 +633,20 @@
                     ;
 
                     //# Call objBase to determine the validity of the passed o(bject), storing the results back in out o(bject) and bReturnVal
-                    o = objBase(o, oSettings.allowFn, oSettings.allowJSON, oSettings.strict);
-                    bReturnVal = o.b;
-                    o = o.o;
+                    x = objBase(x, oSettings.allowFn, oSettings.allowJSON, oSettings.strict);
+                    bReturnVal = x.b;
+                    x = x.o;
 
                     //# If the passed o(bject) is valid
                     if (bReturnVal) {
                         //# Reset our bReturnVal based on bDisallowEmptyObject
-                        bReturnVal = (!bDisallowEmptyObject || Object.keys(o).length !== 0);
+                        bReturnVal = (!bDisallowEmptyObject || Object.keys(x).length !== 0);
 
                         //# If we still have a valid Object and we have a_sRequiredKeys, traverse them
                         if (bReturnVal && core.type.arr.is(a_sRequiredKeys, true)) {
                             for (i = 0; i < a_sRequiredKeys.length; i++) {
                                 //# If the current a_sRequiredKeys is missing from our o(bject), flip our bReturnVal and fall from the loop
-                                if (!o.hasOwnProperty(a_sRequiredKeys[0])) {
+                                if (!x.hasOwnProperty(a_sRequiredKeys[0])) {
                                     bReturnVal = false;
                                     break;
                                 }
@@ -653,7 +664,7 @@
                                 fnTest = (core.type.fn.is(fnTest) ? fnTest : core.resolve(core.type, [a_sInterfaceKeys[i], "is"]));
 
                                 //# If the passed o(bject) doesn't have the current a_sInterfaceKeys or it's invalid per the current fnTest, reset our bReturnVal and fall from the loop
-                                if (!o.hasOwnProperty(a_sInterfaceKeys[i]) || !core.type.fn.call(fnTest, null, o[a_sInterfaceKeys[i]])) {
+                                if (!x.hasOwnProperty(a_sInterfaceKeys[i]) || !core.type.fn.call(fnTest, null, x[a_sInterfaceKeys[i]])) {
                                     bReturnVal = false;
                                     break;
                                 }
@@ -664,43 +675,62 @@
                     return bReturnVal;
                 }, //# obj.is
 
-                /*
-                Function: mk
-                Safely forces the passed object reference into an object containing the passed path optionally set to the optional value.
-                Parameters:
-                o - The variant to interrogate.
-                sPath - String representing the path to the property.
-                (Optional) vValue - variant representing the value to set the referenced property to.
-                Returns:
-                Object representing the updated object reference.
-                */
-                mk: function (o, oDefault) {
+                /** #####
+                 * Casts the passed value into an object.
+                 * @function ish.type.obj.mk
+                 * @param {variant} x Value to interrogate.
+                 * @param {variant [vDefaultVal={}] Value representing the default return value if casting fails.
+                 * @returns {{}} Value representing the passed value as an object type.
+                ######### */
+                mk: function (x, vDefaultVal) {
                     //# If the passed o(bject) .is .str, try to .mkJSON
-                    if (core.type.str.is(o, true)) {
-                        o = mkJSON(o);
+                    if (core.type.str.is(x, true)) {
+                        x = mkJSON(x);
                     }
 
-                    return (core.type.obj.is(o, { allowFn: true }) ?
-                        o :
-                        (arguments.length > 1 ? oDefault : {})
+                    return (core.type.obj.is(x, { allowFn: true }) ?
+                        x :
+                        (arguments.length > 1 ? vDefaultVal : {})
                     );
                 }, //# obj.mk
             };
         }(); //# core.type.obj
 
+        /** #####
+         * Symbol-based type functionality.
+         * @namespace ish.type.bool
+        ######### */
         type.symbol = {
+            /** #####
+             * Determines if the Symbol type is present in the current environment.
+             * @function ish.type.symbol.exists
+             * @returns {symbol} Value representing if the Symbol type is present in the current environment.
+            ######### */
             exists: function () {
                 return core.type.fn.is(_root.Symbol);
             }, //# symbol.exists
 
+            /** #####
+             * Determines if the passed value represents a symbol.
+             * @function ish.type.symbol.is
+             * @param {variant} x Value to interrogate.
+             * @returns {symbol} Value representing if the passed value represents a symbol.
+            ######### */
             is: function (x) {
                 return (core.type.symbol.exists() && typeof x === 'symbol');
             }, //# symbol.is
 
-            mk: function (x, xDefault) {
+            /** #####
+             * Casts the passed value into a symbol.
+             * @function ish.type.symbol.mk
+             * @param {variant} x Value to interrogate.
+             * @param {variant} [vDefaultVal=Symbol()] Value representing the default return value if casting fails.
+             * @returns {symbol} Value representing the passed value as a symbol type.
+            ######### */
+            mk: function (x, vDefaultVal) {
                 return (core.type.symbol.is(x) ?
                     x :
-                    (arguments.length === 1 ? _root.Symbol() : xDefault)
+                    (arguments.length === 1 ? _root.Symbol() : vDefaultVal)
                 );
             } //# symbol.mk
         }; //# core.type.symbol
@@ -2679,10 +2709,12 @@
                     param:  [1, "<object>", "</object>"],
                     thead:  [1, "<table>", "</table>"],
                     tr:     [2, "<table><tbody>", "</tbody></table>"],
-                    col:    [2, "<table><colgroup>", "</colgroup></table>"], //# was: "<table><tbody></tbody><colgroup>"
+                    col:    [2, "<table><colgroup>", "</colgroup></table>"],
                     td:     [3, "<table><tbody><tr>", "</tr></tbody></table>"],
                     body:   [0, "", ""]
                 };
+
+                //# Map the matching tags to their base definitions
                 a_oWrapMap.head = a_oWrapMap.body;
                 a_oWrapMap.optgroup = a_oWrapMap.option;
                 a_oWrapMap.th = a_oWrapMap.td;
@@ -2732,7 +2764,8 @@
                     DOM element represented by the passed value, or _default if interrogation failed.
                     */
                     mk: function (x, _default) {
-                        var _div = _document.createElement("div"),
+                        var a__parsed, i,
+                            _div = _document.createElement("div"),
                             _returnVal = (arguments.length > 1 ? _default : _div)
                         ;
 
@@ -2744,11 +2777,40 @@
                             if (core.type.str.is.selector(x)) {
                                 _returnVal = _document_querySelector(x) || _document.getElementById(x) || _returnVal;
                             }
+                            //# Else try to parse the passed .is .str as HTML
+                            //#     NOTE: Old logic for reference
+                            /*else if (true) {
+                                _div.innerHTML = x;
+
+                                //# If we were able to parse a single non-#text node, set it into our _returnVal
+                                //# TODO: Make testing more betterer
+                                if (_div.childNodes.length <= 2 && _div.childNodes[0].nodeType !== 3) {
+                                    _returnVal = _div.childNodes[0];
+                                }
+                                //# Else if our _returnVal was defaulted to the _div above, reset the _div's .innerHTML
+                                else {
+                                    _div.innerHTML = "";
+                                }
+                            }*/
                             //# Else try to .parse the passed .is .str as HTML
-                            //#     NOTE: We resolve and _returnVal the first element only, hence the .resolve
-                            //#     NOTE: Since .parse will return based on a passed _default or not, we .run .parse with our own arguments to ensure proper behavior
                             else {
-                                _returnVal = core.resolve(core.type.fn.run(core.type.dom.parse, arguments), "0") || _returnVal;
+                                //# Since .parse will return based on a passed _default or not, we .run .parse with our own arguments to ensure proper behavior
+                                a__parsed = core.type.fn.run(core.type.dom.parse, arguments);
+
+                                //# If we a__parsed out elements
+                                if (core.type.arr.is(a__parsed, true)) {
+                                    //# If we parsed out more than one element, loop over them, adding each under the generic _div, then reset our _returnVal accordingly
+                                    if (a__parsed.length > 1) {
+                                        for (i = 0; i < a__parsed.length; i++) {
+                                            _div.append(a__parsed[i]);
+                                        }
+                                        _returnVal = _div;
+                                    }
+                                    //# Else we only a__parsed out a single element, so set it into our _returnVal
+                                    else {
+                                        _returnVal = a__parsed[0];
+                                    }
+                                }
                             }
                         }
                         //# Else if the passed x .is .dom, set our _returnVal to it
@@ -2757,7 +2819,7 @@
                         }
                         //# Else if the first index of the passed x .is .dom, set our _returnVal to it
                         //#     NOTE: This is pretty much to support jQuery objects
-                        //# TODO: is this a good idea?
+                        //#     TODO: is this a good idea? Should we loop over them like above?
                         else if (x && x[0] && core.type.dom.is(x[0])) {
                             _returnVal = x[0];
                         }
@@ -2809,14 +2871,14 @@
                             a__returnVal.shift();
                         }
                         else if (bHeadTag) {
-                            a__returnVal.unshift();
+                            a__returnVal.pop();
                         }
 
                         //#
                         a__returnVal = (
                             core.type.arr.is(a__returnVal, true) ?
                             a__returnVal : (
-                                arguments.length > 1 ? [_default] : _undefined
+                                arguments.length > 1 ? [_default] : []
                             )
                         );
 
