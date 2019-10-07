@@ -16,9 +16,10 @@
         X-based functionality.
         Requires:
         <core.extend>,
+        @ignore
         ####################################################################################################
         */
-        core.oop.partial(core.?, {
+        core.oop.partial(core.X, {
         }); //# core.?
     }
 

@@ -1,11 +1,13 @@
-/** ################################################################################################
- * ishJS Functionality (Q: Are you using Vanilla Javascript? A: ...ish)
- * @module ish
- * @version 0.12.2019-10-02
+//################################################################################################
+/** @file Q: Are you using Vanilla Javascript? A: ...ish
+ * @version 0.12.2019-10-06
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
-################################################################################################# */
+ */ /**
+ * ishJS's (renameable) global object.
+ * @namespace ish
+ */ //############################################################################################
 /*jshint maxcomplexity:6 */
 !function (/*global, module, require, process, __dirname*/) {
     'use strict';
@@ -72,12 +74,12 @@
     function noop() {} //# noop
 
 
-    /** ################################################################################################
-     * Collection of Type-based functionality.
-     * @namespace core.type
-     * @variation 0
-     * @comment (`is` and `mk` only)
-    ################################################################################################# */
+    //################################################################################################
+    /** Collection of Type-based functionality (`is` and `mk` only)
+     * @namespace ish.type
+     * @see {@link ish.type!}
+     * @ignore
+     */ //############################################################################################
     core.type = function () {
         //# Thanks to Symbol()s not wanting to be casted to strings or numbers (i.e. parseFloat, regexp.test, new Date), we need to wrap the test below for the benefit of ish.type()
         function mkStr(s) {
@@ -89,13 +91,14 @@
             return s;
         }
 
-        /** #####
-         * Determines the type of the passed value.
-         * @function ish.type
+        //#########
+        /** Determines the type of the passed value.
+         * @function ish.type!
          * @param {variant} x Value to interrogate.
          * @param {variant[]} [a_vOrder=ish.config.ish().typeOrder] Type ordering to use during interrogation.
          * @returns {function} Value indicating the type of the passed value.
-        ######### */
+         * @todo Detail recognized a_vOrder values
+         */ //#####
         function type(x, a_vOrder) {
             var fnCurrent, vCurrent, i,
                 fnReturnVal /* = _undefined */
@@ -127,30 +130,33 @@
             }
 
             return fnReturnVal;
-        } //# core.type
+        } //# ish.type
 
-        /** #####
+        //#########
+        /** Determines if the passed value is an instance of the passed type.
+         * @namespace ish.type.is
+         */ /**
          * Determines if the passed value is an instance of the passed type.
-         * @function ish.type.is
+         * @function ish.type.is.!
          * @param {variant} x Value to interrogate.
          * @param {variant} t Type to use during interrogation.
          * @returns {boolean} Value representing if the passed value is an instance of the passed type.
-        ######### */
+         */ //#####
         type.is = function isType(x, t) {
             try {
                 return (x instanceof t);
             } catch (e) {
                 return false;
             }
-        }; //# type.is
+        }; //# ish.type.is
 
-        /** #####
-         * Determines if the passed value is a native Javascript function or object.
-         * @see {@link http://davidwalsh.name/essential-javascript-functions|DavidWalsh.name}
+        //#########
+        /** Determines if the passed value is a native Javascript function or object.
          * @function ish.type.is.native
          * @param {variant} x Value to interrogate.
          * @returns {boolean} Value representing if the passed value is a native Javascript function or object.
-        ######### */
+         * @see {@link http://davidwalsh.name/essential-javascript-functions|DavidWalsh.name}
+         */ //#####
         type.is.native = function () {
             var toString = Object.prototype.toString,       // Used to resolve the internal `[[Class]]` of values
                 fnToString = Function.prototype.toString,   // Used to resolve the decompiled source of functions
@@ -171,7 +177,7 @@
                     false
                 ;
             };
-        }(), //# type.is.native
+        }(), //# ishtype.is.native
         /*native: function () {
             var toString = Object.prototype.toString,       // Used to resolve the internal `[[Class]]` of x
                 fnToString = Function.prototype.toString,   // Used to resolve the decompiled source of functions
@@ -193,19 +199,18 @@
                     (x && type == 'object' && reHostCtor.test(toString.call(x))) || false
                 ;
             }
-        }(), //# type.is.native*/
+        }(), //# ish.type.is.native*/
 
-        /** #####
-         * Determines if the passed value is a list type (e.g. HTMLCollection|HTMLFormControlsCollection|HTMLOptionsCollection|NodeList|NamedNodeMap|Arguments + Object to support <IE9).
+        //#########
+        /** Determines if the passed value is a list type (e.g. HTMLCollection|HTMLFormControlsCollection|HTMLOptionsCollection|NodeList|NamedNodeMap|Arguments + Object to support &lt;IE9).
          * @function ish.type.is.collection
          * @param {variant} x Value to interrogate.
-         * @param {variant} [vOptions] Value representing the following options:
-         *      @param {boolean} [vOptions=false] Value representing if empty collections are to be ignored.
+         * @param {object|boolean} [vOptions=false] Value representing if empty collections are to be ignored.
          *      @param {boolean} [vOptions.disallow0Length=false] Value representing if empty collections are to be ignored.
-         *      @param {boolean} [vOptions.allowObject=false] Value representing if Objects are to be included in the test (to support <IE9).
+         *      @param {boolean} [vOptions.allowObject=false] Value representing if Objects are to be included in the test (to support &lt;IE9).
          *      @param {boolean} [vOptions.allowArray=false] Value representing if Arrays are to be included in the test.
          * @returns {boolean} Value representing if the passed value is a collection type.
-        ######### */
+         */ //#####
         type.is.collection = function isCollection(x, vOptions) {
             var oOptions = core.type.obj.mk(vOptions),
                 bDisallow0Length = (vOptions === true || oOptions.disallow0Length)
@@ -219,14 +224,14 @@
                     /^\[object (HTMLCollection|HTMLFormControlsCollection|HTMLOptionsCollection|NodeList|NamedNodeMap|Arguments)\]$/.test(Object.prototype.toString.call(x))
                 )
             );
-        }; //# type.is.collection
+        }; //# ish.type.is.collection
 
-        /** #####
-         * Determines if the passed value is a numeric value (includes implicit casting per the Javascript rules, see: {@link: ish.type.int.mk}).
+        //#########
+        /** Determines if the passed value is a numeric value (includes implicit casting per the Javascript rules, see: {@link: ish.type.int.mk}).
          * @function ish.type.is.numeric
          * @param {variant} x Value to interrogate.
          * @returns {boolean} Value representing if the passed value is a numeric type.
-        ######### */
+         */ //#####
         type.is.numeric = function isNumeric(x) {
             var reNumber = /^[-0-9]?[0-9]*(\.[0-9]{1,})?$/, // (bAllowCommaDecimal === true ? /^[-0-9]?[0-9]*([\.\,][0-9]{1,})?$/ : /^[-0-9]?[0-9]*(\.[0-9]{1,})?$/),
                 bReturnVal = false
@@ -242,33 +247,33 @@
             } catch (e) {}
 
             return bReturnVal;
-        }; //# type.is.numeric
+        }; //# ish.type.is.numeric
 
-        /** #####
-         * Determines if the passed value is an `ish` instance.
+        //#########
+        /** Determines if the passed value is an instance of ishJS.
          * @function ish.type.is.ish
          * @param {variant} x Value to interrogate.
-         * @returns {boolean} Value representing if the passed value is an `ish` instance.
-        ######### */
+         * @returns {boolean} Value representing if the passed value is an instance of ishJS.
+         */ //#####
         type.is.ish = function isIsh(x) {
             return (arguments.length === 0 || x === core);
-        }; //# type.is.ish
+        }; //# ish.type.is.ish
 
         //####
         //####
 
-        /** #####
-         * Boolean-based type functionality.
+        //#########
+        /** Boolean-based type functionality.
          * @namespace ish.type.bool
-        ######### */
+         */ //#####
         type.bool = {
-            /** #####
-             * Determines if the passed value represents a boolean.
+            //#########
+            /** Determines if the passed value represents a boolean.
              * @function ish.type.bool.is
              * @param {variant} x Value to interrogate.
              * @param {boolean} [bAllowString=false] Value representing if strings are to be considered valid.
              * @returns {boolean} Value representing if the passed value represents a boolean.
-            ######### */
+             */ //#####
             is: function isBool(x, bAllowString) {
                 var sB = mkStr(x).toLowerCase().trim();
 
@@ -278,13 +283,13 @@
                 );
             }, //# bool.is
 
-            /** #####
-             * Casts the passed value into a boolean.
+            //#########
+            /** Casts the passed value into a boolean.
              * @function ish.type.bool.mk
              * @param {variant} x Value to interrogate.
              * @param {variant} [vDefaultVal=truthy_value_of_x] Value representing the default return value if casting fails.
              * @returns {boolean} Value representing the passed value as a boolean type.
-            ######### */
+             */ //#####
             mk: function (x, vDefaultVal) {
                 var bReturnVal = (
                     arguments.length > 1 ?
@@ -310,43 +315,47 @@
 
                 return bReturnVal;
             } //# bool.mk
-        }; //# core.type.bool
+        }; //# ish.type.bool
 
-        /** #####
-         * Integer-based type functionality.
-         * @namespace ish.type.bool
-        ######### */
+        //#########
+        /** Integer-based type functionality.
+         * @namespace ish.type.int
+         */ //#####
         type.int = {
-            /** #####
-             * Determines if the passed value represents an integer (includes implicit casting per the Javascript rules, see: {@link: ish.type.int.mk}).
+            //#########
+            /** Determines if the passed value represents an integer (includes implicit casting per the Javascript rules, see: {@link: ish.type.int.mk}).
              * @function ish.type.int.is
              * @param {variant} x Value to interrogate.
              * @returns {boolean} Value representing if the passed value represents an integer.
-            ######### */
+             */ //#####
             is: function isInt(x) {
                 var fX = core.type.float.mk(x);
                 return (core.type.is.numeric(x) && fX % 1 === 0);
             }, //# int.is
 
-            /** #####
-             * Casts the passed value into an integer (includes implicit casting per the Javascript rules, see below).
-             *      Javascript has some funky rules when it comes to casting numeric values, and they are at play in this function.
-             *          "12 monkeys!" === 12
-             *          "   12 monkeys!" === 12
-             *          "12monkeys!" === 12
-             *          "1 2 monkeys!" === 1 (not 12)
-             *          "1,2 monkeys!" === 1 (not 12)
-             *          "1,200 monkeys!" === 1 (not 1200)
-             *          "11 - there were 12 monkeys!" === 11
-             *          "twelve (12) monkeys!" === undefined
-             *          "$12 monkeys!" === undefined
-             *      In short, the first non-whitespace numeric characters are used in the cast, until any non-numeric character is hit.
-             * @function ish.type.bool.mk
+            //#########
+            /** Casts the passed value into an integer (includes implicit casting per the Javascript rules, see below).
+             * @function ish.type.int.mk
              * @param {variant} x Value to interrogate.
              * @param {variant} [vDefaultVal=0] Value representing the default return value if casting fails.
              * @param {integer} [iRadix=10] Value between 2-36 that represents the radix (the base in mathematical numeral systems) passed into `parseInt`.
              * @returns {integer} Value representing the passed value as an integer type.
-            ######### */
+             * @example
+             *    <caption>
+             *      Javascript has some funky rules when it comes to casting numeric values, and they are at play in this function.
+             *      <br/>In short, the first non-whitespace numeric characters are used in the cast, until any non-numeric character is hit.
+             *    </caption>
+             *     "12 monkeys!" === 12;
+             *     "   12 monkeys!" === 12;
+             *     "12monkeys!" === 12;
+             *     "1.2 monkeys!" === 1.2;
+             *     "1,2 monkeys!" === 1; // (not 1.2, sorry Europe)
+             *     "1 2 monkeys!" === 1; // (not 12)
+             *     "1,200 monkeys!" === 1; // (not 1200)
+             *     "11 - there were 12 monkeys!" === 11;
+             *     "twelve (12) monkeys!" === undefined;
+             *     "$12 monkeys!" === undefined;
+             */ //#####
             mk: function (x, vDefaultVal, iRadix) {
                 var iReturnVal = parseInt(x, (iRadix > 1 && iRadix < 37 ? iRadix : 10));
 
@@ -355,32 +364,32 @@
                     (arguments.length > 1 ? vDefaultVal : 0)
                 );
             } //# int.mk
-        }; //# core.type.int
+        }; //# ish.type.int
 
-        /** #####
-         * Floating Point Number-based type functionality.
-         * @namespace ish.type.bool
-        ######### */
+        //#########
+        /** Floating Point Number-based type functionality.
+         * @namespace ish.type.float
+         */ //#####
         type.float = {
-            /** #####
-             * Determines if the passed value represents a floating point number (includes implicit casting per the Javascript rules, see: {@link: ish.type.int.mk}).
+            //#########
+            /** Determines if the passed value represents a floating point number (includes implicit casting per the Javascript rules, see: {@link: ish.type.int.mk}).
              * @function ish.type.float.is
              * @param {variant} x Value to interrogate.
              * @returns {boolean} Value representing if the passed value represents a floating point number.
-            ######### */
+            */ //#####
             is: function isFloat(x) {
                 var fX = core.type.float.mk(x);
                 return (core.type.is.numeric(x) && fX % 1 !== 0);
             }, //# float.is
 
-            /** #####
-             * Casts the passed value into a floating point number (includes implicit casting per the Javascript rules, see: {@link: ish.type.int.mk}).
+            //#########
+            /** Casts the passed value into a floating point number (includes implicit casting per the Javascript rules, see: {@link: ish.type.int.mk}).
              * @function ish.type.float.mk
              * @param {variant} x Value to interrogate.
              * @param {variant} [vDefaultVal=0] Value representing the default return value if casting fails.
              * @param {integer} [iRadix=10] Value between 2-36 that represents the radix (the base in mathematical numeral systems) passed into `parseFloat`.
              * @returns {float} Value representing the passed value as an floating point number type.
-            ######### */
+            */ //#####
             mk: function (x, vDefaultVal, iRadix) {
                 var fReturnVal;
 
@@ -394,12 +403,12 @@
                     (arguments.length > 1 ? vDefaultVal : 0)
                 );
             } //# float.mk
-        }; //# core.type.float
+        }; //# ish.type.float
 
-        /** #####
-         * Date-based type functionality.
-         * @namespace ish.type.bool
-        ######### */
+        //#########
+        /** Date-based type functionality.
+         * @namespace ish.type.date
+         */ //#####
         type.date = function () {
             //#
             function mkDate(d, bAllowNumeric) {
@@ -428,23 +437,23 @@
 
 
             return {
-                /** #####
-                 * Determines if the passed value represents a date.
+                //#########
+                /** Determines if the passed value represents a date.
                  * @function ish.type.date.is
                  * @param {variant} x Value to interrogate.
                  * @returns {boolean} Value representing if the passed value represents a date.
-                ######### */
+                 */ //#####
                 is: function isDate(x, bAllowNumeric) {
                     return mkDate(x, bAllowNumeric).b;
                 }, //# date.is
 
-                /** #####
-                 * Casts the passed value into a date.
+                //#########
+                /** Casts the passed value into a date.
                  * @function ish.type.date.mk
                  * @param {variant} x Value to interrogate.
                  * @param {variant} [vDefaultVal=new Date()] Value representing the default return value if casting fails.
                  * @returns {Date} Value representing the passed value as a date type.
-                ######### */
+                 */ //#####
                 mk: function (x, vDefaultVal) {
                     var oResult = mkDate(x, true);
 
@@ -454,21 +463,21 @@
                     );
                 } //# date.mk
             };
-        }(); //# core.type.date
+        }(); //# ish.type.date
 
-        /** #####
-         * String-based type functionality.
-         * @namespace ish.type.bool
-        ######### */
+        //#########
+        /** String-based type functionality.
+         * @namespace ish.type.str
+         */ //#####
         type.str = {
-            /** #####
-             * Determines if the passed value represents a string.
+            //#########
+            /** Determines if the passed value represents a string.
              * @function ish.type.str.is
              * @param {variant} x Value to interrogate.
              * @param {boolean} [bDisallowNullString=false] Value representing if null-strings (e.g. "") are to be disallowed.
              * @param {boolean} [bTrimWhitespace=false] Value representing if leading and trailing whitespace is to be trimmed prior to integration.
              * @returns {boolean} Value representing if the passed value represents a string.
-            ######### */
+             */ //#####
             is: function isStr(x, bDisallowNullString, bTrimWhitespace) {
                 return (
                     (typeof x === 'string' || x instanceof String) &&
@@ -477,13 +486,13 @@
                 );
             }, //# str.is
 
-            /** #####
-             * Casts the passed value into a string.
+            //#########
+            /** Casts the passed value into a string.
              * @function ish.type.str.mk
              * @param {variant} x Value to interrogate.
              * @param {variant} [vDefaultVal=""] Value representing the default return value if casting fails.
              * @returns {string} Value representing the passed value as a string type.
-            ######### */
+             */ //#####
             mk: function (x, vDefaultVal) {
                 var sS = (core.type.obj.is(x, { strict: true }) ? JSON.stringify(x) : mkStr(x));
 
@@ -492,30 +501,30 @@
                     (arguments.length > 1 ? vDefaultVal : "")
                 );
             } //# str.mk
-        }; //# core.type.str
+        }; //# ish.type.str
 
-        /** #####
-         * Function-based type functionality.
-         * @namespace ish.type.bool
-        ######### */
+        //#########
+        /** Function-based type functionality.
+         * @namespace ish.type.fn
+         */ //#####
         type.fn = {
-            /** #####
-             * Determines if the passed value represents a function.
+            //#########
+            /** Determines if the passed value represents a function.
              * @function ish.type.fn.is
              * @param {variant} x Value to interrogate.
              * @returns {boolean} Value representing if the passed value represents a function.
-            ######### */
+             */ //#####
             is: function isFn(x) {
                 return (_Object_prototype_toString.call(x) === '[object Function]');
             }, //# fn.is
 
-            /** #####
-             * Casts the passed value into a function.
-             * @function ish.type.bool.mk
+            //#########
+            /** Casts the passed value into a function.
+             * @function ish.type.fn.mk
              * @param {variant} x Value to interrogate.
              * @param {variant} [vDefaultVal=ish.type.fn.noop] Value representing the default return value if casting fails.
              * @returns {function} Value representing the passed value as a function type.
-            ######### */
+             */ //#####
             mk: function (x, vDefaultVal) {
                 var vResolved,
                     fnResolve = core.resolve || function (_root, sKey) { return _root[sKey]; },
@@ -538,33 +547,33 @@
 
                 return fnReturnVal;
             } //# fn.mk
-        }; //# core.type.fn
+        }; //# ish.type.fn
 
-        /** #####
-         * Array-based type functionality.
-         * @namespace ish.type.bool
-        ######### */
+        //#########
+        /** Array-based type functionality.
+         * @namespace ish.type.arr
+         */ //#####
         type.arr = {
-            /** #####
-             * Determines if the passed value represents an array.
+            //#########
+            /** Determines if the passed value represents an array.
              * @function ish.type.arr.is
              * @param {variant} x Value to interrogate.
              * @param {boolean} [bDisallow0Length=false] Value representing if zero length arrays are to be ignored.
              * @returns {boolean} Value representing if the passed value represents an array.
-            ######### */
+             */ //#####
             is: function isArr(x, bDisallow0Length) {
                 return (_Object_prototype_toString.call(x) === '[object Array]' &&
                     (!bDisallow0Length || x.length > 0)
                 );
             }, //# arr.is
 
-            /** #####
-             * Casts the passed value into an array.
+            //#########
+            /** Casts the passed value into an array.
              * @function ish.type.arr.mk
              * @param {variant} x Value to interrogate.
              * @param {variant} [vDefaultVal=[]] Value representing the default return value if casting fails.
-             * @returns {[]} Value representing the passed value as an array type.
-            ######### */
+             * @returns {variant[]} Value representing the passed value as an array type.
+             */ //#####
             mk: function (x, vDefaultVal) {
                 //# Preconvert a .collection reference into an array
                 x = (core.type.is.collection(x) ? Array.prototype.slice.call(x) : x);
@@ -574,12 +583,12 @@
                     (arguments.length > 1 ? vDefaultVal : [])
                 );
             } //# arr.mk
-        }; //# core.type.arr
+        }; //# ish.type.arr
 
-        /** #####
-         * Object-based type functionality.
-         * @namespace ish.type.bool
-        ######### */
+        //#########
+        /** Object-based type functionality.
+         * @namespace ish.type.obj
+         */ //#####
         type.obj =function () {
             //#
             function mkJSON(v) {
@@ -623,7 +632,7 @@
                  *      @param {boolean} [vOptions.requiredKeys=undefined] Value listing the keys required to be present in the object.
                  *      @param {boolean} [vOptions.interface=false] Value representing the required the keys and types (see: {@link: ish.type}).
                  * @returns {boolean} Value representing if the passed value represents an object.
-                ######### */
+                 */ //#####
                 is: function isObj(x, vOptions) {
                     var fnTest, a_sInterfaceKeys, i, bReturnVal,
                         oSettings = (vOptions && vOptions === Object(vOptions) ? vOptions : {}),
@@ -681,7 +690,7 @@
                  * @param {variant} x Value to interrogate.
                  * @param {variant [vDefaultVal={}] Value representing the default return value if casting fails.
                  * @returns {{}} Value representing the passed value as an object type.
-                ######### */
+                 */ //#####
                 mk: function (x, vDefaultVal) {
                     //# If the passed o(bject) .is .str, try to .mkJSON
                     if (core.type.str.is(x, true)) {
@@ -694,66 +703,73 @@
                     );
                 }, //# obj.mk
             };
-        }(); //# core.type.obj
+        }(); //# ish.type.obj
 
-        /** #####
-         * Symbol-based type functionality.
-         * @namespace ish.type.bool
-        ######### */
+        //#########
+        /** Symbol-based type functionality.
+         * @namespace ish.type.symbol
+         */ //#####
         type.symbol = {
-            /** #####
-             * Determines if the Symbol type is present in the current environment.
+            //#########
+            /** Determines if the Symbol type is present in the current environment.
              * @function ish.type.symbol.exists
              * @returns {symbol} Value representing if the Symbol type is present in the current environment.
-            ######### */
+             */ //#####
             exists: function () {
                 return core.type.fn.is(_root.Symbol);
             }, //# symbol.exists
 
-            /** #####
-             * Determines if the passed value represents a symbol.
+            //#########
+            /** Determines if the passed value represents a symbol.
              * @function ish.type.symbol.is
              * @param {variant} x Value to interrogate.
              * @returns {symbol} Value representing if the passed value represents a symbol.
-            ######### */
+             */ //#####
             is: function (x) {
                 return (core.type.symbol.exists() && typeof x === 'symbol');
             }, //# symbol.is
 
-            /** #####
-             * Casts the passed value into a symbol.
+            //#########
+            /** Casts the passed value into a symbol.
              * @function ish.type.symbol.mk
              * @param {variant} x Value to interrogate.
              * @param {variant} [vDefaultVal=Symbol()] Value representing the default return value if casting fails.
              * @returns {symbol} Value representing the passed value as a symbol type.
-            ######### */
+             */ //#####
             mk: function (x, vDefaultVal) {
                 return (core.type.symbol.is(x) ?
                     x :
-                    (arguments.length === 1 ? _root.Symbol() : vDefaultVal)
+                    (arguments.length === 1 ?
+                        //# If .symbol.exists, create a new Symbol(), optionally using the passed x if it .is .str, else use a new blank object if !.symbol.exists
+                        (core.type.symbol.exists() ? _root.Symbol(core.type.str.is(x) ? x : _undefined) : {}) :
+                        vDefaultVal
+                    )
                 );
-            } //# symbol.mk
-        }; //# core.type.symbol
+            }, //# symbol.mk
+        }; //# ish.type.symbol
 
 
         return type;
-    }(); //# core.type.*.is|mk
+    }(); //# ish.type.*.is|mk
 
 
-    /** ################################################################################################
-     * @function resolve
-     * @desc Safely accesses (or optionally creates) an object structure, allowing access to deep properties without the need to ensure the object structure exists.
-     * @param {boolean} [bForceCreate] - Indicates if the path is to be forcibly created. `false` creates the path if it does not already exist, `true` overwrites non-object parent path segments with objects (see About).
-     * @param {object} oObject - The object to interrogate.
-     * @param {string|array[string]} vPath - variant representing the path to the requested property (array or period-delimited string, e.g. "parent.child.array.0").
-     * @param {variant} [vValue] - variant representing the value to set the referenced property to (used only when creating the path).
-     * @returns {variant} variant representing the value at the referenced path, returning undefined if the path does not exist.
-     * @example <caption>When forcing the creation of an object structure, data can be lost if an existing non-object property is used as a parent, e.g.:</caption>
-     * var neek = { nick: true };
-     * var deepProp = ish.resolve(true, neek, "nick.campbell");
-     * // This will overwrite the boolean property `nick` with an object reference containing the property `campbell`.
-     * @requires core.type.obj.is, core.type.str.is, core.type.arr.is
-    ################################################################################################# */
+    //################################################################################################
+    /** Provides access to (and optionally creates) an object structure's nested properties.
+     * @function ish.resolve
+     * @param {Symbol} [returnMetadata=!ish.resolve.returnMetadata] Value representing if metadata is to be returned; `{ value: {variant}, created: {boolean}, existed: {boolean} }`.
+     * @param {boolean} [bForceCreate=true] Value representing if the path is to be created if it doesn't already exist. `true` creates the path if it does not already exist.
+     * @param {object} oObject Value to interrogate.
+     * @param {string|string[]} vPath Value representing the path to the requested property as a period-delimited string (e.g. "parent.child.array.0.key") or an array of strings.
+     * @param {variant} [vValue] Value representing the value to set the referenced property to.
+     * @returns {variant} Value representing the variant at the referenced path.
+     * @example
+     *   <caption>
+     *     When forcing the creation of an object structure, data can be lost if an existing non-object property is used as a parent.
+     *     <br/>This will overwrite the boolean property `nick` with an object reference containing the property `campbell`.
+     *   </caption>
+     *     var neek = { nick: true };
+     *     var deepProp = ish.resolve(true, neek, "nick.campbell");
+     */ //############################################################################################
     core.resolve = function (/*[core.resolve.returnMetadata], [bForceCreate], oObject, vPath|a_sPath, [vValue]*/) {
         var vReturnVal, vValue, vPath, oObject, a_sPath, i, bCurrentIsObj, bHaveValue, bForceCreate,
             bPathExists = true,
@@ -864,27 +880,31 @@
             } :
             vReturnVal
         );
-    }; //# core.resolve
-    //# Setup the "unique" value for .returnMetadata so it can be detected within core.resolve (borrowing noop() for the unique value)
-    //#     NOTE: Arguably this should be a Symbol rather than the borrowed noop() but the support for Symbol isn't 100%, so...
-    core.resolve.returnMetadata = noop;
+    }; //# ish.resolve
+    //#########
+    /** Unique value indicating if metadata is to be returned by `ish.resolve`.
+     * @property ish.resolve.returnMetadata
+     * @returns Value representing if metadata is to be returned by `ish.resolve`.
+     * @ignore
+     */ //#####
+    core.resolve.returnMetadata = core.type.symbol.mk();
 
 
-    /** ################################################################################################
-     * @function extend
-     * @desc Merges the content of subsequent objects into the first one, overriding its original values.
-     * @param {boolean|integer} [vDeepCopy] - (Optional) Indicates if a deep copy is to occur. `false` performs a shallow copy, a positive integer indicates the max depth to perform a deep copy to, `true` and all other integer values perform a deep copy to an unlimited depth. Default value: `true`.
-     * @param {object} oTarget - Object to receive properties.
-     * @param {...object} oSource - Object(s) who's properties will be copied into the target.
-     * @returns {object} Object referencing the passed oTarget.
-     * @example <caption>Right-most source object wins:</caption>
-     * // `oResult.i` will equal `2`.
-     * var oResult = core.data.extend({}, { i: 1 }, { i: 2 });
-     * // Heavily refactored code from http://gomakethings.com/vanilla-javascript-version-of-jquery-extend/
-     * @requires core.type.bool.is, core.type.int.is, core.type.obj.is, core.type.arr.is, ~core.type.dom.is
-     * @requires core.type.int.mk
-    ################################################################################################# */
-    core.extend = function (/*[vDeepCopy], oTarget, oSource, oSource2...*/) {
+    //################################################################################################
+    /** Merges the content of the passed objects into the passed target, adding or overriding properties within the target.
+     * <span style="display: none;">Heavily refactored code from http://gomakethings.com/vanilla-javascript-version-of-jquery-extend/<span>
+     * @function ish.extend
+     * @param {boolean|integer} [vDeepCopy] Indicates if a deep copy is to occur. `false` performs a shallow copy, a positive integer indicates the max depth to perform a deep copy to, `true` and all other integer values perform a deep copy to an unlimited depth. Default value: `true`.
+     * @param {object|function} vTarget Target object to receive properties.
+     * @param {...object|...function} vSource Source object(s) whose properties will be copied into the target.
+     * @returns {object|function} Reference to the passed target.
+     * @example
+     *   <caption>
+     *      Right-most source object wins:
+     *   </caption>
+     *     var oResult = ish.extend({}, { i: 1 }, { i: 2 }); // `oResult.i` will equal `2`.
+     */ //############################################################################################
+    core.extend = function (/*[vDeepCopy], vTarget, vSource, vSource2...*/) {
         var a_sKeys, oTarget, oSource, sKey, iExtendDepth, i, j, k,
             a = arguments,
             //fnIsDom = core.type.fn.mk(core.resolve(core, "type.dom.is")),
@@ -968,15 +988,23 @@
         }
 
         return oTarget;
-    }; //# core.extend
+    }; //# ish.extend
 
 
-    /** ################################################################################################
-     * @function ish.config
-     * @desc (Factory) Creates an interface that merges the content of the passed options into the underlying configuration, overriding any original values.
-     * @param {object} oConfig - The object that stores the underlying configuration values.
-     * @returns {function} - The function that updates and returns the object representing the configuration values.
-    ################################################################################################# */
+    //################################################################################################
+    /** Configuration-based functionality.
+     * @namespace ish.config
+     */ /**
+     * Creates an interface that merges the content of the passed options into the underlying configuration, overriding any original values.
+     * @function ish.config.!
+     * @param {object} oConfig Object that stores the underlying configuration values.
+     * @returns {function} Function that manages and returns the object representing the configuration values.
+     * @example
+     *   <caption>
+     *      When used internally for `ish` mixins, the recommended pattern to setup a related `ish.config` entry is:
+     *   </caption>
+     *     ish.config.ish = ish.config({ version: "0.1.2014-01-01" });
+     */ //############################################################################################
     core.config = function (oConfig) {
         return function (oOptions) {
             //# If oOptions were passed in, .extend them into our oConfig
@@ -985,16 +1013,13 @@
             //# Always return an unattached deep copy of the oConfig to the caller
             return core.extend(true, {}, oConfig);
         };
-    }; //# core.config
+    }; //# ish.config
 
 
-    /** ################################################################################################
-     * @namespace core.oop
-     * @desc Collection of Object-Oriented Programming-based functionality.
-     * @requires core.extend
-     * @requires core.type.obj.is, core.type.fn.is
-     * @requires core.type.obj.mk
-    ################################################################################################# */
+    //################################################################################################
+    /** Collection of Object-Oriented Programming-based functionality.
+     * @namespace ish.oop
+     */ //############################################################################################
     core.oop = function() {
         var oOopData = {
                 i: [],  //# i(ndex)
@@ -1005,7 +1030,13 @@
                 d: []   //# d(faultValues)
             },
             oReturnVal = {
-                //#
+                //#########
+                /** Javascript implementation of OOP's partial "class" concept, allowing a single object to be defined across multiple locations and/or files (with support for `protected` members).
+                 * @function ish.oop.partial
+                 * @param {object|function} vTarget Target object to receive properties.
+                 * @param {object|function} vPartial Source object whose properties will be copied into the target.
+                 *     Functions receive a single argument and their `this` context set to the target object's protected interfaces; e.g. `vPartial(oProtectedMembers)`.
+                 */ //#####
                 partial: function (vTarget, vPartial) {
                     var iIndex =  oOopData.i.indexOf(vTarget),
                         oProtected = (iIndex === -1 ? {} : oOopData.p[iIndex]),
@@ -1030,7 +1061,12 @@
                     }
                 }, //# core.oop.partial
 
-                //#
+                //#########
+                /** Merges the passed object into the passed target's protected members, adding or overriding properties within the target's protected members.
+                 * @function ish.oop.protected
+                 * @param {object|function} vTarget Target object to receive protected member properties.
+                 * @param {object} oProtected Source object whose properties will be copied into the target's protected members.
+                 */ //#####
                 protected: function (vTarget, oProtected) {
                     //# Pass the call off to .setOopEntry
                     //#     NOTE: We don't simply expose setOopEntry as core.opp.protected because we want to gate the oAddedDateTypes feature
@@ -1119,13 +1155,11 @@
     //########
 
 
-    /** ################################################################################################
-     * @namespace core.type
-     * @desc Collection of variable Type-based functionality (non-`is`/`mk` core features).
-     * @requires core.type.arr.is, core.type.obj.is, core.type.fn.is
-     * @requires core.type.arr.mk, core.type.obj.mk
-     * @requires core.oop.partial
-    ################################################################################################# */
+    //################################################################################################
+    /** Collection of variable Type-based functionality (non-`is`/`mk` core features).
+     * @namespace ish.type
+     * @ignore
+     */ //############################################################################################
     core.oop.partial(core.type, function (oProtected) {
         //#
         function doPrune(oSource, vKeys, bSetToUndefined) {
@@ -1198,6 +1232,20 @@
 
         //# Add type.is.ish.import into oTypeIsIsh
         //#     NOTE: Since `import` is a reserved(ish) word, we have to use []-notation
+
+        //#########
+        /** Imports ishJS mixin functionality.
+         * @function ish.type.is.ish:import
+         * @param {string[]} a_sImport Value representing the mixin paths to import.
+         * @param {object} [oOptions] Value representing the following options:
+         *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; `oOptions.callback(a_oProcessedUrls, bAllLoaded)`.
+         *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing  the function to be called when the DOM element is added; `oOptions.onAppend(_dom, sUrl)`.
+         *      @param {boolean} [oOptions.onError=undefined] Value representing the function to be called when an error occurs; `oOptions.onError(_dom, sUrl)`.
+         *      @param {boolean} [oOptions.waitSeconds=7] Value representing the maximum number of seconds to wait before an error is returned.
+         *      @param {boolean} [oOptions.baseUrl=""] Value representing the base URL to prepend on the `src` attribute (must end with `/`).
+         *      @param {boolean} [oOptions.urlArgs=""] Value representing the URL's querystring to append on the `src` attribute (must start with `?`).
+         *      @param {boolean} [oOptions.importedBy="ish.type.is.ish.import"] Value to be set in the DOM element's `importedBy` attribute.
+         */ //#####
         oTypeIsIsh.public['import'] = function (a_sImport, oOptions) {
             var i;
 
@@ -1211,7 +1259,7 @@
                 },
                 onAppend: function (_dom /*, sUrl*/) {
                     if (!bServerside && _dom) {
-                        _dom.setAttribute("importedBy", oOptions.importedBy || "type.is.ish.import");
+                        _dom.setAttribute("importedBy", oOptions.importedBy || "ish.type.is.ish.import");
                     }
                 }
             }, core.config.ish().plugins, oOptions);
@@ -1226,12 +1274,12 @@
         }; //# type.is.ish.import
 
 
-        /** ################################################################################################
+        //#########
+        /** ishJS configuration values.
          * @function ish.config.ish
-         * @desc Merges the content of the passed options into the underlying configuration, overriding any original values.
-         * @param {object} oOptions - object representing the updated configuration values.
-         * @returns {object} - object representing the configuration values.
-        ################################################################################################# */
+         * @param {object} [oOptions] Value representing the updated configuration values.
+         * @returns {object} Value representing ishJS's configuration values.
+         */ //#####
         core.config.ish = core.config(oTypeIsIsh.config);
 
         return {
@@ -1239,19 +1287,22 @@
                 //# Extend our .public oTypeIsIsh interfaces onto the above-defined type.is.ish function
                 ish: oTypeIsIsh.public,
 
-                /*
-                Function: value
-                Determines if the passed value is set (i.e. !== undefined || null).
-                Parameters:
-                v - The variant to interrogate.
-                Returns:
-                Boolean value representing if the value is set (i.e. !== undefined || null).
-                */
-                value: function (v) {
-                    return (v !== _undefined && v !== _null);
+                //#########
+                /** Determines if the passed value is set (i.e. !== `undefined` && !== `null`).
+                 * @function ish.type.is.value
+                 * @param {variant} x Value to interrogate.
+                 * @returns {boolean} Value representing if the passed value is set.
+                 */ //#####
+                value: function (x) {
+                    return (x !== _undefined && x !== _null);
                 }, //# type.is.value
 
-                // Primitive Vals - Null, Undefined, Boolean, Number, String, Symbol
+                //#########
+                /** Determines if the passed value is a primitive (i.e. `null`, `undefined`, `Boolean`, `Number`, `String` or `Symbol`).
+                 * @function ish.type.is.primitive
+                 * @param {variant} x Value to interrogate.
+                 * @returns {boolean} Value representing if the passed value is a primitive.
+                 */ //#####
                 primitive: function (x) {
                     return (
                         x === _null ||
@@ -1297,6 +1348,11 @@
             }, //# core.type.is.*
 
             date: {
+                //#########
+                /** Provides the current `window.performance`-based timestamp.
+                 * @function ish.type.date.timestamp
+                 * @returns {float} Value representing the current `window.performance`-based timestamp.
+                 */ //#####
                 timestamp: function () {
                     var _window_performance = _root.performance,
                         _window_performance_timing = core.resolve(_window_performance, "timing")
@@ -1311,17 +1367,15 @@
 
             str: {
                 is: {
-                    /*
-                    Function: json
-                    Determines if the passed value is a valid JSON string.
-                    Parameters:
-                    s - The variant to interrogate.
-                    Returns:
-                    Boolean value representing if the passed value is a valid JSON string.
-                    */
-                    json: function (s) {
+                    //#########
+                    /** Determines if the passed value is valid JSON.
+                     * @function ish.type.str.is:json
+                     * @param {variant} x Value to interrogate.
+                     * @returns {boolean} Value representing if the passed value is a valid JSON string.
+                     */ //#####
+                    json: function (x) {
                         try {
-                            JSON.parse(s);
+                            JSON.parse(x);
                             return true;
                         } catch (e) {
                             return false;
@@ -1331,6 +1385,14 @@
             }, //# core.type.str
 
             arr: {
+                //#########
+                /** Removes the passed target(s) from the passed array (optionally replacing them with updated values).
+                 * @function ish.type.arr.rm
+                 * @param {variant[]} a_vArray Values to interrogate.
+                 * @param {variant|variant[]} vTargets Value(s) to remove.
+                 * @param {variant|variant[]} vReplacements Value(s) to replace the removed items with.<br/><b>Note:</b> The number of replacements must match the number of targets.
+                 * @returns {boolean} Value representing if one or more of the passed value(s) were successfully removed / replaced.
+                 */ //#####
                 rm: function (a_vArray, vTargets, vReplacements) {
                     var iTargetIndex, i,
                         iTotalReplacements = -1,
@@ -1376,6 +1438,13 @@
                     return bReturnVal;
                 }, //# type.arr.rm
 
+                //#########
+                /** Determines if the passed array only contains values that conform to the passed test.
+                 * @function ish.type.arr.of
+                 * @param {variant[]} a_vArray Values to interrogate.
+                 * @param {function} fnTest Function that returns truthy if the passed value is valid.
+                 * @returns {boolean} Value representing if the passed array only contains values that conform to the passed test.
+                 */ //#####
                 of: function (a_vArray, fnTest) {
                     var i,
                         bReturnVal = (core.type.arr.is(a_vArray, true) && core.type.fn.is(fnTest))
@@ -1396,6 +1465,14 @@
             }, //# core.type.arr.*
 
             obj: {
+                //#########
+                /** Removes the passed target(s) from the passed object (optionally replacing them with updated values).
+                 * @function ish.type.obj.rm
+                 * @param {variant[]} a_vArray Values to interrogate.
+                 * @param {variant|variant[]} vTargets Value(s) to remove.
+                 * @param {variant|variant[]} vReplacements Value(s) to replace the removed items with.<br/><b>Note:</b> The number of replacements must match the number of targets.
+                 * @returns {boolean} Value representing if one or more of the passed value(s) were successfully removed / replaced.
+                 */ //#####
                 rm: function (vSource, vKeys, bSetToUndefined) {
                     var iReturnVal;
 
@@ -1873,10 +1950,10 @@
     }); //# core.type.*
 
 
-    /** ################################################################################################
-     * @namespace core.io
-     * @desc Input/Output-based functionality.
-    ################################################################################################# */
+    //################################################################################################
+    /** Input/Output-based functionality.
+     * @namespace ish.io
+     */ //############################################################################################
     core.io = {
         /*
         ####################################################################################################
@@ -2091,14 +2168,10 @@
     }; //# core.io
 
 
-    /** ################################################################################################
-     * @class core.require
-     * @classdesc Collection of require external JS-based functionality.
-     * @requires core.extend
-     * @requires core.type.arr.is, core.type.fn.is, core.type.str.is, core.type.obj.is
-     * @requires core.type.obj.mk, core.type.fn.mk
-     * @requires core.type.fn.call, core.io.event.fire
-    ################################################################################################# */
+    //################################################################################################
+    /** Collection of require external JS-based functionality.
+     * @namespace ish.require
+     */ //############################################################################################
     core.require = function() {
         var fnRequire,
             oRequireOptions = {
@@ -2132,7 +2205,7 @@
                 //#
                 function errorFactory(sInterface) {
                     return function (/*vUrls, vOptions*/) {
-                        core.io.console.error("ish.require." + sInterface + " is not available on the serverside.");
+                        core.io.console.error("ish.require." + sInterface + " is not available server-side.");
                     };
                 } //# errorFactory
 
@@ -2173,9 +2246,11 @@
                         core.type.fn.run(oOptions.callback, [a_oProcessedUrls, bAllLoaded]);
                     },
                     {
-                        scripts: errorFactory("scripts"),
-                        links: errorFactory("scripts"),
-                        css: errorFactory("scripts")
+                        scripts: function (vUrls, vOptions) {
+                            core.require(vUrls, vOptions);
+                        },
+                        links: errorFactory("links"),
+                        css: errorFactory("css")
                     }
                 ); //# fnRequire
             }();
@@ -2185,7 +2260,9 @@
             //# .extend the additional clientside-only options into oRequireOptions
             //#     NOTE: Only .callback and .onError are used bServerside
             core.extend(oRequireOptions, {
+                //callback: function (a_oProcessedUrls, bAllLoaded) {},
                 //onAppend: function (_dom, sUrl) {},
+                //onError: function (_dom, sUrl) {},
                 waitSeconds: 7,
                 baseUrl: "",
                 urlArgs: "",
@@ -2291,16 +2368,30 @@
 
 
                 return core.extend(
-                    function (vUrls, vOptions) {
-                        var i,
+                    //#########
+                    /** Includes functionality into the current context.
+                     * @function ish.require.!
+                     * @param {string|string[]} vUrls Value representing the URL(s) of the functionality to include.
+                     * @param {object} [oOptions] Value representing the following options:
+                     *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; `oOptions.callback(a_oProcessedUrls, bAllLoaded)`.
+                     *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing  the function to be called when the DOM element is added; `oOptions.onAppend(_dom, sUrl)`.
+                     *      @param {boolean} [oOptions.onError=undefined] Value representing the function to be called when an error occurs; `oOptions.onError(_dom, sUrl)`.
+                     *      @param {boolean} [oOptions.waitSeconds=7] Value representing the maximum number of seconds to wait before an error is returned.
+                     *      @param {boolean} [oOptions.baseUrl=""] Value representing the base URL to prepend on the `src` attribute (must end with `/`).
+                     *      @param {boolean} [oOptions.urlArgs=""] Value representing the URL's querystring to append on the `src` attribute (must start with `?`).
+                     */ //#####
+                    function (vUrls, oOptions) {
+                        var fnCallback, i,
                             a_oProcessedUrls = core.type.arr.mk(vUrls, [vUrls]),    //# Borrow the use of a_oProcessedUrls for the array-ified vUrls
-                            oOptions = processOptions(vOptions),
-                            fnCallback = oOptions.callback,
                             bAllLoaded = true,
                             a_sScripts = [],
                             a_sCSS = [],
                             a_sLinks = []
                         ;
+
+                        //# processOptions then set the fnCallback
+                        oOptions = processOptions(oOptions);
+                        fnCallback = oOptions.callback;
 
                         //# If we have vUrls (looking at the borrowed a_oProcessedUrls) to process
                         if (core.type.arr.is(a_oProcessedUrls, true)) {
@@ -2361,7 +2452,18 @@
                         }
                     },
                     {
-                        //#
+                        //#########
+                        /** Includes Javascript-based functionality into the current context.
+                         * @function ish.require.scripts
+                         * @param {string|string[]} vUrls Value representing the URL(s) of the functionality to include.
+                         * @param {object} [oOptions] Value representing the following options:
+                         *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; `oOptions.callback(a_oProcessedUrls, bAllLoaded)`.
+                         *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing  the function to be called when the DOM element is added; `oOptions.onAppend(_dom, sUrl)`.
+                         *      @param {boolean} [oOptions.onError=undefined] Value representing the function to be called when an error occurs; `oOptions.onError(_dom, sUrl)`.
+                         *      @param {boolean} [oOptions.waitSeconds=7] Value representing the maximum number of seconds to wait before an error is returned.
+                         *      @param {boolean} [oOptions.baseUrl=""] Value representing the base URL to prepend on the `src` attribute (must end with `/`).
+                         *      @param {boolean} [oOptions.urlArgs=""] Value representing the URL's querystring to append on the `src` attribute (must start with `?`).
+                         */ //#####
                         scripts: function (vUrls, vOptions) {
                             //# <IE6thru9Support>
                             function IE6thru9SupportFactory(_script) {
@@ -2413,7 +2515,19 @@
                             );
                         }, //# require.scripts
 
-                        //#
+                        //#########
+                        /** Includes link-based functionality into the current context.
+                         *   <br/><b>Note:</b> This functionality is only available client-side. Server-side calls will return an error.
+                         * @function ish.require.links
+                         * @param {string|string[]} vUrls Value representing the URL(s) of the functionality to include.
+                         * @param {object} [oOptions] Value representing the following options:
+                         *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; `oOptions.callback(a_oProcessedUrls, bAllLoaded)`.
+                         *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing  the function to be called when the DOM element is added; `oOptions.onAppend(_dom, sUrl)`.
+                         *      @param {boolean} [oOptions.onError=undefined] Value representing the function to be called when an error occurs; `oOptions.onError(_dom, sUrl)`.
+                         *      @param {boolean} [oOptions.waitSeconds=7] Value representing the maximum number of seconds to wait before an error is returned.
+                         *      @param {boolean} [oOptions.baseUrl=""] Value representing the base URL to prepend on the `src` attribute (must end with `/`).
+                         *      @param {boolean} [oOptions.urlArgs=""] Value representing the URL's querystring to append on the `src` attribute (must start with `?`).
+                         */ //#####
                         links: function (vUrls, vOptions) {
                             //# Pass the call off to .processUrls, defaulting and .process(ing the v)Options as we go
                             processUrls(
@@ -2464,7 +2578,19 @@
                             );
                         }, //# links
 
-                        //#
+                        //#########
+                        /** Includes CSS-based functionality into the current context.
+                         *   <br/><b>Note:</b> This functionality is only available client-side. Server-side calls will return an error.
+                         * @function ish.require.css
+                         * @param {string|string[]} vUrls Value representing the URL(s) of the functionality to include.
+                         * @param {object} [oOptions] Value representing the following options:
+                         *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; `oOptions.callback(a_oProcessedUrls, bAllLoaded)`.
+                         *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing  the function to be called when the DOM element is added; `oOptions.onAppend(_dom, sUrl)`.
+                         *      @param {boolean} [oOptions.onError=undefined] Value representing the function to be called when an error occurs; `oOptions.onError(_dom, sUrl)`.
+                         *      @param {boolean} [oOptions.waitSeconds=7] Value representing the maximum number of seconds to wait before an error is returned.
+                         *      @param {boolean} [oOptions.baseUrl=""] Value representing the base URL to prepend on the `src` attribute (must end with `/`).
+                         *      @param {boolean} [oOptions.urlArgs=""] Value representing the URL's querystring to append on the `src` attribute (must start with `?`).
+                         */ //#####
                         css: function (vUrls, vOptions) {
                             //# Ensure the passed vOptions .obj.is, defaulting the values as we go
                             core.require.links(vUrls, core.extend({
@@ -2478,12 +2604,12 @@
             }();
         }
 
-        /** ################################################################################################
+        //#########
+        /** ish.require configuration values.
          * @function ish.config.require
-         * @desc Merges the content of the passed options into the underlying configuration, overriding any original values.
-         * @param {object} oOptions - object representing the updated configuration values.
-         * @returns {object} - object representing the configuration values.
-        ################################################################################################# */
+         * @param {object} [oOptions] Value representing the updated configuration values.
+         * @returns {object} Value representing ish.require's configuration values.
+         */ //#####
         core.config.require = core.config(oRequireOptions);
 
         //# Return the full core.require interface

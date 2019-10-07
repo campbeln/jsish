@@ -62,6 +62,7 @@
 	Limitations:
         * Attribute namespace prefixes are not parsed as such.
         * Overall the serialization/deserializaton code is "best effort" and not foolproof.
+     * @ignore
     */
     function /*X2JS*/(config) {
         var VERSION = "3.1.1";
@@ -775,5 +776,5 @@
         this.getVersion = function getVersion() {
             return VERSION;
         };
-    };
+    }
 );

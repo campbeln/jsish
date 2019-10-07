@@ -10,12 +10,14 @@
 
 
     /** ################################################################################################
-     * @namespace core.lib.ng
+     * @name core.lib.ng
+     * @namespace ish.lib
      * @desc Angular-based functionality.
     ################################################################################################# */
     core.lib.ng = {
         /** ################################################################################################
-         * @function lazyLoad
+         * @name lazyLoad
+         * @namespace ish.lib.ng
          * @desc Loads a new Angular `require` into our app.
          * @param {string} sRequire - String specifying the Angular `require` to load into our app.
         ################################################################################################# */
@@ -25,7 +27,8 @@
 
 
         /** ################################################################################################
-         * @function register
+         * @name register
+         * @namespace ish.lib.ng
          * @desc Registers an Angular-based dependency injected require object via `ish.lib.ng`.
          * @param {string} sRequireName - String specifying the name of the Angular `require` object.
          * @param {varient} vRequire - Varient representing the Angular `require` object.
@@ -44,7 +47,8 @@
 
 
         /** ################################################################################################
-         * @function resolve
+         * @name resolve
+         * @namespace ish.lib.ng
          * @desc Resolves a key within an Angular-based scope object, traversing upward through parent scopes until it is found.
          * @param {object} $scope - Object representing the starting Angular scope.
          * @param {string} sKey - String representing the required key in the Angular scope.
@@ -63,7 +67,8 @@
 
 
         /** ################################################################################################
-         * @function scope
+         * @name scope
+         * @namespace ish.lib.ng
          * @desc Retrieves the Angular scope associated with the referenced DOM object.
          * @param {varient} vDom - Varient representing the DOM object.
          * @returns {object} - Object representing the DOM object's Angular scope.
@@ -83,8 +88,9 @@
 
 
         /** ################################################################################################
-         * @function compile
-         * @desc Compiles the referenced DOM object using referenced the Angular scope.
+         * Compiles the referenced DOM object using referenced the Angular scope.
+         * @name compile
+         * @namespace ish.lib.ng
          * @param {varient} vDom - Varient representing the DOM object.
          * @param {varient} [vScope] - Optional varient representing the DOM object under the required Angular scope.
          * @returns {object} - DOM object managed by Angular.
@@ -106,7 +112,8 @@
 
 
         /** ################################################################################################
-         * @function init
+         * @name init
+         * @namespace ish.lib.ng
          * @desc Initilizes a new Angular app based on the passed options.
          * @param {object} [oOptions] - Object specifying the options used to configure the new Angular app.
         ################################################################################################# */

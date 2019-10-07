@@ -1,6 +1,7 @@
 /** ################################################################################################
  * Additional Type Functionality mixin for ishJS
- * @mixin ish.type
+ * @mixin type
+ * @memberof! ish
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
@@ -428,7 +429,19 @@
                     */
                     only: function (x, dDefault) {
                         return core.type.date.mk(core.type.date.yyyymmdd.apply(this, [x, dDefault]) + " 00:00:00");
-                    } //# date.only
+                    }, //# date.only
+
+                    /**
+                     * 
+                    */
+                    fixOffset: function (x) {
+                        var dDate = core.type.date.mk(x);
+
+                        return new Date(
+                            dDate.getUTCFullYear(), dDate.getUTCMonth(), dDate.getUTCDate(),
+                            dDate.getUTCHours(), dDate.getUTCMinutes(), dDate.getUTCSeconds()
+                        );
+                    }
                 }, //# core.type.date
 
                 //# eq, cmp, lpad, rpad, begins, ends, contains, sub
