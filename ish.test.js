@@ -932,7 +932,7 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                         /*
                         oOptions.context - variant representing the Javascript context (e.g. `this`) in which to call the function.
                         oOptions.wait - Function or Integer defining the minimum number of milliseconds between each poll attempt (default: 500).
-                        oOptions.retries - Integer defining the maximum number of polling attempts (default: 4).
+                        oOptions.maxAttempts - Integer defining the maximum number of polling attempts (default: 4).
                         oOptions.callback - Function to call on completion, with bSuccess as the first argument.
                         //oOptions.timeout - Maximum number of milliseconds to do the polling (default: 2000).
                         */
@@ -1171,6 +1171,7 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                             $.assert.deepEqual(core.type.obj.ownKeys(function (){}), [], "fn");
                             $.assert.deepEqual(core.type.obj.ownKeys(withProp), ["prop"], "fn.prop");
 
+                            //# TODO: Add in second property tests
                             $.assert(core.type.obj.ownKeys("str") === undefined, "!str");
                         },
 

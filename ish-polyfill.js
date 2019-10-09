@@ -68,6 +68,10 @@ type.is.val => type.is.value
 type.enum.is.val => type.enum.is.value
 type.enum.is.desc => type.enum.is.label
 type.is.ish.options => config.ish()
+===
+type.fn.arguments => type.fn.is.arguments
+type.fn.debounce(options.immediate) => type.fn.debounce(options.leading)
+type.fn.poll(options.retries) => type.fn.poll(options.maxAttempts)
 */
 
 

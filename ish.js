@@ -75,7 +75,7 @@
 
 
     //################################################################################################
-    /** Collection of Type-based functionality (`is` and `mk` only)
+    /** Collection of Type-based functionality (<code>is</code> and <code>mk</code> only)
      * @namespace ish.type
      * @see {@link ish.type!}
      * @ignore
@@ -133,7 +133,7 @@
         } //# ish.type
 
         //#########
-        /** Determines if the passed value is an instance of the passed type.
+        /** Determines if the passed value is an instance of the referenced type.
          * @namespace ish.type.is
          */ /**
          * Determines if the passed value is an instance of the passed type.
@@ -338,7 +338,7 @@
              * @function ish.type.int.mk
              * @param {variant} x Value to interrogate.
              * @param {variant} [vDefaultVal=0] Value representing the default return value if casting fails.
-             * @param {integer} [iRadix=10] Value between 2-36 that represents the radix (the base in mathematical numeral systems) passed into `parseInt`.
+             * @param {integer} [iRadix=10] Value between 2-36 that represents the radix (the base in mathematical numeral systems) passed into <code>parseInt</code>.
              * @returns {integer} Value representing the passed value as an integer type.
              * @example
              *    <caption>
@@ -387,7 +387,7 @@
              * @function ish.type.float.mk
              * @param {variant} x Value to interrogate.
              * @param {variant} [vDefaultVal=0] Value representing the default return value if casting fails.
-             * @param {integer} [iRadix=10] Value between 2-36 that represents the radix (the base in mathematical numeral systems) passed into `parseFloat`.
+             * @param {integer} [iRadix=10] Value between 2-36 that represents the radix (the base in mathematical numeral systems) passed into <code>parseFloat</code>.
              * @returns {float} Value representing the passed value as an floating point number type.
             */ //#####
             mk: function (x, vDefaultVal, iRadix) {
@@ -626,7 +626,7 @@
                  * @param {variant} [vOptions] Value representing the following options:
                  *      @param {boolean} [vOptions=false] Value representing if empty objects are to be ignored.
                  *      @param {boolean} [vOptions.nonEmpty=false] Value representing if empty objects are to be ignored.
-                 *      @param {boolean} [vOptions.strict=false] Value representing if only `[object Objects]` are to be allowed.
+                 *      @param {boolean} [vOptions.strict=false] Value representing if only <code>[object Objects]</code> are to be allowed.
                  *      @param {boolean} [vOptions.allowFn=false] Value representing if functions are to be allowed.
                  *      @param {boolean} [vOptions.allowJSON=false] Value representing if JSON-strings are to be allowed.
                  *      @param {boolean} [vOptions.requiredKeys=undefined] Value listing the keys required to be present in the object.
@@ -756,8 +756,8 @@
     //################################################################################################
     /** Provides access to (and optionally creates) an object structure's nested properties.
      * @function ish.resolve
-     * @param {Symbol} [returnMetadata=!ish.resolve.returnMetadata] Value representing if metadata is to be returned; `{ value: {variant}, created: {boolean}, existed: {boolean} }`.
-     * @param {boolean} [bForceCreate=true] Value representing if the path is to be created if it doesn't already exist. `true` creates the path if it does not already exist.
+     * @param {Symbol} [returnMetadata=!ish.resolve.returnMetadata] Value representing if metadata is to be returned; <code>{ value: {variant}, created: {boolean}, existed: {boolean} }</code>.
+     * @param {boolean} [bForceCreate=true] Value representing if the path is to be created if it doesn't already exist. <code>true</code> creates the path if it does not already exist.
      * @param {object} oObject Value to interrogate.
      * @param {string|string[]} vPath Value representing the path to the requested property as a period-delimited string (e.g. "parent.child.array.0.key") or an array of strings.
      * @param {variant} [vValue] Value representing the value to set the referenced property to.
@@ -765,7 +765,7 @@
      * @example
      *   <caption>
      *     When forcing the creation of an object structure, data can be lost if an existing non-object property is used as a parent.
-     *     <br/>This will overwrite the boolean property `nick` with an object reference containing the property `campbell`.
+     *     <br/>This will overwrite the boolean property <code>nick</code> with an object reference containing the property <code>campbell</code>.
      *   </caption>
      *     var neek = { nick: true };
      *     var deepProp = ish.resolve(true, neek, "nick.campbell");
@@ -882,9 +882,9 @@
         );
     }; //# ish.resolve
     //#########
-    /** Unique value indicating if metadata is to be returned by `ish.resolve`.
+    /** Unique value indicating if metadata is to be returned by <code>ish.resolve</code>.
      * @property ish.resolve.returnMetadata
-     * @returns Value representing if metadata is to be returned by `ish.resolve`.
+     * @returns Value representing if metadata is to be returned by <code>ish.resolve</code>.
      * @ignore
      */ //#####
     core.resolve.returnMetadata = core.type.symbol.mk();
@@ -894,7 +894,7 @@
     /** Merges the content of the passed objects into the passed target, adding or overriding properties within the target.
      * <span style="display: none;">Heavily refactored code from http://gomakethings.com/vanilla-javascript-version-of-jquery-extend/<span>
      * @function ish.extend
-     * @param {boolean|integer} [vDeepCopy] Indicates if a deep copy is to occur. `false` performs a shallow copy, a positive integer indicates the max depth to perform a deep copy to, `true` and all other integer values perform a deep copy to an unlimited depth. Default value: `true`.
+     * @param {boolean|integer} [vDeepCopy] Indicates if a deep copy is to occur. <code>false</code> performs a shallow copy, a positive integer indicates the max depth to perform a deep copy to, <code>true</code> and all other integer values perform a deep copy to an unlimited depth.
      * @param {object|function} vTarget Target object to receive properties.
      * @param {...object|...function} vSource Source object(s) whose properties will be copied into the target.
      * @returns {object|function} Reference to the passed target.
@@ -1001,9 +1001,9 @@
      * @returns {function} Function that manages and returns the object representing the configuration values.
      * @example
      *   <caption>
-     *      When used internally for `ish` mixins, the recommended pattern to setup a related `ish.config` entry is:
+     *      When used internally for <code>ish</code> mixins, the recommended pattern to setup a related <code>ish.config</code> entry is:
      *   </caption>
-     *     ish.config.ish = ish.config({ version: "0.1.2014-01-01" });
+     *     ish.config.mixinPath = ish.config({ some: "mixin configuration value" });
      */ //############################################################################################
     core.config = function (oConfig) {
         return function (oOptions) {
@@ -1031,11 +1031,11 @@
             },
             oReturnVal = {
                 //#########
-                /** Javascript implementation of OOP's partial "class" concept, allowing a single object to be defined across multiple locations and/or files (with support for `protected` members).
+                /** Javascript implementation of OOP's partial "class" concept, allowing a single object to be defined across multiple locations and/or files (with support for <code>protected</code> members).
                  * @function ish.oop.partial
                  * @param {object|function} vTarget Target object to receive properties.
                  * @param {object|function} vPartial Source object whose properties will be copied into the target.
-                 *     Functions receive a single argument and their `this` context set to the target object's protected interfaces; e.g. `vPartial(oProtectedMembers)`.
+                 *     Functions receive a single argument and their <code>this</code> context set to the target object's protected interfaces; e.g. <code>vPartial(oProtectedMembers)</code>.
                  */ //#####
                 partial: function (vTarget, vPartial) {
                     var iIndex =  oOopData.i.indexOf(vTarget),
@@ -1156,7 +1156,7 @@
 
 
     //################################################################################################
-    /** Collection of variable Type-based functionality (non-`is`/`mk` core features).
+    /** Collection of variable Type-based functionality (non-<code>is</code>/<code>mk</code> core features).
      * @namespace ish.type
      * @ignore
      */ //############################################################################################
@@ -1238,13 +1238,13 @@
          * @function ish.type.is.ish:import
          * @param {string[]} a_sImport Value representing the mixin paths to import.
          * @param {object} [oOptions] Value representing the following options:
-         *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; `oOptions.callback(a_oProcessedUrls, bAllLoaded)`.
-         *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing  the function to be called when the DOM element is added; `oOptions.onAppend(_dom, sUrl)`.
-         *      @param {boolean} [oOptions.onError=undefined] Value representing the function to be called when an error occurs; `oOptions.onError(_dom, sUrl)`.
+         *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.
+         *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing  the function to be called when the DOM element is added; <code>oOptions.onAppend(_dom, sUrl)</code>.
+         *      @param {boolean} [oOptions.onError=undefined] Value representing the function to be called when an error occurs; <code>oOptions.onError(_dom, sUrl)</code>.
          *      @param {boolean} [oOptions.waitSeconds=7] Value representing the maximum number of seconds to wait before an error is returned.
-         *      @param {boolean} [oOptions.baseUrl=""] Value representing the base URL to prepend on the `src` attribute (must end with `/`).
-         *      @param {boolean} [oOptions.urlArgs=""] Value representing the URL's querystring to append on the `src` attribute (must start with `?`).
-         *      @param {boolean} [oOptions.importedBy="ish.type.is.ish.import"] Value to be set in the DOM element's `importedBy` attribute.
+         *      @param {boolean} [oOptions.baseUrl=""] Value representing the base URL to prepend on the <code>src</code> attribute (must end with <code>/</code>).
+         *      @param {boolean} [oOptions.urlArgs=""] Value representing the URL's querystring to append on the <code>src</code> attribute (must start with <code>?</code>).
+         *      @param {boolean} [oOptions.importedBy="ish.type.is.ish.import"] Value to be set in the DOM element's <code>importedBy</code> attribute.
          */ //#####
         oTypeIsIsh.public['import'] = function (a_sImport, oOptions) {
             var i;
@@ -1288,7 +1288,7 @@
                 ish: oTypeIsIsh.public,
 
                 //#########
-                /** Determines if the passed value is set (i.e. !== `undefined` && !== `null`).
+                /** Determines if the passed value is set (i.e. !== <code>undefined</code> && !== <code>null</code>).
                  * @function ish.type.is.value
                  * @param {variant} x Value to interrogate.
                  * @returns {boolean} Value representing if the passed value is set.
@@ -1298,7 +1298,7 @@
                 }, //# type.is.value
 
                 //#########
-                /** Determines if the passed value is a primitive (i.e. `null`, `undefined`, `Boolean`, `Number`, `String` or `Symbol`).
+                /** Determines if the passed value is a primitive (i.e. <code>null</code>, <code>undefined</code>, <code>Boolean</code>, <code>Number</code>, <code>String</code> or <code>Symbol</code>).
                  * @function ish.type.is.primitive
                  * @param {variant} x Value to interrogate.
                  * @returns {boolean} Value representing if the passed value is a primitive.
@@ -1319,12 +1319,12 @@
                 //    Function: range
                 //    Determines if the passed value is within the passed range.
                 //    Parameters:
-                //    vValue - The variant to interrogate, where the `length` property used for the numeric comparison (if present).
-                //    vType - Function or String denoting the type testing logic which returns `truthy` if ``vValue` is of `vType`.
-                //    (Optional) nMin - Numeric value representing the minimum allowed value (can be passed as `undefined` for no defined minimum).
-                //    (Optional) nMax - Numeric value representing the maximum allowed value (can be passed as `undefined` for no defined maximum).
+                //    vValue - The variant to interrogate, where the <code>length</code> property used for the numeric comparison (if present).
+                //    vType - Function or String denoting the type testing logic which returns <code>truthy</code> if <code>vValue</code> is of <code>vType</code>.
+                //    (Optional) nMin - Numeric value representing the minimum allowed value (can be passed as <code>undefined</code> for no defined minimum).
+                //    (Optional) nMax - Numeric value representing the maximum allowed value (can be passed as <code>undefined</code> for no defined maximum).
                 //    Returns:
-                //    Boolean value representing if the passed value is within the passed range or `undefined` if the vType cannot be resolved to a function.
+                //    Boolean value representing if the passed value is within the passed range or <code>undefined</code> if the vType cannot be resolved to a function.
                 //    */
                 //    range: function (vValue, vType, nMin, nMax) {
                 //        var fnTest = (core.type.fn.is(vType) ? vType : core.resolve(core.type, [vType, "is"])),
@@ -1349,9 +1349,9 @@
 
             date: {
                 //#########
-                /** Provides the current `window.performance`-based timestamp.
+                /** Provides the current <code>window.performance</code>-based timestamp.
                  * @function ish.type.date.timestamp
-                 * @returns {float} Value representing the current `window.performance`-based timestamp.
+                 * @returns {float} Value representing the current <code>window.performance</code>-based timestamp.
                  */ //#####
                 timestamp: function () {
                     var _window_performance = _root.performance,
@@ -1390,7 +1390,7 @@
                  * @function ish.type.arr.rm
                  * @param {variant[]} a_vArray Values to interrogate.
                  * @param {variant|variant[]} vTargets Value(s) to remove.
-                 * @param {variant|variant[]} vReplacements Value(s) to replace the removed items with.<br/><b>Note:</b> The number of replacements must match the number of targets.
+                 * @param {variant|variant[]} vReplacements Value(s) to replace the removed items.<br/><b>Note:</b> The number of replacements must match the number of targets.
                  * @returns {boolean} Value representing if one or more of the passed value(s) were successfully removed / replaced.
                  */ //#####
                 rm: function (a_vArray, vTargets, vReplacements) {
@@ -1489,36 +1489,66 @@
                     return iReturnVal;
                 }, //# type.obj.rm
 
-                //#
-                ownKeys: function(oSource) {
-                    var i,
+                //#########
+                /** Determines the enumerable and/or non-enumerable keys of the passed value.
+                 * @function ish.type.obj.ownKeys
+                 * @param {object} oSource Value to interrogate.
+                 * @param {object|boolean} [vOptions=false] Value representing if non-enumerable properties are to be included.
+                 *      @param {boolean} [vOptions.includeNonEnumerable=false] Value representing if non-enumerable properties are to be included.
+                 *      @param {boolean} [vOptions.onlyNonEnumerable=false] Value representing if only non-enumerable properties are to be returned.
+                 * @returns {string[]} Value representing the requested keys of the passed value.
+                 */ //#####
+                ownKeys: function(oSource, vOptions) {
+                    var a_sKeys, i,
+                        bGetOwnPropertyNames = core.type.fn.is(Object.getOwnPropertyNames),
                         a_sReturnVal /* = _undefined */
                     ;
 
-                    //# If the passed oSource .is .obj, collect its .keys into our a_sReturnVal
-                    //#     NOTE: Object.keys is polyfilled for pre-IE9 while Object.getOwnPropertyNames is not
-                    if (core.type.obj.is(oSource, { allowFn: true })) {
-                        a_sReturnVal = Object.keys(oSource);
+                    //# Ensure the passed vOptions .is an .obj, defaulting .includeNonEnumerable to the truthy value of vOptions if its not an .obj
+                    vOptions = core.type.obj.mk(vOptions, { includeNonEnumerable: vOptions === true });
 
-                        //# Traverse the collected oSource .keys from back to front (so we can .splice them out as we go)
-                        for (i = a_sReturnVal.length; i > 0; i--) {
-                            //# If the current .keys isn't a .hasOwnProperty, .splice it from our a_sReturnVal
-                            if (!oSource.hasOwnProperty(a_sReturnVal[i])) {
-                                a_sReturnVal.splice(i, 1);
+                    //# If the passed oSource .is .obj, collect its .keys into our a_sReturnVal
+                    //#     NOTE: Object.keys is polyfilled for pre-IE9 while Object.getOwnPropertyNames is not, possible polyfill - https://github.com/zloirock/core-js/blob/v3.2.1/packages/core-js/modules/es.object.get-own-property-names.js
+                    if (core.type.obj.is(oSource, { allowFn: true })) {
+                        //# If we are to return .onlyNonEnumerable properties
+                        if (vOptions.onlyNonEnumerable) {
+                            a_sReturnVal = (bGetOwnPropertyNames ? Object.getOwnPropertyNames(oSource) : []);
+                            a_sKeys = Object.keys(oSource);
+
+                            //# Traverse the .getOwnPropertyNames, .splice'ing out any that also exist in our a_sKeys
+                            for (i = 0; i < a_sReturnVal.length; i++) {
+                                if (a_sKeys.indexOf(a_sReturnVal[i]) !== -1) {
+                                    a_sReturnVal.splice(i, 1);
+                                }
                             }
+                        }
+                        //#
+                        else if (vOptions.includeNonEnumerable && bGetOwnPropertyNames) {
+                            a_sReturnVal = Object.getOwnPropertyNames(oSource);
+                        }
+                        //#
+                        else {
+                            a_sReturnVal = Object.keys(oSource);
                         }
                     }
 
                     return a_sReturnVal;
                 }, //# type.obj.ownKeys
 
-                //#
+                //#########
+                /** Determines the value of the passed case-insensetive key within the passed value.
+                 *   <br/><b>Note:</b>As the key is searched for in a case-insensetive manor, the first matching lowercased key enumerated by the <code>for...in</code> statement will be returned.
+                 * @function ish.type.obj.get
+                 * @param {object} oSource Value to interrogate.
+                 * @param {string} sKey Key to retrieve from the passed value.
+                 * @returns {variant} Value representing the value of the passed case-insensetive key.
+                 */ //#####
                 get: function (oObject, sKey) {
                     var sCurrentKey,
                         vReturnVal /* = _undefined */
                     ;
 
-                    //# If the called passed in a valid oObject, .toLowerCase our sKey
+                    //# If the caller passed in a valid oObject, .toLowerCase our sKey
                     if (core.type.obj.is(oObject)) {
                         sKey = core.type.str.mk(sKey).toLowerCase();
 
@@ -1535,13 +1565,6 @@
                 } //# type.obj.get
             }, //# core.type.obj.*
 
-
-            /** ################################################################################################
-             * @namespace core.type.fn (Function)
-             * @desc Collection of Function management functionality.
-             * @requires core.type.fn.is, core.type.arr.is
-             * @requires core.type.arr.mk, core.type.obj.mk
-            ################################################################################################# */
             fn: function () {
                 //# Converts the passed argument from an arguments instance, array or single variable into an Array fit to pass to fn.apply().
                 function convert(vArguments) {
@@ -1569,42 +1592,44 @@
 
 
                 return {
-                    /*
-                    */
-                    arguments: function (_args) {
-                        return (Object.prototype.toString.call(_args) === "[object Arguments]");
-                    }, //# fn.arguments
+                    is: {
+                        //#########
+                        /** Determines if the passed value represents an arguments instance.
+                         * @function ish.type.fn.is:arguments
+                         * @param {variant} x Value to interrogate.
+                         * @returns {boolean} Value representing if the passed value represents an arguments instance.
+                         */ //#####
+                        arguments: function (x) {
+                            return (Object.prototype.toString.call(x) === "[object Arguments]");
+                        } //# fn.is.arguments
+                    },
 
-                    /*
-                    Function: convert
-                    Converts the passed argument from an arguments instance, array or single variable into an Array fit to pass to fn.apply().
-                    vArguments - variant representing the argument(s) to convert into an array
-                    Returns:
-                    Array representing the passed vArguments fit to pass to fn.apply().
-                    */
+                    //#########
+                    /** Casts the passed arguments instance, array or single value into an array fit to pass to <code>function.apply()</code>.
+                     * @function ish.type.fn.convert
+                     * @param {variant} x Value to interrogate.
+                     * @returns {variant[]} Value representing the passed value as an array.
+                     */ //#####
                     convert: convert,
 
 
-                    /*
-                    Function: noop
-                    Null Function with no arguments or return for use when a valid function reference is required but no action is necessary
-                    */
+                    //#########
+                    /** Null function with no body and no specified return value.
+                     * @function ish.type.fn.noop
+                     */ //#####
                     noop: noop,
 
 
-                    /*
-                    Function: call
-                    Safely calls the passed function, returning the default value if the passed function is invalid.
-                    Parameters:
-                    fn - Function to attempt to call.
-                    vArguments - variant representing the argument(s) to pass into the passed function
-                    vContext - variant representing the Javascript context (e.g. `this`) in which to call the function.
-                    //oOptions - Object representing the desired options:
-                    //    oOptions.context - variant representing the Javascript context (e.g. `this`) in which to call the function.
-                    //    oOptions.default - variant representing the default value to return if an error occurs. Default: `undefined`.
-                    Returns:
-                    variant representing the result of the passed function.
-                    */
+                    //#########
+                    /** Executes the passed function.
+                     *   <br/>The passed function is executed via <code>function.apply()</code>.
+                     * @function ish.type.fn.call
+                     * @param {function} fn Function to execute.
+                     * @param {variant} [vContext=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
+                     * @param {variant} vArguments Value representing the arguments to pass into the passed function.<br/><b>Note:</b> This value is passed through <code>ish.type.fn.convert</code> to ensure an array.
+                     * @returns {variant} Value representing the passed function's return value.
+                     * @todo Refactor all <code>ish.type.fn.call</code> references to use <code>ish.type.fn.run</code> as it has a more consistent interface to the rest of ishJS.
+                     */ //#####
                     call: function (fn, vContext, vArguments) {
                         var vReturnVal /*= _undefined*/;
 
@@ -1616,12 +1641,11 @@
                                     break;
                                 }
                                 case 2: {
-                                    //vReturnVal = fn.apply(this, convert(vArguments));
                                     vReturnVal = fn.apply(vContext);
                                     break;
                                 }
                                 default: {
-                                    vReturnVal = fn.apply(vContext /*|| core.resolve(vArguments, "this")*/, convert(vArguments));
+                                    vReturnVal = fn.apply(vContext, convert(vArguments));
                                     //break;
                                 }
                             }
@@ -1631,22 +1655,21 @@
                     }, //# fn.call
 
 
-                    /*
-                    Function: run
-                    Safely calls the passed function, returning the default value if the passed function is invalid.
-                    Parameters:
-                    fn - Function to attempt to call.
-                    vOptions - Variant representing an Arguments object, an Array of arguments or an Object representing the desired options:
-                        oOptions.context - variant representing the Javascript context (e.g. `this`) in which to call the function.
-                        oOptions.default - variant representing the default value to return if an error occurs. Default: `undefined`.
-                        oOptions.args - array or Arguments object representing the argument(s) to pass into the passed `fn` function.
-                    Returns:
-                    Variant representing the result of the passed function or the default value passed in via `vOptions` if the passed `fn` is not a function.
-                    */ //# TODO: Rename to call and delete original fn.call
+                    //#########
+                    /** Executes the passed function.
+                     *   <br/>The passed function is executed via <code>function.apply()</code>.
+                     * @function ish.type.fn.run
+                     * @param {function} fn Function to execute.
+                     * @param {arguments|variant[]|object} [vOptions] Value representing an arguments instance, an array of arguments or an object representing the desired options:
+                     *      @param {variant} [vOptions.context=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
+                     *      @param {variant} [vOptions.default=undefined] Value representing the default value to return if the passed function is invalid.
+                     *      @param {arguments|variant[]} [vOptions.args] Value representing the arguments to pass into the passed function.<br/><b>Note:</b> This value is passed through <code>ish.type.fn.convert</code> to ensure an array.
+                     * @returns {variant} Value representing the passed function's return value or the default value if the passed function is invalid.
+                     */ //#####
                     run: function (fn, vOptions) {
                         var vReturnVal,
                             a_vArguments = (
-                                core.type.fn.arguments(vOptions) ?
+                                core.type.fn.is.arguments(vOptions) ?
                                 convert(vOptions) : (
                                     core.type.arr.is(vOptions) ?
                                     vOptions :
@@ -1672,26 +1695,19 @@
                     }, //# fn.run
 
 
-                    /*
-                    Function: once
-                    (Factory) Ensure a function is called only once.
-                    Parameters:
-                    fn - Function to call once.
-                    oOptions - Object representing the desired options:
-                        oOptions.context - variant representing the Javascript context (e.g. `this`) in which to call the function.
-                        oOptions.rereturn - Boolean value representing if subsequent calls should return the first return value (default: true).
-                    Returns:
-                    Function that returns the variant representing the result of the passed function.
-                    About:
-                    Usage -
-                    > var canOnlyFireOnce = once(function () {
-                    >     console.log('Fired!');
-                    > });
-                    > //...
-                    > canOnlyFireOnce();
-                    About:
-                    From: http://davidwalsh.name/essential-javascript-functions
-                    */
+                    //#########
+                    /** Wraps the passed function, ensuring it is executed no more than once.
+                     *   <br/>The passed function is executed via <code>function.apply()</code>.
+                     * @function ish.type.fn.once
+                     * @param {function} fn Function to execute.
+                     * @param {object} [oOptions] Value representing the desired options:
+                     *      @param {variant} [oOptions.context=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
+                     *      @param {variant} [oOptions.default=undefined] Value representing the default value to return if the passed function is invalid.
+                     *      @param {boolean} [oOptions.rereturn=true] Value representing if subsequent calls should return the first return value.
+                     *      @param {integer} oOptions.call <b>OUT</b> Value set by reference representing the number of calls to the passed function.
+                     * @returns {function} Function that returns a value representing the passed function's return value or the default value if the passed function is invalid.
+                     * @see {@link http://davidwalsh.name/essential-javascript-functions|DavidWalsh.name}
+                     */ //#####
                     once: function (fn, oOptions) {
                         var vReturnVal /*= _undefined*/;
 
@@ -1700,6 +1716,7 @@
                             rereturn: true
                         } /*, _undefined*/);
                         oOptions.call = 0;
+                        vReturnVal = oOptions.default;
 
                         return function (/*arguments*/) {
                             if (core.type.fn.is(fn)) {
@@ -1712,18 +1729,18 @@
                     }, //# fn.once
 
 
-                    /*
-                    Function: tryCatch
-                    (Factory) Safely calls the passed function, returning the default value if an error occurs during execution.
-                    Parameters:
-                    fn - Function to call.
-                    oOptions - Object representing the desired options:
-                        oOptions.context - variant representing the Javascript context (e.g. `this`) in which to call the function.
-                        oOptions.default - variant representing the default value to return if an error occurs. Default: `undefined`.
-                        oOptions.returnObj - Boolean value representing if an Object is to be returned representing the result and error. Default `false`.
-                    Returns:
-                    Function that returns the variant representing the result of the passed function.
-                    */
+                    //#########
+                    /** Wraps the passed function, ensuring it is executed within a <code>try...catch</code> block.
+                     *   <br/>The passed function is executed via <code>function.apply()</code>.
+                     * @function ish.type.fn.tryCatch
+                     * @param {function} fn Function to execute.
+                     * @param {object} [oOptions] Value representing the desired options:
+                     *      @param {variant} [oOptions.context=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
+                     *      @param {variant} [oOptions.default=undefined] Value representing the default value to return if the passed function errors.
+                     *      @param {boolean} [oOptions.returnObj=false] Value representing if an object is to be returned representing the result and error.
+                     * @returns {function} Function that returns a value representing the passed function's return value or the default value if the passed function errors.
+                     * @see {@link http://davidwalsh.name/essential-javascript-functions|DavidWalsh.name}
+                     */ //#####
                     tryCatch: function (fn, oOptions) {
                         var oReturnVal;
 
@@ -1754,22 +1771,19 @@
                     }, //# fn.tryCatch
 
 
-                    /*
-                    Function: throttle
-                    (Factory) Enforces a maximum number of times a function can be called over time.
-                    Parameters:
-                    fn - Function to call.
-                    oOptions - Object representing the desired options:
-                        oOptions.context - variant representing the Javascript context (e.g. `this`) in which to call the function.
-                        oOptions.wait - Minimum number of milliseconds between each call (default: 500).
-                        oOptions.leading - The throttled function will run as much as possible, without ever going more than once per wait duration. If you’d like to disable the execution on the leading edge, pass {leading: false}.
-                        oOptions.trailing - The throttled function will run as much as possible, without ever going more than once per wait duration. If you’d like to disable the execution on the trailing edge, pass {trailing: false}.
-                    Returns:
-                    Function that returns the variant representing the result of the passed function.
-                    About:
-                    Based on http://underscorejs.org/docs/underscore.html
-                    Returns a function, that, when invoked, will only be triggered at most once during a given window of time. Normally, the throttled function will run as much as it can, without ever going more than once per wait duration; but if you’d like to disable the execution on the leading edge, pass {leading: false}. To disable execution on the trailing edge, ditto.
-                    */
+                    //#########
+                    /** Wraps the passed function, ensuring it is executed as much as possible without ever executing more than once per wait duration.
+                     *   <br/>The passed function is executed via <code>function.apply()</code>.
+                     * @function ish.type.fn.throttle
+                     * @param {function} fn Function to execute.
+                     * @param {object} [oOptions] Value representing the desired options:
+                     *      @param {variant} [oOptions.context=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
+                     *      @param {integer} [oOptions.wait=500] Value representing the minimum number of milliseconds (1/1000ths of a second) between each call.
+                     *      @param {boolean} [oOptions.leading=true] Value representing if the passed function is to be executed immediently on the first call.
+                     *      @param {boolean} [oOptions.trailing=false] Value representing if the passed function is to be executed at the conclusion of the last wait time.
+                     * @returns {function} Function that returns a value representing the passed function's return value from the most recent call.
+                     * @see {@link http://underscorejs.org/docs/underscore.html|UnderscoreJS.org}
+                     */ //#####
                     throttle: function (fn, oOptions) {
                         var context, args, result,
                             timeout = _null,
@@ -1812,25 +1826,22 @@
                     }, //# fn.throttle
 
 
-                    /*
-                    Function: debounce
-                    (Factory) Enforces that a function cannot be called again until a certain amount of time has passed without it being called.
-                    Parameters:
-                    fn - Function to call.
-                    oOptions - Object representing the desired options:
-                        oOptions.context - variant representing the Javascript context (e.g. `this`) in which to call the function.
-                        oOptions.wait - Minimum number of milliseconds between each call (default: 500).
-                        oOptions.immediate - Execute the function the first time without waiting (default: false).
-                    Returns:
-                    Function that returns the variant representing the result of the passed function.
-                    About:
-                    Usage -
-                    >    var myEfficientFn = debounce(function () {
-                    >        // All the taxing stuff you do
-                    >    }, 250);
-                    >    window.addEventListener('resize', myEfficientFn);
-                    Based on http://underscorejs.org/docs/underscore.html
-                    */
+                    //#########
+                    /** Wraps the passed function, ensuring it cannot be executed until the wait duration has passed without a call being made.
+                     *   <br/>The passed function is executed via <code>function.apply()</code>.
+                     * @function ish.type.fn.debounce
+                     * @param {function} fn Function to execute.
+                     * @param {object} [oOptions] Value representing the desired options:
+                     *      @param {variant} [oOptions.context=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
+                     *      @param {integer} [oOptions.wait=500] Value representing the minimum number of milliseconds (1/1000ths of a second) between each call.
+                     *      @param {boolean} [oOptions.leading=false] Value representing if the passed function is to be executed immediently on the first call.
+                     * @returns {function} Function that returns a value representing the passed function's return value from the most recent call.
+                     * @example
+                     *    var myEfficientFn = ish.type.fn.debounce(function () {
+                     *      // All the taxing stuff you do
+                     *    }, 250);
+                     *    window.addEventListener('resize', myEfficientFn);
+                     */ //#####
                     debounce: function (fn, oOptions) {
                         var timeout, args, context, timestamp, result,
                             later = function () {
@@ -1840,7 +1851,7 @@
                                     timeout = setTimeout(later, oOptions.wait - last);
                                 } else {
                                     timeout = _null;
-                                    if (!oOptions.immediate) {
+                                    if (!oOptions.leading) {
                                         result = fn.apply(context, args);
                                         if (!timeout) context = args = _null;
                                     }
@@ -1851,11 +1862,11 @@
                         //#
                         oOptions = processOptions(oOptions, {
                             //context: _undefined,
-                            immediate: false
+                            leading: false
                         }, 500);
 
                         return function (/*arguments*/) {
-                            var callNow = oOptions.immediate && !timeout;
+                            var callNow = oOptions.leading && !timeout;
                             context = oOptions.context;
                             args = convert(arguments);
                             timestamp = _Date_now();
@@ -1870,22 +1881,19 @@
                     }, //# fn.debounce
 
 
-                    /*
-                    Function: poll
-                    (Factory) Calls the referenced function based on the wait interval until it returns truthy.
-                    Parameters:
-                    fn - Function called each wait time returning truthy. On a truthy return value, oOptions.onsuccess is called (if any).
-                    oOptions - Object representing the desired options:
-                        oOptions.context - variant representing the Javascript context (e.g. `this`) in which to call the function.
-                        oOptions.wait - Function or Integer defining the minimum number of milliseconds between each poll attempt (default: 500).
-                        oOptions.retries - Integer defining the maximum number of polling attempts (default: 4).
-                        oOptions.callback - Function to call on completion, with bSuccess as the first argument.
-                        //oOptions.timeout - Maximum number of milliseconds to do the polling (default: 2000).
-                    Returns:
-                    Function that initiates the polling process.
-                    About:
-                    Based on code from: http://davidwalsh.name/essential-javascript-functions
-                    */
+                    //#########
+                    /** Wraps the passed function, executing it once per wait duration until it returns truthy or the maximum attempts are exhaused.
+                     *   <br/>The passed function is executed via <code>function.apply()</code>.
+                     * @function ish.type.fn.poll
+                     * @param {function} fn Function to execute.
+                     * @param {object} [oOptions] Value representing the desired options:
+                     *      @param {variant} [oOptions.context=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
+                     *      @param {integer|function} [oOptions.wait=500] Value representing the number of milliseconds (1/1000ths of a second) or function called per attempt that returns the number of milliseconds between each call; <code>iWaitMilliseconds = oOptions.wait(iAttemptCount)</code>.
+                     *      @param {integer} [oOptions.maxAttempts=4] Value representing the maximum number of polling attempts.
+                     *      @param {boolean} [oOptions.callback] Value representing the function to be called on completion; <code>oOptions.callback(bPollFunctionReturnedTruthy)</code>.
+                     * @returns {function} Function that executes the passed function once per wait duration until it returns truthy or the maximum attempts are exhaused.
+                     * @see {@link http://davidwalsh.name/essential-javascript-functions|DavidWalsh.name}
+                     */ //#####
                     poll: function () {
                         function poll(fn, oOptions) {
                             var vReturnVal, _a, iWait,
@@ -1896,12 +1904,12 @@
                             oOptions = core.extend({
                                 //callback: _undefined,
                                 //wait: 500,
-                                //retries: 4,
+                                //maxAttempts: 4,
                                 //context: {}
                             }, oOptions);
                             iWait = core.type.int.mk(oOptions.wait, 500);
-                            oOptions.wait = (core.type.fn.is(oOptions.wait) ? oOptions.wait : function (/*iAttempts*/) { return iWait; });
-                            oOptions.retries = core.type.int.mk(oOptions.retries, 4);
+                            oOptions.wait = (core.type.fn.is(oOptions.wait) ? oOptions.wait : function (/*iAttemptCount*/) { return iWait; });
+                            oOptions.maxAttempts = core.type.int.mk(oOptions.maxAttempts, 4);
 
                             return function (/*arguments*/) {
                                 //# .convert the arguments into an _a(rray)
@@ -1919,7 +1927,7 @@
                                         core.type.fn.call(oOptions.callback, oOptions.context, [true, iAttempts, vReturnVal]);
                                     }
                                     //# Else if the condition isn't met but the timeout hasn't elapsed, .setTimeout
-                                    else if (iAttempts < oOptions.retries) {
+                                    else if (iAttempts < oOptions.maxAttempts) {
                                         setTimeout(polling, oOptions.wait(iAttempts));
                                     }
                                     //# Else we've failed and are over our iAttempts, so .call our .callback (if any) indicating !bSuccess
@@ -1930,15 +1938,18 @@
                             };
                         } //# fn.poll
 
-                        //# Exponential back-off (i.e. intervals of 100, 200, 400, 800, 1600...)
+                        //#########
+                        /** Calculates the exponential back-off based on the passed base interval and attempt count.
+                         * @function ish.type.fn.poll:expBackoff
+                         * @param {integer} [iBaseInterval=100] Value representing the number of milliseconds (1/1000ths of a second) to base the exponential interval on.<br/>E.g. <code>100</code> results in intervals of <code>100</code>, <code>200</code>, <code>400</code>, <code>800</code>, <code>1600</code>, etc.
+                         * @returns {function} Function that returns a value representing the number of milliseconds for the current polling attempt.
+                         */ //#####
                         poll.expBackoff = function (iBaseInterval) {
-                            var iAttempts = 1;
-
                             //# Force the iBaseInterval into an .int then return the exponential backoff .interval function to the caller
-                            //#     NOTE: We need to divide the iBaseInterval as we're raising 2 to the power of iAttempts below (e.g. 100 / 2 * 2^1 = 100).
+                            //#     NOTE: We need to divide the iBaseInterval as we're raising 2 to the power of iAttemptCount below (e.g. 100 / 2 * 2^1 = 100).
                             iBaseInterval = (core.type.int.mk(iBaseInterval, 100) / 2);
-                            return function (/*iAttempts*/) {
-                                return (iBaseInterval * Math.pow(2, iAttempts++));
+                            return function (iAttemptCount) {
+                                return (iBaseInterval * Math.pow(2, iAttemptCount));
                             };
                         }; //# fn.poll.expBackoff
 
@@ -1953,17 +1964,14 @@
     //################################################################################################
     /** Input/Output-based functionality.
      * @namespace ish.io
+     * @ignore
      */ //############################################################################################
     core.io = {
-        /*
-        ####################################################################################################
-        Class: core.io.console
-        User reporting logic.
-        Requires:
-        <core.resolve>,
-        <core.type.fn.call>
-        ####################################################################################################
-        */
+        //################################################################################################
+        /** Console-based functionality.
+         *   <p>Wraps the <code>window.console</code> interface, only displaying messages on the console if <code>ish.config.ish().debug</code> is truthy.</p>
+         * @namespace ish.io.console
+         */ //############################################################################################
         console: function () {
             function doCall(sMethod, _a) {
                 if (core.config.ish().debug) {
@@ -1972,14 +1980,29 @@
             } //# doCall
 
             return {
+                //#########
+                /** Logs the passed argument(s) to the console via the native <code>console.log</code> function if <code>ish.config.ish().debug</code> is truthy.
+                 * @function ish.io.console.log
+                 * @param {...varient} x Value(s) to log.
+                 */ //#####
                 log: function (/*arguments*/) {
                     doCall("log", arguments);
                 }, //# io.console.log
 
+                //#########
+                /** Logs the passed argument(s) to the console via the native <code>console.warn</code> function if <code>ish.config.ish().debug</code> is truthy.
+                 * @function ish.io.console.warn
+                 * @param {...varient} x Value(s) to log.
+                 */ //#####
                 warn: function (/*arguments*/) {
                     doCall("warn", arguments);
                 }, //# io.console.warn
 
+                //#########
+                /** Logs the passed argument(s) to the console via the native <code>console.error</code> function if <code>ish.config.ish().debug</code> is truthy.
+                 * @function ish.io.console.error
+                 * @param {...varient} x Value(s) to log.
+                 */ //#####
                 error: function (/*arguments*/) {
                     doCall("error", arguments);
                 }, //# io.console.err
@@ -1987,16 +2010,10 @@
         }(), //# core.io.console
 
 
-        /*
-        ####################################################################################################
-        Class: core.io.event
-        Event logic.
-        Requires:
-        <core.extend>, <core.resolve>,
-        <core.type.arr.is>, <core.type.fn.is>,
-        <core.type.fn.call>, <core.type.arr.rm>, <core.type.obj.ownKeys>
-        ####################################################################################################
-        */
+        //################################################################################################
+        /** Event-based functionality.
+         * @namespace ish.io.event
+         */ //############################################################################################
         event: function () {
             var oEvent, fnDocReady,
                 oData = {}
@@ -2105,7 +2122,19 @@
                     return (core.resolve(oData, [sEvent, "fired"]) === true);
                 }, //# fired
 
-                //#
+                //#########
+                /** Wraps the passed function, executing it once per wait duration until it returns truthy or the maximum attempts are exhaused.
+                 *   <br/>The passed function is executed via <code>function.apply()</code>.
+                 * @function ish.type.fn.poll
+                 * @param {function} fn Function to execute.
+                 * @param {object} [oOptions] Value representing the desired options:
+                 *      @param {variant} [oOptions.context=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
+                 *      @param {integer|function} [oOptions.wait=500] Value representing the number of milliseconds (1/1000ths of a second) or function called per attempt that returns the number of milliseconds between each call; <code>iWaitMilliseconds = oOptions.wait(iAttemptCount)</code>.
+                 *      @param {integer} [oOptions.maxAttempts=4] Value representing the maximum number of polling attempts.
+                 *      @param {boolean} [oOptions.callback] Value representing the function to be called on completion; <code>oOptions.callback(bPollFunctionReturnedTruthy)</code>.
+                 * @returns {function} Function that executes the passed function once per wait duration until it returns truthy or the maximum attempts are exhaused.
+                 * @see {@link http://davidwalsh.name/essential-javascript-functions|DavidWalsh.name}
+                 */ //#####
                 watch: function (sEvent, fnCallback) {
                     var bReturnVal = core.type.fn.is(fnCallback);
 
@@ -2373,12 +2402,12 @@
                      * @function ish.require.!
                      * @param {string|string[]} vUrls Value representing the URL(s) of the functionality to include.
                      * @param {object} [oOptions] Value representing the following options:
-                     *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; `oOptions.callback(a_oProcessedUrls, bAllLoaded)`.
-                     *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing  the function to be called when the DOM element is added; `oOptions.onAppend(_dom, sUrl)`.
-                     *      @param {boolean} [oOptions.onError=undefined] Value representing the function to be called when an error occurs; `oOptions.onError(_dom, sUrl)`.
+                     *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.
+                     *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing  the function to be called when the DOM element is added; <code>oOptions.onAppend(_dom, sUrl)</code>.
+                     *      @param {boolean} [oOptions.onError=undefined] Value representing the function to be called when an error occurs; <code>oOptions.onError(_dom, sUrl)</code>.
                      *      @param {boolean} [oOptions.waitSeconds=7] Value representing the maximum number of seconds to wait before an error is returned.
-                     *      @param {boolean} [oOptions.baseUrl=""] Value representing the base URL to prepend on the `src` attribute (must end with `/`).
-                     *      @param {boolean} [oOptions.urlArgs=""] Value representing the URL's querystring to append on the `src` attribute (must start with `?`).
+                     *      @param {boolean} [oOptions.baseUrl=""] Value representing the base URL to prepend on the <code>src</code> attribute (must end with <code>/</code>).
+                     *      @param {boolean} [oOptions.urlArgs=""] Value representing the URL's querystring to append on the <code>src</code> attribute (must start with <code>?</code>).
                      */ //#####
                     function (vUrls, oOptions) {
                         var fnCallback, i,
@@ -2457,12 +2486,12 @@
                          * @function ish.require.scripts
                          * @param {string|string[]} vUrls Value representing the URL(s) of the functionality to include.
                          * @param {object} [oOptions] Value representing the following options:
-                         *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; `oOptions.callback(a_oProcessedUrls, bAllLoaded)`.
-                         *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing  the function to be called when the DOM element is added; `oOptions.onAppend(_dom, sUrl)`.
-                         *      @param {boolean} [oOptions.onError=undefined] Value representing the function to be called when an error occurs; `oOptions.onError(_dom, sUrl)`.
+                         *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.
+                         *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing  the function to be called when the DOM element is added; <code>oOptions.onAppend(_dom, sUrl)</code>.
+                         *      @param {boolean} [oOptions.onError=undefined] Value representing the function to be called when an error occurs; <code>oOptions.onError(_dom, sUrl)</code>.
                          *      @param {boolean} [oOptions.waitSeconds=7] Value representing the maximum number of seconds to wait before an error is returned.
-                         *      @param {boolean} [oOptions.baseUrl=""] Value representing the base URL to prepend on the `src` attribute (must end with `/`).
-                         *      @param {boolean} [oOptions.urlArgs=""] Value representing the URL's querystring to append on the `src` attribute (must start with `?`).
+                         *      @param {boolean} [oOptions.baseUrl=""] Value representing the base URL to prepend on the <code>src</code> attribute (must end with <code>/</code>).
+                         *      @param {boolean} [oOptions.urlArgs=""] Value representing the URL's querystring to append on the <code>src</code> attribute (must start with <code>?</code>).
                          */ //#####
                         scripts: function (vUrls, vOptions) {
                             //# <IE6thru9Support>
@@ -2521,12 +2550,12 @@
                          * @function ish.require.links
                          * @param {string|string[]} vUrls Value representing the URL(s) of the functionality to include.
                          * @param {object} [oOptions] Value representing the following options:
-                         *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; `oOptions.callback(a_oProcessedUrls, bAllLoaded)`.
-                         *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing  the function to be called when the DOM element is added; `oOptions.onAppend(_dom, sUrl)`.
-                         *      @param {boolean} [oOptions.onError=undefined] Value representing the function to be called when an error occurs; `oOptions.onError(_dom, sUrl)`.
+                         *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.
+                         *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing the function to be called when the DOM element is added; <code>oOptions.onAppend(_dom, sUrl)</code>.
+                         *      @param {boolean} [oOptions.onError=undefined] Value representing the function to be called when an error occurs; <code>oOptions.onError(_dom, sUrl)</code>.
                          *      @param {boolean} [oOptions.waitSeconds=7] Value representing the maximum number of seconds to wait before an error is returned.
-                         *      @param {boolean} [oOptions.baseUrl=""] Value representing the base URL to prepend on the `src` attribute (must end with `/`).
-                         *      @param {boolean} [oOptions.urlArgs=""] Value representing the URL's querystring to append on the `src` attribute (must start with `?`).
+                         *      @param {boolean} [oOptions.baseUrl=""] Value representing the base URL to prepend on the <code>src</code> attribute (must end with <code>/</code>).
+                         *      @param {boolean} [oOptions.urlArgs=""] Value representing the URL's querystring to append on the <code>src</code> attribute (must start with <code>?</code>).
                          */ //#####
                         links: function (vUrls, vOptions) {
                             //# Pass the call off to .processUrls, defaulting and .process(ing the v)Options as we go
@@ -2584,12 +2613,12 @@
                          * @function ish.require.css
                          * @param {string|string[]} vUrls Value representing the URL(s) of the functionality to include.
                          * @param {object} [oOptions] Value representing the following options:
-                         *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; `oOptions.callback(a_oProcessedUrls, bAllLoaded)`.
-                         *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing  the function to be called when the DOM element is added; `oOptions.onAppend(_dom, sUrl)`.
-                         *      @param {boolean} [oOptions.onError=undefined] Value representing the function to be called when an error occurs; `oOptions.onError(_dom, sUrl)`.
+                         *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.
+                         *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing  the function to be called when the DOM element is added; <code>oOptions.onAppend(_dom, sUrl)</code>.
+                         *      @param {boolean} [oOptions.onError=undefined] Value representing the function to be called when an error occurs; <code>oOptions.onError(_dom, sUrl)</code>.
                          *      @param {boolean} [oOptions.waitSeconds=7] Value representing the maximum number of seconds to wait before an error is returned.
-                         *      @param {boolean} [oOptions.baseUrl=""] Value representing the base URL to prepend on the `src` attribute (must end with `/`).
-                         *      @param {boolean} [oOptions.urlArgs=""] Value representing the URL's querystring to append on the `src` attribute (must start with `?`).
+                         *      @param {boolean} [oOptions.baseUrl=""] Value representing the base URL to prepend on the <code>src</code> attribute (must end with <code>/</code>).
+                         *      @param {boolean} [oOptions.urlArgs=""] Value representing the URL's querystring to append on the <code>src</code> attribute (must start with <code>?</code>).
                          */ //#####
                         css: function (vUrls, vOptions) {
                             //# Ensure the passed vOptions .obj.is, defaulting the values as we go
@@ -2654,18 +2683,22 @@
     }();
 
 
-    /** ################################################################################################
-     * @namespace core.lib
-     * @desc Stub-object for Library-based functionality.
-    ################################################################################################# */
-    core.lib = oInterfaces.pub(); //# core.lib
+    //################################################################################################
+    /** Stub for Library-based functionality.
+     * @namespace ish.lib
+     * @property {object} ish.lib.data Stub for Library-based data.
+     * @property {object} ish.lib.ui Stub for Library-based UI functionality.
+     */ //############################################################################################
+     core.lib = oInterfaces.pub(); //# core.lib
 
 
-    /** ################################################################################################
-     * @namespace core.app
-     * @desc Stub-object for Application-based functionality.
-    ################################################################################################# */
-    core.app = oInterfaces.pub(); //# core.app
+    //################################################################################################
+    /** Stub for Application-based functionality.
+     * @namespace ish.app
+     * @property {object} ish.app.data Stub for Application-based data.
+     * @property {object} ish.app.ui Stub for Application-based UI functionality.
+     */ //############################################################################################
+     core.app = oInterfaces.pub(); //# core.app
 
 
     //########
@@ -2706,9 +2739,6 @@
 
             //##################################################################################################
             //# Procedural code
-            //# Requires:
-            //# <core.extend>, <core.resolve>,
-            //# <core.type.obj.mk>
             //##################################################################################################
             //# Optionally create then .extend our _root variable to expose core as the developer defined in SCRIPT[ish]'s JSON
             //#     NOTE: Since document.currentScript is not universally supported, we look for SCRIPT[ish] as a fallback
@@ -2804,19 +2834,22 @@
             }; //# oPrivates.init
 
 
-            /*
-            About:
-            Based on code from: stackoverflow.com/a/42149818/235704
-            */
+            //#########
+            /** Determines if the passed value is a valid CSS selector.
+             * @function ish.type.str.is:selector
+             * @param {variant} x Value to interrogate.
+             * @returns {boolean} Value representing if the passed value is a valid CSS selector.
+             * @see {@link https://stackoverflow.com/a/42149818/235704|Based on this example}
+             */ //#####
             core.type.str.is.selector = function isSelector() {
                 var _dummy = _document.createElement('br');
 
-                return function (sSelector) {
+                return function (x) {
                     var bReturnVal = false;
 
-                    //# Attempt to .querySelector under the _dummy BR using the sSelector, with a thrown error indicating a non-compliant sSelector
+                    //# Attempt to .querySelector under the _dummy BR using the selector, with a thrown error indicating a non-compliant selector
                     try {
-                        _dummy.querySelector(sSelector);
+                        _dummy.querySelector(x);
                         bReturnVal = true;
                     } catch (e) {/*oTypeIsIsh.public.expectedErrorHandler(e);*/}
 
@@ -2825,7 +2858,10 @@
             }(); //# core.type.selector
 
 
-            //#
+            //#########
+            /** Document Object Model-based type functionality.
+             * @namespace ish.type.dom
+             */ //#####
             core.type.dom = function () {
                 var a_oWrapMap = {
                     _:      [1, "<div>", "</div>"],
@@ -2847,17 +2883,18 @@
                 a_oWrapMap.tbody = a_oWrapMap.tfoot = a_oWrapMap.colgroup = a_oWrapMap.caption = a_oWrapMap.thead;
 
                 return {
-                    /*
-                    Function: is
-                    Determines if the passed value is a DOM reference.
-                    Parameters:
-                    x - The variant to interrogate.
-                    bAllowSelector - Boolean value representing if CSS selectors that successfully resolve to DOM elements are to be included in the test.
-                    Returns:
-                    Boolean value representing if the value is a DOM reference.
-                    */
+                    //#########
+                    /** Determines if the passed value is a DOM element.
+                     * @function ish.type.dom.is
+                     * @param {variant} x Value to interrogate.
+                     * @param {object|boolean} [vOptions=false] Value representing if CSS selectors that successfully resolve to DOM elements are to be reconized.
+                     *      @param {boolean} [vOptions.allowSelector=false] Value representing if CSS selectors that successfully resolve to DOM elements are to be reconized.
+                     *      @param {boolean} [vOptions.allowHTML=false] Value representing if HTML that successfully parses to DOM elements are to be reconized.
+                     * @returns {boolean} Value representing if the passed value is a DOM element.
+                     * @see {@link https://stackoverflow.com/a/42149818/235704|Based on this example}
+                     */ //#####
                     is: function isDom(x, vOptions) {
-                        vOptions = core.type.obj.mk(vOptions, { allowSelector: !!vOptions });
+                        vOptions = core.type.obj.mk(vOptions, { allowSelector: vOptions === true });
 
                         //#
                         if (core.type.str.is(x, true)) {
@@ -2880,19 +2917,17 @@
                         );
                     }, //# dom.is
 
-                    /*
-                    Function: mk
-                    Safely parses the passed value into a DOM element.
-                    Parameters:
-                    x - The variant to interrogate. Can be a CSS Selector (used by document.querySelector), jQuery reference (x[0] will be returned), HTML string defining a single root element or DOM element.
-                    _default - The default DOM element to return if casting fails.
-                    Returns:
-                    DOM element represented by the passed value, or _default if interrogation failed.
-                    */
-                    mk: function (x, _default) {
+                    //######### Can be a CSS Selector (used by document.querySelector), jQuery reference (x[0] will be returned), HTML string defining a single root element or DOM element.
+                    /** Casts the passed value into a DOM element.
+                     * @function ish.type.dom.mk
+                     * @param {variant|string} x Value to interrogate.
+                     * @param {element} [_defaultVal=<div></div>] Value representing the default return value if casting fails.
+                     * @returns {element} Value representing the passed value as a DOM element.
+                     */ //#####
+                    mk: function (x, _defaultVal) {
                         var a__parsed, i,
                             _div = _document.createElement("div"),
-                            _returnVal = (arguments.length > 1 ? _default : _div)
+                            _returnVal = (arguments.length > 1 ? _defaultVal : _div)
                         ;
 
                         //# If the passed x .is .str, .trim it
@@ -2920,7 +2955,7 @@
                             }*/
                             //# Else try to .parse the passed .is .str as HTML
                             else {
-                                //# Since .parse will return based on a passed _default or not, we .run .parse with our own arguments to ensure proper behavior
+                                //# Since .parse will return based on a passed _defaultVal or not, we .run .parse with our own arguments to ensure proper behavior
                                 a__parsed = core.type.fn.run(core.type.dom.parse, arguments);
 
                                 //# If we a__parsed out elements
@@ -2953,17 +2988,15 @@
                         return _returnVal;
                     }, //# dom.mk
 
-                    /*
-                    Function: parse
-                    Safely parses the passed value into a DOM element.
-                    Parameters:
-                    sHTML -
-                    bFirstElementOnly -
-                    Returns:
-                    DOM element represented by the passed value, or _default if interrogation failed.
-                    */
-                    //#     Based on: http://krasimirtsonev.com/blog/article/Revealing-the-magic-how-to-properly-convert-HTML-string-to-a-DOM-element
-                    parse: function (sHTML, _default) {
+                    //#########
+                    /** Parses the passed value as a DOM element.
+                     * @function ish.type.dom.parse
+                     * @param {string} sHTML Value to parse.
+                     * @param {element} [_defaultVal=undefined] Value representing the default return value if casting fails.
+                     * @returns {element} Value representing the passed value as a DOM element.
+                     * @see {@link http://krasimirtsonev.com/blog/article/Revealing-the-magic-how-to-properly-convert-HTML-string-to-a-DOM-element|Based on this example}
+                     */ //#####
+                    parse: function (sHTML, _defaultVal) {
                         var a__returnVal, _dom, a_vMap, sTag, bHeadTag, bBodyTag, i;
 
                         //# .trim any empty leading/trailing #text nodes then safely determine the first sTag (if any) within the passed sHTML along with if it's a bBodyTag
@@ -3004,7 +3037,7 @@
                         a__returnVal = (
                             core.type.arr.is(a__returnVal, true) ?
                             a__returnVal : (
-                                arguments.length > 1 ? [_default] : []
+                                arguments.length > 1 ? [_defaultVal] : []
                             )
                         );
 
@@ -3014,12 +3047,20 @@
             }(); //# core.type.dom
 
 
-            /** ################################################################################################
-            * @namespace core.ui
-            * @desc Stub-object for User Interface-based functionality.
-            ################################################################################################# */
+            //################################################################################################
+            /** Collection of UI-based functionality.
+             *  <br/><b>Note:</b> This functionality is only available client-side. <code>ish.ui</code> does not exist on the server-side.
+             * @namespace ish.ui
+             */ //############################################################################################
             core.ui = {
-                //# Based on: https://stackoverflow.com/a/36929383/235704
+                //#########
+                /** Scrolls the browser's viewpoint to the passed DOM element.
+                 * @function ish.ui.scrollTo
+                 * @param {element} vElement Value to scroll the browser's viewpoint to.
+                 * @param {boolean} [bSetHash=false] Value representing if the <code>document.location.hash</code> is to be set.
+                 * @returns {boolean} Value representing if the passed value is a valid DOM element.
+                 * @see {@link https://stackoverflow.com/a/36929383/235704|Based on this example}
+                 */ //#####
                 scrollTo: function (vElement, bSetHash) {
                     var _element = core.type.dom.mk(vElement, null),
                         bReturnVal = (_element !== null), // _element && core.type.fn.is(_element.getBoundingClientRect)), //# .fn.is probably not req: https://developer.mozilla.org/en-US/docs/Web/API/Element/getBoundingClientRect
@@ -3035,7 +3076,7 @@
                                 }, 20);
                             }
                             else if (bSetHash && core.type.str.is(vElement)) {
-                                location.hash = "#" + vElement;
+                                _document.location.hash = "#" + vElement;
                             }
                         } //# doScroll
                     ;
@@ -3048,6 +3089,10 @@
                     return bReturnVal;
                 },
 
+                //#########
+                /** Clears any page selection(s) from the browser.
+                 * @function ish.ui.clearSelection
+                 */ //#####
                 clearSelection: function () {
                     if (_root.getSelection) {_root.getSelection().removeAllRanges();}
                     else if (_document.selection) {_document.selection.empty();}

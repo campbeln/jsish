@@ -302,17 +302,17 @@
                         //#
                         oOptions = core.extend({
                             //wait: 500,
-                            //retries: 5
+                            //maxAttempts: 5
                         }, oOptions);
                         iWait = (core.type.int.mk(oOptions.wait, 500));
                         oOptions.wait = (core.type.fn.is(oOptions.wait) ? oOptions.wait : function (/*iAttempts*/) { return iWait; });
-                        oOptions.retries = core.type.int.mk(oOptions.retries, 5);
+                        oOptions.maxAttempts = core.type.int.mk(oOptions.maxAttempts, 5);
                         oOptions.attempts = 1;
 
                         //#
                         fnRetry = function () {
                             return (
-                                oOptions.attempts++ < oOptions.retries ?
+                                oOptions.attempts++ < oOptions.maxAttempts ?
                                 oOptions.wait(oOptions.attempts) :
                                 null
                             );
