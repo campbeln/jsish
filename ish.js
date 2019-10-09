@@ -980,7 +980,9 @@
                         }
                         //# Else treat the oSource[sKey] as a value, setting it into oTarget[sKey]
                         else {
-                            oTarget[sKey] = oSource[sKey];
+                            try {
+                                oTarget[sKey] = oSource[sKey];
+                            } catch (e) {/*expectederror*/}
                         }
                     }
                 }
@@ -1252,7 +1254,7 @@
             //# Ensure the passed a_sImport and oOptions are valid and setup
             //#     NOTE: We don't test/gate based on a_sImport being an .arr.is because this way we ensure the ish.pluginsLoaded .event is always .fire'd
             //#     NOTE: <script type="text/javascript" src="js/ish/ish.js" ish='{ "target": "$z", "plugins": { "import": ["lib.ui","app.tags","app.ui"], "baseUrl": "js/ish/", "cache": false } }'></script>
-            a_sImport = core.type.arr.mk(a_sImport, [a_sImport]);
+            a_sImport = core.type.arr.mk(a_sImport, (core.type.str.is(a_sImport, true) ? [a_sImport] : []));
             oOptions = core.extend({
                 callback: function (a_oProcessedUrls, bAllLoaded) {
                     core.io.event.fire("ish.pluginsLoaded", [a_oProcessedUrls, bAllLoaded]);
@@ -2642,8 +2644,21 @@
         core.config.require = core.config(oRequireOptions);
 
         //# Return the full core.require interface
+        //#     NOTE: .modules is included below because it is available on both the client and server-side.
         return core.extend(fnRequire, {
             //# Allows dynamically defined "bundles" at runtime, allowing us to load scripts in the required order
+            //#########
+            /** Includes functionality into the current context.
+             * @function ish.require.modules
+             * @param {string[]|string[string[]]} a_vModuleUrls Value representing the URL(s) of the functionality to include.
+             * @param {object} [oOptions] Value representing the following options:
+             *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.
+             *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing  the function to be called when the DOM element is added; <code>oOptions.onAppend(_dom, sUrl)</code>.
+             *      @param {boolean} [oOptions.onError=undefined] Value representing the function to be called when an error occurs; <code>oOptions.onError(_dom, sUrl)</code>.
+             *      @param {boolean} [oOptions.waitSeconds=7] Value representing the maximum number of seconds to wait before an error is returned.
+             *      @param {boolean} [oOptions.baseUrl=""] Value representing the base URL to prepend on the <code>src</code> attribute (must end with <code>/</code>).
+             *      @param {boolean} [oOptions.urlArgs=""] Value representing the URL's querystring to append on the <code>src</code> attribute (must start with <code>?</code>).
+             */ //#####
             modules: function (a_vModuleUrls, vOptions) {
                 var i = 0,
                     oOptions = processOptions(vOptions),
