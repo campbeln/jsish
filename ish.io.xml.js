@@ -1,31 +1,44 @@
-/** ################################################################################################
- * XML mixin for ishJS
+//################################################################################################
+/** XML mixin for ishJS that wraps Axinom's implementation of Abdulla Abdurakhmanov's <code>x2js</code>
  * @mixin ish.io.xml
  * @author Nick Campbell (wrapper); Axinom; Abdulla Abdurakhmanov
  * @license Apache License, Version 2.0
  * @copyright 2014-2019, Nick Campbell (wrapper); 2015, Axinom; 2011-2013, Abdulla Abdurakhmanov
-################################################################################################# */
+ */ //############################################################################################
 !function (X2JS) {
     "use strict";
 
     function init(core) {
         var $x2js = new X2JS();
 
-        /*
-        ####################################################################################################
-        Class: core.io.xml
-        XML-based functionality.
-        Requires:
-        <core.extend>,
-        ####################################################################################################
-        */
+        //################################################################################################
+        /** Collection of CSV-based functionality.
+         * @namespace ish.io.xml
+         * @ignore
+         */ //############################################################################################
         core.oop.partial(core.io, {
             xml: {
+                //#########
+                /** Parses the passed value into a Javascript object representing the XML data.
+                 * @function ish.io.xml.parse
+                 * @param {string} sXML Value representing the XML data to parse.
+                 * @returns {object[]} Value representing the XML data.
+                 * @see {@link https://github.com/abdolence/x2js|GitHub.com/abdolence}
+                 * @see {@link https://github.com/x2js/x2js/blob/development/x2js.js|GitHub.com/x2js}
+                 */ //#####
                 parse: function (sXML) {
                     return $x2js.xml2js(core.type.str.mk(sXML));
                 },
-                stringify: function (vObj) {
-                    return $x2js.js2xml(core.type.obj.mk(vObj));
+
+                //#########
+                /** Converts the passed value to a n XML string.
+                 * @function ish.io.xml.stringify
+                 * @param {object} oData Value representing the data to serialize into a XML string.
+                 * @returns {string} Value representing the XML data.
+                 * @see {@link https://stackoverflow.com/a/14991797/235704|StackOverflow.com}
+                 */ //#####
+                stringify: function (oData) {
+                    return $x2js.js2xml(core.type.obj.mk(oData));
                 }
             }
         }); //# core.io

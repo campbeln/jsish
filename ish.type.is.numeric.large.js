@@ -1,39 +1,48 @@
-/** ################################################################################################
- * Additional Long Number mixin for ishJS
- * @mixin ish.type.is.numeric
+//################################################################################################
+/** @file Long Number mixin for ishJS
+ * @mixin ish.type.is.numeric.large
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
-################################################################################################# */
+ */ //############################################################################################
 !function () {
     'use strict';
 
     function init(core) {
-        /*
-        ####################################################################################################
-        Class: core.type.num
-        Additional Numeric calculation logic (range, gle and precision).
-        Requires:
-        <core.type.is.numeric>,
-        <core.type.str.mk>
-        ####################################################################################################
-        */
+        //################################################################################################
+        /** Collection of long number functionality (range, gle and precision).
+         * @namespace ish.type.is.numeric.large
+         * @ignore
+         */ //############################################################################################
         core.oop.partial(core.type.is, {
             numeric: {
+                //#########
+                /** Determines if the passed value is within the passed range.
+                 * @function ish.type.is.numeric.large.range
+                 * @param {string} sXML Value representing the XML data to parse.
+                 * @returns {object[]} Value representing the XML data.
+                 */ //#####
                 //############################################################
                 //# Determines if the passed sNumber is within the passed range
                 //#    NOTE: "return (sNumber >= sMin && sNumber <= sMax)" would work in 99.9% of the checks we'll do with this function, but in the case of huge/tiny numbers (such as NUMERIC(x,y)'s in Oracle), this wouldn't cut it as the numbers would be too large/small to be represented in any available numeric variables
                 //############################################################
                 //# Last Updated: February 21, 2006
-                rangeStr: function(sNumber, sMin, sMax) {
+                range: function (sNumber, sMin, sMax) {
                     return (
                         //#### If the passed sNumber is greater then or equal to the passed sMin
                         core.type.is.numeric.cmp(sNumber, sMin) >= 0 &&
                         //#### If the passed sNumber is less then or equal to the passed sMax
                         core.type.is.numeric.cmp(sNumber, sMax) <= 0
                     );
-                }, //# type.is.numeric.rangeStr
+                }, //# type.is.numeric.large.range
 
+
+                //#########
+                /** Determines if the passed value is within the passed range.
+                 * @function ish.type.is.numeric.large.compare
+                 * @param {string} sXML Value representing the XML data to parse.
+                 * @returns {object[]} Value representing the XML data.
+                 */ //#####
                 //############################################################
                 //# Determines if the passed sNumber is greater then, less then or equal to the passed sComparedTo
                 //#     Return values:
@@ -42,7 +51,7 @@
                 //#          0 if the passed values are equal, or if one of the passed values was non-numeric
                 //############################################################
                 //# Last Updated: February 21, 2006
-                compare: function(sNumber, sComparedTo) {
+                compare: function (sNumber, sComparedTo) {
                     //#### Ensure the passed sNumber and sComparedTo are strings
                     sNumber += "";
                     sComparedTo += "";
@@ -183,13 +192,13 @@
 
                         //#### Return the above determined iReturn value to the caller
                     return iReturn;
-                }, //# type.is.numeric.compare
+                }, //# ish.type.is.numeric.large.compare
 
                 //############################################################
                 //# Determines the numeric precision of the passed sValue (i.e. - counts how many numeric places there are within the number, not including leading 0's)
                 //############################################################
                 //# Last Updated: April 19, 2006
-                precision: function(vValue) {
+                precision: function (vValue) {
                     var sCurrentChar, i, bStartCounting,
                         sValue = core.type.str.mk(vValue).trim(),
                         iReturnVal = (/^(-)?[0-9.,]{1,}$/.test(sValue) ? 0 : -1)
@@ -212,7 +221,7 @@
                     }
 
                     return iReturnVal;
-                } //# type.is.numeric.precision
+                } //# ish.type.is.numeric.large.precision
             }
         }); //# core.type.num
     } //# init

@@ -1,9 +1,12 @@
 <html>
 <head>
     <title>Test Suite</title>
+    <META HTTP-EQUIV="Access-Control-Allow-Origin" CONTENT="http://some.url">
 </head>
 <body id="thebody">
     Test
+
+
     <script type="text/javascript" src="test/chai.js"></script>
 
     <script type="text/javascript" src="ish-polyfill.js"></script>
@@ -18,12 +21,15 @@
     <script type="text/javascript" src="ish.io.web.js"></script>
     <script type="text/javascript" src="ish.ui.dom.js"></script>
 
+    <object id="neek" type="text/html" data="temp.html"></object>
     <!--
     <script type="text/javascript" src="ish.ui.clipboard.js"></script>
     <script type="text/javascript" src="ish.ui.tooltip.js"></script>
     -->
 
     <script type="text/javascript">
+        console.log(document.getElementById("neek").innerHTML);
+
         ish.type.enum.load({
             clients: {}, //# Stub for client-specific values
 

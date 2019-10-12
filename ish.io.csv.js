@@ -1,30 +1,30 @@
-/** ################################################################################################
- * CSV mixin for ishJS
+//################################################################################################
+/** @file CSV mixin for ishJS
  * @mixin ish.io.csv
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
-################################################################################################# */
+ */ //############################################################################################
 !function () {
     'use strict';
 
     function init(core) {
-        /*
-        ####################################################################################################
-        Class: core.data.csv
-        CSV logic.
-        Requires:
-        <core.extend>, <core.resolve>,
-        <core.type.true.is>, <core.type.arr.is>, <core.type.obj.is>,
-        <core.type.str.mk>,
-        *<core.type.obj.ownKeys>, *<core.type.arr.rm>, *<core.type.obj.has>
-        ####################################################################################################
-        */
-        core.oop.partial(core.io, {
+    //################################################################################################
+    /** Collection of CSV-based functionality.
+     * @namespace ish.io.csv
+     * @ignore
+     */ //############################################################################################
+    core.oop.partial(core.io, {
             csv: { // core.extend(core.resolve(true, core.data, "csv"), {
-                //#
-                //#     From: https://stackoverflow.com/a/14991797/235704
-                parse: function (str, sDelimiter) {
+                //#########
+                /** Parses the passed value into a Javascript object representing the CSV data.
+                 * @function ish.io.csv.parse
+                 * @param {string} sCSV Value representing the CSV data to parse.
+                 * @param {string} [sDelimiter=','] Value representing the CSV delimiter.
+                 * @returns {object[]} Value representing the CSV data.
+                 * @see {@link https://stackoverflow.com/a/14991797/235704|StackOverflow.com}
+                 */ //#####
+                parse: function (sCSV, sDelimiter) {
                     var row, col, c, cc, nc,
                         arr = [],
                         quote = false  // true means we're inside a quoted field
@@ -33,9 +33,9 @@
                     sDelimiter = sDelimiter || ",";
 
                     // iterate over each character, keep track of current row and column (of the returned array)
-                    for (row = col = c = 0; c < str.length; c++) {
-                        cc = str[c];                           // current character
-                        nc = str[c+1];                         // next character
+                    for (row = col = c = 0; c < sCSV.length; c++) {
+                        cc = sCSV[c];                          // current character
+                        nc = sCSV[c+1];                        // next character
                         arr[row] = arr[row] || [];             // create a new row if necessary
                         arr[row][col] = arr[row][col] || '';   // create a new column (start with empty string) if necessary
 
@@ -68,21 +68,34 @@
                     return arr;
                 }, //# io.csv.parse
 
-                //#
-                stringify: function (a_oData, oOptions) {
-                    var a_sKeys, iKeysLength, i, j, vCurrent,
+                //#########
+                /** Converts the passed value to a CSV string.
+                 * @function ish.io.csv.stringify
+                 * @param {object[]} a_oData Value representing the data to serialize into a CSV string.
+                 * @param {string|object} [vOptions] Value representing the CSV delimiter or the desired options:
+                 *      @param {string} [vOptions.delimiter=','] Value representing the CSV delimiter.
+                 *      @param {boolean} [vOptions.quotes=false] Value representing each serialized value is to be surrounded by double-quotes (e.g. <code>"</code>).
+                 *      @param {string[]} [vOptions.keys=undefined] Value representing the keys to include within the serialized CSV string.
+                 * @returns {string} Value representing the CSV data.
+                 * @see {@link https://stackoverflow.com/a/14991797/235704|StackOverflow.com}
+                 */ //#####
+                stringify: function (a_oData, vOptions) {
+                    var a_sKeys, oOptions, vCurrent, iKeysLength, i, j,
                         sReturnVal = ""
                     ;
 
-                    //# TODO: maybe in debug? core.type.obj.toCSV.$last = arguments;
-                    //core.type.obj.toCSV.$last = arguments;
-
                     //#
-                    oOptions = core.extend({
-                        //keys: null,
-                        quotes: false,
-                        delimiter: ","
-                    }, oOptions);
+                    oOptions = core.extend(
+                        {
+                            //keys: undefined,
+                            quotes: false,
+                            delimiter: ","
+                        }, (
+                            core.type.str.is(vOptions, true) ?
+                                { delimiter: vOptions } :
+                                vOptions
+                        )
+                    );
                     a_sKeys = oOptions.keys || core.type.obj.ownKeys(core.resolve(a_oData, "0"));
                     core.type.arr.rm(a_sKeys, "$$hashKey"); //# TODO: AngularJS specific
                     oOptions.delimiter = core.type.str.mk(oOptions.delimiter, ",");
@@ -131,7 +144,7 @@
                     }
 
                     return sReturnVal;
-                }, //# io.csv.stringify
+                } //# io.csv.stringify
             }
         }); //# core.io.csv
     } //# init

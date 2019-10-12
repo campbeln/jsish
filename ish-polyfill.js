@@ -72,6 +72,9 @@ type.is.ish.options => config.ish()
 type.fn.arguments => type.fn.is.arguments
 type.fn.debounce(options.immediate) => type.fn.debounce(options.leading)
 type.fn.poll(options.retries) => type.fn.poll(options.maxAttempts)
+type.is.numeric.rangeStr => type.is.numeric.large.range
+type.is.numeric.precision => type.is.numeric.large.precision
+type.is.numeric.compare => type.is.numeric.large.compare
 */
 
 

@@ -34,6 +34,7 @@
             /*
             //############################################################
             //# Determines the ISO 8601 week number (also known as the 4 day rule) for the given date.
+            //     * @partialMixin true
             //############################################################
             //# Last Updated: April 19, 2006
             function weekOfYear_ISO8601(dDateTime) {

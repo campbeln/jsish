@@ -623,7 +623,7 @@
                  * Determines if the passed value represents an object.
                  * @function ish.type.object.is
                  * @param {variant} x Value to interrogate.
-                 * @param {variant} [vOptions] Value representing the following options:
+                 * @param {variant} [vOptions] Value representing if empty objects are to be ignored or the following options:
                  *      @param {boolean} [vOptions=false] Value representing if empty objects are to be ignored.
                  *      @param {boolean} [vOptions.nonEmpty=false] Value representing if empty objects are to be ignored.
                  *      @param {boolean} [vOptions.strict=false] Value representing if only <code>[object Objects]</code> are to be allowed.
@@ -1539,7 +1539,7 @@
 
                 //#########
                 /** Determines the value of the passed case-insensetive key within the passed value.
-                 *   <br/><b>Note:</b>As the key is searched for in a case-insensetive manor, the first matching lowercased key enumerated by the <code>for...in</code> statement will be returned.
+                 * @note As the key is searched for in a case-insensetive manor, the first matching lowercased key enumerated by the <code>for...in</code> statement will be returned.
                  * @function ish.type.obj.get
                  * @param {object} oSource Value to interrogate.
                  * @param {string} sKey Key to retrieve from the passed value.
@@ -2026,7 +2026,7 @@
                 return core.type.arr.rm(oData[sEvent], fnCallback);
             } //# unwatch
 
-            //#
+            //# @param {function} fnCallback Function to execute on completion of the registered callbacks.
             function fire(sEvent, a_vArguments) {
                 var i,
                     a_fnEvents = oData[sEvent],
@@ -2037,16 +2037,18 @@
                 if (!bReturnVal) {
                     //# Set a_fnEvents and oData[sEvent] to an empty array, allowing us to set .last and .fired below
                     a_fnEvents = oData[sEvent] = [];
+                    a_fnEvents.counter = 0;
                 }
 
                 //# Set the .last a_vArguments for this sEvent
                 //#     NOTE: We do this here so if a .watch is called after this sEvent has .fired, it can be instantly called with the .last a_vArguments
                 a_fnEvents.last = a_vArguments;
+                a_fnEvents.counter++;
 
                 //# Traverse the a_fnEvents, throwing each into doCallback while adding its returned integer to our i(terator)
                 //#     NOTE: doCallback returns -1 if we are to unwatch the current a_fnEvents which in turn removes it from the array
                 for (i = 0; i < a_fnEvents.length; i++) {
-                    i += doCallback(sEvent, a_fnEvents[i], a_vArguments);
+                    i += doCallback(a_fnEvents[i], { name: sEvent, count: a_fnEvents.counter }, a_vArguments);
                 }
 
                 //# Set the .fired property on the array to true
@@ -2057,12 +2059,12 @@
             } //# fire
 
             //#
-            function doCallback(sEvent, fnCallback, a_vArguments) {
+            function doCallback(fnCallback, oThis, a_vArguments) {
                 var iReturnVal = 0;
 
                 //#
-                if (unwatch === core.type.fn.call(fnCallback, _undefined, a_vArguments)) {
-                    unwatch(sEvent, fnCallback);
+                if (unwatch === core.type.fn.call(fnCallback, oThis, a_vArguments)) {
+                    unwatch(oThis.name, fnCallback);
                     iReturnVal--;
                 }
 
@@ -2071,10 +2073,70 @@
 
             //#
             oEvent = core.extend(fire, {
-                fire: fire,         //# (sEvent, a_vArguments, fnCallback)
-                unwatch: unwatch,   //# (sEvent, fnCallback)
+                //#########
+                /** Fires the passed event, executing any registered functions with the passed arguments.
+                 * @function ish.io.event.fire
+                 * @aka ish.io.event
+                 * @param {string} sEvent Value representing the name of the event.
+                 * @param {arguments|variant[]} [a_vArguments=undefined] Value representing the arguments to pass into the event's registered functions.<br/><b>Note:</b> This value is passed through <code>ish.type.fn.convert</code> to ensure an array.
+                 * @returns {boolean} Value representing if any registered functions were executed.
+                 */ //#####
+                fire: fire,
 
-                //#
+                //#########
+                /** Determines if the passed event has been previously fired.
+                 * @note During the first call, <code>ish.io.event.fired</code> will return <code>false</code> to indicate this is the first run of the event.
+                 * @function ish.io.event.fired
+                 * @param {string} sEvent Value representing the name of the event.
+                 * @returns {boolean} Value representing if the passed event has been previously fired.
+                 */ //#####
+                fired: function (sEvent) {
+                    return (core.resolve(oData, [sEvent, "fired"]) === true);
+                }, //# fired
+
+                //#########
+                /** Watches the passed event, executing the passed function whenever the event is fired.
+                 * @note The passed function will be executed immediately if the passed event has been previously fired.
+                 * @function ish.io.event.watch
+                 * @param {string} sEvent Value representing the name of the event.
+                 * @param {function} fnCallback Function to execute whenever the event is fired, accepting the arguments passed into <code>ish.io.event.fire</code> and executed with <code>{ name: sEvent, count: iEventCallCount }</code> as <code>this</code>.
+                 * @returns {boolean} Value representing if the passed function was successfully registered against the event.
+                 */ //#####
+                watch: function (sEvent, fnCallback) {
+                    var bReturnVal = core.type.fn.is(fnCallback);
+
+                    //# If the passed fnCallback .is a valid .fn
+                    if (bReturnVal) {
+                        (oData[sEvent] = oData[sEvent] || [])
+                            .push(fnCallback)
+                        ;
+
+                        //# If the sEvent has already been .fired prior to this .watch, .doCallback now
+                        if (oData[sEvent].fired) {
+                            doCallback(fnCallback, { name: sEvent, count: oData[sEvent].counter }, oData[sEvent].last);
+                            core.type.fn.call(oData[sEvent].callback, _undefined, oData[sEvent].last);
+                        }
+                    }
+
+                    return bReturnVal;
+                }, //# watch
+
+                //#########
+                /** Unregisters the passed callback from the passed event.
+                 * @function ish.io.event.unwatch
+                 * @param {string} sEvent Value representing the name of the event.
+                 * @param {function} fnCallback Function to unregister against the event.
+                 * @returns {boolean} Value representing if the passed callback was successfully unregistered against the event.
+                 */ //#####
+                unwatch: unwatch,
+
+                //#########
+                /** Determines if the passed callback is registered against passed event.
+                 * @function ish.io.event.registered
+                 * @param {string} sEvent Value representing the name of the event.
+                 * @param {function} fnCallback Function that may be registered against the event.
+                 * @returns {boolean} Value representing if the passed callback is registered against the event.
+                 */ //#####
                 registered: function (sEvent, fnCallback) {
                     var vReturnVal;
 
@@ -2104,7 +2166,12 @@
                     return vReturnVal;
                 }, //# registered
 
-                //#
+                //#########
+                /** Unregisters the passed event.
+                 * @function ish.io.event.unregister
+                 * @param {string} sEvent Value representing the name of the event.
+                 * @returns {boolean} Value representing if the passed event has been successfully unregistered.
+                 */ //#####
                 unregister: function (sEvent) {
                     var bReturnVal = (
                         core.type.str.is(sEvent, true) &&
@@ -2117,44 +2184,7 @@
                     }
 
                     return bReturnVal;
-                }, //# unregister
-
-                //#
-                fired: function (sEvent) {
-                    return (core.resolve(oData, [sEvent, "fired"]) === true);
-                }, //# fired
-
-                //#########
-                /** Wraps the passed function, executing it once per wait duration until it returns truthy or the maximum attempts are exhaused.
-                 *   <br/>The passed function is executed via <code>function.apply()</code>.
-                 * @function ish.type.fn.poll
-                 * @param {function} fn Function to execute.
-                 * @param {object} [oOptions] Value representing the desired options:
-                 *      @param {variant} [oOptions.context=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
-                 *      @param {integer|function} [oOptions.wait=500] Value representing the number of milliseconds (1/1000ths of a second) or function called per attempt that returns the number of milliseconds between each call; <code>iWaitMilliseconds = oOptions.wait(iAttemptCount)</code>.
-                 *      @param {integer} [oOptions.maxAttempts=4] Value representing the maximum number of polling attempts.
-                 *      @param {boolean} [oOptions.callback] Value representing the function to be called on completion; <code>oOptions.callback(bPollFunctionReturnedTruthy)</code>.
-                 * @returns {function} Function that executes the passed function once per wait duration until it returns truthy or the maximum attempts are exhaused.
-                 * @see {@link http://davidwalsh.name/essential-javascript-functions|DavidWalsh.name}
-                 */ //#####
-                watch: function (sEvent, fnCallback) {
-                    var bReturnVal = core.type.fn.is(fnCallback);
-
-                    //# If the passed fnCallback .is a valid .fn
-                    if (bReturnVal) {
-                        (oData[sEvent] = oData[sEvent] || [])
-                            .push(fnCallback)
-                        ;
-
-                        //# If the sEvent has already been .fired prior to this .watch, .doCallback now
-                        if (oData[sEvent].fired) {
-                            doCallback(sEvent, fnCallback, oData[sEvent].last);
-                            core.type.fn.call(oData[sEvent].callback, _undefined, oData[sEvent].last);
-                        }
-                    }
-
-                    return bReturnVal;
-                } //# watch
+                } //# unregister
             });
 
             //# If we are not running on the bServerside, wire-up the jQuery's $(document).ready()-esque event
@@ -2234,11 +2264,11 @@
             //# Set our fnRequire base function to run bServerside
             fnRequire = function () {
                 //#
-                function errorFactory(sInterface) {
-                    return function (/*vUrls, vOptions*/) {
-                        core.io.console.error("ish.require." + sInterface + " is not available server-side.");
-                    };
-                } //# errorFactory
+                //function errorFactory(sInterface) {
+                //    return function (/*vUrls, vOptions*/) {
+                //        core.io.console.error("ish.require." + sInterface + " is not available server-side.");
+                //    };
+                //} //# errorFactory
 
 
                 return core.extend(
@@ -2277,11 +2307,11 @@
                         core.type.fn.run(oOptions.callback, [a_oProcessedUrls, bAllLoaded]);
                     },
                     {
+                        //links: errorFactory("links"),
+                        //css: errorFactory("css"),
                         scripts: function (vUrls, vOptions) {
                             core.require(vUrls, vOptions);
-                        },
-                        links: errorFactory("links"),
-                        css: errorFactory("css")
+                        }
                     }
                 ); //# fnRequire
             }();
@@ -2548,8 +2578,8 @@
 
                         //#########
                         /** Includes link-based functionality into the current context.
-                         *   <br/><b>Note:</b> This functionality is only available client-side. Server-side calls will return an error.
                          * @function ish.require.links
+                         * @clientsideonly true
                          * @param {string|string[]} vUrls Value representing the URL(s) of the functionality to include.
                          * @param {object} [oOptions] Value representing the following options:
                          *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.
@@ -2611,8 +2641,8 @@
 
                         //#########
                         /** Includes CSS-based functionality into the current context.
-                         *   <br/><b>Note:</b> This functionality is only available client-side. Server-side calls will return an error.
                          * @function ish.require.css
+                         * @clientsideonly true
                          * @param {string|string[]} vUrls Value representing the URL(s) of the functionality to include.
                          * @param {object} [oOptions] Value representing the following options:
                          *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.
@@ -2646,11 +2676,10 @@
         //# Return the full core.require interface
         //#     NOTE: .modules is included below because it is available on both the client and server-side.
         return core.extend(fnRequire, {
-            //# Allows dynamically defined "bundles" at runtime, allowing us to load scripts in the required order
             //#########
-            /** Includes functionality into the current context.
+            /** Includes functionality into the current context in the defined order.
              * @function ish.require.modules
-             * @param {string[]|string[string[]]} a_vModuleUrls Value representing the URL(s) of the functionality to include.
+             * @param {string[]|Array<Array<string>>} a_vModuleUrls Value representing the URL(s) of the functionality to include, each entry representing a bundle that is loaded in series in the defined order.<br/><b>Note:</b> Each entry, along with the passed options, is handed off to <code>ish.require</code>. Once <code>ish.require</code> completes an entry, the next entry is processed.
              * @param {object} [oOptions] Value representing the following options:
              *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.
              *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing  the function to be called when the DOM element is added; <code>oOptions.onAppend(_dom, sUrl)</code>.
@@ -2659,24 +2688,26 @@
              *      @param {boolean} [oOptions.baseUrl=""] Value representing the base URL to prepend on the <code>src</code> attribute (must end with <code>/</code>).
              *      @param {boolean} [oOptions.urlArgs=""] Value representing the URL's querystring to append on the <code>src</code> attribute (must start with <code>?</code>).
              */ //#####
-            modules: function (a_vModuleUrls, vOptions) {
-                var i = 0,
-                    oOptions = processOptions(vOptions),
-                    fnCallback = oOptions.callback,
+            modules: function (a_vModuleUrls, oOptions) {
+                var fnPassedCallback,
+                    iLoaded = 0,
                     bAllLoaded = true,
                     a_oProcessedModules = []
                 ;
 
                 //# Call .require to load the current a_vModuleUrls
                 function doLoad() {
-                    core.require(a_vModuleUrls[i++], oOptions);
+                    core.require(a_vModuleUrls[iLoaded++], oOptions);
                 } //# doLoad
 
-                //# Call our original fnCallback (if any) with the collected a_oProcessedModules
+                //# Call the fnPassedCallback (if any) with the collected a_oProcessedModules
                 function loaded() {
-                    core.type.fn.call(fnCallback, _null, [a_oProcessedModules, bAllLoaded]);
+                    core.type.fn.call(fnPassedCallback, _null, [a_oProcessedModules, bAllLoaded]);
                 } //# loaded
 
+                //#
+                oOptions = processOptions(vOptions);
+                fnPassedCallback = oOptions.callback;
 
                 //#
                 oOptions.callback = function (a_oProcessedUrls, bEntryAllLoaded) {
@@ -2688,7 +2719,7 @@
                     });
 
                     //# Recurse if we have bAllLoaded til now and still have a_vModuleUrls to process, else call loaded
-                    (bAllLoaded && i < a_vModuleUrls.length ? doLoad : loaded)();
+                    (bAllLoaded && iLoaded < a_vModuleUrls.length ? doLoad : loaded)();
                 };
 
                 //# If the caller passed in valid a_vModuleUrls, kick off .doLoad, else call .loaded to return a null result to the .callback
@@ -2852,6 +2883,7 @@
             //#########
             /** Determines if the passed value is a valid CSS selector.
              * @function ish.type.str.is:selector
+             * @clientsideonly true
              * @param {variant} x Value to interrogate.
              * @returns {boolean} Value representing if the passed value is a valid CSS selector.
              * @see {@link https://stackoverflow.com/a/42149818/235704|Based on this example}
@@ -2876,6 +2908,7 @@
             //#########
             /** Document Object Model-based type functionality.
              * @namespace ish.type.dom
+             * @clientsideonly true
              */ //#####
             core.type.dom = function () {
                 var a_oWrapMap = {
@@ -3064,8 +3097,8 @@
 
             //################################################################################################
             /** Collection of UI-based functionality.
-             *  <br/><b>Note:</b> This functionality is only available client-side. <code>ish.ui</code> does not exist on the server-side.
              * @namespace ish.ui
+             * @clientsideonly true
              */ //############################################################################################
             core.ui = {
                 //#########
