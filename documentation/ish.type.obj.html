@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>obj - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav class="wrap">
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="ish.html">ish</a><ul class='methods'><li data-type='method'><a href="ish.html#.extend">extend</a></li><li data-type='method'><a href="ish.html#.resolve">resolve</a></li><li data-type='method'><a href="ish.html#.type!">type</a></li></ul></li><li><a href="ish.app.html">ish.app</a></li><li><a href="ish.config.html">ish.config</a><ul class='methods'><li data-type='method'><a href="ish.config.html#.!"> </a></li><li data-type='method'><a href="ish.config.html#.ish">ish</a></li><li data-type='method'><a href="ish.config.html#.require">require</a></li></ul></li><li><a href="ish.io.console.html">ish.io.console</a><ul class='methods'><li data-type='method'><a href="ish.io.console.html#.error">error</a></li><li data-type='method'><a href="ish.io.console.html#.log">log</a></li><li data-type='method'><a href="ish.io.console.html#.warn">warn</a></li></ul></li><li><a href="ish.io.event.html">ish.io.event</a><ul class='methods'><li data-type='method'><a href="ish.io.event.html#.fire">fire</a></li><li data-type='method'><a href="ish.io.event.html#.fired">fired</a></li><li data-type='method'><a href="ish.io.event.html#.registered">registered</a></li><li data-type='method'><a href="ish.io.event.html#.unregister">unregister</a></li><li data-type='method'><a href="ish.io.event.html#.unwatch">unwatch</a></li><li data-type='method'><a href="ish.io.event.html#.watch">watch</a></li></ul></li><li><a href="ish.lib.html">ish.lib</a></li><li><a href="ish.oop.html">ish.oop</a><ul class='methods'><li data-type='method'><a href="ish.oop.html#.partial">partial</a></li><li data-type='method'><a href="ish.oop.html#.protected">protected</a></li></ul></li><li><a href="ish.require.html">ish.require</a><ul class='methods'><li data-type='method'><a href="ish.require.html#.!"> </a></li><li data-type='method'><a href="ish.require.html#.css">css <client title='Client-side only'>[C]</client></a></li><li data-type='method'><a href="ish.require.html#.links">links <client title='Client-side only'>[C]</client></a></li><li data-type='method'><a href="ish.require.html#.modules">modules</a></li><li data-type='method'><a href="ish.require.html#.scripts">scripts</a></li></ul></li><li><a href="ish.type.arr.html">ish.type.arr</a><ul class='methods'><li data-type='method'><a href="ish.type.arr.html#.is">is</a></li><li data-type='method'><a href="ish.type.arr.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.arr.html#.of">of</a></li><li data-type='method'><a href="ish.type.arr.html#.rm">rm</a></li></ul></li><li><a href="ish.type.bool.html">ish.type.bool</a><ul class='methods'><li data-type='method'><a href="ish.type.bool.html#.is">is</a></li><li data-type='method'><a href="ish.type.bool.html#.mk">mk</a></li></ul></li><li><a href="ish.type.date.html">ish.type.date</a><ul class='methods'><li data-type='method'><a href="ish.type.date.html#.is">is</a></li><li data-type='method'><a href="ish.type.date.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.date.html#.timestamp">timestamp</a></li></ul></li><li><a href="ish.type.dom.html">ish.type.dom <client title='Client-side only'>[C]</client></a><ul class='methods'><li data-type='method'><a href="ish.type.dom.html#.is">is</a></li><li data-type='method'><a href="ish.type.dom.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.dom.html#.parse">parse</a></li></ul></li><li><a href="ish.type.float.html">ish.type.float</a><ul class='methods'><li data-type='method'><a href="ish.type.float.html#.is">is</a></li><li data-type='method'><a href="ish.type.float.html#.mk">mk</a></li></ul></li><li><a href="ish.type.fn.html">ish.type.fn</a><ul class='methods'><li data-type='method'><a href="ish.type.fn.html#.call">call</a></li><li data-type='method'><a href="ish.type.fn.html#.convert">convert</a></li><li data-type='method'><a href="ish.type.fn.html#.debounce">debounce</a></li><li data-type='method'><a href="ish.type.fn.html#.is">is</a></li><li data-type='method'><a href="ish.type.fn.html#.is:arguments">is.arguments</a></li><li data-type='method'><a href="ish.type.fn.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.fn.html#.noop">noop</a></li><li data-type='method'><a href="ish.type.fn.html#.once">once</a></li><li data-type='method'><a href="ish.type.fn.html#.poll">poll</a></li><li data-type='method'><a href="ish.type.fn.html#.poll:expBackoff">poll.expBackoff</a></li><li data-type='method'><a href="ish.type.fn.html#.run">run</a></li><li data-type='method'><a href="ish.type.fn.html#.throttle">throttle</a></li><li data-type='method'><a href="ish.type.fn.html#.tryCatch">tryCatch</a></li></ul></li><li><a href="ish.type.int.html">ish.type.int</a><ul class='methods'><li data-type='method'><a href="ish.type.int.html#.is">is</a></li><li data-type='method'><a href="ish.type.int.html#.mk">mk</a></li></ul></li><li><a href="ish.type.is.html">ish.type.is</a><ul class='methods'><li data-type='method'><a href="ish.type.is.html#.!"> </a></li><li data-type='method'><a href="ish.type.is.html#.collection">collection</a></li><li data-type='method'><a href="ish.type.is.html#.ish">ish</a></li><li data-type='method'><a href="ish.type.is.html#.ish:import">ish.import</a></li><li data-type='method'><a href="ish.type.is.html#.native">native</a></li><li data-type='method'><a href="ish.type.is.html#.numeric">numeric</a></li><li data-type='method'><a href="ish.type.is.html#.primitive">primitive</a></li><li data-type='method'><a href="ish.type.is.html#.value">value</a></li></ul></li><li><a href="ish.type.obj.html">ish.type.obj</a><ul class='methods'><li data-type='method'><a href="ish.type.obj.html#.get">get</a></li><li data-type='method'><a href="ish.type.obj.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.obj.html#.ownKeys">ownKeys</a></li><li data-type='method'><a href="ish.type.obj.html#.rm">rm</a></li></ul></li><li><a href="ish.type.str.html">ish.type.str</a><ul class='methods'><li data-type='method'><a href="ish.type.str.html#.is">is</a></li><li data-type='method'><a href="ish.type.str.html#.is:json">is.json</a></li><li data-type='method'><a href="ish.type.str.html#.is:selector">is.selector <client title='Client-side only'>[C]</client></a></li><li data-type='method'><a href="ish.type.str.html#.mk">mk</a></li></ul></li><li><a href="ish.type.symbol.html">ish.type.symbol</a><ul class='methods'><li data-type='method'><a href="ish.type.symbol.html#.exists">exists</a></li><li data-type='method'><a href="ish.type.symbol.html#.is">is</a></li><li data-type='method'><a href="ish.type.symbol.html#.mk">mk</a></li></ul></li><li><a href="ish.ui.html">ish.ui <client title='Client-side only'>[C]</client></a><ul class='methods'><li data-type='method'><a href="ish.ui.html#.clearSelection">clearSelection</a></li><li data-type='method'><a href="ish.ui.html#.scrollTo">scrollTo</a></li></ul></li></ul><h3>Namespace Mixins</h3><ul><li><a href="ish.io.csv.html">ish.io.csv <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.io.csv.html#.parse">parse</a></li><li data-type='method'><a href="ish.io.csv.html#.stringify">stringify</a></li></ul></li><li><a href="ish.io.xml.html">ish.io.xml <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.io.xml.html#.parse">parse</a></li><li data-type='method'><a href="ish.io.xml.html#.stringify">stringify</a></li></ul></li><li><a href="ish.type.is.numeric.large.html">ish.type.is.numeric.large <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.type.is.numeric.large.html#.compare">compare</a></li><li data-type='method'><a href="ish.type.is.numeric.large.html#.range">range</a></li></ul></li></ul>
+    <div style="height: 30px;"></div> <!-- neek -->
+</nav>
+
+<div id="main">
+    
+
+    
+
+
+
+
+<section>
+
+<header>
+    
+        <h1 class="page-title">ish.type.obj</h1><!-- neek added to line 27 -->
+        
+            <h2 class="description">Object-based type functionality.</h2>
+        
+
+        <!-- neek
+        <h2>
+        obj
+        </h2>
+        
+        neek -->
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line589">line 589</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+            
+                <div class="description" style="display: none;">Object-based type functionality.</div> <!-- neek added style="display: none;" -->
+            
+
+            
+        
+        </div>
+    
+
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id=".get">
+      <!-- neek -->
+      
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.obj.get<span class="signature">(oSource, sKey)</span><span class="type-signature"> &rarr; {variant}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line1541">line 1541</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Determines the value of the passed case-insensetive key within the passed value.
+</div>
+
+
+<!-- neek -->
+
+
+
+
+
+
+
+    <div class="description">
+        <b>Note:</b> As the key is searched for in a case-insensetive manor, the first matching lowercased key enumerated by the <code>for...in</code> statement will be returned.
+    </div>
+
+<!-- neek -->
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>oSource</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Value to interrogate.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sKey</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Key to retrieve from the passed value.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Value representing the value of the passed case-insensetive key.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">variant</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".mk">
+      <!-- neek -->
+      
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.obj.mk<span class="signature">(x, {variant)</span><span class="type-signature"> &rarr; {Object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line687">line 687</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    #####
+Casts the passed value into an object.
+</div>
+
+
+<!-- neek -->
+
+
+
+
+
+
+
+<!-- neek -->
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">variant</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Value to interrogate.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>{variant</code></td>
+            
+
+            <td class="type">
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">[vDefaultVal={}] Value representing the default return value if casting fails.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Value representing the passed value as an object type.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".ownKeys">
+      <!-- neek -->
+      
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.obj.ownKeys<span class="signature">(oSource, vOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;string>}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line1495">line 1495</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Determines the enumerable and/or non-enumerable keys of the passed value.
+</div>
+
+
+<!-- neek -->
+
+
+
+
+
+
+
+<!-- neek -->
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>oSource</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Value to interrogate.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vOptions</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+|
+
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>false</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing if non-enumerable properties are to be included.
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>includeNonEnumerable</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>false</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing if non-enumerable properties are to be included.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>onlyNonEnumerable</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>false</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing if only non-enumerable properties are to be returned.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Value representing the requested keys of the passed value.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;string></span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".rm">
+      <!-- neek -->
+      
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.obj.rm<span class="signature">(a_vArray, vTargets, vReplacements)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line1471">line 1471</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Removes the passed target(s) from the passed object (optionally replacing them with updated values).
+</div>
+
+
+<!-- neek -->
+
+
+
+
+
+
+
+<!-- neek -->
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>a_vArray</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">Array.&lt;variant></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Values to interrogate.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vTargets</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">variant</span>
+|
+
+<span class="param-type">Array.&lt;variant></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Value(s) to remove.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vReplacements</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">variant</span>
+|
+
+<span class="param-type">Array.&lt;variant></span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Value(s) to replace the removed items with.<br/><b>Note:</b> The number of replacements must match the number of targets.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Value representing if one or more of the passed value(s) were successfully removed / replaced.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat, 12 Oct 2019 07:02:32 GMT using the <a href="https://github.com/clenemt/docdash">docdash</a> theme and tested with <a href="https://www.chaijs.com/api/assert/">Chai.Assert</a>.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+</body>
+</html>
