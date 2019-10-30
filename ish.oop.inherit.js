@@ -1,26 +1,19 @@
-/** ################################################################################################
- * OOP Inheritance mixin for ishJS
+//################################################################################################
+/** @file OOP Inheritance mixin for ishJS
  * @mixin ish.oop.inherit
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
-################################################################################################# */
+ */ //############################################################################################
 !function () {
     'use strict';
 
     function init(core) {
-        /*
-        ####################################################################################################
-        Class: core.type.inherit
-        Multiple Inheirtance-based functionality (Polymorphism).
-        Requires:
-        <core.extend>,
-        <core.type.obj.is>, <core.type.arr.is>,
-        <core.type.arr.mk>,
-        <core.type.fn.call>
-        ####################################################################################################
-        */
-        core.oop.partial(core.oop, function (/*oProtected*/) {
+    //################################################################################################
+    /** Collection of Multiple Inheritance-based functionality.
+     * @namespace ish.oop.inherit
+     */ //############################################################################################
+    core.oop.partial(core.oop, function (/*oProtected*/) {
             var _this = this,
                 oOopData = _this.oopData
             ;
@@ -47,9 +40,15 @@
 
 
                     return core.extend(
+                        //#########
+                        /** .
+                         * @function ish.oop.inherit.!
+                         * @param {object[]} a_oBaseClassHierarchy Value representing the following options
+                         * @param {object|function} vTarget Value representing the following options
+                         */ //#####
                         function (a_oBaseClassHierarchy, vTarget) {
                             var oProtected, i,
-                                a_oProtected = [{}] //# Pre-populate a_oProtected with a blank object to recieve vTarget's oProtected interfaces
+                                a_oProtected = [{}] //# Pre-populate a_oProtected with a blank object to receive vTarget's oProtected interfaces
                             ;
 
                             //# If the passed a_oBaseClassHierarchy .is an .arr and vTarget is a valid .extend target
@@ -64,7 +63,7 @@
                                 }
 
                                 //# 
-                                _this.setOopEntry(vTarget, core.extend.apply(_null, a_oProtected), { d: a_oBaseClassHierarchy });
+                                _this.setOopEntry(vTarget, core.extend.apply(null, a_oProtected), { d: a_oBaseClassHierarchy });
                             }
                             //# 
                             else {

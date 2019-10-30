@@ -330,7 +330,7 @@
                 return out.join(".");
             }
         }();
-        // /FROM
+        //# punycode
 
 
         /*

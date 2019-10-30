@@ -13,11 +13,6 @@
         ####################################################################################################
         Class: core.type.fn.overload
         Function Overloading-based functionality (Polymorphism).
-        Requires:
-        <core.extend>,
-        <core.type.*.is>, <core.type.str.is>, <core.type.fn.is>, <core.type.arr.is>,
-        <core.type.arr.mk>,
-        <core.type.fn.call>
         ####################################################################################################
         */
         core.oop.partial(core.oop, function (/*oProtected*/) {
