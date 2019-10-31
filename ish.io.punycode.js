@@ -1,11 +1,11 @@
-/** ################################################################################################
- * Punycode mixin for ishJS
+//################################################################################################
+/** @file Punycode mixin for ishJS
  * @mixin ish.io.punycode
  * @author Nick Campbell (wrapper); https://stackoverflow.com/users/36866/some
  * @license Public Domain
  * @copyright 2014-2019, Nick Campbell (wrapper)
-################################################################################################# */
-!function () {
+ */ //############################################################################################
+ !function () {
     'use strict';
 
     function init(core) {
@@ -360,7 +360,7 @@
 
                 //#########
                 /** Parses the passed value into a unicode string that represents the Punycode data.
-                 * @function ish.io.punycode.decode
+                 * @function ish.io.punycode.parse
                  * @param {string} x Value representing the ASCII Punycode data to decode into a unicode string.
                  * @returns {string} Value representing the unicode data.
                  * @see {@link https://stackoverflow.com/questions/183485/converting-punycode-with-dash-character-to-unicode|StackOverflow.com}
@@ -376,7 +376,7 @@
 
                 //#########
                 /** Converts the passed value into ASCII Punycode data.
-                 * @function ish.io.punycode.encode
+                 * @function ish.io.punycode.stringify
                  * @param {string} x Value representing the unicode string to encode into ASCII Punycode data.
                  * @returns {string} Value representing the ASCII data.
                  * @see {@link https://stackoverflow.com/questions/183485/converting-punycode-with-dash-character-to-unicode|StackOverflow.com}
