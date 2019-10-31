@@ -340,6 +340,24 @@
          */ //############################################################################################
         core.oop.partial(core.io, {
             punycode: {
+                //# TODO: Remove
+                decode: function (x) {
+                    try {
+                        return punycode.ToUnicode(x);
+                    } catch (e) {
+                        return "";
+                    }
+                }, //# io.punycode.decode
+                //# TODO: Remove
+                encode: function (s) {
+                    try {
+                        return punycode.ToASCII(s);
+                    } catch (e) {
+                        return "";
+                    }
+                }, //# io.punycode.decode
+
+
                 //#########
                 /** Parses the passed value into a unicode string that represents the Punycode data.
                  * @function ish.io.punycode.decode
@@ -347,7 +365,7 @@
                  * @returns {string} Value representing the unicode data.
                  * @see {@link https://stackoverflow.com/questions/183485/converting-punycode-with-dash-character-to-unicode|StackOverflow.com}
                  */ //#####
-                decode: function (x) {
+                parse: function (x) {
                     try {
                         return punycode.ToUnicode(x);
                     } catch (e) {
@@ -363,7 +381,7 @@
                  * @returns {string} Value representing the ASCII data.
                  * @see {@link https://stackoverflow.com/questions/183485/converting-punycode-with-dash-character-to-unicode|StackOverflow.com}
                  */ //#####
-                encode: function (s) {
+                stringify: function (s) {
                     try {
                         return punycode.ToASCII(s);
                     } catch (e) {
