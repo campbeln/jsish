@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>ish.io.fs.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav class="wrap">
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="ish.html">ish</a><ul class='methods'><li data-type='method'><a href="ish.html#.extend">extend</a></li><li data-type='method'><a href="ish.html#.resolve">resolve</a></li><li data-type='method'><a href="ish.html#.type!">type</a></li></ul></li><li><a href="ish.app.html">ish.app</a></li><li><a href="ish.config.html">ish.config</a><ul class='methods'><li data-type='method'><a href="ish.config.html#.!"> </a></li><li data-type='method'><a href="ish.config.html#.ish">ish</a></li><li data-type='method'><a href="ish.config.html#.require">require</a></li></ul></li><li><a href="ish.io.console.html">ish.io.console</a><ul class='methods'><li data-type='method'><a href="ish.io.console.html#.error">error</a></li><li data-type='method'><a href="ish.io.console.html#.log">log</a></li><li data-type='method'><a href="ish.io.console.html#.warn">warn</a></li></ul></li><li><a href="ish.io.event.html">ish.io.event</a><ul class='methods'><li data-type='method'><a href="ish.io.event.html#.fire">fire</a></li><li data-type='method'><a href="ish.io.event.html#.fired">fired</a></li><li data-type='method'><a href="ish.io.event.html#.registered">registered</a></li><li data-type='method'><a href="ish.io.event.html#.unregister">unregister</a></li><li data-type='method'><a href="ish.io.event.html#.unwatch">unwatch</a></li><li data-type='method'><a href="ish.io.event.html#.watch">watch</a></li></ul></li><li><a href="ish.lib.html">ish.lib</a></li><li><a href="ish.oop.html">ish.oop</a><ul class='methods'><li data-type='method'><a href="ish.oop.html#.partial">partial</a></li><li data-type='method'><a href="ish.oop.html#.protected">protected</a></li></ul></li><li><a href="ish.require.html">ish.require</a><ul class='methods'><li data-type='method'><a href="ish.require.html#.!"> </a></li><li data-type='method'><a href="ish.require.html#.css">css <client title='Client-side only'>[C]</client></a></li><li data-type='method'><a href="ish.require.html#.links">links <client title='Client-side only'>[C]</client></a></li><li data-type='method'><a href="ish.require.html#.modules">modules</a></li><li data-type='method'><a href="ish.require.html#.scripts">scripts</a></li></ul></li><li><a href="ish.type.arr.html">ish.type.arr</a><ul class='methods'><li data-type='method'><a href="ish.type.arr.html#.is">is</a></li><li data-type='method'><a href="ish.type.arr.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.arr.html#.of">of</a></li><li data-type='method'><a href="ish.type.arr.html#.rm">rm</a></li></ul></li><li><a href="ish.type.bool.html">ish.type.bool</a><ul class='methods'><li data-type='method'><a href="ish.type.bool.html#.is">is</a></li><li data-type='method'><a href="ish.type.bool.html#.mk">mk</a></li></ul></li><li><a href="ish.type.date.html">ish.type.date</a><ul class='methods'><li data-type='method'><a href="ish.type.date.html#.is">is</a></li><li data-type='method'><a href="ish.type.date.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.date.html#.timestamp">timestamp</a></li></ul></li><li><a href="ish.type.dom.html">ish.type.dom <client title='Client-side only'>[C]</client></a><ul class='methods'><li data-type='method'><a href="ish.type.dom.html#.is">is</a></li><li data-type='method'><a href="ish.type.dom.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.dom.html#.parse">parse</a></li></ul></li><li><a href="ish.type.float.html">ish.type.float</a><ul class='methods'><li data-type='method'><a href="ish.type.float.html#.is">is</a></li><li data-type='method'><a href="ish.type.float.html#.mk">mk</a></li></ul></li><li><a href="ish.type.fn.html">ish.type.fn</a><ul class='methods'><li data-type='method'><a href="ish.type.fn.html#.call">call</a></li><li data-type='method'><a href="ish.type.fn.html#.convert">convert</a></li><li data-type='method'><a href="ish.type.fn.html#.debounce">debounce</a></li><li data-type='method'><a href="ish.type.fn.html#.is">is</a></li><li data-type='method'><a href="ish.type.fn.html#.is:arguments">is.arguments</a></li><li data-type='method'><a href="ish.type.fn.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.fn.html#.noop">noop</a></li><li data-type='method'><a href="ish.type.fn.html#.once">once</a></li><li data-type='method'><a href="ish.type.fn.html#.poll">poll</a></li><li data-type='method'><a href="ish.type.fn.html#.poll:expBackoff">poll.expBackoff</a></li><li data-type='method'><a href="ish.type.fn.html#.run">run</a></li><li data-type='method'><a href="ish.type.fn.html#.throttle">throttle</a></li><li data-type='method'><a href="ish.type.fn.html#.tryCatch">tryCatch</a></li></ul></li><li><a href="ish.type.int.html">ish.type.int</a><ul class='methods'><li data-type='method'><a href="ish.type.int.html#.is">is</a></li><li data-type='method'><a href="ish.type.int.html#.mk">mk</a></li></ul></li><li><a href="ish.type.is.html">ish.type.is</a><ul class='methods'><li data-type='method'><a href="ish.type.is.html#.!"> </a></li><li data-type='method'><a href="ish.type.is.html#.collection">collection</a></li><li data-type='method'><a href="ish.type.is.html#.ish">ish</a></li><li data-type='method'><a href="ish.type.is.html#.ish:import">ish.import</a></li><li data-type='method'><a href="ish.type.is.html#.native">native</a></li><li data-type='method'><a href="ish.type.is.html#.numeric">numeric</a></li><li data-type='method'><a href="ish.type.is.html#.primitive">primitive</a></li><li data-type='method'><a href="ish.type.is.html#.value">value</a></li></ul></li><li><a href="ish.type.obj.html">ish.type.obj</a><ul class='methods'><li data-type='method'><a href="ish.type.obj.html#.get">get</a></li><li data-type='method'><a href="ish.type.obj.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.obj.html#.ownKeys">ownKeys</a></li><li data-type='method'><a href="ish.type.obj.html#.rm">rm</a></li></ul></li><li><a href="ish.type.str.html">ish.type.str</a><ul class='methods'><li data-type='method'><a href="ish.type.str.html#.is">is</a></li><li data-type='method'><a href="ish.type.str.html#.is:json">is.json</a></li><li data-type='method'><a href="ish.type.str.html#.is:selector">is.selector <client title='Client-side only'>[C]</client></a></li><li data-type='method'><a href="ish.type.str.html#.mk">mk</a></li></ul></li><li><a href="ish.type.symbol.html">ish.type.symbol</a><ul class='methods'><li data-type='method'><a href="ish.type.symbol.html#.exists">exists</a></li><li data-type='method'><a href="ish.type.symbol.html#.is">is</a></li><li data-type='method'><a href="ish.type.symbol.html#.mk">mk</a></li></ul></li><li><a href="ish.ui.html">ish.ui <client title='Client-side only'>[C]</client></a><ul class='methods'><li data-type='method'><a href="ish.ui.html#.clearSelection">clearSelection</a></li><li data-type='method'><a href="ish.ui.html#.scrollTo">scrollTo</a></li></ul></li></ul><h3>Namespace Mixins</h3><ul><li><a href="ish.io.csv.html">ish.io.csv <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.io.csv.html#.parse">parse</a></li><li data-type='method'><a href="ish.io.csv.html#.stringify">stringify</a></li></ul></li><li><a href="ish.io.fs.html">ish.io.fs <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.io.fs.html#.save">save</a></li><li data-type='method'><a href="ish.io.fs.html#.upload">upload</a></li></ul></li><li><a href="ish.io.punycode.html">ish.io.punycode <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.io.punycode.html#.decode">decode</a></li><li data-type='method'><a href="ish.io.punycode.html#.encode">encode</a></li></ul></li><li><a href="ish.io.xml.html">ish.io.xml <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.io.xml.html#.parse">parse</a></li><li data-type='method'><a href="ish.io.xml.html#.stringify">stringify</a></li></ul></li></ul>
+    <div style="height: 30px;"></div> <!-- neek -->
+</nav>
+
+<div id="main">
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>//################################################################################################
+/** @file Browser-based File System mixin for ishJS
+ * @mixin ish.io.fs
+ * @author Nick Campbell
+ * @license MIT
+ * @copyright 2014-2019, Nick Campbell
+ */ //############################################################################################
+!function (core) {
+    'use strict';
+
+    var _document = document;                                                       //# code-golf
+
+
+    //################################################################################################
+    /** Collection of Filesystem-based functionality.
+     * @namespace ish.io.fs
+     * @ignore
+     */ //############################################################################################
+    core.oop.partial(core.io, {
+        fs: {
+            //#########
+            /** Saves the passed value by downloading it onto the client system as a string.
+             * @function ish.io.fs.save
+             * @param {string|object} vData Value representing the data to download as a string.
+             * @param {object} [oOptions] Value representing the desired options:
+             *      @param {string} [oOptions.filename='downloaded.txt'] Value representing the default filename of the downloaded file.
+             *      @param {string} [oOptions.mimeType='text/plain'] Value representing the MIME Type of the downloaded file.
+             *      @param {string} [oOptions.charset='utf-u'] Value representing the character set represented within the passed value.
+             *      @param {boolean} [oOptions.pretty=false] Value representing if JSON-based data is to be saved with inserted whitespace.
+             */ //#####
+            save: function (vData, oOptions) {
+                var sData,
+                    _a = _document.createElement('a'),
+                    _body = _document.body
+                ;
+
+                core.io.fs.save.$last = arguments;
+
+                //#
+                oOptions = core.type.obj.mk(oOptions);
+
+                //#
+                if (core.type.obj.is(vData)) {
+                    sData = JSON.stringify(vData, null, (oOptions.pretty ? "\t" : ""));
+                }
+                else {
+                    sData = core.type.str.mk(vData);
+                }
+
+                //#
+                _body.appendChild(_a);
+                _a.setAttribute("style", "display:none;");
+                _a.setAttribute('href',
+                    'data:' + (oOptions.mimeType || 'text/plain') + ';charset=' + (oOptions.charset || 'utf-u') + ',' + encodeURIComponent(sData)
+                );
+                _a.setAttribute('download', oOptions.filename || "downloaded.txt");
+                _a.innerHTML = "download link";
+                _a.click();
+                _a.remove();
+            }, //# io.fs.save
+
+
+            //#########
+            /** Uploads the referenced file from the client system.
+             * @function ish.io.fs.upload
+             * @param {object} _fileInput Value representing the file input DOM-based object.
+             * @param {object} [oOptions] Value representing the desired options:
+             *      @param {function} [oOptions.callback=undefined] Value representing the function to be called on completion; &lt;code>oOptions.callback(eventTargetResult, iIndex, oFile, oOptions)&lt;/code>.
+             *      @param {integer} [oOptions.byteStart=0] Value representing the byte to start reading from the file to upload.
+             *      @param {string} [oOptions.byteEnd=0] Value representing the byte to end reading from the file to upload, with &lt;code>0&lt;/code> representing all of the file.
+             */ //#####
+            upload: function (_fileInput, oOptions) {
+                var i,
+                    iLen = core.resolve(_fileInput, "files.length"),
+                    bReturnVal = (core.type.dom.is(_fileInput) &amp;&amp; iLen)
+                ;
+
+                //#
+                function processFile(oFile, iIndex) {
+                    var oBlob,
+                        _reader = new FileReader()
+                    ;
+
+                    //# Setup _reader's .onloadend event, .call'ing our .callback when it's FileReader.DONE (== 2)
+                    _reader.onloadend = function (_event) {
+                        if (_event.target.readyState === 2) {
+                            core.type.fn.call(oOptions.callback, null, [_event.target.result, iIndex, oFile, oOptions]);
+                        }
+                    };
+
+                    //# Kick off the upload by .slice'ing the oFile into our oBlob then .readAsText
+                    oBlob = oFile.slice(
+                        oOptions.byteStart,
+                        (oOptions.byteEnd > 0 ? oOptions.byteEnd : oFile.size)
+                    );
+                    _reader.readAsText(oBlob);
+                } //# processFile
+
+
+                //# Ensure the passed oOptions are an .obj and that it's .byteStart and .byteEnd are .mk.int's
+                oOptions = core.type.obj.mk(oOptions);
+                oOptions.byteStart = core.type.int.mk(oOptions.byteStart);
+                oOptions.byteEnd = core.type.int.mk(oOptions.byteEnd);
+
+                //# If the caller passed in a valid _fileInput, traverse and .process(its)File's
+                if (bReturnVal) {
+                    for (i = 0; i &lt; iLen; i++) {
+                        processFile(_fileInput.files[i], i);
+                    }
+                }
+
+                return bReturnVal;
+            } //# io.fs.download
+        }
+    }); //# core.io.fs
+
+}(document.querySelector("SCRIPT[ish]").ish); //# Web-only
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu, 31 Oct 2019 05:25:35 GMT using the <a href="https://github.com/clenemt/docdash">docdash</a> theme and tested with <a href="https://www.chaijs.com/api/assert/">Chai.Assert</a>.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+</body>
+</html>
