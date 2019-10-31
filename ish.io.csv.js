@@ -77,7 +77,6 @@
                  *      @param {boolean} [vOptions.quotes=false] Value representing each serialized value is to be surrounded by double-quotes (e.g. <code>"</code>).
                  *      @param {string[]} [vOptions.keys=undefined] Value representing the keys to include within the serialized CSV string.
                  * @returns {string} Value representing the CSV data.
-                 * @see {@link https://stackoverflow.com/a/14991797/235704|StackOverflow.com}
                  */ //#####
                 stringify: function (a_oData, vOptions) {
                     var a_sKeys, oOptions, vCurrent, iKeysLength, i, j,

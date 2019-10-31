@@ -333,23 +333,36 @@
         //# punycode
 
 
-        /*
-        ####################################################################################################
-        Class: core.data.punycode
-        "Puny-coded" IDN and ASCII logic.
-        Requires:
-        NONE
-        ####################################################################################################
-        */
+        //################################################################################################
+        /** Collection of Punycode-based functionality derived from example in RFC3492.
+         * @namespace ish.io.csv
+         * @ignore
+         */ //############################################################################################
         core.oop.partial(core.io, {
             punycode: {
-                decode: function (s) {
+                //#########
+                /** Parses the passed value into a unicode string that represents the Punycode data.
+                 * @function ish.io.punycode.decode
+                 * @param {string} x Value representing the ASCII Punycode data to decode into a unicode string.
+                 * @returns {string} Value representing the unicode data.
+                 * @see {@link https://stackoverflow.com/questions/183485/converting-punycode-with-dash-character-to-unicode|StackOverflow.com}
+                 */ //#####
+                decode: function (x) {
                     try {
-                        return punycode.ToUnicode(s);
+                        return punycode.ToUnicode(x);
                     } catch (e) {
                         return "";
                     }
                 }, //# io.punycode.decode
+
+
+                //#########
+                /** Converts the passed value into ASCII Punycode data.
+                 * @function ish.io.punycode.encode
+                 * @param {string} x Value representing the unicode string to encode into ASCII Punycode data.
+                 * @returns {string} Value representing the ASCII data.
+                 * @see {@link https://stackoverflow.com/questions/183485/converting-punycode-with-dash-character-to-unicode|StackOverflow.com}
+                 */ //#####
                 encode: function (s) {
                     try {
                         return punycode.ToASCII(s);

@@ -1,27 +1,33 @@
-/** ################################################################################################
- * Browser-based File System mixin for ishJS
+//################################################################################################
+/** @file Browser-based File System mixin for ishJS
  * @mixin ish.io.fs
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
-################################################################################################# */
+ */ //############################################################################################
 !function (core) {
     'use strict';
 
     var _document = document;                                                       //# code-golf
 
 
-    /*
-    ####################################################################################################
-    Class: core.io.fs
-    Filesystem-based functionality.
-    Requires:
-    <core.type.obj.is>,
-    <core.type.obj.mk>, <core.type.str.mk>
-    ####################################################################################################
-    */
+    //################################################################################################
+    /** Collection of Filesystem-based functionality.
+     * @namespace ish.io.fs
+     * @ignore
+     */ //############################################################################################
     core.oop.partial(core.io, {
         fs: {
+            //#########
+            /** Saves the passed value by downloading it onto the client system as a string.
+             * @function ish.io.fs.save
+             * @param {string|object} vData Value representing the data to download as a string.
+             * @param {object} [oOptions] Value representing the desired options:
+             *      @param {string} [oOptions.filename='downloaded.txt'] Value representing the default filename of the downloaded file.
+             *      @param {string} [oOptions.mimeType='text/plain'] Value representing the MIME Type of the downloaded file.
+             *      @param {string} [oOptions.charset='utf-u'] Value representing the character set represented within the passed value.
+             *      @param {boolean} [oOptions.pretty=false] Value representing if JSON-based data is to be saved with inserted whitespace.
+             */ //#####
             save: function (vData, oOptions) {
                 var sData,
                     _a = _document.createElement('a'),
@@ -54,7 +60,15 @@
             }, //# io.fs.save
 
 
-            //#
+            //#########
+            /** Uploads the referenced file from the client system.
+             * @function ish.io.fs.upload
+             * @param {object} _fileInput Value representing the file input DOM-based object.
+             * @param {object} [oOptions] Value representing the desired options:
+             *      @param {function} [oOptions.callback=undefined] Value representing the function to be called on completion; <code>oOptions.callback(eventTargetResult, iIndex, oFile, oOptions)</code>.
+             *      @param {integer} [oOptions.byteStart=0] Value representing the byte to start reading from the file to upload.
+             *      @param {string} [oOptions.byteEnd=0] Value representing the byte to end reading from the file to upload, with <code>0</code> representing all of the file.
+             */ //#####
             upload: function (_fileInput, oOptions) {
                 var i,
                     iLen = core.resolve(_fileInput, "files.length"),
