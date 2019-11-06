@@ -5,7 +5,7 @@
  * @license Public Domain
  * @copyright 2014-2019, Nick Campbell (wrapper)
  */ //############################################################################################
- !function () {
+!function () {
     'use strict';
 
     function init(core) {
@@ -340,22 +340,21 @@
          */ //############################################################################################
         core.oop.partial(core.io, {
             punycode: {
-                //# TODO: Remove
-                decode: function (x) {
-                    try {
-                        return punycode.ToUnicode(x);
-                    } catch (e) {
-                        return "";
+                //#########
+                /** Determines if the passed value represents ASCII Punycode data.
+                 * @function ish.io.punycode.is
+                 * @param {string} x Value representing the ASCII Punycode data to decode into a unicode string.
+                 * @returns {boolean} Value representing if the passed value represents ASCII Punycode data.
+                 */ //#####
+                is: function (x, bVerify) {
+                    var bReturnVal = (core.type.str.is(x, true) && x.match(/^xn--/));
+
+                    if (bVerify && bReturnVal) {
+                        bReturnVal = (core.io.punycode.parse(x) !== "");
                     }
-                }, //# io.punycode.decode
-                //# TODO: Remove
-                encode: function (s) {
-                    try {
-                        return punycode.ToASCII(s);
-                    } catch (e) {
-                        return "";
-                    }
-                }, //# io.punycode.decode
+
+                    return bReturnVal;
+                }, //# io.punycode.is
 
 
                 //#########
@@ -365,13 +364,13 @@
                  * @returns {string} Value representing the unicode data.
                  * @see {@link https://stackoverflow.com/questions/183485/converting-punycode-with-dash-character-to-unicode|StackOverflow.com}
                  */ //#####
-                parse: function (x) {
+                parse: function (x) { //# was: decode
                     try {
                         return punycode.ToUnicode(x);
                     } catch (e) {
                         return "";
                     }
-                }, //# io.punycode.decode
+                }, //# io.punycode.parse
 
 
                 //#########
@@ -381,13 +380,13 @@
                  * @returns {string} Value representing the ASCII data.
                  * @see {@link https://stackoverflow.com/questions/183485/converting-punycode-with-dash-character-to-unicode|StackOverflow.com}
                  */ //#####
-                stringify: function (s) {
+                stringify: function (x) { //# was: encode
                     try {
-                        return punycode.ToASCII(s);
+                        return punycode.ToASCII(x);
                     } catch (e) {
                         return "";
                     }
-                } //# io.punycode.decode
+                } //# io.punycode.stringify
             }
         }); //# core.io.punycode
     } //# init

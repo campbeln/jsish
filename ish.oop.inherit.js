@@ -9,11 +9,12 @@
     'use strict';
 
     function init(core) {
-    //################################################################################################
-    /** Collection of Multiple Inheritance-based functionality.
-     * @namespace ish.oop.inherit
-     */ //############################################################################################
-    core.oop.partial(core.oop, function (/*oProtected*/) {
+        //################################################################################################
+        /** Collection of Multiple Inheritance-based functionality.
+         * @namespace ish.oop.inherit
+         * @ignore
+         */ //############################################################################################
+        core.oop.partial(core.oop, function (/*oProtected*/) {
             var _this = this,
                 oOopData = _this.oopData
             ;
@@ -27,9 +28,6 @@
 
 
             return {
-                /*
-                Implementation of multiple inheritance for Javascript
-                */
                 inherit: function () {
                     //# Safely returns the d(erivedFrom) array stored in oopData for the vTarget
                     function derivedFrom(vTarget) {
@@ -41,47 +39,67 @@
 
                     return core.extend(
                         //#########
-                        /** .
+                        /** Inherits the passed hierarchy into the passed value.
                          * @function ish.oop.inherit.!
-                         * @param {object[]} a_oBaseClassHierarchy Value representing the following options
-                         * @param {object|function} vTarget Value representing the following options
+                         * @param {object[]} a_oBaseHierarchy Value representing the following options
+                         * @param {object|function} vTarget Value representing the object to inherit into.
                          */ //#####
-                        function (a_oBaseClassHierarchy, vTarget) {
+                        function (a_oBaseHierarchy, vTarget) {
                             var oProtected, i,
                                 a_oProtected = [{}] //# Pre-populate a_oProtected with a blank object to receive vTarget's oProtected interfaces
                             ;
 
-                            //# If the passed a_oBaseClassHierarchy .is an .arr and vTarget is a valid .extend target
-                            if (core.type.arr.is(a_oBaseClassHierarchy) && core.type.obj.is(vTarget, { allowFn: true })) {
-                                //# Traverse the a_oBaseClassHierarchy, .push'ing each .p(rotected) reference (if any) into a_oProtected
-                                //#      NOTE: We traverse the a_oBaseClassHierarchy in reverse because .extend works as right-most wins, while a_oBaseClassHierarchy is left-most wins
-                                for (i = a_oBaseClassHierarchy.length - 1; i > -1; i--) {
-                                    oProtected = oOopData.p[oOopData.i.indexOf(a_oBaseClassHierarchy[i])];
+                            //# If the passed a_oBaseHierarchy .is an .arr and vTarget is a valid .extend target
+                            if (core.type.arr.is(a_oBaseHierarchy) && core.type.obj.is(vTarget, { allowFn: true })) {
+                                //# Traverse the a_oBaseHierarchy, .push'ing each .p(rotected) reference (if any) into a_oProtected
+                                //#      NOTE: We traverse the a_oBaseHierarchy in reverse because .extend works as right-most wins, while a_oBaseHierarchy is left-most wins
+                                for (i = a_oBaseHierarchy.length - 1; i > -1; i--) {
+                                    oProtected = oOopData.p[oOopData.i.indexOf(a_oBaseHierarchy[i])];
                                     if (core.type.obj.is(oProtected, { nonEmpty: true })) {
                                         a_oProtected.push(oProtected);
                                     }
                                 }
 
-                                //# 
-                                _this.setOopEntry(vTarget, core.extend.apply(null, a_oProtected), { d: a_oBaseClassHierarchy });
+                                //#
+                                _this.setOopEntry(vTarget, core.extend.apply(null, a_oProtected), { d: a_oBaseHierarchy });
                             }
-                            //# 
+                            //#
                             else {
-                                throw "ish.oop.inherit: `a_oBaseClassHierarchy` must be an array and `vTarget` must be an object or function."
+                                throw "ish.oop.inherit: `a_oBaseHierarchy` must be an array and `vTarget` must be an object or function."
                             }
                         }, { //# core.oop.inherit
-                            //#
+                            //#########
+                            /** Determines if the passed value has been the subject of multiple inheritance.
+                             * @function ish.oop.inherit.is
+                             * @param {object|function} vTarget Value representing the object to test.
+                             * @returns {boolean} Value representing if the passed value has been the subject of multiple inheritance.
+                             */ //#####
                             is: function (vTarget) {
                                 return core.type.arr.is(derivedFrom(vTarget), true);
                             }, //# core.oop.inherit.is
 
-                            //#
-                            instanceOf: function (vTarget, vTest) {
-                                return (derivedFrom(vTarget).indexOf(vTest) > -1);
+
+                            //#########
+                            /** Determines if the passed value is an instance of the passed reference value.
+                             * @function ish.oop.inherit.instanceOf
+                             * @param {object|function} vTarget Value representing the object to test.
+                             * @param {object|function} vReference Value representing the reference object.
+                             * @returns {boolean} Value representing if the passed value is an instance of the passed reference value.
+                             */ //#####
+                            instanceOf: function (vTarget, vReference) {
+                                return (derivedFrom(vTarget).indexOf(vReference) > -1);
                             }, //# core.oop.inherit.instanceOf
 
-                            //# lineage?
-                            derivedFrom: derivedFrom
+
+                            //#########
+                            /** Determines the base values of the passed reference value.
+                             * @function ish.oop.inherit.derivedFrom
+                             * @param {object|function} vReference Value representing the reference value.
+                             * @returns {boolean} Value representing the base values of the passed reference value.
+                             */ //#####
+                            derivedFrom: function (vReference) {
+                                return derivedFrom(vReference).slice(0);
+                            }
                         }
                     );
                 }() //# oop.inherit
