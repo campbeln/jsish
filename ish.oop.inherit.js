@@ -41,31 +41,31 @@
                         //#########
                         /** Inherits the passed hierarchy into the passed value.
                          * @function ish.oop.inherit.!
-                         * @param {object[]} a_oBaseHierarchy Value representing the following options
+                         * @param {object[]} a_oHierarchy Value representing the following options
                          * @param {object|function} vTarget Value representing the object to inherit into.
                          */ //#####
-                        function (a_oBaseHierarchy, vTarget) {
+                        function (a_oHierarchy, vTarget) {
                             var oProtected, i,
                                 a_oProtected = [{}] //# Pre-populate a_oProtected with a blank object to receive vTarget's oProtected interfaces
                             ;
 
-                            //# If the passed a_oBaseHierarchy .is an .arr and vTarget is a valid .extend target
-                            if (core.type.arr.is(a_oBaseHierarchy) && core.type.obj.is(vTarget, { allowFn: true })) {
-                                //# Traverse the a_oBaseHierarchy, .push'ing each .p(rotected) reference (if any) into a_oProtected
-                                //#      NOTE: We traverse the a_oBaseHierarchy in reverse because .extend works as right-most wins, while a_oBaseHierarchy is left-most wins
-                                for (i = a_oBaseHierarchy.length - 1; i > -1; i--) {
-                                    oProtected = oOopData.p[oOopData.i.indexOf(a_oBaseHierarchy[i])];
+                            //# If the passed a_oHierarchy .is an .arr and vTarget is a valid .extend target
+                            if (core.type.arr.is(a_oHierarchy) && core.type.obj.is(vTarget, { allowFn: true })) {
+                                //# Traverse the a_oHierarchy, .push'ing each .p(rotected) reference (if any) into a_oProtected
+                                //#      NOTE: We traverse the a_oHierarchy in reverse because .extend works as right-most wins, while a_oHierarchy is left-most wins
+                                for (i = a_oHierarchy.length - 1; i > -1; i--) {
+                                    oProtected = oOopData.p[oOopData.i.indexOf(a_oHierarchy[i])];
                                     if (core.type.obj.is(oProtected, { nonEmpty: true })) {
                                         a_oProtected.push(oProtected);
                                     }
                                 }
 
                                 //#
-                                _this.setOopEntry(vTarget, core.extend.apply(null, a_oProtected), { d: a_oBaseHierarchy });
+                                _this.setOopEntry(vTarget, core.extend.apply(null, a_oProtected), { d: a_oHierarchy });
                             }
                             //#
                             else {
-                                throw "ish.oop.inherit: `a_oBaseHierarchy` must be an array and `vTarget` must be an object or function."
+                                throw "ish.oop.inherit: `a_oHierarchy` must be an array and `vTarget` must be an object or function."
                             }
                         }, { //# core.oop.inherit
                             //#########
@@ -98,7 +98,7 @@
                              * @returns {boolean} Value representing the base values of the passed reference value.
                              */ //#####
                             derivedFrom: function (vReference) {
-                                return derivedFrom(vReference).slice(0);
+                                return derivedFrom(vReference).slice(0); //# core.type.arr.clone(derivedFrom(vReference));
                             }
                         }
                     );

@@ -813,7 +813,7 @@
                         ;
 
                         //#
-                        vDeepCopy = core.type.int.mk(vDeepCopy, 0);
+                        vDeepCopy = core.type.int.mk((vDeepCopy === true ? -1 : vDeepCopy), 0);
 
                         //# If the caller passed in a valid a(rray)
                         if (core.type.arr.is(a)) {

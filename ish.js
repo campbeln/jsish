@@ -1387,6 +1387,12 @@
             }, //# core.type.str
 
             arr: {
+                clone: function (a_vArray) {
+                    if (core.type.arr.is(a_vArray)) {
+                        return a_vArray.slice(0);
+                    }
+                }, //# type.arr.clone
+
                 //#########
                 /** Removes the passed target(s) from the passed array (optionally replacing them with updated values).
                  * @function ish.type.arr.rm

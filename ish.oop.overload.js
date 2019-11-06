@@ -1,20 +1,19 @@
-/** ################################################################################################
- * OOP Function Overloading mixin for ishJS
+//################################################################################################
+/** @file OOP Dynamic Polymorphism (Function Overloading) mixin for ishJS
  * @mixin ish.oop.overload
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
-################################################################################################# */
+ */ //############################################################################################
 !function () {
     'use strict';
 
     function init(core) {
-        /*
-        ####################################################################################################
-        Class: core.type.fn.overload
-        Function Overloading-based functionality (Polymorphism).
-        ####################################################################################################
-        */
+        //################################################################################################
+        /** Collection of OOP Dynamic Polymorphism (Function Overloading)-based functionality.
+         * @namespace ish.oop.inherit
+         * @ignore
+         */ //############################################################################################
         core.oop.partial(core.oop, function (/*oProtected*/) {
             var a_fnOverloads = [];
 
@@ -26,12 +25,14 @@
                 }
             } //# registerAlias
 
-            /*
-            Implementation of dynamic polymorphism for Javascript
-            */
             return {
                 overload: core.extend(
-                    //#
+                    //#########
+                    /** Overloads the passed value, returning a wrapper function that marshalls the calls to the proper function based on argument signature.
+                     * @function ish.oop.overload.!
+                     * @param {object|function} vOptions Value representing the object to inherit into.
+                     * @returns {function} Value representing a wrapper function that marshalls the calls to the proper function based on argument signature, including interfaces to <code>add</code> and <code>list</code>.
+                     */ //#####
                     function (vOptions) {
                         var oData = core.extend({
                                 default: function (/*arguments*/) {
@@ -75,7 +76,12 @@
                                     }
                                 }, //# overload*
                                 {
-                                    //#
+                                    //#########
+                                    /** Add.
+                                     * @function ish.oop.overload.*.add
+                                     * @param {object|function} vOptions Value representing the object to inherit into.
+                                     * @returns {function} Value representing a wrapper function that marshalls the calls to the proper function based on argument signature, including interfaces to <code>add</code> and <code>list</code>.
+                                     */ //#####
                                     add: function (fn, a_vArgumentTests, sAlias) {
                                         var i,
                                             bValid = core.type.fn.is(fn),
@@ -117,7 +123,12 @@
                                         }
                                     }, //# overload*.add
 
-                                    //#
+                                    //#########
+                                    /** List.
+                                     * @function ish.oop.overload.*.list
+                                     * @param {object|function} vOptions Value representing the object to inherit into.
+                                     * @returns {function} Value representing a wrapper function that marshalls the calls to the proper function based on argument signature, including interfaces to <code>add</code> and <code>list</code>.
+                                     */ //#####
                                     list: function (iArgumentCount) {
                                         return (arguments.length > 0 ? oData[iArgumentCount] || [] : oData);
                                     } //# overload*.list
@@ -130,12 +141,17 @@
                         //registerAlias(fnOverload, oData.default, oData.alias);
 
                         return fnOverload;
-                    }, //# lang.overload
+                    }, //# oop.overload
                     {
-                        //#
+                        //#########
+                        /** Determines if the passed value has been the subject of function overloading.
+                         * @function ish.oop.overload.is
+                         * @param {function} fnTarget Value representing the function to test.
+                         * @returns {boolean} Value representing if the passed value has been the subject of function overloading.
+                         */ //#####
                         is: function (fnTarget) {
                             return (a_fnOverloads.indexOf(fnTarget) > -1);
-                        } //# lang.overload.is
+                        } //# oop.overload.is
                     }
                 )
             };
