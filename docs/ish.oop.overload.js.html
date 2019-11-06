@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>ish.oop.overload.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav class="wrap">
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="ish.html">ish</a><ul class='methods'><li data-type='method'><a href="ish.html#.extend">extend</a></li><li data-type='method'><a href="ish.html#.resolve">resolve</a></li><li data-type='method'><a href="ish.html#.type!">type</a></li></ul></li><li><a href="ish.app.html">ish.app</a></li><li><a href="ish.config.html">ish.config</a><ul class='methods'><li data-type='method'><a href="ish.config.html#.!"> </a></li><li data-type='method'><a href="ish.config.html#.ish">ish</a></li><li data-type='method'><a href="ish.config.html#.require">require</a></li></ul></li><li><a href="ish.io.console.html">ish.io.console</a><ul class='methods'><li data-type='method'><a href="ish.io.console.html#.error">error</a></li><li data-type='method'><a href="ish.io.console.html#.log">log</a></li><li data-type='method'><a href="ish.io.console.html#.warn">warn</a></li></ul></li><li><a href="ish.io.event.html">ish.io.event</a><ul class='methods'><li data-type='method'><a href="ish.io.event.html#.fire">fire</a></li><li data-type='method'><a href="ish.io.event.html#.fired">fired</a></li><li data-type='method'><a href="ish.io.event.html#.registered">registered</a></li><li data-type='method'><a href="ish.io.event.html#.unregister">unregister</a></li><li data-type='method'><a href="ish.io.event.html#.unwatch">unwatch</a></li><li data-type='method'><a href="ish.io.event.html#.watch">watch</a></li></ul></li><li><a href="ish.lib.html">ish.lib</a></li><li><a href="ish.oop.html">ish.oop</a><ul class='methods'><li data-type='method'><a href="ish.oop.html#.partial">partial</a></li><li data-type='method'><a href="ish.oop.html#.protected">protected</a></li></ul></li><li><a href="ish.require.html">ish.require</a><ul class='methods'><li data-type='method'><a href="ish.require.html#.!"> </a></li><li data-type='method'><a href="ish.require.html#.css">css <client title='Client-side only'>[C]</client></a></li><li data-type='method'><a href="ish.require.html#.links">links <client title='Client-side only'>[C]</client></a></li><li data-type='method'><a href="ish.require.html#.modules">modules</a></li><li data-type='method'><a href="ish.require.html#.scripts">scripts</a></li></ul></li><li><a href="ish.type.arr.html">ish.type.arr</a><ul class='methods'><li data-type='method'><a href="ish.type.arr.html#.is">is</a></li><li data-type='method'><a href="ish.type.arr.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.arr.html#.of">of</a></li><li data-type='method'><a href="ish.type.arr.html#.rm">rm</a></li></ul></li><li><a href="ish.type.bool.html">ish.type.bool</a><ul class='methods'><li data-type='method'><a href="ish.type.bool.html#.is">is</a></li><li data-type='method'><a href="ish.type.bool.html#.mk">mk</a></li></ul></li><li><a href="ish.type.date.html">ish.type.date</a><ul class='methods'><li data-type='method'><a href="ish.type.date.html#.is">is</a></li><li data-type='method'><a href="ish.type.date.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.date.html#.timestamp">timestamp</a></li></ul></li><li><a href="ish.type.dom.html">ish.type.dom <client title='Client-side only'>[C]</client></a><ul class='methods'><li data-type='method'><a href="ish.type.dom.html#.is">is</a></li><li data-type='method'><a href="ish.type.dom.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.dom.html#.parse">parse</a></li></ul></li><li><a href="ish.type.float.html">ish.type.float</a><ul class='methods'><li data-type='method'><a href="ish.type.float.html#.is">is</a></li><li data-type='method'><a href="ish.type.float.html#.mk">mk</a></li></ul></li><li><a href="ish.type.fn.html">ish.type.fn</a><ul class='methods'><li data-type='method'><a href="ish.type.fn.html#.call">call</a></li><li data-type='method'><a href="ish.type.fn.html#.convert">convert</a></li><li data-type='method'><a href="ish.type.fn.html#.debounce">debounce</a></li><li data-type='method'><a href="ish.type.fn.html#.is">is</a></li><li data-type='method'><a href="ish.type.fn.html#.is:arguments">is.arguments</a></li><li data-type='method'><a href="ish.type.fn.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.fn.html#.noop">noop</a></li><li data-type='method'><a href="ish.type.fn.html#.once">once</a></li><li data-type='method'><a href="ish.type.fn.html#.poll">poll</a></li><li data-type='method'><a href="ish.type.fn.html#.poll:expBackoff">poll.expBackoff</a></li><li data-type='method'><a href="ish.type.fn.html#.run">run</a></li><li data-type='method'><a href="ish.type.fn.html#.throttle">throttle</a></li><li data-type='method'><a href="ish.type.fn.html#.tryCatch">tryCatch</a></li></ul></li><li><a href="ish.type.int.html">ish.type.int</a><ul class='methods'><li data-type='method'><a href="ish.type.int.html#.is">is</a></li><li data-type='method'><a href="ish.type.int.html#.mk">mk</a></li></ul></li><li><a href="ish.type.is.html">ish.type.is</a><ul class='methods'><li data-type='method'><a href="ish.type.is.html#.!"> </a></li><li data-type='method'><a href="ish.type.is.html#.collection">collection</a></li><li data-type='method'><a href="ish.type.is.html#.ish">ish</a></li><li data-type='method'><a href="ish.type.is.html#.ish:import">ish.import</a></li><li data-type='method'><a href="ish.type.is.html#.native">native</a></li><li data-type='method'><a href="ish.type.is.html#.numeric">numeric</a></li><li data-type='method'><a href="ish.type.is.html#.primitive">primitive</a></li><li data-type='method'><a href="ish.type.is.html#.value">value</a></li></ul></li><li><a href="ish.type.obj.html">ish.type.obj</a><ul class='methods'><li data-type='method'><a href="ish.type.obj.html#.get">get</a></li><li data-type='method'><a href="ish.type.obj.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.obj.html#.ownKeys">ownKeys</a></li><li data-type='method'><a href="ish.type.obj.html#.rm">rm</a></li></ul></li><li><a href="ish.type.str.html">ish.type.str</a><ul class='methods'><li data-type='method'><a href="ish.type.str.html#.is">is</a></li><li data-type='method'><a href="ish.type.str.html#.is:json">is.json</a></li><li data-type='method'><a href="ish.type.str.html#.is:selector">is.selector <client title='Client-side only'>[C]</client></a></li><li data-type='method'><a href="ish.type.str.html#.mk">mk</a></li></ul></li><li><a href="ish.type.symbol.html">ish.type.symbol</a><ul class='methods'><li data-type='method'><a href="ish.type.symbol.html#.exists">exists</a></li><li data-type='method'><a href="ish.type.symbol.html#.is">is</a></li><li data-type='method'><a href="ish.type.symbol.html#.mk">mk</a></li></ul></li><li><a href="ish.ui.html">ish.ui <client title='Client-side only'>[C]</client></a><ul class='methods'><li data-type='method'><a href="ish.ui.html#.clearSelection">clearSelection</a></li><li data-type='method'><a href="ish.ui.html#.scrollTo">scrollTo</a></li></ul></li></ul><h3>Namespace Mixins</h3><ul><li><a href="ish.io.csv.html">ish.io.csv <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.io.csv.html#.parse">parse</a></li><li data-type='method'><a href="ish.io.csv.html#.stringify">stringify</a></li></ul></li><li><a href="ish.io.fs.html">ish.io.fs <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.io.fs.html#.save">save</a></li><li data-type='method'><a href="ish.io.fs.html#.upload">upload</a></li></ul></li><li><a href="ish.io.punycode.html">ish.io.punycode <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.io.punycode.html#.is">is</a></li><li data-type='method'><a href="ish.io.punycode.html#.parse">parse</a></li><li data-type='method'><a href="ish.io.punycode.html#.stringify">stringify</a></li></ul></li><li><a href="ish.io.xml.html">ish.io.xml <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.io.xml.html#.parse">parse</a></li><li data-type='method'><a href="ish.io.xml.html#.stringify">stringify</a></li></ul></li><li><a href="ish.oop.inherit.html">ish.oop.inherit <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.oop.inherit.html#.!"> </a></li><li data-type='method'><a href="ish.oop.inherit.html#.derivedFrom">derivedFrom</a></li><li data-type='method'><a href="ish.oop.inherit.html#.instanceOf">instanceOf</a></li><li data-type='method'><a href="ish.oop.inherit.html#.is">is</a></li></ul></li><li><a href="ish.oop.overload.html">ish.oop.overload <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.oop.overload.html#.!"> </a></li><li data-type='method'><a href="ish.oop.overload.html#.is">is</a></li></ul></li></ul>
+    <div style="height: 30px;"></div> <!-- neek -->
+</nav>
+
+<div id="main">
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>//################################################################################################
+/** @file OOP Dynamic Polymorphism (Function Overloading) mixin for ishJS
+ * @mixin ish.oop.overload
+ * @author Nick Campbell
+ * @license MIT
+ * @copyright 2014-2019, Nick Campbell
+ */ //############################################################################################
+!function () {
+    'use strict';
+
+    function init(core) {
+        //################################################################################################
+        /** Collection of OOP Dynamic Polymorphism (Function Overloading)-based functionality.
+         * @namespace ish.oop.inherit
+         * @ignore
+         */ //############################################################################################
+        core.oop.partial(core.oop, function (/*oProtected*/) {
+            var a_fnOverloads = [];
+
+            //#
+            function registerAlias(fnOverload, fn, sAlias) {
+                //#
+                if (core.type.str.is(sAlias, true) &amp;&amp; !fnOverload[sAlias]) {
+                    fnOverload[sAlias] = fn;
+                }
+            } //# registerAlias
+
+            return {
+                overload: core.extend(
+                    //#########
+                    /** Overloads the passed value, returning a wrapper function that marshalls the calls to the proper function based on argument signature.
+                     * @function ish.oop.overload.!
+                     * @param {object|function} vOptions Value representing the object to inherit into.
+                     * @returns {function} Value representing a wrapper function that marshalls the calls to the proper function based on argument signature, including interfaces to &lt;code>add&lt;/code> and &lt;code>list&lt;/code>.
+                     */ //#####
+                    function (vOptions) {
+                        var oData = core.extend({
+                                default: function (/*arguments*/) {
+                                    throw "Overload not found for arguments: [" + core.type.arr.mk(arguments) + "]";
+                                }
+                            }, (core.type.fn.is(vOptions) ? { default: vOptions } : vOptions)),
+                            fnOverload = core.extend(
+                                //#
+                                function (/*arguments*/) {
+                                    var oEntry, i, j,
+                                        a = arguments,
+                                        oArgumentTests = oData[a.length] || []
+                                    ;
+
+                                    //# Traverse the oArgumentTests for the number of passed a(rguments), defaulting the oEntry at the beginning of each loop
+                                    for (i = 0; i &lt; oArgumentTests.length; i++) {
+                                        oEntry = oArgumentTests[i];
+
+                                        //# Traverse the passed a(rguments), if a .test for the current oArgumentTests fails, reset oEntry and fall from the a(rgument)s loop
+                                        for (j = 0; j &lt; a.length; j++) {
+                                            if (!oArgumentTests[i].tests[j](a[j])) {
+                                                oEntry = undefined;
+                                                break;
+                                            }
+                                        }
+
+                                        //# If all of the a(rgument)s passed the .tests we found our oEntry, so break from the oArgumentTests loop
+                                        if (oEntry) {
+                                            break;
+                                        }
+                                    }
+
+                                    //# If we found our oEntry above, .fn.call its .fn
+                                    if (oEntry) {
+                                        oEntry.calls++;
+                                        return core.type.fn.call(oEntry.fn, this, a);
+                                    }
+                                    //# Else we were unable to find a matching oArgumentTests oEntry, so .fn.call our .default
+                                    else {
+                                        return core.type.fn.call(oData.default, this, a);
+                                    }
+                                }, //# overload*
+                                {
+                                    //#########
+                                    /** Add.
+                                     * @function ish.oop.overload.*.add
+                                     * @param {object|function} vOptions Value representing the object to inherit into.
+                                     * @returns {function} Value representing a wrapper function that marshalls the calls to the proper function based on argument signature, including interfaces to &lt;code>add&lt;/code> and &lt;code>list&lt;/code>.
+                                     */ //#####
+                                    add: function (fn, a_vArgumentTests, sAlias) {
+                                        var i,
+                                            bValid = core.type.fn.is(fn),
+                                            iLen = (core.type.arr.is(a_vArgumentTests) ? a_vArgumentTests.length : 0)
+                                        ;
+
+                                        //sAlias = 'fn_'+arguments.length+Array.from(arguments).map((arg)=>typeof arg).join('_')
+
+                                        //#
+                                        if (bValid) {
+                                            //# Traverse the a_vArgumentTests, processing each to ensure they are functions (or references to )
+                                            for (i = 0; i &lt; iLen; i++) {
+                                                if (!core.type.fn.is(a_vArgumentTests[i])) {
+                                                    a_vArgumentTests[i] = core.resolve(core.type, [a_vArgumentTests[i], "is"]);
+                                                    if (!core.type.fn.is(a_vArgumentTests[i])) {
+                                                        bValid = false;
+                                                    }
+                                                }
+                                            }
+                                        }
+
+                                        //# If the a_vArgumentTests are bValid, set the info into oData under the a_vArgumentTests' iLen
+                                        if (bValid) {
+                                            oData[iLen] = oData[iLen] || [];
+                                            oData[iLen].push({
+                                                fn: fn,
+                                                tests: a_vArgumentTests,
+                                                calls: 0
+                                            });
+
+                                            //#
+                                            registerAlias(fnOverload, fn, sAlias);
+
+                                            return fnOverload;
+                                        }
+                                        //# Else one of the passed arguments was not bValid, so throw the error
+                                        else {
+                                            throw "oop.overload: All tests must be functions or strings referencing `type.*.is`.";
+                                        }
+                                    }, //# overload*.add
+
+                                    //#########
+                                    /** List.
+                                     * @function ish.oop.overload.*.list
+                                     * @param {object|function} vOptions Value representing the object to inherit into.
+                                     * @returns {function} Value representing a wrapper function that marshalls the calls to the proper function based on argument signature, including interfaces to &lt;code>add&lt;/code> and &lt;code>list&lt;/code>.
+                                     */ //#####
+                                    list: function (iArgumentCount) {
+                                        return (arguments.length > 0 ? oData[iArgumentCount] || [] : oData);
+                                    } //# overload*.list
+                                }
+                            ) //# fnOverload = core.extend(
+                        ;
+
+                        //#
+                        a_fnOverloads.push(fnOverload);
+                        //registerAlias(fnOverload, oData.default, oData.alias);
+
+                        return fnOverload;
+                    }, //# oop.overload
+                    {
+                        //#########
+                        /** Determines if the passed value has been the subject of function overloading.
+                         * @function ish.oop.overload.is
+                         * @param {function} fnTarget Value representing the function to test.
+                         * @returns {boolean} Value representing if the passed value has been the subject of function overloading.
+                         */ //#####
+                        is: function (fnTarget) {
+                            return (a_fnOverloads.indexOf(fnTarget) > -1);
+                        } //# oop.overload.is
+                    }
+                )
+            };
+        }); //# core.oop.overload
+    } //# init
+
+
+    //# If we are running server-side
+    //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
+    if (typeof module === 'object' &amp;&amp; module.exports) { //if (typeof module !== 'undefined' &amp;&amp; this.module !== module &amp;&amp; module.exports) {
+        module.exports = init;
+    }
+    //# Else if we are running in an .amd environment, register as an anonymous module
+    else if (typeof define === 'function' &amp;&amp; define.amd) {
+        define([], init);
+    }
+    //# Else we are running in the browser, so we need to setup the _document-based features
+    else {
+        init(document.querySelector("SCRIPT[ish]").ish);
+    }
+}();
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Wed, 06 Nov 2019 06:13:08 GMT using the <a href="https://github.com/clenemt/docdash">docdash</a> theme and tested with <a href="https://www.chaijs.com/api/assert/">Chai.Assert</a>.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+</body>
+</html>
