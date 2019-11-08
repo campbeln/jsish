@@ -11,7 +11,7 @@
     function init(core) {
         //################################################################################################
         /** Collection of OOP Dynamic Polymorphism (Function Overloading)-based functionality.
-         * @namespace ish.oop.inherit
+         * @namespace ish.oop.overload
          * @ignore
          */ //############################################################################################
         core.oop.partial(core.oop, function (/*oProtected*/) {
@@ -28,17 +28,25 @@
             return {
                 overload: core.extend(
                     //#########
-                    /** Overloads the passed value, returning a wrapper function that marshalls the calls to the proper function based on argument signature.
+                    /** Initiates a wrapper function that marshals calls to the proper function overload based on argument signature.
                      * @function ish.oop.overload.!
-                     * @param {object|function} vOptions Value representing the object to inherit into.
-                     * @returns {function} Value representing a wrapper function that marshalls the calls to the proper function based on argument signature, including interfaces to <code>add</code> and <code>list</code>.
+                     * @param {function} [fnDefault] Value representing the default overload function to execute if the arguments cannot be matched to an available overload.
+                     * @returns {function} Value representing a wrapper function that marshals calls to the proper function overload based on argument signature, including interfaces to <code>add</code>, <code>default</code> and <code>list</code>.
                      */ //#####
-                    function (vOptions) {
-                        var oData = core.extend({
-                                default: function (/*arguments*/) {
-                                    throw "Overload not found for arguments: [" + core.type.arr.mk(arguments) + "]";
-                                }
-                            }, (core.type.fn.is(vOptions) ? { default: vOptions } : vOptions)),
+                    function (fnDefault) {
+                        var oData = {
+                                //#########
+                                /** Interface under the returned <code>ish.oop.overload</code> wrapper function that defines the default function overload to execute if the arguments cannot be matched to an available overload.
+                                 * @function ish.oop.overload.*:default
+                                 * @throws <code>Overload not found for arguments</code> unless defined at initiation.
+                                 */ //#####
+                                default: (core.type.fn.is(fnDefault) ?
+                                    fnDefault :
+                                    function (/*arguments*/) {
+                                        throw "ish.oop.overload: Overload not found for arguments " + core.type.arr.mk(arguments).join(",");
+                                    }
+                                )
+                            },
                             fnOverload = core.extend(
                                 //#
                                 function (/*arguments*/) {
@@ -77,14 +85,15 @@
                                 }, //# overload*
                                 {
                                     //#########
-                                    /** Add.
-                                     * @function ish.oop.overload.*.add
-                                     * @param {object|function} vOptions Value representing the object to inherit into.
-                                     * @returns {function} Value representing a wrapper function that marshalls the calls to the proper function based on argument signature, including interfaces to <code>add</code> and <code>list</code>.
+                                    /** Interface under the returned <code>ish.oop.overload</code> wrapper function that adds another function to the available overloads.
+                                     * @function ish.oop.overload.*:add
+                                     * @param {function} fn Value representing the function to add to the available overloads.
+                                     * @param {string} sAlias Value representing the unique alias for the passed function.
+                                     * @param {function[]|string[]} [a_vArgumentTests] Value representing the argument validators as functions or strings referencing <code>ish.types.*.is</code> functions (e.g. <code>str</code>, <code>int</code>, <code>obj</code>, etc).
                                      */ //#####
-                                    add: function (fn, a_vArgumentTests, sAlias) {
+                                    add: function (fn, sAlias, a_vArgumentTests) {
                                         var i,
-                                            bValid = core.type.fn.is(fn),
+                                            bValid = (core.type.fn.is(fn) && core.type.str.is(sAlias, true) && !fnOverload[sAlias]),
                                             iLen = (core.type.arr.is(a_vArgumentTests) ? a_vArgumentTests.length : 0)
                                         ;
 
@@ -114,24 +123,23 @@
 
                                             //#
                                             registerAlias(fnOverload, fn, sAlias);
-
-                                            return fnOverload;
+                                            //return fnOverload;
                                         }
                                         //# Else one of the passed arguments was not bValid, so throw the error
                                         else {
-                                            throw "oop.overload: All tests must be functions or strings referencing `type.*.is`.";
+                                            throw "ish.oop.overload: All tests must be functions or strings referencing `type.*.is`.";
                                         }
-                                    }, //# overload*.add
+                                    }, //# overload.*.add
 
                                     //#########
-                                    /** List.
-                                     * @function ish.oop.overload.*.list
-                                     * @param {object|function} vOptions Value representing the object to inherit into.
-                                     * @returns {function} Value representing a wrapper function that marshalls the calls to the proper function based on argument signature, including interfaces to <code>add</code> and <code>list</code>.
+                                    /** Interface under the returned <code>ish.oop.overload</code> wrapper function that lists the available overloaded functions.
+                                     * @function ish.oop.overload.*:list
+                                     * @param {integer} [iArgumentCount] Value representing the desired argument count to limit the returned list to.
+                                     * @returns {object} Value representing the available overloaded functions categorized by argument count.
                                      */ //#####
                                     list: function (iArgumentCount) {
                                         return (arguments.length > 0 ? oData[iArgumentCount] || [] : oData);
-                                    } //# overload*.list
+                                    } //# overload.*.list
                                 }
                             ) //# fnOverload = core.extend(
                         ;
@@ -144,10 +152,10 @@
                     }, //# oop.overload
                     {
                         //#########
-                        /** Determines if the passed value has been the subject of function overloading.
+                        /** Determines if the passed value is a wrapper function that marshals calls to the proper function overload based on argument signature.
                          * @function ish.oop.overload.is
                          * @param {function} fnTarget Value representing the function to test.
-                         * @returns {boolean} Value representing if the passed value has been the subject of function overloading.
+                         * @returns {boolean} Value representing if the passed value is a wrapper function that marshals calls to the proper function overload based on argument signature.
                          */ //#####
                         is: function (fnTarget) {
                             return (a_fnOverloads.indexOf(fnTarget) > -1);

@@ -1545,7 +1545,7 @@
 
                 //#########
                 /** Determines the value of the passed case-insensetive key within the passed value.
-                 * @note As the key is searched for in a case-insensetive manor, the first matching lowercased key enumerated by the <code>for...in</code> statement will be returned.
+                 * @$note As the key is searched for in a case-insensetive manor, the first matching lowercased key enumerated by the <code>for...in</code> statement will be returned.
                  * @function ish.type.obj.get
                  * @param {object} oSource Value to interrogate.
                  * @param {string} sKey Key to retrieve from the passed value.
@@ -2082,7 +2082,7 @@
                 //#########
                 /** Fires the passed event, executing any registered functions with the passed arguments.
                  * @function ish.io.event.fire
-                 * @aka ish.io.event
+                 * @$aka ish.io.event
                  * @param {string} sEvent Value representing the name of the event.
                  * @param {arguments|variant[]} [a_vArguments=undefined] Value representing the arguments to pass into the event's registered functions.<br/><b>Note:</b> This value is passed through <code>ish.type.fn.convert</code> to ensure an array.
                  * @returns {boolean} Value representing if any registered functions were executed.
@@ -2091,7 +2091,7 @@
 
                 //#########
                 /** Determines if the passed event has been previously fired.
-                 * @note During the first call, <code>ish.io.event.fired</code> will return <code>false</code> to indicate this is the first run of the event.
+                 * @$note During the first call, <code>ish.io.event.fired</code> will return <code>false</code> to indicate this is the first run of the event.
                  * @function ish.io.event.fired
                  * @param {string} sEvent Value representing the name of the event.
                  * @returns {boolean} Value representing if the passed event has been previously fired.
@@ -2102,7 +2102,7 @@
 
                 //#########
                 /** Watches the passed event, executing the passed function whenever the event is fired.
-                 * @note The passed function will be executed immediately if the passed event has been previously fired.
+                 * @$note The passed function will be executed immediately if the passed event has been previously fired.
                  * @function ish.io.event.watch
                  * @param {string} sEvent Value representing the name of the event.
                  * @param {function} fnCallback Function to execute whenever the event is fired, accepting the arguments passed into <code>ish.io.event.fire</code> and executed with <code>{ name: sEvent, count: iEventCallCount }</code> as <code>this</code>.
@@ -2585,7 +2585,7 @@
                         //#########
                         /** Includes link-based functionality into the current context.
                          * @function ish.require.links
-                         * @clientsideonly true
+                         * @$clientsideonly true
                          * @param {string|string[]} vUrls Value representing the URL(s) of the functionality to include.
                          * @param {object} [oOptions] Value representing the following options:
                          *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.
@@ -2648,7 +2648,7 @@
                         //#########
                         /** Includes CSS-based functionality into the current context.
                          * @function ish.require.css
-                         * @clientsideonly true
+                         * @$clientsideonly true
                          * @param {string|string[]} vUrls Value representing the URL(s) of the functionality to include.
                          * @param {object} [oOptions] Value representing the following options:
                          *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.
@@ -2889,7 +2889,7 @@
             //#########
             /** Determines if the passed value is a valid CSS selector.
              * @function ish.type.str.is:selector
-             * @clientsideonly true
+             * @$clientsideonly true
              * @param {variant} x Value to interrogate.
              * @returns {boolean} Value representing if the passed value is a valid CSS selector.
              * @see {@link https://stackoverflow.com/a/42149818/235704|Based on this example}
@@ -2914,7 +2914,7 @@
             //#########
             /** Document Object Model-based type functionality.
              * @namespace ish.type.dom
-             * @clientsideonly true
+             * @$clientsideonly true
              */ //#####
             core.type.dom = function () {
                 var a_oWrapMap = {
@@ -3104,7 +3104,7 @@
             //################################################################################################
             /** Collection of UI-based functionality.
              * @namespace ish.ui
-             * @clientsideonly true
+             * @$clientsideonly true
              */ //############################################################################################
             core.ui = {
                 //#########

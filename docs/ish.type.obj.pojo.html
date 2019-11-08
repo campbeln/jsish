@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>config - Documentation</title>
+    <title>ish.type.obj.pojo - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -45,16 +45,14 @@
 
 <header>
     
-        <h1 class="page-title">ish.config</h1><!-- neek added to line 27 -->
+        <h1 class="page-title">ish.type.obj.pojo</h1><!-- neek added to line 27 -->
         
-            <h2 class="description">Configuration-based functionality.</h2>
+            <h2 class="description">Plain Old Javascript Object Parser mixin for ishJS</h2>
         
 
         <!-- neek
         <h2>
-            <span class="ancestors"><a href="ish.html">ish</a>.</span>
-        
-        config
+        ish.type.obj.pojo
         </h2>
         
         neek -->
@@ -72,7 +70,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line997">line 997</a>
+        <a href="ish.type.obj.pojo.js.html">ish.type.obj.pojo.js</a>, <a href="ish.type.obj.pojo.js.html#line2">line 2</a>
     </li></ul></dd>
     
 
@@ -93,9 +91,22 @@
     
 
     
-
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Nick Campbell</li>
+        </ul>
+    </dd>
     
 
+    
+    <dt class="tag-copyright">Copyright:</dt>
+    <dd class="tag-copyright"><ul class="dummy"><li>2014-2019, Nick Campbell (wrapper)</li></ul></dd>
+    
+
+    
+    <dt class="tag-license">License:</dt>
+    <dd class="tag-license"><ul class="dummy"><li>MIT</li></ul></dd>
     
 
     
@@ -111,7 +122,7 @@
 
 
             
-                <div class="description" style="display: none;">Configuration-based functionality.</div> <!-- neek added style="display: none;" -->
+                <div class="description" style="display: none;">Plain Old Javascript Object Parser mixin for ishJS</div> <!-- neek added style="display: none;" -->
             
 
             
@@ -143,9 +154,9 @@
 
     <h4 class="name" id=".!">
       <!-- neek -->
-      
+      <mixin>[mixin]</mixin>
       <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.config<span class="signature">(oConfig)</span><span class="type-signature"> &rarr; {function}</span></h4>
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.obj.pojo<span class="signature">(x, vDefaultVal<span class="signature-attributes">opt</span>, oOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;object>}</span></h4>
 
     
 
@@ -157,7 +168,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line999">line 999</a>
+        <a href="ish.type.obj.pojo.js.html">ish.type.obj.pojo.js</a>, <a href="ish.type.obj.pojo.js.html#line22">line 22</a>
     </li></ul></dd>
     
 
@@ -197,12 +208,16 @@
 
 
 <div class="description">
-    Creates an interface that merges the content of the passed options into the underlying configuration, overriding any original values.
+    Parses the passed value as a string representing a Plain Old Javascript Object (POJO).
 </div>
 
 
 <!-- neek -->
 
+    <div class="description">
+        <b><mixin>From Mixin:</mixin></b> <code>ish.type.obj.pojo.js</code> must be included for <code>ishJS</code> to access this functionality.
+    </div>
+
 
 
 
@@ -216,15 +231,6 @@
 
 
 
-
-
-    <h5>Example</h5>
-    
-        <p class="code-caption">
-     When used internally for <code>ish</code> mixins, the recommended pattern to setup a related <code>ish.config</code> entry is:
-  </p>
-    
-    <pre class="prettyprint"><code>    ish.config.mixinPath = ish.config({ some: "mixin configuration value" });</code></pre>
 
 
 
@@ -242,6 +248,8 @@
         <th>Type</th>
 
         
+        <th>Attributes</th>
+        
 
         
 
@@ -254,7 +262,71 @@
 
         <tr>
             
-                <td class="name"><code>oConfig</code></td>
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Value representing the POJO data to parse.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vDefaultVal</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">variant</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Value representing the default return value if parsing fails.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>oOptions</code></td>
             
 
             <td class="type">
@@ -267,49 +339,173 @@
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last">Object that stores the underlying configuration values.</td>
-        </tr>
+            <td class="description last">Value representing the following options:
+                <h6>Properties</h6>
+                
 
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
     
-    </tbody>
-</table>
 
+        <tr>
+            
+                <td class="name"><code>context</code></td>
+            
 
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+|
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Function that manages and returns the object representing the configuration values.
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
 <span class="param-type">function</span>
 
 
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>null</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing the context that exposes properties and functionality the passed value is parsed under.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>reject</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+|
+
+<span class="param-type">Array.&lt;string></span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>["eval", "Function", ".prototype.", ".constructor", "function", "=>"]</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing if functions are to be rejected or array of strings representing the values that cause a POJO string to be rejected.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Value representing the POJO data.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;object></span>
+
+
     </dd>
 </dl>
 
@@ -322,11 +518,11 @@
 
     
 
-    <h4 class="name" id=".ish">
+    <h4 class="name" id=".check">
       <!-- neek -->
-      
+      <mixin>[mixin]</mixin>
       <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.config.ish<span class="signature">(oOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.obj.pojo.check<span class="signature">(x, vReject<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;object>}</span></h4>
 
     
 
@@ -338,7 +534,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line1280">line 1280</a>
+        <a href="ish.type.obj.pojo.js.html">ish.type.obj.pojo.js</a>, <a href="ish.type.obj.pojo.js.html#line55">line 55</a>
     </li></ul></dd>
     
 
@@ -378,201 +574,25 @@
 
 
 <div class="description">
-    ishJS configuration values.
+    Determines if the passed value is a safe string representing a Plain Old Javascript Object (POJO).
 </div>
 
 
 <!-- neek -->
 
+    <div class="description">
+        <b><mixin>From Mixin:</mixin></b> <code>ish.type.obj.pojo.js</code> must be included for <code>ishJS</code> to access this functionality.
+    </div>
 
 
 
 
 
 
-<!-- neek -->
 
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>oOptions</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Value representing the updated configuration values.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Value representing ishJS's configuration values.
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">object</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".require">
-      <!-- neek -->
-      
-      <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.config.require<span class="signature">(oOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line2675">line 2675</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    ish.require configuration values.
-</div>
-
-
-<!-- neek -->
-
-
-
-
-
-
+    <div class="description">
+        <b>Note:</b> This represents a "better than nothing" approach to checking the relative safety of the passed value. However, values should only be loaded from trusted sources.
+    </div>
 
 <!-- neek -->
 
@@ -602,6 +622,8 @@
         
 
         
+        <th>Default</th>
+        
 
         <th class="last">Description</th>
     </tr>
@@ -612,13 +634,51 @@
 
         <tr>
             
-                <td class="name"><code>oOptions</code></td>
+                <td class="name"><code>x</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Value representing the POJO data to check.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vReject</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+|
+
+<span class="param-type">Array.&lt;string></span>
 
 
             
@@ -637,8 +697,14 @@
             
 
             
+                <td class="default">
+                
+                    <code>["eval", "Function", ".prototype.", ".constructor", "function", "=>"]</code>
+                
+                </td>
+            
 
-            <td class="description last">Value representing the updated configuration values.</td>
+            <td class="description last">Value representing if functions are to be rejected or array of strings representing the values that cause a POJO string to be rejected.</td>
         </tr>
 
     
@@ -664,7 +730,7 @@
 
         
 <div class="param-desc">
-    Value representing ish.require's configuration values.
+    Value representing if the POJO data is relatively safe.
 </div>
 
 
@@ -675,7 +741,7 @@
     </dt>
     <dd>
         
-<span class="param-type">object</span>
+<span class="param-type">Array.&lt;object></span>
 
 
     </dd>

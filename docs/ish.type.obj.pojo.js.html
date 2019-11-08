@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>config - Documentation</title>
+    <title>ish.type.obj.pojo.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -40,660 +40,167 @@
 
 
 
-
-<section>
-
-<header>
-    
-        <h1 class="page-title">ish.config</h1><!-- neek added to line 27 -->
-        
-            <h2 class="description">Configuration-based functionality.</h2>
-        
-
-        <!-- neek
-        <h2>
-            <span class="ancestors"><a href="ish.html">ish</a>.</span>
-        
-        config
-        </h2>
-        
-        neek -->
-    
-</header>
-
-<article>
-    
-        <div class="container-overview">
-        
-            
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line997">line 997</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-            
-                <div class="description" style="display: none;">Configuration-based functionality.</div> <!-- neek added style="display: none;" -->
-            
-
-            
-        
-        </div>
-    
-
-    
-
-    
-
-    
-    
-    
-
-     
-
-    
-
-    
-
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    <h4 class="name" id=".!">
-      <!-- neek -->
-      
-      <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.config<span class="signature">(oConfig)</span><span class="type-signature"> &rarr; {function}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line999">line 999</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Creates an interface that merges the content of the passed options into the underlying configuration, overriding any original values.
-</div>
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
-    
-        <p class="code-caption">
-     When used internally for <code>ish</code> mixins, the recommended pattern to setup a related <code>ish.config</code> entry is:
-  </p>
-    
-    <pre class="prettyprint"><code>    ish.config.mixinPath = ish.config({ some: "mixin configuration value" });</code></pre>
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>oConfig</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Object that stores the underlying configuration values.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Function that manages and returns the object representing the configuration values.
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">function</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".ish">
-      <!-- neek -->
-      
-      <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.config.ish<span class="signature">(oOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line1280">line 1280</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    ishJS configuration values.
-</div>
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>oOptions</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Value representing the updated configuration values.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Value representing ishJS's configuration values.
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">object</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".require">
-      <!-- neek -->
-      
-      <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.config.require<span class="signature">(oOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line2675">line 2675</a>
-    </li></ul></dd>
-    
-
-    
-
     
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    ish.require configuration values.
-</div>
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>oOptions</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Value representing the updated configuration values.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Value representing ish.require's configuration values.
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">object</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-    
-
-    
-
-    
-</article>
-
-</section>
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>//################################################################################################
+/** @file Plain Old Javascript Object Parser mixin for ishJS
+ * @mixin ish.type.obj.pojo
+ * @author Nick Campbell
+ * @license MIT
+ * @copyright 2014-2019, Nick Campbell (wrapper)
+ */ //############################################################################################
+!function (fnMaskedEvaler) {
+    'use strict';
+
+    //$z.type.obj.pojo('{ neek: false, camp: core.type.str.is("yep") }', null, { context: { core: $z }, check: true })
+    function init(core) {
+        //################################################################################################
+        /** Collection of Plain Old Javascript Object (POJO) Parser-based functionality.
+         * @namespace ish.type.obj.pojo
+         * @ignore
+         */ //############################################################################################
+        core.oop.partial(core.type.obj, function (/*oProtected*/) {
+            return {
+                pojo: core.extend(
+                    //#########
+                    /** Parses the passed value as a string representing a Plain Old Javascript Object (POJO).
+                     * @function ish.type.obj.pojo.!
+                     * @param {string} x Value representing the POJO data to parse.
+                     * @param {variant} [vDefaultVal=undefined] Value representing the default return value if parsing fails.
+                     * @param {object} [oOptions] Value representing the following options:
+                     *      @param {object|function} [oOptions.context=null] Value representing the context that exposes properties and functionality the passed value is parsed under.
+                     *      @param {boolean|string[]} [oOptions.reject=["eval", "Function", ".prototype.", ".constructor", "function", "=>"]] Value representing if functions are to be rejected or array of strings representing the values that cause a POJO string to be rejected.
+                     * @returns {object[]} Value representing the POJO data.
+                     */ //#####
+                    function (x, vDefaultVal, oOptions) {
+                        var oReturnVal = (arguments.length > 1 ? vDefaultVal : {}),
+                            oArguments = {
+                                //r: null,
+                                //e: null,
+                                js: x
+                            }
+                        ;
+
+                        //#
+                        oOptions = core.type.obj.mk(oOptions);
+
+                        //# If we (seem) to be eval'ing a valid POJO run it in our fnMaskedEvaler, collecting the .r(esult) into our oReturnVal
+                        if (core.type.pojo.check(x, oOptions.reject)) {
+                            fnMaskedEvaler(oArguments, core.type.obj.is(oOptions.context, true) ?
+                                { o: oOptions.context, k: core.type.obj.ownKeys(oOptions.context), c: '' } :
+                                null
+                            );
+                            oReturnVal = oArguments.r || oReturnVal;
+                        }
+
+                        return oReturnVal;
+                    }, {
+                        //#########
+                        /** Determines if the passed value is a safe string representing a Plain Old Javascript Object (POJO).
+                         * @$note This represents a "better than nothing" approach to checking the relative safety of the passed value. However, values should only be loaded from trusted sources.
+                         * @function ish.type.obj.pojo.check
+                         * @param {string} x Value representing the POJO data to check.
+                         * @param {boolean|string[]} [vReject=["eval", "Function", ".prototype.", ".constructor", "function", "=>"]] Value representing if functions are to be rejected or array of strings representing the values that cause a POJO string to be rejected.
+                         * @returns {object[]} Value representing if the POJO data is relatively safe.
+                         */ //#####
+                        check: function (x, vReject) {
+                            var i,
+                                bReturnVal = core.type.arr.is(vReject),
+                                a_vReject = (bReturnVal ? vReject : [
+                                    /eval(\/\*.*?\*\/)?(\/\/.*?)?\(/g, /Function(\/\*.*?\*\/)?(\/\/.*?)?\(/g,
+                                    ".prototype.", ".constructor"
+                                ])
+                            ;
+
+                            //# If the borrowed bReturnVal is indicating that vReject isn't an .arr and vReject also isn't false, then ensure that functions are a_vReject'd as well
+                            if (!bReturnVal &amp;&amp; vReject !== false) {
+                                a_vReject = a_vReject.concat([/function(\/\*.*?\*\/)?(\/\/.*?)?\(/g, "=>"]);
+                            }
+
+                            //# Remove all whitespace from the passed x then reset our bReturnVal based on its value
+                            x = core.type.str.mk(x).replace(/\s/g, "");
+                            bReturnVal = (x &amp;&amp; x[0] === "{" &amp;&amp; x[x.length - 1] === "}");
+
+                            //# If x seems valid thus far, traverse the a_vReject array, flipping our bReturnVal and falling from the loop if we find any a_vReject's
+                            if (bReturnVal) {
+                                for (i = 0; i &lt; a_vReject.length; i++) {
+                                    if (a_vReject[i] instanceof RegExp) {
+                                        if (a_vReject[i].test(x)) {
+                                            bReturnVal = false;
+                                            break;
+                                        }
+                                    }
+                                    else if (x.indexOf(a_vReject[i]) > -1) {
+                                        bReturnVal = false;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            return bReturnVal;
+                        } //# type.obj.pojo.check
+                    }
+                )
+            };
+        }); //# core.type.obj.pojo
+    } //# init
+
+
+    //# If we are running server-side
+    //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
+    if (typeof module === 'object' &amp;&amp; module.exports) { //if (typeof module !== 'undefined' &amp;&amp; this.module !== module &amp;&amp; module.exports) {
+        module.exports = init;
+    }
+    //# Else if we are running in an .amd environment, register as an anonymous module
+    else if (typeof define === 'function' &amp;&amp; define.amd) {
+        define([], init);
+    }
+    //# Else we are running in the browser, so we need to setup the _document-based features
+    else {
+        init(document.querySelector("SCRIPT[ish]").ish);
+    }
+}(
+    //#
+    //#     NOTE: The fnMaskedEvaler is placed here to limit its scope and local variables as narrowly as possible (hence the use of `arguments[x]`)
+    //#     Based on code inspired by https://stackoverflow.com/a/543820/235704
+    function /*fnMaskedEvaler*/(oData, oInjectData) {
+        var i,
+            a_sKeys = Object.keys(this || {}),
+            oMask = {}
+        ;
+
+        //# oMask out the locally accessible objects (including i, oMask and a_sKeys)
+        for (i = 0; i &lt; a_sKeys.length; i++) {
+            oMask[a_sKeys[i]] = undefined;
+        }
+
+        //# If oInjectData was passed, traverse the injection .o(bject) .shift'ing off the c(urrent) .k(ey) as we go and set each as a local var
+        if (oInjectData) {
+            while (oInjectData.k.length > 0) {
+                oInjectData.c = oInjectData.k.shift();
+                //eval("var " + oInjectData.c + "=oInjectData.o[oInjectData.c];");
+                oMask[oInjectData.c] = oInjectData.o[oInjectData.c];
+            }
+        }
+
+        try {
+            //eval("oData.r=" + oData.js);
+            oData.r = (new Function("with(this){return " + oData.js + "}")).call(oMask);
+        } catch (e) {
+            //# An error occurred fnEval'ing the current index, so set .r(esult) to null and log the .e(rror)
+            oData.r = null;
+            oData.e = e;
+        }
+
+        //# Return the modified oData to the caller
+        //#     NOTE: As this is modified byref there is no need to actually return oData
+        //return oData;
+    } //# fnMaskedEvaler
+);
+</code></pre>
+        </article>
+    </section>
 
 
 
@@ -705,7 +212,7 @@
 <br class="clear">
 
 <footer>
-    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu, 07 Nov 2019 07:37:15 GMT using the <a href="https://github.com/clenemt/docdash">docdash</a> theme and tested with <a href="https://www.chaijs.com/api/assert/">Chai.Assert</a>.
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Thu, 07 Nov 2019 07:37:14 GMT using the <a href="https://github.com/clenemt/docdash">docdash</a> theme and tested with <a href="https://www.chaijs.com/api/assert/">Chai.Assert</a>.
 </footer>
 
 <script>prettyPrint();</script>

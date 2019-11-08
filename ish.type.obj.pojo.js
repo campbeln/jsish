@@ -1,57 +1,47 @@
-/** ################################################################################################
- * Plain Old Javascript Object Parser mixin for ishJS
+//################################################################################################
+/** @file Plain Old Javascript Object Parser mixin for ishJS
  * @mixin ish.type.obj.pojo
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2019, Nick Campbell
-################################################################################################# */
+ * @copyright 2014-2019, Nick Campbell (wrapper)
+ */ //############################################################################################
 !function (fnMaskedEvaler) {
     'use strict';
 
     //$z.type.obj.pojo('{ neek: false, camp: core.type.str.is("yep") }', null, { context: { core: $z }, check: true })
     function init(core) {
-        /*
-        ####################################################################################################
-        Class: core.type.obj.pojo
-        Additional Variable Type-based functionality (type.*.cp, type.*.cmp, type.*.eq, type.*.rm, etc) plus uuid, enum and query.
-        Requires:
-        <core.resolve>, <core.extend>,
-        <core.type.fn.is>, <core.type.arr.is>, <core.type.obj.is>, <core.type.str.is>, <core.type.date.is>,
-        <core.type.str.mk>, <core.type.int.mk>, <core.type.date.mk>, <core.type.float.mk>,
-        <core.type.fn.call>,
-        ~<core.io.net.get>
-        ####################################################################################################
-        */
+        //################################################################################################
+        /** Collection of Plain Old Javascript Object (POJO) Parser-based functionality.
+         * @namespace ish.type.obj.pojo
+         * @ignore
+         */ //############################################################################################
         core.oop.partial(core.type.obj, function (/*oProtected*/) {
             return {
                 pojo: core.extend(
-                    /*
-                    Function: pojo
-                    Determines if the passed value is a string representing a Plain Old Javascript Object (POJO).
-                    Parameters:
-                    sPojo - The string to interrogate.
-                    vDefault - The default value to return if casting fails.
-                    oOptions - Object representing the desired options:
-                        oOptions.context - Object who's keys represent the variables to expose to the `eval`uated string.
-                        oOptions.check - Boolean value representing if the passed sPojo is to be verified via `type.pojo.check`.
-                        oOptions.reject - Variant; Boolean value representing if functions are to be rejected, or Array of strings representing the values that cause a POJO string to be rejected. Default: `["eval", "Function", ".prototype.", ".constructor", "function", "=>"]`.
-                    Returns:
-                    Object representing the `eval`uated Plain Old Javascript Object (POJO).
-                    */
-                    function (sPojo, vDefault, oOptions) {
-                        var oReturnVal = (arguments.length > 1 ? vDefault : {}),
+                    //#########
+                    /** Parses the passed value as a string representing a Plain Old Javascript Object (POJO).
+                     * @function ish.type.obj.pojo.!
+                     * @param {string} x Value representing the POJO data to parse.
+                     * @param {variant} [vDefaultVal=undefined] Value representing the default return value if parsing fails.
+                     * @param {object} [oOptions] Value representing the following options:
+                     *      @param {object|function} [oOptions.context=null] Value representing the context that exposes properties and functionality the passed value is parsed under.
+                     *      @param {boolean|string[]} [oOptions.reject=["eval", "Function", ".prototype.", ".constructor", "function", "=>"]] Value representing if functions are to be rejected or array of strings representing the values that cause a POJO string to be rejected.
+                     * @returns {object[]} Value representing the POJO data.
+                     */ //#####
+                    function (x, vDefaultVal, oOptions) {
+                        var oReturnVal = (arguments.length > 1 ? vDefaultVal : {}),
                             oArguments = {
                                 //r: null,
                                 //e: null,
-                                js: sPojo
+                                js: x
                             }
                         ;
 
                         //#
                         oOptions = core.type.obj.mk(oOptions);
 
-                        //# If we (seem) to be eval'ing a valid sPojo run it in our fnMaskedEvaler, collecting the .r(esult) into our oReturnVal
-                        if (core.type.pojo.check(sPojo, (oOptions.check ? oOptions.reject : null))) {
+                        //# If we (seem) to be eval'ing a valid POJO run it in our fnMaskedEvaler, collecting the .r(esult) into our oReturnVal
+                        if (core.type.pojo.check(x, oOptions.reject)) {
                             fnMaskedEvaler(oArguments, core.type.obj.is(oOptions.context, true) ?
                                 { o: oOptions.context, k: core.type.obj.ownKeys(oOptions.context), c: '' } :
                                 null
@@ -61,18 +51,15 @@
 
                         return oReturnVal;
                     }, {
-                        /*
-                        Function: check
-                        Determines if the passed value is a safe string representing a Plain Old Javascript Object (POJO).
-                        Parameters:
-                        sPojo - The string to interrogate.
-                        vReject - Variant; Boolean value representing if functions are to be rejected, or Array of strings representing the values that cause a POJO string to be rejected. Default: `["eval", "Function", ".prototype.", ".constructor", "function", "=>"]`.
-                        Note:
-                        This function represents a "better than nothing" approach to checking the relative safety of the passed sPojo string, however, sPojo strings should only be loaded from trusted sources.
-                        Returns:
-                        Boolean value representing if the value is a string representing a safe Plain Old Javascript Object (POJO).
-                        */
-                        check: function (sPojo, vReject) {
+                        //#########
+                        /** Determines if the passed value is a safe string representing a Plain Old Javascript Object (POJO).
+                         * @$note This represents a "better than nothing" approach to checking the relative safety of the passed value. However, values should only be loaded from trusted sources.
+                         * @function ish.type.obj.pojo.check
+                         * @param {string} x Value representing the POJO data to check.
+                         * @param {boolean|string[]} [vReject=["eval", "Function", ".prototype.", ".constructor", "function", "=>"]] Value representing if functions are to be rejected or array of strings representing the values that cause a POJO string to be rejected.
+                         * @returns {object[]} Value representing if the POJO data is relatively safe.
+                         */ //#####
+                        check: function (x, vReject) {
                             var i,
                                 bReturnVal = core.type.arr.is(vReject),
                                 a_vReject = (bReturnVal ? vReject : [
@@ -86,20 +73,20 @@
                                 a_vReject = a_vReject.concat([/function(\/\*.*?\*\/)?(\/\/.*?)?\(/g, "=>"]);
                             }
 
-                            //# Remove all whitespace from the passed sPojo then reset our bReturnVal based on its value
-                            sPojo = core.type.str.mk(sPojo).replace(/\s/g, "");
-                            bReturnVal = (sPojo && sPojo[0] === "{" && sPojo[sPojo.length - 1] === "}");
+                            //# Remove all whitespace from the passed x then reset our bReturnVal based on its value
+                            x = core.type.str.mk(x).replace(/\s/g, "");
+                            bReturnVal = (x && x[0] === "{" && x[x.length - 1] === "}");
 
-                            //# If sPojo seems valid thus far, traverse the a_vReject array, flipping our bReturnVal and falling from the loop if we find any a_vReject's
+                            //# If x seems valid thus far, traverse the a_vReject array, flipping our bReturnVal and falling from the loop if we find any a_vReject's
                             if (bReturnVal) {
                                 for (i = 0; i < a_vReject.length; i++) {
                                     if (a_vReject[i] instanceof RegExp) {
-                                        if (a_vReject[i].test(sPojo)) {
+                                        if (a_vReject[i].test(x)) {
                                             bReturnVal = false;
                                             break;
                                         }
                                     }
-                                    else if (sPojo.indexOf(a_vReject[i]) > -1) {
+                                    else if (x.indexOf(a_vReject[i]) > -1) {
                                         bReturnVal = false;
                                         break;
                                     }

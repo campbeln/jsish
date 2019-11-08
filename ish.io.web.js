@@ -5,7 +5,7 @@
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
  */ //############################################################################################
- !function () {
+!function () {
     'use strict';
 
     function init(core) {
