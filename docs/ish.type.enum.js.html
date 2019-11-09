@@ -1,4 +1,49 @@
-//################################################################################################
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>ish.type.enum.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav class="wrap">
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="ish.html">ish</a><ul class='methods'><li data-type='method'><a href="ish.html#.extend">extend</a></li><li data-type='method'><a href="ish.html#.resolve">resolve</a></li><li data-type='method'><a href="ish.html#.type!">type</a></li></ul></li><li><a href="ish.app.html">ish.app</a></li><li><a href="ish.config.html">ish.config</a><ul class='methods'><li data-type='method'><a href="ish.config.html#.!"> </a></li><li data-type='method'><a href="ish.config.html#.ish">ish</a></li><li data-type='method'><a href="ish.config.html#.require">require</a></li><li data-type='method'><a href="ish.config.html#.type:date">type.date <mixin title='From Mixin: ish.type.date-format.js'>[M]</mixin></a></li></ul></li><li><a href="ish.io.console.html">ish.io.console</a><ul class='methods'><li data-type='method'><a href="ish.io.console.html#.error">error</a></li><li data-type='method'><a href="ish.io.console.html#.log">log</a></li><li data-type='method'><a href="ish.io.console.html#.warn">warn</a></li></ul></li><li><a href="ish.io.event.html">ish.io.event</a><ul class='methods'><li data-type='method'><a href="ish.io.event.html#.fire">fire</a></li><li data-type='method'><a href="ish.io.event.html#.fired">fired</a></li><li data-type='method'><a href="ish.io.event.html#.registered">registered</a></li><li data-type='method'><a href="ish.io.event.html#.unregister">unregister</a></li><li data-type='method'><a href="ish.io.event.html#.unwatch">unwatch</a></li><li data-type='method'><a href="ish.io.event.html#.watch">watch</a></li></ul></li><li><a href="ish.lib.html">ish.lib</a></li><li><a href="ish.oop.html">ish.oop</a><ul class='methods'><li data-type='method'><a href="ish.oop.html#.partial">partial</a></li><li data-type='method'><a href="ish.oop.html#.protected">protected</a></li></ul></li><li><a href="ish.require.html">ish.require</a><ul class='methods'><li data-type='method'><a href="ish.require.html#.!"> </a></li><li data-type='method'><a href="ish.require.html#.css">css <client title='Client-side only'>[C]</client></a></li><li data-type='method'><a href="ish.require.html#.links">links <client title='Client-side only'>[C]</client></a></li><li data-type='method'><a href="ish.require.html#.modules">modules</a></li><li data-type='method'><a href="ish.require.html#.scripts">scripts</a></li></ul></li><li><a href="ish.type.arr.html">ish.type.arr</a><ul class='methods'><li data-type='method'><a href="ish.type.arr.html#.is">is</a></li><li data-type='method'><a href="ish.type.arr.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.arr.html#.of">of</a></li><li data-type='method'><a href="ish.type.arr.html#.rm">rm</a></li></ul></li><li><a href="ish.type.bool.html">ish.type.bool</a><ul class='methods'><li data-type='method'><a href="ish.type.bool.html#.is">is</a></li><li data-type='method'><a href="ish.type.bool.html#.mk">mk</a></li></ul></li><li><a href="ish.type.date.html">ish.type.date</a><ul class='methods'><li data-type='method'><a href="ish.type.date.html#.dayOfYear">dayOfYear <mixin title='From Mixin: ish.type.date-format.js'>[M]</mixin></a></li><li data-type='method'><a href="ish.type.date.html#.enums">enums <mixin title='From Mixin: ish.type.date-format.js'>[M]</mixin></a></li><li data-type='method'><a href="ish.type.date.html#.format">format <mixin title='From Mixin: ish.type.date-format.js'>[M]</mixin></a></li><li data-type='method'><a href="ish.type.date.html#.is">is</a></li><li data-type='method'><a href="ish.type.date.html#.isoLocalString">isoLocalString <mixin title='From Mixin: ish.type.date-format.js'>[M]</mixin></a></li><li data-type='method'><a href="ish.type.date.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.date.html#.timestamp">timestamp</a></li><li data-type='method'><a href="ish.type.date.html#.weekOfYear">weekOfYear <mixin title='From Mixin: ish.type.date-format.js'>[M]</mixin></a></li></ul></li><li><a href="ish.type.dom.html">ish.type.dom <client title='Client-side only'>[C]</client></a><ul class='methods'><li data-type='method'><a href="ish.type.dom.html#.is">is</a></li><li data-type='method'><a href="ish.type.dom.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.dom.html#.parse">parse</a></li></ul></li><li><a href="ish.type.float.html">ish.type.float</a><ul class='methods'><li data-type='method'><a href="ish.type.float.html#.is">is</a></li><li data-type='method'><a href="ish.type.float.html#.mk">mk</a></li></ul></li><li><a href="ish.type.fn.html">ish.type.fn</a><ul class='methods'><li data-type='method'><a href="ish.type.fn.html#.call">call</a></li><li data-type='method'><a href="ish.type.fn.html#.convert">convert</a></li><li data-type='method'><a href="ish.type.fn.html#.debounce">debounce</a></li><li data-type='method'><a href="ish.type.fn.html#.is">is</a></li><li data-type='method'><a href="ish.type.fn.html#.is:args">is.args</a></li><li data-type='method'><a href="ish.type.fn.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.fn.html#.noop">noop</a></li><li data-type='method'><a href="ish.type.fn.html#.once">once</a></li><li data-type='method'><a href="ish.type.fn.html#.poll">poll</a></li><li data-type='method'><a href="ish.type.fn.html#.poll:expBackoff">poll.expBackoff</a></li><li data-type='method'><a href="ish.type.fn.html#.run">run</a></li><li data-type='method'><a href="ish.type.fn.html#.throttle">throttle</a></li><li data-type='method'><a href="ish.type.fn.html#.tryCatch">tryCatch</a></li></ul></li><li><a href="ish.type.int.html">ish.type.int</a><ul class='methods'><li data-type='method'><a href="ish.type.int.html#.is">is</a></li><li data-type='method'><a href="ish.type.int.html#.mk">mk</a></li></ul></li><li><a href="ish.type.is.html">ish.type.is</a><ul class='methods'><li data-type='method'><a href="ish.type.is.html#.!"> </a></li><li data-type='method'><a href="ish.type.is.html#.collection">collection</a></li><li data-type='method'><a href="ish.type.is.html#.ish">ish</a></li><li data-type='method'><a href="ish.type.is.html#.ish:import">ish.import</a></li><li data-type='method'><a href="ish.type.is.html#.native">native</a></li><li data-type='method'><a href="ish.type.is.html#.numeric">numeric</a></li><li data-type='method'><a href="ish.type.is.html#.primitive">primitive</a></li><li data-type='method'><a href="ish.type.is.html#.value">value</a></li></ul></li><li><a href="ish.type.obj.html">ish.type.obj</a><ul class='methods'><li data-type='method'><a href="ish.type.obj.html#.get">get</a></li><li data-type='method'><a href="ish.type.obj.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.obj.html#.ownKeys">ownKeys</a></li><li data-type='method'><a href="ish.type.obj.html#.rm">rm</a></li></ul></li><li><a href="ish.type.str.html">ish.type.str</a><ul class='methods'><li data-type='method'><a href="ish.type.str.html#.is">is</a></li><li data-type='method'><a href="ish.type.str.html#.is:json">is.json</a></li><li data-type='method'><a href="ish.type.str.html#.is:selector">is.selector <client title='Client-side only'>[C]</client></a></li><li data-type='method'><a href="ish.type.str.html#.mk">mk</a></li></ul></li><li><a href="ish.type.symbol.html">ish.type.symbol</a><ul class='methods'><li data-type='method'><a href="ish.type.symbol.html#.exists">exists</a></li><li data-type='method'><a href="ish.type.symbol.html#.is">is</a></li><li data-type='method'><a href="ish.type.symbol.html#.mk">mk</a></li></ul></li><li><a href="ish.ui.html">ish.ui <client title='Client-side only'>[C]</client></a><ul class='methods'><li data-type='method'><a href="ish.ui.html#.clearSelection">clearSelection</a></li><li data-type='method'><a href="ish.ui.html#.scrollTo">scrollTo</a></li></ul></li></ul><h3>Namespace Mixins</h3><ul><li><a href="ish.io.csv.html">ish.io.csv <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.io.csv.html#.parse">parse</a></li><li data-type='method'><a href="ish.io.csv.html#.stringify">stringify</a></li></ul></li><li><a href="ish.io.fs.html">ish.io.fs <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.io.fs.html#.save">save</a></li><li data-type='method'><a href="ish.io.fs.html#.upload">upload</a></li></ul></li><li><a href="ish.io.punycode.html">ish.io.punycode <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.io.punycode.html#.is">is</a></li><li data-type='method'><a href="ish.io.punycode.html#.parse">parse</a></li><li data-type='method'><a href="ish.io.punycode.html#.stringify">stringify</a></li></ul></li><li><a href="ish.io.xml.html">ish.io.xml <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.io.xml.html#.parse">parse</a></li><li data-type='method'><a href="ish.io.xml.html#.stringify">stringify</a></li></ul></li><li><a href="ish.oop.inherit.html">ish.oop.inherit <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.oop.inherit.html#.!"> </a></li><li data-type='method'><a href="ish.oop.inherit.html#.derivedFrom">derivedFrom</a></li><li data-type='method'><a href="ish.oop.inherit.html#.instanceOf">instanceOf</a></li><li data-type='method'><a href="ish.oop.inherit.html#.is">is</a></li></ul></li><li><a href="ish.oop.overload.html">ish.oop.overload <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.oop.overload.html#.!"> </a></li><li data-type='method'><a href="ish.oop.overload.html#.*:add">*.add</a></li><li data-type='method'><a href="ish.oop.overload.html#.*:default">*.default</a></li><li data-type='method'><a href="ish.oop.overload.html#.*:list">*.list</a></li><li data-type='method'><a href="ish.oop.overload.html#.is">is</a></li></ul></li><li><a href="ish.type.enum.html">ish.type.enum <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.type.enum.html#.!"> </a></li><li data-type='method'><a href="ish.type.enum.html#.decode">decode</a></li><li data-type='method'><a href="ish.type.enum.html#.encode">encode</a></li><li data-type='method'><a href="ish.type.enum.html#.exists">exists</a></li><li data-type='method'><a href="ish.type.enum.html#.interface">interface</a></li><li data-type='method'><a href="ish.type.enum.html#.is">is</a></li><li data-type='method'><a href="ish.type.enum.html#.is:label">is.label</a></li><li data-type='method'><a href="ish.type.enum.html#.is:value">is.value</a></li><li data-type='method'><a href="ish.type.enum.html#.load">load</a></li><li data-type='method'><a href="ish.type.enum.html#.mk">mk</a></li></ul></li><li><a href="ish.type.is.numeric.large.html">ish.type.is.numeric.large <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.type.is.numeric.large.html#.cmp">cmp</a></li><li data-type='method'><a href="ish.type.is.numeric.large.html#.precision">precision</a></li><li data-type='method'><a href="ish.type.is.numeric.large.html#.range">range</a></li></ul></li><li><a href="ish.type.obj.pojo.html">ish.type.obj.pojo <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.type.obj.pojo.html#.!"> </a></li><li data-type='method'><a href="ish.type.obj.pojo.html#.check">check</a></li></ul></li></ul>
+    <div style="height: 30px;"></div> <!-- neek -->
+</nav>
+
+<div id="main">
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>//################################################################################################
 /** @file Enumerations mixin for ishJS
  * @mixin ish.type.enum
  * @author Nick Campbell
@@ -66,7 +111,7 @@
                     //# If the sEnumName is valid, traverse it looking for a matching .value, setting our oReturnVal if found
                     if (core.type.arr.is(a_oEnum, true)) { //#
                         //#
-                        for (i = 0; i < a_oEnum.length; i++) {
+                        for (i = 0; i &lt; a_oEnum.length; i++) {
                             if (fnCompare(a_oEnum[i], vOptions)) {
                                 oReturnVal = a_oEnum[i];
                                 break;
@@ -93,7 +138,7 @@
                         oReturnVal = {};
 
                         //# Traverse our a_oEnum, entering each valid .value/.label into our oReturnVal
-                        for (i = 0; i < a_oEnum.length; i++) {
+                        for (i = 0; i &lt; a_oEnum.length; i++) {
                             oCurrent = a_oEnum[i];
                             if (core.type.obj.is(oCurrent)) {
                                 oReturnVal[oCurrent.label] = oCurrent.value;
@@ -110,7 +155,7 @@
                     /** Determines the enumeration data for the passed value.
                      * @function ish.type.enum.!
                      * @param {string} sEnum Value representing the enumeration to interrogate.
-                     * @param {boolean} [bAsObj=false] Value representing if the return value is to be represented by a simplified <code>{ label: value }</code>-based object.
+                     * @param {boolean} [bAsObj=false] Value representing if the return value is to be represented by a simplified &lt;code>{ label: value }&lt;/code>-based object.
                      * @returns {object[]|object} Value representing the enumeration data.
                      */ //#####
                     enum: core.extend(
@@ -120,12 +165,12 @@
                             return (bAsObj ? enumAsObj(a_oReturnVal) : a_oReturnVal);
                         }, {
                             //#########
-                            /** Determines if the passed value represents a <code>label</code> or <code>value</code> within the passed enumeration entry.
+                            /** Determines if the passed value represents a &lt;code>label&lt;/code> or &lt;code>value&lt;/code> within the passed enumeration entry.
                              * @function ish.type.enum.is
                              * @param {string} sEnum Value representing the enumeration to interrogate.
-                             * @param {variant} vValue Value to interrogate within the passed enumeration representing a <code>label</code> or <code>value</code>.
+                             * @param {variant} vValue Value to interrogate within the passed enumeration representing a &lt;code>label&lt;/code> or &lt;code>value&lt;/code>.
                              * @param {boolean|function} [vCompare=function (x, y) { return (x == y); }] Value representing if the comparison is to be case-insensitive or the function to execute the comparisons.
-                             * @returns {boolean} Value representing if the passed value represents a <code>label</code> or <code>value</code> within the passed enumeration entry.
+                             * @returns {boolean} Value representing if the passed value represents a &lt;code>label&lt;/code> or &lt;code>value&lt;/code> within the passed enumeration entry.
                              */ //#####
                             is: core.extend(
                                 function (sEnum, vValue, vCompare) {
@@ -136,15 +181,15 @@
                                         return oOptions.compare(oPicklistEntry.label, vValue) || oOptions.compare(oPicklistEntry.value, vValue);
                                     });
 
-                                    return (vReturnVal.notFound !== true && vReturnVal.value !== undefined);
+                                    return (vReturnVal.notFound !== true &amp;&amp; vReturnVal.value !== undefined);
                                 }, {
                                     //#########
-                                    /** Determines if the passed value represents a <code>label</code> within the passed enumeration entry.
+                                    /** Determines if the passed value represents a &lt;code>label&lt;/code> within the passed enumeration entry.
                                      * @function ish.type.enum.is:label
                                      * @param {string} sEnum Value representing the enumeration to interrogate.
-                                     * @param {string} sValue Value to interrogate within the passed enumeration representing a <code>label</code>.
+                                     * @param {string} sValue Value to interrogate within the passed enumeration representing a &lt;code>label&lt;/code>.
                                      * @param {boolean|function} [vCompare=function (x, y) { return (x == y); }] Value representing if the comparison is to be case-insensitive or the function to execute the comparisons.
-                                     * @returns {boolean} Value representing if the passed value represents a <code>label</code> within the passed enumeration entry.
+                                     * @returns {boolean} Value representing if the passed value represents a &lt;code>label&lt;/code> within the passed enumeration entry.
                                      */ //#####
                                     label: function (sEnum, sValue, vCompare) {
                                         var vReturnVal;
@@ -154,16 +199,16 @@
                                             return oOptions.compare(oPicklistEntry.label, sValue);
                                         });
 
-                                        return (vReturnVal.notFound !== true && vReturnVal.value !== undefined);
+                                        return (vReturnVal.notFound !== true &amp;&amp; vReturnVal.value !== undefined);
                                     }, //# type.enum.is.label
 
                                     //#########
-                                    /** Determines if the passed value represents a <code>value</code> within the passed enumeration entry.
+                                    /** Determines if the passed value represents a &lt;code>value&lt;/code> within the passed enumeration entry.
                                      * @function ish.type.enum.is:value
                                      * @param {string} sEnum Value representing the enumeration to interrogate.
-                                     * @param {variant} vValue Value to interrogate within the passed enumeration representing a <code>value</code>.
+                                     * @param {variant} vValue Value to interrogate within the passed enumeration representing a &lt;code>value&lt;/code>.
                                      * @param {boolean|function} [vCompare=function (x, y) { return (x == y); }] Value representing if the comparison is to be case-insensitive or the function to execute the comparisons.
-                                     * @returns {boolean} Value representing if the passed value represents a <code>value</code> within the passed enumeration entry.
+                                     * @returns {boolean} Value representing if the passed value represents a &lt;code>value&lt;/code> within the passed enumeration entry.
                                      */ //#####
                                     value: function (sEnum, vValue, vCompare) {
                                         var vReturnVal;
@@ -173,7 +218,7 @@
                                             return oOptions.compare(oPicklistEntry.value, vValue);
                                         });
 
-                                        return (vReturnVal.notFound !== true && vReturnVal.value !== undefined);
+                                        return (vReturnVal.notFound !== true &amp;&amp; vReturnVal.value !== undefined);
                                     }
                                 } //# type.enum.is.value
                             ), //# type.enum.is
@@ -182,7 +227,7 @@
                             /** Casts the passed value into an enumeration.
                              * @function ish.type.enum.mk
                              * @param {string} sEnum Value representing the enumeration to interrogate.
-                             * @param {variant} vValue Value to interrogate within the passed enumeration representing a <code>value</code>.
+                             * @param {variant} vValue Value to interrogate within the passed enumeration representing a &lt;code>value&lt;/code>.
                              * @param {boolean|object} [vOptions] Value representing if the full enumeration entry is to be returned or the desired options:
                              *      @param {boolean} [vOptions.asEntry=false] Value representing if the full enumeration entry is to be returned.
                              *      @param {boolean|function} [vOptions.compare=function (x, y) { return (x == y); }] Value representing if the comparison is to be case-insensitive or the function to execute the comparison.
@@ -204,7 +249,7 @@
                             /** Encodes the passed value as an enumeration.
                              * @function ish.type.enum.encode
                              * @param {string} sEnum Value representing the enumeration to interrogate.
-                             * @param {string} sLabel Value to interrogate within the passed enumeration representing a <code>label</code>.
+                             * @param {string} sLabel Value to interrogate within the passed enumeration representing a &lt;code>label&lt;/code>.
                              * @param {boolean|object} [vOptions] Value representing if the full enumeration entry is to be returned or the desired options:
                              *      @param {boolean} [vOptions.asEntry=false] Value representing if the full enumeration entry is to be returned.
                              *      @param {boolean|function} [vOptions.compare=function (x, y) { return (x == y); }] Value representing if the comparison is to be case-insensitive or the function to execute the comparison.
@@ -227,7 +272,7 @@
                             /** Decodes the passed value as an enumeration.
                              * @function ish.type.enum.decode
                              * @param {string} sEnum Value representing the enumeration to interrogate.
-                             * @param {variant} vValue Value to interrogate within the passed enumeration representing a <code>value</code>.
+                             * @param {variant} vValue Value to interrogate within the passed enumeration representing a &lt;code>value&lt;/code>.
                              * @param {boolean|object} [vOptions] Value representing if the full enumeration entry is to be returned or the desired options:
                              *      @param {boolean} [vOptions.asEntry=false] Value representing if the full enumeration entry is to be returned.
                              *      @param {boolean|function} [vOptions.compare=function (x, y) { return (x == y); }] Value representing if the comparison is to be case-insensitive or the function to execute the comparison.
@@ -258,7 +303,7 @@
 
                             //#########
                             /** Loads the passed value as enumeration(s) into the existing collection.
-                             * @$note If <code>vEnums</code> represents a URL, the <code>ish.io.net</code> Mixin is required in order to collect the JSON file.
+                             * @$note If &lt;code>vEnums&lt;/code> represents a URL, the &lt;code>ish.io.net&lt;/code> Mixin is required in order to collect the JSON file.
                              * @function ish.type.enum.load
                              * @param {string|object} vEnums Value representing the URL to a JSON file or an object defining enumeration(s).
                              * @returns {boolean} Value representing if the passed value was successfully loaded.
@@ -267,7 +312,7 @@
                                 var bReturnVal = true;
 
                                 //# TODO: Make inline alt core.io.net.get?
-                                if (core.type.str.is(vEnums) && core.type.fn.is(core.resolve(core, "io.net.get"))) {
+                                if (core.type.str.is(vEnums) &amp;&amp; core.type.fn.is(core.resolve(core, "io.net.get"))) {
                                     //#
                                     core.io.net.get(vEnums, {
                                         contentType: 'application/json; charset=utf-8',
@@ -310,7 +355,7 @@
             }); //# core.type.enum
 
             //#
-            //# <minRemove>
+            //# &lt;minRemove>
             if (core.test) {
                 core.oop.partial(core.test, function (/*oProtected*/) {
                     return {
@@ -363,7 +408,7 @@
                                     $.assert(core.type.enum.is("deep.enum.letters", "a"), "type.enum.is(deep)");
                                     $.assert(core.type.enum.is("deep.enum.letters", "eh"), "type.enum.is(deep)");
                                     $.assert(!core.type.enum.is("deep.enum.letters", "eee"), "!type.enum.is(deep)");
-                                    $.assert(core.type.enum.is("numbers", 5), "type.enum.is(shallow) <==>");
+                                    $.assert(core.type.enum.is("numbers", 5), "type.enum.is(shallow) &lt;==>");
                                     $.assert(core.type.enum.is("numbers", "5"), "type.enum.is(shallow)");
                                     $.assert(core.type.enum.is("numbers", "five"), "type.enum.is(shallow)");
                                     $.assert(!core.type.enum.is("numbers", "six"), "!type.enum.is(shallow)");
@@ -375,21 +420,21 @@
 
                                     $.assert(core.type.enum.is.value("deep.enum.letters", "c"), "type.enum.is.value(deep)");
                                     $.assert(!core.type.enum.is.value("deep.enum.letters", "f"), "!type.enum.is.value(deep)");
-                                    $.assert(core.type.enum.is.value("numbers", 1), "type.enum.is.value(shallow) <==>");
+                                    $.assert(core.type.enum.is.value("numbers", 1), "type.enum.is.value(shallow) &lt;==>");
                                     $.assert(core.type.enum.is.value("numbers", "2"), "type.enum.is.value(shallow)");
                                     $.assert(!core.type.enum.is.value("numbers", "7"), "!type.enum.is.value(shallow)");
                                 },
 
                                 mk: function ($) {
                                     $.expect(3);
-                                    $.assert(core.type.enum.mk("numbers", "5") == 5, "type.enum.mk(shallow) <value>");
-                                    $.assert(core.type.enum.mk("numbers", "four") == 4, "type.enum.mk(shallow) <label>");
-                                    $.assert(core.type.enum.mk("numbers", "7") === undefined, "type.enum.mk(shallow) <undefined>");
+                                    $.assert(core.type.enum.mk("numbers", "5") == 5, "type.enum.mk(shallow) &lt;value>");
+                                    $.assert(core.type.enum.mk("numbers", "four") == 4, "type.enum.mk(shallow) &lt;label>");
+                                    $.assert(core.type.enum.mk("numbers", "7") === undefined, "type.enum.mk(shallow) &lt;undefined>");
                                 },
 
                                 encode: function ($) {
                                     $.expect(2);
-                                    $.assert(core.type.enum.encode("numbers", "7") === undefined, "type.enum.mk(shallow) <undefined>");
+                                    $.assert(core.type.enum.encode("numbers", "7") === undefined, "type.enum.mk(shallow) &lt;undefined>");
                                     $.assert(core.type.enum.encode("numbers", "two") === 2, "type.enum.mk(shallow) 2");
                                 },
 
@@ -416,18 +461,18 @@
                         }
                     };
                 }); //# core.test.type.enum
-            } //# </minRemove>
+            } //# &lt;/minRemove>
         }, { baseUrl: "" }); //# core.type
     } //# init
 
 
     //# If we are running server-side
     //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
-    if (typeof module === 'object' && module.exports) { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
+    if (typeof module === 'object' &amp;&amp; module.exports) { //if (typeof module !== 'undefined' &amp;&amp; this.module !== module &amp;&amp; module.exports) {
         module.exports = init;
     }
     //# Else if we are running in an .amd environment, register as an anonymous module
-    else if (typeof define === 'function' && define.amd) {
+    else if (typeof define === 'function' &amp;&amp; define.amd) {
         define([], init);
     }
     //# Else we are running in the browser, so we need to setup the _document-based features
@@ -435,3 +480,30 @@
         init(document.querySelector("SCRIPT[ish]").ish);
     }
 }();
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat, 09 Nov 2019 08:05:20 GMT using the <a href="https://github.com/clenemt/docdash">docdash</a> theme and tested with <a href="https://www.chaijs.com/api/assert/">Chai.Assert</a>.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+</body>
+</html>

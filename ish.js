@@ -619,8 +619,8 @@
 
 
             return {
-                /** #####
-                 * Determines if the passed value represents an object.
+                //#########
+                /** Determines if the passed value represents an object.
                  * @function ish.type.object.is
                  * @param {variant} x Value to interrogate.
                  * @param {variant} [vOptions] Value representing if empty objects are to be ignored or the following options:
@@ -684,12 +684,12 @@
                     return bReturnVal;
                 }, //# obj.is
 
-                /** #####
-                 * Casts the passed value into an object.
+                //#########
+                /** Casts the passed value into an object.
                  * @function ish.type.obj.mk
                  * @param {variant} x Value to interrogate.
-                 * @param {variant [vDefaultVal={}] Value representing the default return value if casting fails.
-                 * @returns {{}} Value representing the passed value as an object type.
+                 * @param {variant} [vDefaultVal={}] Value representing the default return value if casting fails.
+                 * @returns {object} Value representing the passed value as an object type.
                  */ //#####
                 mk: function (x, vDefaultVal) {
                     //# If the passed o(bject) .is .str, try to .mkJSON
@@ -1544,12 +1544,12 @@
                 }, //# type.obj.ownKeys
 
                 //#########
-                /** Determines the value of the passed case-insensetive key within the passed value.
-                 * @$note As the key is searched for in a case-insensetive manor, the first matching lowercased key enumerated by the <code>for...in</code> statement will be returned.
+                /** Determines the value of the passed case-insensitive key within the passed value.
+                 * @$note As the key is searched for in a case-insensitive manor, the first matching lowercased key enumerated by the <code>for...in</code> statement will be returned.
                  * @function ish.type.obj.get
                  * @param {object} oSource Value to interrogate.
                  * @param {string} sKey Key to retrieve from the passed value.
-                 * @returns {variant} Value representing the value of the passed case-insensetive key.
+                 * @returns {variant} Value representing the value of the passed case-insensitive key.
                  */ //#####
                 get: function (oObject, sKey) {
                     var sCurrentKey,
@@ -1603,13 +1603,13 @@
                     is: {
                         //#########
                         /** Determines if the passed value represents an arguments instance.
-                         * @function ish.type.fn.is:arguments
+                         * @function ish.type.fn.is:args
                          * @param {variant} x Value to interrogate.
                          * @returns {boolean} Value representing if the passed value represents an arguments instance.
                          */ //#####
-                        arguments: function (x) {
+                        args: function (x) {
                             return (Object.prototype.toString.call(x) === "[object Arguments]");
-                        } //# fn.is.arguments
+                        } //# fn.is.args
                     },
 
                     //#########
@@ -1677,7 +1677,7 @@
                     run: function (fn, vOptions) {
                         var vReturnVal,
                             a_vArguments = (
-                                core.type.fn.is.arguments(vOptions) ?
+                                core.type.fn.is.args(vOptions) ?
                                 convert(vOptions) : (
                                     core.type.arr.is(vOptions) ?
                                     vOptions :
@@ -2672,10 +2672,10 @@
         }
 
         //#########
-        /** ish.require configuration values.
+        /** <code>ish.require</code> configuration values.
          * @function ish.config.require
          * @param {object} [oOptions] Value representing the updated configuration values.
-         * @returns {object} Value representing ish.require's configuration values.
+         * @returns {object} Value representing <code>ish.require</code>'s configuration values.
          */ //#####
         core.config.require = core.config(oRequireOptions);
 

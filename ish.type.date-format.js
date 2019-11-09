@@ -24,6 +24,26 @@
                     wed: 4,
                     thu: 5,
                     sat: 6
+                },
+                oConfig = {
+                    weekOfYear: enumDays.sun, //# === core.type.date.enums.weekOfYear.simple.sun
+                    format: {
+                        s: {
+                            "1": "st",
+                            "2": "nd",
+                            "3": "rd",
+                            "11": "th",
+                            "12": "th",
+                            "13": "th",
+                            x: "th"
+                        },
+                        WWW: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
+                        WWWW: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
+                        MMM: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
+                        MMMM: ["January","February","March","April","May","June","July","August","September","October","November","December"],
+                        T: ["a","p"],
+                        TT: ["am","pm"]
+                    }
                 }
             ;
 
@@ -126,30 +146,6 @@
                     }
                 }, //# type.date.enums
 
-                //#########
-                /** Configuration.
-                 * @function ish.type.date.config
-                 * @$partialMixin true
-                 */ //#####
-                config: {
-                    weekOfYear: enumDays.sun, //# === core.type.date.enums.weekOfYear.simple.sun
-                    s: {
-                        "1": "st",
-                        "2": "nd",
-                        "3": "rd",
-                        "11": "th",
-                        "12": "th",
-                        "13": "th",
-                        x: "th"
-                    },
-                    WWW: ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"],
-                    WWWW: ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"],
-                    MMM: ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],
-                    MMMM: ["January","February","March","April","May","June","July","August","September","October","November","December"],
-                    T: ["a","p"],
-                    TT: ["am","pm"]
-                }, //# type.date.config
-
 
                 //#########
                 /** Formats the passed value based on the passed format.
@@ -181,8 +177,7 @@
                         oDecoders = {
                             $order: []
                         },
-                        fnLpad = core.type.str.lpad,
-                        oConfig = core.type.date.config
+                        fnLpad = core.type.str.lpad
                     ;
 
                     //# .registers the decoder value
@@ -199,21 +194,21 @@
                         i = vDateTime.getDate();
                         register("D", i);
                         register("DD", fnLpad(i, '0', 2));
-                        register("S", oConfig.s[i] || oConfig.s[i % 10] || oConfig.s.x);
+                        register("S", oConfig.format.s[i] || oConfig.format.s[i % 10] || oConfig.format.s.x);
 
                         //#### Borrow the use of i to store the day of the week, setting W, WWW and WWWW according to the above determined .DayOfWeek in the borrowed i
                         i = vDateTime.getDay();
                         register("W", i);
-                        register("WWW", oConfig.WWW[i]);
-                        register("WWWW", oConfig.WWWW[i]);
+                        register("WWW", oConfig.format.WWW[i]);
+                        register("WWWW", oConfig.format.WWWW[i]);
 
                         //#### Borrow the use of i to store the month, setting M, MM, MMM and MMMM accordingly
                         //####     NOTE: .getMonth is 0-based
                         i = vDateTime.getMonth();
                         register("M", i + 1);
                         register("MM", fnLpad(i + 1, '0', 2));
-                        register("MMM", oConfig.MMM[i]);
-                        register("MMMM", oConfig.MMMM[i]);
+                        register("MMM", oConfig.format.MMM[i]);
+                        register("MMMM", oConfig.format.MMMM[i]);
 
                         //#### Borrow the use of vTemp to store the .WeekOfYear, setting w, ww, yy and yyyy accordingly
                         vTemp = core.type.date.weekOfYear(vDateTime, oConfig.weekOfYear);
@@ -263,8 +258,8 @@
                         register("ss", fnLpad(i, '0', 2));
 
                         //# If the .Hour within i is before noon, set tt to "am", else set tt to "pm"
-                        register("t", oConfig.T[(i % 12) === i ? 0 : 1]);
-                        register("tt", oConfig.TT[(i % 12) === i ? 0 : 1]);
+                        register("t", oConfig.format.T[(i % 12) === i ? 0 : 1]);
+                        register("tt", oConfig.format.TT[(i % 12) === i ? 0 : 1]);
 
                         //# Borrow the use of i to store the .getTimezoneOffset, setting zzzz accordingly
                         i = -vDateTime.getTimezoneOffset();
@@ -371,7 +366,7 @@
                     if (vDateTime) {
                         //#### Re-default the oReturnVal's .yyyy to the passed vDateTime's .getFullYear and ensure eWeekOfYear is set
                         oReturnVal.yyyy = vDateTime.getFullYear();
-                        eWeekOfYear = core.type.int.mk(eWeekOfYear, oDate.config.weekOfYear);
+                        eWeekOfYear = core.type.int.mk(eWeekOfYear, oConfig.weekOfYear);
 
                         //#### Determine the eWeekOfYear and process accordingly
                         switch (eWeekOfYear) {
@@ -408,6 +403,18 @@
                     return oReturnVal;
                 } //# type.date.weekOfYear
             };
+
+            //#########
+            /** <code>ish.type.date</code> configuration values.
+             * @function ish.config.type:date
+             * @$partialMixin true
+             * @param {object} [oOptions] Value representing the updated configuration values.
+             * @returns {object} Value representing <code>ish.type.date</code>'s configuration values.
+             */ //#####
+            if (!core.type.fn.run(core.resolve(core.config, "type.date"), { args: oConfig })) {
+                core.resolve(true, core.config, "type").date = core.config(oConfig);
+            }
+
 
             return {
                 date: oDate

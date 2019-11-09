@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>require - Documentation</title>
+    <title>ish.type.enum - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -45,16 +45,14 @@
 
 <header>
     
-        <h1 class="page-title">ish.require</h1><!-- neek added to line 27 -->
+        <h1 class="page-title">ish.type.enum</h1><!-- neek added to line 27 -->
         
-            <h2 class="description">Collection of require external JS-based functionality.</h2>
+            <h2 class="description">Enumerations mixin for ishJS</h2>
         
 
         <!-- neek
         <h2>
-            <span class="ancestors"><a href="ish.html">ish</a>.</span>
-        
-        require
+        ish.type.enum
         </h2>
         
         neek -->
@@ -72,7 +70,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line2239">line 2239</a>
+        <a href="ish.type.enum.js.html">ish.type.enum.js</a>, <a href="ish.type.enum.js.html#line2">line 2</a>
     </li></ul></dd>
     
 
@@ -93,9 +91,22 @@
     
 
     
-
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Nick Campbell</li>
+        </ul>
+    </dd>
     
 
+    
+    <dt class="tag-copyright">Copyright:</dt>
+    <dd class="tag-copyright"><ul class="dummy"><li>2014-2019, Nick Campbell</li></ul></dd>
+    
+
+    
+    <dt class="tag-license">License:</dt>
+    <dd class="tag-license"><ul class="dummy"><li>MIT</li></ul></dd>
     
 
     
@@ -111,7 +122,7 @@
 
 
             
-                <div class="description" style="display: none;">Collection of require external JS-based functionality.</div> <!-- neek added style="display: none;" -->
+                <div class="description" style="display: none;">Enumerations mixin for ishJS</div> <!-- neek added style="display: none;" -->
             
 
             
@@ -143,9 +154,9 @@
 
     <h4 class="name" id=".!">
       <!-- neek -->
-      
+      <mixin>[mixin]</mixin>
       <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.require<span class="signature">(vUrls, oOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.enum<span class="signature">(sEnum, bAsObj<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {Array.&lt;object>|object}</span></h4>
 
     
 
@@ -157,7 +168,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line2439">line 2439</a>
+        <a href="ish.type.enum.js.html">ish.type.enum.js</a>, <a href="ish.type.enum.js.html#line110">line 110</a>
     </li></ul></dd>
     
 
@@ -197,473 +208,14 @@
 
 
 <div class="description">
-    Includes functionality into the current context.
+    Determines the enumeration data for the passed value.
 </div>
 
 
 <!-- neek -->
-
-
-
-
-
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>vUrls</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-|
-
-<span class="param-type">Array.&lt;string></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Value representing the URL(s) of the functionality to include.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>oOptions</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Value representing the following options:
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>callback</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>fire:ish.pluginsLoaded</code>
-                
-                </td>
-            
-
-            <td class="description last">Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>onAppend</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>setAttribute:importedBy</code>
-                
-                </td>
-            
-
-            <td class="description last">Value representing  the function to be called when the DOM element is added; <code>oOptions.onAppend(_dom, sUrl)</code>.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>onError</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Value representing the function to be called when an error occurs; <code>oOptions.onError(_dom, sUrl)</code>.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>waitSeconds</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>7</code>
-                
-                </td>
-            
-
-            <td class="description last">Value representing the maximum number of seconds to wait before an error is returned.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>baseUrl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>""</code>
-                
-                </td>
-            
-
-            <td class="description last">Value representing the base URL to prepend on the <code>src</code> attribute (must end with <code>/</code>).</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>urlArgs</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>""</code>
-                
-                </td>
-            
-
-            <td class="description last">Value representing the URL's querystring to append on the <code>src</code> attribute (must start with <code>?</code>).</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".css">
-      <!-- neek -->
-      <client>[client]</client>
-      <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.require.css<span class="signature">(vUrls, oOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line2649">line 2649</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Includes CSS-based functionality into the current context.
-</div>
-
-
-<!-- neek -->
-
 
     <div class="description">
-        <b><client>Client-Side Only:</client></b> This functionality is only available under a browser (Firefox, Chrome, etc.).
+        <b><mixin>From Mixin:</mixin></b> <code>ish.type.enum.js</code> must be included for <code>ishJS</code> to access this functionality.
     </div>
 
 
@@ -671,6 +223,7 @@
 
 
 
+
 <!-- neek -->
 
 
@@ -699,94 +252,6 @@
         
 
         
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>vUrls</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-|
-
-<span class="param-type">Array.&lt;string></span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Value representing the URL(s) of the functionality to include.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>oOptions</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Value representing the following options:
-                <h6>Properties</h6>
-                
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
         <th>Default</th>
         
 
@@ -799,13 +264,13 @@
 
         <tr>
             
-                <td class="name"><code>callback</code></td>
+                <td class="name"><code>sEnum</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">boolean</span>
+<span class="param-type">string</span>
 
 
             
@@ -813,8 +278,6 @@
 
             
                 <td class="attributes">
-                
-                    &lt;optional><br>
                 
 
                 
@@ -826,19 +289,17 @@
             
                 <td class="default">
                 
-                    <code>fire:ish.pluginsLoaded</code>
-                
                 </td>
             
 
-            <td class="description last">Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.</td>
+            <td class="description last">Value representing the enumeration to interrogate.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>onAppend</code></td>
+                <td class="name"><code>bAsObj</code></td>
             
 
             <td class="type">
@@ -865,173 +326,12 @@
             
                 <td class="default">
                 
-                    <code>setAttribute:importedBy</code>
+                    <code>false</code>
                 
                 </td>
             
 
-            <td class="description last">Value representing  the function to be called when the DOM element is added; <code>oOptions.onAppend(_dom, sUrl)</code>.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>onError</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Value representing the function to be called when an error occurs; <code>oOptions.onError(_dom, sUrl)</code>.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>waitSeconds</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>7</code>
-                
-                </td>
-            
-
-            <td class="description last">Value representing the maximum number of seconds to wait before an error is returned.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>baseUrl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>""</code>
-                
-                </td>
-            
-
-            <td class="description last">Value representing the base URL to prepend on the <code>src</code> attribute (must end with <code>/</code>).</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>urlArgs</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>""</code>
-                
-                </td>
-            
-
-            <td class="description last">Value representing the URL's querystring to append on the <code>src</code> attribute (must start with <code>?</code>).</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-            </td>
+            <td class="description last">Value representing if the return value is to be represented by a simplified <code>{ label: value }</code>-based object.</td>
         </tr>
 
     
@@ -1053,6 +353,31 @@
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Value representing the enumeration data.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">Array.&lt;object></span>
+|
+
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -1061,11 +386,11 @@
 
     
 
-    <h4 class="name" id=".links">
+    <h4 class="name" id=".decode">
       <!-- neek -->
-      <client>[client]</client>
+      <mixin>[mixin]</mixin>
       <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.require.links<span class="signature">(vUrls, oOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.enum.decode<span class="signature">(sEnum, vValue, vOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {string|object}</span></h4>
 
     
 
@@ -1077,7 +402,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line2586">line 2586</a>
+        <a href="ish.type.enum.js.html">ish.type.enum.js</a>, <a href="ish.type.enum.js.html#line227">line 227</a>
     </li></ul></dd>
     
 
@@ -1117,15 +442,14 @@
 
 
 <div class="description">
-    Includes link-based functionality into the current context.
+    Decodes the passed value as an enumeration.
 </div>
 
 
 <!-- neek -->
 
-
     <div class="description">
-        <b><client>Client-Side Only:</client></b> This functionality is only available under a browser (Firefox, Chrome, etc.).
+        <b><mixin>From Mixin:</mixin></b> <code>ish.type.enum.js</code> must be included for <code>ishJS</code> to access this functionality.
     </div>
 
 
@@ -1133,6 +457,7 @@
 
 
 
+
 <!-- neek -->
 
 
@@ -1171,16 +496,13 @@
 
         <tr>
             
-                <td class="name"><code>vUrls</code></td>
+                <td class="name"><code>sEnum</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type">string</span>
-|
-
-<span class="param-type">Array.&lt;string></span>
 
 
             
@@ -1198,19 +520,53 @@
 
             
 
-            <td class="description last">Value representing the URL(s) of the functionality to include.</td>
+            <td class="description last">Value representing the enumeration to interrogate.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>oOptions</code></td>
+                <td class="name"><code>vValue</code></td>
             
 
             <td class="type">
             
                 
+<span class="param-type">variant</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Value to interrogate within the passed enumeration representing a <code>value</code>.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vOptions</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+|
+
 <span class="param-type">object</span>
 
 
@@ -1231,7 +587,7 @@
 
             
 
-            <td class="description last">Value representing the following options:
+            <td class="description last">Value representing if the full enumeration entry is to be returned or the desired options:
                 <h6>Properties</h6>
                 
 
@@ -1261,7 +617,7 @@
 
         <tr>
             
-                <td class="name"><code>callback</code></td>
+                <td class="name"><code>asEntry</code></td>
             
 
             <td class="type">
@@ -1288,25 +644,28 @@
             
                 <td class="default">
                 
-                    <code>fire:ish.pluginsLoaded</code>
+                    <code>false</code>
                 
                 </td>
             
 
-            <td class="description last">Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.</td>
+            <td class="description last">Value representing if the full enumeration entry is to be returned.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>onAppend</code></td>
+                <td class="name"><code>compare</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type">boolean</span>
+|
+
+<span class="param-type">function</span>
 
 
             
@@ -1327,166 +686,12 @@
             
                 <td class="default">
                 
-                    <code>setAttribute:importedBy</code>
+                    <code>function (x, y) { return (x == y); }</code>
                 
                 </td>
             
 
-            <td class="description last">Value representing the function to be called when the DOM element is added; <code>oOptions.onAppend(_dom, sUrl)</code>.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>onError</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Value representing the function to be called when an error occurs; <code>oOptions.onError(_dom, sUrl)</code>.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>waitSeconds</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>7</code>
-                
-                </td>
-            
-
-            <td class="description last">Value representing the maximum number of seconds to wait before an error is returned.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>baseUrl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>""</code>
-                
-                </td>
-            
-
-            <td class="description last">Value representing the base URL to prepend on the <code>src</code> attribute (must end with <code>/</code>).</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>urlArgs</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>""</code>
-                
-                </td>
-            
-
-            <td class="description last">Value representing the URL's querystring to append on the <code>src</code> attribute (must start with <code>?</code>).</td>
+            <td class="description last">Value representing if the comparison is to be case-insensitive or the function to execute the comparison.</td>
         </tr>
 
     
@@ -1515,6 +720,31 @@
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Value representing the passed value as an enumeration.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+|
+
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -1523,11 +753,11 @@
 
     
 
-    <h4 class="name" id=".modules">
+    <h4 class="name" id=".encode">
       <!-- neek -->
-      
+      <mixin>[mixin]</mixin>
       <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.require.modules<span class="signature">(a_vModuleUrls, oOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.enum.encode<span class="signature">(sEnum, sLabel, vOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {variant|object}</span></h4>
 
     
 
@@ -1539,7 +769,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line2686">line 2686</a>
+        <a href="ish.type.enum.js.html">ish.type.enum.js</a>, <a href="ish.type.enum.js.html#line204">line 204</a>
     </li></ul></dd>
     
 
@@ -1579,11 +809,15 @@
 
 
 <div class="description">
-    Includes functionality into the current context in the defined order.
+    Encodes the passed value as an enumeration.
 </div>
 
 
 <!-- neek -->
+
+    <div class="description">
+        <b><mixin>From Mixin:</mixin></b> <code>ish.type.enum.js</code> must be included for <code>ishJS</code> to access this functionality.
+    </div>
 
 
 
@@ -1629,16 +863,13 @@
 
         <tr>
             
-                <td class="name"><code>a_vModuleUrls</code></td>
+                <td class="name"><code>sEnum</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">Array.&lt;string></span>
-|
-
-<span class="param-type">Array.&lt;Array.&lt;string>></span>
+<span class="param-type">string</span>
 
 
             
@@ -1656,19 +887,53 @@
 
             
 
-            <td class="description last">Value representing the URL(s) of the functionality to include, each entry representing a bundle that is loaded in series in the defined order.<br/><b>Note:</b> Each entry, along with the passed options, is handed off to <code>ish.require</code>. Once <code>ish.require</code> completes an entry, the next entry is processed.</td>
+            <td class="description last">Value representing the enumeration to interrogate.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>oOptions</code></td>
+                <td class="name"><code>sLabel</code></td>
             
 
             <td class="type">
             
                 
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Value to interrogate within the passed enumeration representing a <code>label</code>.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vOptions</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+|
+
 <span class="param-type">object</span>
 
 
@@ -1689,7 +954,7 @@
 
             
 
-            <td class="description last">Value representing the following options:
+            <td class="description last">Value representing if the full enumeration entry is to be returned or the desired options:
                 <h6>Properties</h6>
                 
 
@@ -1719,7 +984,7 @@
 
         <tr>
             
-                <td class="name"><code>callback</code></td>
+                <td class="name"><code>asEntry</code></td>
             
 
             <td class="type">
@@ -1746,25 +1011,28 @@
             
                 <td class="default">
                 
-                    <code>fire:ish.pluginsLoaded</code>
+                    <code>false</code>
                 
                 </td>
             
 
-            <td class="description last">Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.</td>
+            <td class="description last">Value representing if the full enumeration entry is to be returned.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>onAppend</code></td>
+                <td class="name"><code>compare</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type">boolean</span>
+|
+
+<span class="param-type">function</span>
 
 
             
@@ -1785,166 +1053,12 @@
             
                 <td class="default">
                 
-                    <code>setAttribute:importedBy</code>
+                    <code>function (x, y) { return (x == y); }</code>
                 
                 </td>
             
 
-            <td class="description last">Value representing  the function to be called when the DOM element is added; <code>oOptions.onAppend(_dom, sUrl)</code>.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>onError</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Value representing the function to be called when an error occurs; <code>oOptions.onError(_dom, sUrl)</code>.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>waitSeconds</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>7</code>
-                
-                </td>
-            
-
-            <td class="description last">Value representing the maximum number of seconds to wait before an error is returned.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>baseUrl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>""</code>
-                
-                </td>
-            
-
-            <td class="description last">Value representing the base URL to prepend on the <code>src</code> attribute (must end with <code>/</code>).</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>urlArgs</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>""</code>
-                
-                </td>
-            
-
-            <td class="description last">Value representing the URL's querystring to append on the <code>src</code> attribute (must start with <code>?</code>).</td>
+            <td class="description last">Value representing if the comparison is to be case-insensitive or the function to execute the comparison.</td>
         </tr>
 
     
@@ -1973,6 +1087,31 @@
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Value representing the passed value as an enumeration.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">variant</span>
+|
+
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
@@ -1981,11 +1120,11 @@
 
     
 
-    <h4 class="name" id=".scripts">
+    <h4 class="name" id=".exists">
       <!-- neek -->
-      
+      <mixin>[mixin]</mixin>
       <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.require.scripts<span class="signature">(vUrls, oOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.enum.exists<span class="signature">(sEnum)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
 
     
 
@@ -1997,7 +1136,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line2523">line 2523</a>
+        <a href="ish.type.enum.js.html">ish.type.enum.js</a>, <a href="ish.type.enum.js.html#line250">line 250</a>
     </li></ul></dd>
     
 
@@ -2037,11 +1176,1308 @@
 
 
 <div class="description">
-    Includes Javascript-based functionality into the current context.
+    Determines if the passed value represents an enumeration.
 </div>
 
 
 <!-- neek -->
+
+    <div class="description">
+        <b><mixin>From Mixin:</mixin></b> <code>ish.type.enum.js</code> must be included for <code>ishJS</code> to access this functionality.
+    </div>
+
+
+
+
+
+
+
+<!-- neek -->
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sEnum</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Value representing the enumeration to interrogate.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Value representing if the passed value represents an enumeration.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".interface">
+      <!-- neek -->
+      <mixin>[mixin]</mixin>
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.enum.interface<span class="signature">()</span><span class="type-signature"> &rarr; {object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.type.enum.js.html">ish.type.enum.js</a>, <a href="ish.type.enum.js.html#line297">line 297</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Returns a new instance of the base interface for an enumeration.
+</div>
+
+
+<!-- neek -->
+
+    <div class="description">
+        <b><mixin>From Mixin:</mixin></b> <code>ish.type.enum.js</code> must be included for <code>ishJS</code> to access this functionality.
+    </div>
+
+
+
+
+
+
+
+<!-- neek -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Value representing the base interface for an enumeration.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".is">
+      <!-- neek -->
+      <mixin>[mixin]</mixin>
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.enum.is<span class="signature">(sEnum, vValue, vCompare<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.type.enum.js.html">ish.type.enum.js</a>, <a href="ish.type.enum.js.html#line123">line 123</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Determines if the passed value represents a <code>label</code> or <code>value</code> within the passed enumeration entry.
+</div>
+
+
+<!-- neek -->
+
+    <div class="description">
+        <b><mixin>From Mixin:</mixin></b> <code>ish.type.enum.js</code> must be included for <code>ishJS</code> to access this functionality.
+    </div>
+
+
+
+
+
+
+
+<!-- neek -->
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sEnum</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Value representing the enumeration to interrogate.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vValue</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">variant</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Value to interrogate within the passed enumeration representing a <code>label</code> or <code>value</code>.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vCompare</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+|
+
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>function (x, y) { return (x == y); }</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing if the comparison is to be case-insensitive or the function to execute the comparisons.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Value representing if the passed value represents a <code>label</code> or <code>value</code> within the passed enumeration entry.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".is:label">
+      <!-- neek -->
+      <mixin>[mixin]</mixin>
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.enum.is.label<span class="signature">(sEnum, sValue, vCompare<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.type.enum.js.html">ish.type.enum.js</a>, <a href="ish.type.enum.js.html#line142">line 142</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Determines if the passed value represents a <code>label</code> within the passed enumeration entry.
+</div>
+
+
+<!-- neek -->
+
+    <div class="description">
+        <b><mixin>From Mixin:</mixin></b> <code>ish.type.enum.js</code> must be included for <code>ishJS</code> to access this functionality.
+    </div>
+
+
+
+
+
+
+
+<!-- neek -->
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sEnum</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Value representing the enumeration to interrogate.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sValue</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Value to interrogate within the passed enumeration representing a <code>label</code>.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vCompare</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+|
+
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>function (x, y) { return (x == y); }</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing if the comparison is to be case-insensitive or the function to execute the comparisons.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Value representing if the passed value represents a <code>label</code> within the passed enumeration entry.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".is:value">
+      <!-- neek -->
+      <mixin>[mixin]</mixin>
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.enum.is.value<span class="signature">(sEnum, vValue, vCompare<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.type.enum.js.html">ish.type.enum.js</a>, <a href="ish.type.enum.js.html#line161">line 161</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Determines if the passed value represents a <code>value</code> within the passed enumeration entry.
+</div>
+
+
+<!-- neek -->
+
+    <div class="description">
+        <b><mixin>From Mixin:</mixin></b> <code>ish.type.enum.js</code> must be included for <code>ishJS</code> to access this functionality.
+    </div>
+
+
+
+
+
+
+
+<!-- neek -->
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sEnum</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Value representing the enumeration to interrogate.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vValue</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">variant</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Value to interrogate within the passed enumeration representing a <code>value</code>.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vCompare</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+|
+
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>function (x, y) { return (x == y); }</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing if the comparison is to be case-insensitive or the function to execute the comparisons.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Value representing if the passed value represents a <code>value</code> within the passed enumeration entry.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".load">
+      <!-- neek -->
+      <mixin>[mixin]</mixin>
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.enum.load<span class="signature">(vEnums)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.type.enum.js.html">ish.type.enum.js</a>, <a href="ish.type.enum.js.html#line260">line 260</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Loads the passed value as enumeration(s) into the existing collection.
+</div>
+
+
+<!-- neek -->
+
+    <div class="description">
+        <b><mixin>From Mixin:</mixin></b> <code>ish.type.enum.js</code> must be included for <code>ishJS</code> to access this functionality.
+    </div>
+
+
+
+
+
+
+
+    <div class="description">
+        <b>Note:</b> If <code>vEnums</code> represents a URL, the <code>ish.io.net</code> Mixin is required in order to collect the JSON file.
+    </div>
+
+<!-- neek -->
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>vEnums</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+|
+
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Value representing the URL to a JSON file or an object defining enumeration(s).</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Value representing if the passed value was successfully loaded.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">boolean</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".mk">
+      <!-- neek -->
+      <mixin>[mixin]</mixin>
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.enum.mk<span class="signature">(sEnum, vValue, vOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {variant|object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.type.enum.js.html">ish.type.enum.js</a>, <a href="ish.type.enum.js.html#line182">line 182</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Casts the passed value into an enumeration.
+</div>
+
+
+<!-- neek -->
+
+    <div class="description">
+        <b><mixin>From Mixin:</mixin></b> <code>ish.type.enum.js</code> must be included for <code>ishJS</code> to access this functionality.
+    </div>
 
 
 
@@ -2087,16 +2523,13 @@
 
         <tr>
             
-                <td class="name"><code>vUrls</code></td>
+                <td class="name"><code>sEnum</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type">string</span>
-|
-
-<span class="param-type">Array.&lt;string></span>
 
 
             
@@ -2114,19 +2547,53 @@
 
             
 
-            <td class="description last">Value representing the URL(s) of the functionality to include.</td>
+            <td class="description last">Value representing the enumeration to interrogate.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>oOptions</code></td>
+                <td class="name"><code>vValue</code></td>
             
 
             <td class="type">
             
                 
+<span class="param-type">variant</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Value to interrogate within the passed enumeration representing a <code>value</code>.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vOptions</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+|
+
 <span class="param-type">object</span>
 
 
@@ -2147,7 +2614,7 @@
 
             
 
-            <td class="description last">Value representing the following options:
+            <td class="description last">Value representing if the full enumeration entry is to be returned or the desired options:
                 <h6>Properties</h6>
                 
 
@@ -2177,7 +2644,7 @@
 
         <tr>
             
-                <td class="name"><code>callback</code></td>
+                <td class="name"><code>asEntry</code></td>
             
 
             <td class="type">
@@ -2204,25 +2671,28 @@
             
                 <td class="default">
                 
-                    <code>fire:ish.pluginsLoaded</code>
+                    <code>false</code>
                 
                 </td>
             
 
-            <td class="description last">Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.</td>
+            <td class="description last">Value representing if the full enumeration entry is to be returned.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>onAppend</code></td>
+                <td class="name"><code>compare</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type">boolean</span>
+|
+
+<span class="param-type">function</span>
 
 
             
@@ -2243,166 +2713,12 @@
             
                 <td class="default">
                 
-                    <code>setAttribute:importedBy</code>
+                    <code>function (x, y) { return (x == y); }</code>
                 
                 </td>
             
 
-            <td class="description last">Value representing  the function to be called when the DOM element is added; <code>oOptions.onAppend(_dom, sUrl)</code>.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>onError</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Value representing the function to be called when an error occurs; <code>oOptions.onError(_dom, sUrl)</code>.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>waitSeconds</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>7</code>
-                
-                </td>
-            
-
-            <td class="description last">Value representing the maximum number of seconds to wait before an error is returned.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>baseUrl</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>""</code>
-                
-                </td>
-            
-
-            <td class="description last">Value representing the base URL to prepend on the <code>src</code> attribute (must end with <code>/</code>).</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>urlArgs</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>""</code>
-                
-                </td>
-            
-
-            <td class="description last">Value representing the URL's querystring to append on the <code>src</code> attribute (must start with <code>?</code>).</td>
+            <td class="description last">Value representing if the comparison is to be case-insensitive or the function to execute the comparison.</td>
         </tr>
 
     
@@ -2431,6 +2747,31 @@
 
 
 
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Value representing the passed value as an enumeration.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">variant</span>
+|
+
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
 
 
 
