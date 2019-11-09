@@ -1,6 +1,24 @@
 //################################################################################################
 /** @file Q: Are you using Vanilla Javascript? A: ...ish
- * @version 0.12.2019-10-06
+ * <div style="font-size: 80%; margin-top: 20px;">
+ *  Javascript code snippets organized in an OOP structure, including:
+ *  <ul>
+ *      <li>Type-safety and type-casting - assisting developers overcome issues related to loose typing via Vanilla Javascript (rather than syntactic sugar à la TypeScript)</li>
+ *      <li>OOP features - partial class definitions with shared private members, dynamic polymorphism/function overloading, and multiple inheritance</li>
+ *      <li>Object traversal, extension and querying features</li>
+ *      <li>Custom events</li>
+ *      <li>Data interpolation - CSV, XML, Punycode and POJO parsing</li>
+ *      <li>Additional Types - Enumerations, GUID</li>
+ *      <li>Large/small number support</li>
+ *      <li>Support back to IE8, with most features supported back to IE6.</li>
+ *      <li>Growing unit tests via <code><a href="https://www.chaijs.com/api/assert/" target="_new">Chai.Assert</a></code></li>
+ *  </ul>
+ *  with all non-UI features available both client-side (in-browser) and server-side (Node/etc.).
+ *  <p style="margin-top: 20px;">
+ *      All features are organized in individually includable mixins organized by namespace/major features with only the core <code>ish.js</code> functionality required to bootstrap.
+ *  </p>
+ * </div>
+ * @version 0.12.2019-11-09
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2019, Nick Campbell

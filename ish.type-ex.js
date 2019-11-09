@@ -1,11 +1,11 @@
-/** ################################################################################################
- * Additional Type Functionality mixin for ishJS
- * @mixin type
- * @memberof! ish
+//################################################################################################
+/** @file Additional Type Functionality mixin for ishJS
+ * @mixin ish.type
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
-################################################################################################# */
+ * @ignore
+ */ //############################################################################################
 !function () {
     'use strict';
 
@@ -16,18 +16,11 @@
             _null = null                                                                //# code-golf
         ;
 
-        /*
-        ####################################################################################################
-        Class: core.type
-        Additional Variable Type-based functionality (type.*.cp, type.*.cmp, type.*.eq, type.*.rm, etc) plus uuid, enum and query.
-        Requires:
-        <core.resolve>, <core.extend>,
-        <core.type.fn.is>, <core.type.arr.is>, <core.type.obj.is>, <core.type.str.is>, <core.type.date.is>,
-        <core.type.str.mk>, <core.type.int.mk>, <core.type.date.mk>, <core.type.float.mk>,
-        <core.type.fn.call>,
-        ~<core.io.net.get>
-        ####################################################################################################
-        */
+        //################################################################################################
+        /** Collection of additional Type-based functionality.
+         * @namespace ish.type.enum
+         * @ignore
+         */ //############################################################################################
         core.oop.partial(core.type, function (/*oProtected*/) {
             var oReturnVal = {
                 //#
@@ -267,7 +260,7 @@
                             });
                         };
                     }
-                    //# Else something went wrong using the ES6 approach, so fall back to the
+                    //# Else something went wrong using the ES6 approach, so fall back to the old skool way
                     else {
                         d = (
                             Date.now() + (core.type.fn.call(core.resolve(_root, "performance.now")) || 0)

@@ -11,7 +11,7 @@
 
     function init(core) {
         //################################################################################################
-        /** Collection of additional date-based functionality.
+        /** Collection of additional Date-based functionality.
          * @namespace ish.type.date
          * @ignore
          */ //############################################################################################
