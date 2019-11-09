@@ -1,5 +1,5 @@
 //################################################################################################
-/** @file Q: Are you using Vanilla Javascript? A: ...ish
+/** @file Q: Are you using Vanilla Javascript?<br/>A: ...ish
  * <div style="font-size: 80%; margin-top: 20px;">
  *  Javascript code snippets organized in an OOP structure, including:
  *  <ul>
