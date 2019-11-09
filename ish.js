@@ -3,7 +3,7 @@
  * <div style="font-size: 80%; margin-top: 20px;">
  *  Javascript code snippets organized in an OOP structure, including:
  *  <ul>
- *      <li>Type-safety and type-casting - assisting developers overcome issues related to loose typing via Vanilla Javascript (rather than syntactic sugar à la TypeScript)</li>
+ *      <li>Type-safety and type-casting - assisting developers in overcoming issues related to loose typing via Vanilla Javascript (rather than syntactic sugar à la TypeScript)</li>
  *      <li>OOP features - partial class definitions with shared private members, dynamic polymorphism/function overloading, and multiple inheritance</li>
  *      <li>Object traversal, extension and querying features</li>
  *      <li>Custom events</li>
