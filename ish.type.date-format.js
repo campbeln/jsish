@@ -1,5 +1,5 @@
 //################################################################################################
-/** @file Additional Date Functionality mixin for ishJS
+/** @file Additional Date Functionality mixin for ish.js
  * @mixin ish.type.date
  * @author Nick Campbell
  * @license MIT

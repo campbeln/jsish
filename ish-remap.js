@@ -1,5 +1,5 @@
 /** ################################################################################################
- * Remapper mixin for ishJS
+ * Remapper mixin for ish.js
  * @mixin ish.type.enum
  * @author Nick Campbell
  * @license MIT

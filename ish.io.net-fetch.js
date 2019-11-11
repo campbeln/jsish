@@ -1,5 +1,5 @@
 /** ################################################################################################
- * Networking mixin for ishJS
+ * Networking mixin for ish.js
  * @mixin ish.io.net
  * @author Nick Campbell
  * @license MIT

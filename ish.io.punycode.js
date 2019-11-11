@@ -1,5 +1,5 @@
 //################################################################################################
-/** @file Punycode mixin for ishJS
+/** @file Punycode mixin for ish.js
  * @mixin ish.io.punycode
  * @author Nick Campbell (wrapper); https://stackoverflow.com/users/36866/some
  * @license Public Domain

@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>ish.oop.overload.js - Documentation</title>
+    <title>ish.ui.css.js - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -44,188 +44,166 @@
     <section>
         <article>
             <pre class="prettyprint source linenums"><code>//################################################################################################
-/** @file OOP Dynamic Polymorphism (Function Overloading) mixin for ish.js
- * @mixin ish.oop.overload
+/** @file Browser-based CSS mixin for ish.js
+ * @mixin ish.ui.css
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
+ * @ignore
  */ //############################################################################################
-!function () {
+!function (core) {
     'use strict';
 
-    function init(core) {
-        //################################################################################################
-        /** Collection of OOP Dynamic Polymorphism (Function Overloading)-based functionality.
-         * @namespace ish.oop.overload
-         * @ignore
-         */ //############################################################################################
-        core.oop.partial(core.oop, function (/*oProtected*/) {
-            var a_fnOverloads = [];
 
-            //#
-            function registerAlias(fnOverload, fn, sAlias) {
-                //#
-                if (core.type.str.is(sAlias, true) &amp;&amp; !fnOverload[sAlias]) {
-                    fnOverload[sAlias] = fn;
-                }
-            } //# registerAlias
+    /*
+    ####################################################################################################
+    Class: core.css
+    CSS-manipulation functionality.
+    Requires:
+    &lt;core.resolve>, &lt;core.extend>,
+    &lt;core.type.arr.is>,
+    &lt;core.type.dom.mk>, &lt;core.type.str.mk>, &lt;core.type.obj.mk>, &lt;core.type.int.mk>
+    ####################################################################################################
+    */
+    core.oop.partial(core.ui, function (/*oProtected*/) {
+        var _defaultStyle,
+            _head = document.head
+        ;
 
-            return {
-                overload: core.extend(
-                    //#########
-                    /** Initiates a wrapper function that marshals calls to the proper function overload based on argument signature.
-                     * @function ish.oop.overload.!
-                     * @param {function} [fnDefault] Value representing the default overload function to execute if the arguments cannot be matched to an available overload.
-                     * @returns {function} Value representing a wrapper function that marshals calls to the proper function overload based on argument signature, including interfaces to &lt;code>add&lt;/code>, &lt;code>default&lt;/code> and &lt;code>list&lt;/code>.
-                     */ //#####
-                    function (fnDefault) {
-                        var oData = {
-                                //#########
-                                /** Interface under the returned &lt;code>ish.oop.overload&lt;/code> wrapper function that defines the default function overload to execute if the arguments cannot be matched to an available overload.
-                                 * @function ish.oop.overload.*:default
-                                 * @throws &lt;code>Overload not found for arguments&lt;/code> unless defined at initiation.
-                                 */ //#####
-                                default: (core.type.fn.is(fnDefault) ?
-                                    fnDefault :
-                                    function (/*arguments*/) {
-                                        throw "ish.oop.overload: Overload not found for arguments " + core.type.arr.mk(arguments).join(",");
-                                    }
-                                )
-                            },
-                            fnOverload = core.extend(
-                                //#
-                                function (/*arguments*/) {
-                                    var oEntry, i, j,
-                                        a = arguments,
-                                        oArgumentTests = oData[a.length] || []
-                                    ;
+        //#
+        function hasClass(vElement, sClassName) {
+            var _element = core.type.dom.mk(vElement);
 
-                                    //# Traverse the oArgumentTests for the number of passed a(rguments), defaulting the oEntry at the beginning of each loop
-                                    for (i = 0; i &lt; oArgumentTests.length; i++) {
-                                        oEntry = oArgumentTests[i];
+            if (_element.classList) {
+                return _element.classList.contains(sClassName);
+            }
+            else {
+                return !!_element.className.match(new RegExp('(\\s|^)' + sClassName + '(\\s|$)'));
+            }
+        } //# hasClass
 
-                                        //# Traverse the passed a(rguments), if a .test for the current oArgumentTests fails, reset oEntry and fall from the a(rgument)s loop
-                                        for (j = 0; j &lt; a.length; j++) {
-                                            if (!oArgumentTests[i].tests[j](a[j])) {
-                                                oEntry = undefined;
-                                                break;
-                                            }
-                                        }
 
-                                        //# If all of the a(rgument)s passed the .tests we found our oEntry, so break from the oArgumentTests loop
-                                        if (oEntry) {
-                                            break;
-                                        }
-                                    }
+        //#
+        return {
+            css: {
+                insertRules: function (vRules, oOptions) {
+                    var _style, _sheet, iRulesCount, iIndex, i,
+                        a_sRules = (core.type.arr.is(vRules) ? vRules : [core.type.str.mk(vRules)])
+                    ;
 
-                                    //# If we found our oEntry above, .fn.call its .fn
-                                    if (oEntry) {
-                                        oEntry.calls++;
-                                        return core.type.fn.call(oEntry.fn, this, a);
-                                    }
-                                    //# Else we were unable to find a matching oArgumentTests oEntry, so .fn.call our .default
-                                    else {
-                                        return core.type.fn.call(oData.default, this, a);
-                                    }
-                                }, //# overload*
-                                {
-                                    //#########
-                                    /** Interface under the returned &lt;code>ish.oop.overload&lt;/code> wrapper function that adds another function to the available overloads.
-                                     * @function ish.oop.overload.*:add
-                                     * @param {function} fn Value representing the function to add to the available overloads.
-                                     * @param {string} sAlias Value representing the unique alias for the passed function.
-                                     * @param {function[]|string[]} [a_vArgumentTests] Value representing the argument validators as functions or strings referencing &lt;code>ish.types.*.is&lt;/code> functions (e.g. &lt;code>str&lt;/code>, &lt;code>int&lt;/code>, &lt;code>obj&lt;/code>, etc).
-                                     */ //#####
-                                    add: function (fn, sAlias, a_vArgumentTests) {
-                                        var i,
-                                            bValid = (core.type.fn.is(fn) &amp;&amp; core.type.str.is(sAlias, true) &amp;&amp; !fnOverload[sAlias]),
-                                            iLen = (core.type.arr.is(a_vArgumentTests) ? a_vArgumentTests.length : 0)
-                                        ;
+                    //# Ensure the passed oOptions .is .obj then calculate our _style and iIndex
+                    oOptions = core.type.obj.mk(oOptions);
+                    _style = core.type.dom.mk(oOptions.style, _defaultStyle);
+                    iIndex = core.type.int.mk(oOptions.index, -1);
 
-                                        //sAlias = 'fn_'+arguments.length+Array.from(arguments).map((arg)=>typeof arg).join('_')
-
-                                        //#
-                                        if (bValid) {
-                                            //# Traverse the a_vArgumentTests, processing each to ensure they are functions (or references to )
-                                            for (i = 0; i &lt; iLen; i++) {
-                                                if (!core.type.fn.is(a_vArgumentTests[i])) {
-                                                    a_vArgumentTests[i] = core.resolve(core.type, [a_vArgumentTests[i], "is"]);
-                                                    if (!core.type.fn.is(a_vArgumentTests[i])) {
-                                                        bValid = false;
-                                                    }
-                                                }
-                                            }
-                                        }
-
-                                        //# If the a_vArgumentTests are bValid, set the info into oData under the a_vArgumentTests' iLen
-                                        if (bValid) {
-                                            oData[iLen] = oData[iLen] || [];
-                                            oData[iLen].push({
-                                                fn: fn,
-                                                tests: a_vArgumentTests,
-                                                calls: 0
-                                            });
-
-                                            //#
-                                            registerAlias(fnOverload, fn, sAlias);
-                                            //return fnOverload;
-                                        }
-                                        //# Else one of the passed arguments was not bValid, so throw the error
-                                        else {
-                                            throw "ish.oop.overload: All tests must be functions or strings referencing `type.*.is`.";
-                                        }
-                                    }, //# overload.*.add
-
-                                    //#########
-                                    /** Interface under the returned &lt;code>ish.oop.overload&lt;/code> wrapper function that lists the available overloaded functions.
-                                     * @function ish.oop.overload.*:list
-                                     * @param {integer} [iArgumentCount] Value representing the desired argument count to limit the returned list to.
-                                     * @returns {object} Value representing the available overloaded functions categorized by argument count.
-                                     */ //#####
-                                    list: function (iArgumentCount) {
-                                        return (arguments.length > 0 ? oData[iArgumentCount] || [] : oData);
-                                    } //# overload.*.list
-                                }
-                            ) //# fnOverload = core.extend(
-                        ;
-
-                        //#
-                        a_fnOverloads.push(fnOverload);
-                        //registerAlias(fnOverload, oData.default, oData.alias);
-
-                        return fnOverload;
-                    }, //# oop.overload
-                    {
-                        //#########
-                        /** Determines if the passed value is a wrapper function that marshals calls to the proper function overload based on argument signature.
-                         * @function ish.oop.overload.is
-                         * @param {function} fnTarget Value representing the function to test.
-                         * @returns {boolean} Value representing if the passed value is a wrapper function that marshals calls to the proper function overload based on argument signature.
-                         */ //#####
-                        is: function (fnTarget) {
-                            return (a_fnOverloads.indexOf(fnTarget) > -1);
-                        } //# oop.overload.is
+                    //# If the _style was not successfully calculated above, we need to setup our _defaultStyle
+                    if (!_style) {
+                        //# .createElement, do the WebKit hack then .append it into the _head
+                        _defaultStyle = _style = document.createElement('style');
+                        _defaultStyle.appendChild(document.createTextNode(''));
+                        _head.appendChild(_defaultStyle);
                     }
-                )
-            };
-        }); //# core.oop.overload
-    } //# init
 
+                    //# Now that we definitly have a _style, determine its _sheet and iRulesCount
+                    _sheet = _style.sheet;
+                    iRulesCount = core.type.int.mk(core.resolve(_sheet, "cssRules.length"), -1);
 
-    //# If we are running server-side
-    //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
-    if (typeof module === 'object' &amp;&amp; module.exports) { //if (typeof module !== 'undefined' &amp;&amp; this.module !== module &amp;&amp; module.exports) {
-        module.exports = init;
-    }
-    //# Else if we are running in an .amd environment, register as an anonymous module
-    else if (typeof define === 'function' &amp;&amp; define.amd) {
-        define([], init);
-    }
-    //# Else we are running in the browser, so we need to setup the _document-based features
-    else {
-        init(document.querySelector("SCRIPT[ish]").ish);
-    }
-}();
+                    //#
+                    if (_sheet) {
+                        //# If we are to .insertRules at the end of the _style, traverse the passed a_sRules from 0-n, .insert(ing each)Rule as we go
+                        if (iIndex &lt; 0) {
+                            for (i = 0; i &lt; a_sRules.length; i++) {
+                                _sheet.insertRule(a_sRules[i], iRulesCount + i);
+                            }
+                        }
+                        //# Else we are to .insertRules at a specific iIndex, so traverse the passed a_sRules from n-0 .insert(ing each)Rule in passed array order
+                        else {
+                            for (i = a_sRules.length; i > 0; i--) {
+                                _sheet.insertRule(a_sRules[i], iIndex);
+                            }
+                        }
+                    }
+
+                    return _style;
+                }, //# css.insertRules
+
+                /**
+                 * Increase/Decrease the lightness of a color in the hex color format by an absolute amount.
+                 *
+                 * @param {String} color      The string of the specified color.
+                 * @param {Number} amount     The percentage 0-100.
+                 *
+                 * @return {String}           The lighten or darken color in hex color format.
+                 */
+                adjustColor: function (sColor, iPercent) {
+                    var iColor, iR, iG, iB,
+                        bPound /* = false */
+                    ;
+
+                    //# Parse the passed sColor and iPercent, removing and noting any leading bPound as we go
+                    sColor = core.type.str.mk(sColor);
+                    if (sColor[0] === "#") {
+                        sColor = sColor.slice(1);
+                        bPound = true;
+                    }
+                    iColor = parseInt(sColor, 16);
+                    iPercent = core.type.int.mk(iPercent);
+
+                    //# Calculate the new RGB hex-color based on the passed iPercent
+                    //#     NOTE: iPercent does not need to be ranged to -100:100 like iR/iG/iB below because they are ranged 0:255
+                    iR = (iColor >> 16) + iPercent;
+                    iR = (iR > 255 ? 255 : (iR &lt; 0 ? 0 : iR));
+                    iG = (iColor &amp; 0x0000FF) + iPercent;
+                    iG = (iG > 255 ? 255 : (iG &lt; 0 ? 0 : iG));
+                    iB = ((iColor >> 8) &amp; 0x00FF) + iPercent;
+                    iB = (iB > 255 ? 255 : (iB &lt; 0 ? 0 : iB));
+
+                    //# Prepend a leading bPound if one was passed, then calculate the base-16 RGB hex-color calculated above, returnign the result to the caller
+                    return (bPound ? "#" : "") + (iG | (iB &lt;&lt; 8) | (iR &lt;&lt; 16)).toString(16);
+                }, //# css.adjustColor
+
+                //#
+                class: core.extend(hasClass, {
+                    has: hasClass,
+
+                    add: function (vElement, sClassName) {
+                        var _element = core.type.dom.mk(vElement);
+
+                        if (_element.classList) {
+                            _element.classList.add(sClassName);
+                        }
+                        else if (!hasClass(_element, sClassName)) {
+                            _element.className += " " + sClassName;
+                        }
+                    }, //# css.class.add
+
+                    rm: function (vElement, sClassName) {
+                        var _element = core.type.dom.mk(vElement);
+
+                        if (_element.classList) {
+                            _element.classList.remove(sClassName);
+                        }
+                        else if (hasClass(_element, sClassName)) {
+                            _element.className = _element.className.replace(new RegExp('(\\s|^)' + sClassName + '(\\s|$)'), ' ');
+                        }
+                    }, //# css.class.rm
+
+                    toggle: function (vElement, sClassName) {
+                        var _element = core.type.dom.mk(vElement);
+
+                        if (hasClass(_element, sClassName)) {
+                            hasClass.rm(_element, sClassName);
+                        }
+                        else {
+                            hasClass.add(_element, sClassName);
+                        }
+                    } //# css.class.toggle
+                }) //# css.class
+            }
+        };
+    }); //# core.ui.css
+
+}(document.querySelector("SCRIPT[ish]").ish); //# Web-only
 </code></pre>
         </article>
     </section>

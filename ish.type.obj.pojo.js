@@ -1,5 +1,5 @@
 //################################################################################################
-/** @file Plain Old Javascript Object Parser mixin for ishJS
+/** @file Plain Old Javascript Object Parser mixin for ish.js
  * @mixin ish.type.obj.pojo
  * @author Nick Campbell
  * @license MIT
@@ -27,6 +27,7 @@
                      *      @param {object|function} [oOptions.context=null] Value representing the context that exposes properties and functionality the passed value is parsed under.
                      *      @param {boolean|string[]} [oOptions.reject=["eval", "Function", ".prototype.", ".constructor", "function", "=>"]] Value representing if functions are to be rejected or array of strings representing the values that cause a POJO string to be rejected.
                      * @returns {object[]} Value representing the POJO data.
+                     * @see {@link https://stackoverflow.com/a/543820/235704|StackOverflow}
                      */ //#####
                     function (x, vDefaultVal, oOptions) {
                         var oReturnVal = (arguments.length > 1 ? vDefaultVal : {}),
@@ -64,7 +65,7 @@
                                 bReturnVal = core.type.arr.is(vReject),
                                 a_vReject = (bReturnVal ? vReject : [
                                     /eval(\/\*.*?\*\/)?(\/\/.*?)?\(/g, /Function(\/\*.*?\*\/)?(\/\/.*?)?\(/g,
-                                    ".prototype.", ".constructor"
+                                    ".prototype.", ".constructor" //, ".call"
                                 ])
                             ;
 
@@ -125,10 +126,11 @@
             oMask = {}
         ;
 
-        //# oMask out the locally accessible objects (including i, oMask and a_sKeys)
+        //# oMask out the locally accessible objects (including i, oMask and a_sKeys), then ensure that oMask is still accessible via `this` (per: https://stackoverflow.com/questions/543533/restricting-eval-to-a-narrow-scope/543820#comment36708109_543820)
         for (i = 0; i < a_sKeys.length; i++) {
             oMask[a_sKeys[i]] = undefined;
         }
+        oMask["this"] = oMask;
 
         //# If oInjectData was passed, traverse the injection .o(bject) .shift'ing off the c(urrent) .k(ey) as we go and set each as a local var
         if (oInjectData) {

@@ -1,5 +1,5 @@
 /** ################################################################################################
- * XYZ mixin for ishJS
+ * XYZ mixin for ish.js
  * @mixin ish.type.enum
  * @author Nick Campbell
  * @license MIT

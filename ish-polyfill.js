@@ -1,6 +1,6 @@
 /*
 ####################################################################################################
- * Polyfills for ishJS
+ * Polyfills for ish.js
 ####################################################################################################
 Breaking Changes:
 $ver                                    ver
@@ -75,6 +75,8 @@ type.fn.poll(options.retries) => type.fn.poll(options.maxAttempts)
 type.is.numeric.rangeStr => type.is.numeric.large.range
 type.is.numeric.precision => type.is.numeric.large.precision
 type.is.numeric.compare => type.is.numeric.large.compare
+===
+io.web.cookie.str => io.web.cookie.stringify
 */
 
 

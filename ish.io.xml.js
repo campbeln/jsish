@@ -1,5 +1,5 @@
 //################################################################################################
-/** XML mixin for ishJS that wraps Axinom's implementation of Abdulla Abdurakhmanov's <code>x2js</code>
+/** XML mixin for ish.js that wraps Axinom's implementation of Abdulla Abdurakhmanov's <code>x2js</code>
  * @mixin ish.io.xml
  * @author Nick Campbell (wrapper); Axinom; Abdulla Abdurakhmanov
  * @license Apache License, Version 2.0

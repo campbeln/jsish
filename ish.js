@@ -1,6 +1,6 @@
 //################################################################################################
 /** @file Q: Are you using Vanilla Javascript?<br/>A: ...ish
- * <div style="font-size: 80%; margin-top: 20px;">
+ * <div style="font-size: 75%; margin-top: 20px;">
  *  Javascript code snippets organized in an OOP structure, including:
  *  <ul>
  *      <li>Type-safety and type-casting - assisting developers in overcoming issues related to loose typing via Vanilla Javascript (rather than syntactic sugar à la TypeScript)</li>
@@ -10,8 +10,8 @@
  *      <li>Data interpolation - CSV, XML, Punycode and POJO parsing</li>
  *      <li>Additional Types - Enumerations, GUID</li>
  *      <li>Large/small number support</li>
- *      <li>Support back to IE8, with most features supported back to IE6.</li>
- *      <li>Growing unit tests via <code><a href="https://www.chaijs.com/api/assert/" target="_new">Chai.Assert</a></code></li>
+ *      <li>Support back to IE8, with most features supported back to IE6</li>
+ *      <li>Growing unit test coverage with <code><a href="https://www.chaijs.com/api/assert/" target="_new">Chai.Assert</a></code></li>
  *  </ul>
  *  with all non-UI features available both client-side (in-browser) and server-side (Node/etc.).
  *  <p style="margin-top: 20px;">
@@ -23,7 +23,7 @@
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
  */ /**
- * ishJS's (renameable) global object.
+ * ish.js's (renameable) global object.
  * @namespace ish
  */ //############################################################################################
 /*jshint maxcomplexity:6 */
@@ -268,10 +268,10 @@
         }; //# ish.type.is.numeric
 
         //#########
-        /** Determines if the passed value is an instance of ishJS.
+        /** Determines if the passed value is an instance of ish.js.
          * @function ish.type.is.ish
          * @param {variant} x Value to interrogate.
-         * @returns {boolean} Value representing if the passed value is an instance of ishJS.
+         * @returns {boolean} Value representing if the passed value is an instance of ish.js.
          */ //#####
         type.is.ish = function isIsh(x) {
             return (arguments.length === 0 || x === core);
@@ -1254,7 +1254,7 @@
         //#     NOTE: Since `import` is a reserved(ish) word, we have to use []-notation
 
         //#########
-        /** Imports ishJS mixin functionality.
+        /** Imports ish.js mixin functionality.
          * @function ish.type.is.ish:import
          * @param {string[]} a_sImport Value representing the mixin paths to import.
          * @param {object} [oOptions] Value representing the following options:
@@ -1295,10 +1295,10 @@
 
 
         //#########
-        /** ishJS configuration values.
+        /** ish.js configuration values.
          * @function ish.config.ish
          * @param {object} [oOptions] Value representing the updated configuration values.
-         * @returns {object} Value representing ishJS's configuration values.
+         * @returns {object} Value representing ish.js's configuration values.
          */ //#####
         core.config.ish = core.config(oTypeIsIsh.config);
 
@@ -1654,7 +1654,7 @@
                      * @param {variant} [vContext=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
                      * @param {variant} vArguments Value representing the arguments to pass into the passed function.<br/><b>Note:</b> This value is passed through <code>ish.type.fn.convert</code> to ensure an array.
                      * @returns {variant} Value representing the passed function's return value.
-                     * @todo Refactor all <code>ish.type.fn.call</code> references to use <code>ish.type.fn.run</code> as it has a more consistent interface to the rest of ishJS.
+                     * @todo Refactor all <code>ish.type.fn.call</code> references to use <code>ish.type.fn.run</code> as it has a more consistent interface to the rest of ish.js.
                      */ //#####
                     call: function (fn, vContext, vArguments) {
                         var vReturnVal /*= _undefined*/;

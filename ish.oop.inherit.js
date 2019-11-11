@@ -1,5 +1,5 @@
 //################################################################################################
-/** @file OOP Inheritance mixin for ishJS
+/** @file OOP Inheritance mixin for ish.js
  * @mixin ish.oop.inherit
  * @author Nick Campbell
  * @license MIT

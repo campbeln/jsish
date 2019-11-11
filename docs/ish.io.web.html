@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>config - Documentation</title>
+    <title>ish.io.web - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -45,16 +45,14 @@
 
 <header>
     
-        <h1 class="page-title">ish.config</h1><!-- neek added to line 27 -->
+        <h1 class="page-title">ish.io.web</h1><!-- neek added to line 27 -->
         
-            <h2 class="description">Configuration-based functionality.</h2>
+            <h2 class="description">Web Input/Output mixin for ish.js</h2>
         
 
         <!-- neek
         <h2>
-            <span class="ancestors"><a href="ish.html">ish</a>.</span>
-        
-        config
+        ish.io.web
         </h2>
         
         neek -->
@@ -72,7 +70,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line1015">line 1015</a>
+        <a href="ish.io.web.js.html">ish.io.web.js</a>, <a href="ish.io.web.js.html#line2">line 2</a>
     </li></ul></dd>
     
 
@@ -93,9 +91,22 @@
     
 
     
-
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Nick Campbell</li>
+        </ul>
+    </dd>
     
 
+    
+    <dt class="tag-copyright">Copyright:</dt>
+    <dd class="tag-copyright"><ul class="dummy"><li>2014-2019, Nick Campbell</li></ul></dd>
+    
+
+    
+    <dt class="tag-license">License:</dt>
+    <dd class="tag-license"><ul class="dummy"><li>MIT</li></ul></dd>
     
 
     
@@ -111,7 +122,7 @@
 
 
             
-                <div class="description" style="display: none;">Configuration-based functionality.</div> <!-- neek added style="display: none;" -->
+                <div class="description" style="display: none;">Web Input/Output mixin for ish.js</div> <!-- neek added style="display: none;" -->
             
 
             
@@ -141,560 +152,11 @@
 
     
 
-    <h4 class="name" id=".!">
-      <!-- neek -->
-      
-      <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.config<span class="signature">(oConfig)</span><span class="type-signature"> &rarr; {function}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line1017">line 1017</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Creates an interface that merges the content of the passed options into the underlying configuration, overriding any original values.
-</div>
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
-    
-        <p class="code-caption">
-     When used internally for <code>ish</code> mixins, the recommended pattern to setup a related <code>ish.config</code> entry is:
-  </p>
-    
-    <pre class="prettyprint"><code>    ish.config.mixinPath = ish.config({ some: "mixin configuration value" });</code></pre>
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>oConfig</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Object that stores the underlying configuration values.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Function that manages and returns the object representing the configuration values.
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">function</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".ish">
-      <!-- neek -->
-      
-      <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.config.ish<span class="signature">(oOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line1298">line 1298</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    ish.js configuration values.
-</div>
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>oOptions</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Value representing the updated configuration values.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Value representing ish.js's configuration values.
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">object</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".require">
-      <!-- neek -->
-      
-      <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.config.require<span class="signature">(oOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line2693">line 2693</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    <code>ish.require</code> configuration values.
-</div>
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>oOptions</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Value representing the updated configuration values.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-
-        
-<div class="param-desc">
-    Value representing <code>ish.require</code>'s configuration values.
-</div>
-
-
-
-<dl class="param-type">
-    <dt>
-        Type
-    </dt>
-    <dd>
-        
-<span class="param-type">object</span>
-
-
-    </dd>
-</dl>
-
-    
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".type:date">
+    <h4 class="name" id=".cookie">
       <!-- neek -->
       <mixin>[mixin]</mixin>
       <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.config.type.date<span class="signature">(oOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
+      <!-- neek <span class="type-signature">(static) </span> -->ish.io.web.cookie<span class="signature">(sName, oDefault<span class="signature-attributes">opt</span>, vOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
 
     
 
@@ -706,7 +168,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.type.date-format.js.html">ish.type.date-format.js</a>, <a href="ish.type.date-format.js.html#line408">line 408</a>
+        <a href="ish.io.web.js.html">ish.io.web.js</a>, <a href="ish.io.web.js.html#line106">line 106</a>
     </li></ul></dd>
     
 
@@ -746,14 +208,988 @@
 
 
 <div class="description">
-    <code>ish.type.date</code> configuration values.
+    Retrieves the passed value from the cookie data.
 </div>
 
 
 <!-- neek -->
 
     <div class="description">
-        <b><mixin>From Mixin:</mixin></b> <code>ish.type.date-format.js</code> must be included for <code>ishJS</code> to access this functionality.
+        <b><mixin>From Mixin:</mixin></b> <code>ish.io.web.js</code> must be included for <code>ishJS</code> to access this functionality.
+    </div>
+
+
+
+
+
+    <div class="description">
+        <b>AKA:</b> <code>ish.io.web.queryString.get</code>
+    </div>
+
+
+
+<!-- neek -->
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sName</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Value representing the cookie to retrieve.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>oDefault</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Value representing if the default value of the cookie data if it hasn't been previously set.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vOptions</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Value representing the desired options:
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>path</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>"/"</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing if the Querystring's delimiter is to be semicolons (<code>;</code>) rather than ampersands (<code>&</code>).</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>domain</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Value representing if <code>encodeURIComponent</code> is to be used.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>maxAge</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Value representing if <code>encodeURIComponent</code> is to be used.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Value representing the data for the passed value.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".cookie:*:stringify">
+      <!-- neek -->
+      <mixin>[mixin]</mixin>
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.io.web.cookie.*.stringify<span class="signature">()</span><span class="type-signature"> &rarr; {string}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.io.web.js.html">ish.io.web.js</a>, <a href="ish.io.web.js.html#line128">line 128</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Converts the cookie data into a JSON string.
+</div>
+
+
+<!-- neek -->
+
+    <div class="description">
+        <b><mixin>From Mixin:</mixin></b> <code>ish.io.web.js</code> must be included for <code>ishJS</code> to access this functionality.
+    </div>
+
+
+
+
+
+
+
+<!-- neek -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Value representing the cookie data.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".queryString">
+      <!-- neek -->
+      <mixin>[mixin]</mixin>
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.io.web.queryString<span class="signature">(sKey, bCaseInsensitive<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {variant}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.io.web.js.html">ish.io.web.js</a>, <a href="ish.io.web.js.html#line434">line 434</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Retrieves the passed value from the Querystring data.
+</div>
+
+
+<!-- neek -->
+
+    <div class="description">
+        <b><mixin>From Mixin:</mixin></b> <code>ish.io.web.js</code> must be included for <code>ishJS</code> to access this functionality.
+    </div>
+
+
+
+
+
+    <div class="description">
+        <b>AKA:</b> <code>ish.io.web.queryString.get</code>
+    </div>
+
+
+
+    <div class="description">
+        <b>Note:</b> If <code>ish.io.web.queryString.parse</code> was not called previously, the Querystring is implicitly parsed prior to the passed value being retrieved. This will result in an error on the server-side as the Querystring cannot be automatically collected.
+    </div>
+
+<!-- neek -->
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sKey</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Value representing the Querystring key to retrieve.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bCaseInsensitive</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>false</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing if the passed value is to be retrieved from the Querystring data in a case-insensitive manor.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Value representing the data for the passed value.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">variant</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".queryString:parse">
+      <!-- neek -->
+      <mixin>[mixin]</mixin>
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.io.web.queryString.parse<span class="signature">(sUrl<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.io.web.js.html">ish.io.web.js</a>, <a href="ish.io.web.js.html#line454">line 454</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="http://stackoverflow.com/a/2880929/235704">StackOverflow.com</a></li>
+        
+            <li><a href="http://jsbin.com/adali3/2/edit">JSBin.com</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Parses the passed value into a Javascript object representing the Querystring data.
+</div>
+
+
+<!-- neek -->
+
+    <div class="description">
+        <b><mixin>From Mixin:</mixin></b> <code>ish.io.web.js</code> must be included for <code>ishJS</code> to access this functionality.
+    </div>
+
+
+
+
+
+
+
+    <div class="description">
+        <b>Note:</b> Supports up to 3-dimensions: <code>key=val1;key=val2;newkey=val3;obj=zero;obj=one;obj[one]=1;obj[two]=2;obj[Length]=long;obj[2]=mytwo;obj=two;obj[2]=myothertwo;obj=three</code>
+    </div>
+
+<!-- neek -->
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>location.search</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing the Querystring data to parse.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Value representing the Querystring data.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">object</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".queryString:stringify">
+      <!-- neek -->
+      <mixin>[mixin]</mixin>
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.io.web.queryString.stringify<span class="signature">(oData, vOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {string}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.io.web.js.html">ish.io.web.js</a>, <a href="ish.io.web.js.html#line483">line 483</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Converts the passed value to a Querystring.
+</div>
+
+
+<!-- neek -->
+
+    <div class="description">
+        <b><mixin>From Mixin:</mixin></b> <code>ish.io.web.js</code> must be included for <code>ishJS</code> to access this functionality.
     </div>
 
 
@@ -800,7 +1236,38 @@
 
         <tr>
             
-                <td class="name"><code>oOptions</code></td>
+                <td class="name"><code>oData</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Value representing the data to serialize into a Querystring.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vOptions</code></td>
             
 
             <td class="type">
@@ -826,7 +1293,115 @@
 
             
 
-            <td class="description last">Value representing the updated configuration values.</td>
+            <td class="description last">Value representing the desired options:
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>useSemicolon</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>false</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing if the Querystring's delimiter is to be semicolons (<code>;</code>) rather than ampersands (<code>&</code>).</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>encodeURI</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>true</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing if <code>encodeURIComponent</code> is to be used.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
         </tr>
 
     
@@ -852,7 +1427,192 @@
 
         
 <div class="param-desc">
-    Value representing <code>ish.type.date</code>'s configuration values.
+    Value representing the Querystring data.
+</div>
+
+
+
+<dl class="param-type">
+    <dt>
+        Type
+    </dt>
+    <dd>
+        
+<span class="param-type">string</span>
+
+
+    </dd>
+</dl>
+
+    
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".url">
+      <!-- neek -->
+      <mixin>[mixin]</mixin>
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.io.web.url<span class="signature">(sUrl)</span><span class="type-signature"> &rarr; {object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.io.web.js.html">ish.io.web.js</a>, <a href="ish.io.web.js.html#line497">line 497</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://www.sitepoint.com/url-parsing-isomorphic-javascript/">Sitepoint.com</a></li>
+        
+            <li><a href="http://davidwalsh.name/essential-javascript-functions">David Walsh</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Parses the passed value into its URL components.
+</div>
+
+
+<!-- neek -->
+
+    <div class="description">
+        <b><mixin>From Mixin:</mixin></b> <code>ish.io.web.js</code> must be included for <code>ishJS</code> to access this functionality.
+    </div>
+
+
+
+
+
+
+
+<!-- neek -->
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>sUrl</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Value representing the URL to parse.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+
+        
+<div class="param-desc">
+    Value representing the URL components.
 </div>
 
 

@@ -1,39 +1,42 @@
-/** ################################################################################################
- * Angular mixin for ishJS
+//################################################################################################
+/** @file Angular mixin for ish.js
  * @mixin ish.lib.ng
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
-################################################################################################# */
+ * @ignore
+ */ //############################################################################################
 !function (core, angular) {
     'use strict';
 
 
-    /** ################################################################################################
-     * @name core.lib.ng
+    //################################################################################################
+    /** Collection of Angular-based functionality.
      * @namespace ish.lib
-     * @desc Angular-based functionality.
-    ################################################################################################# */
+     * @ignore
+     */ //############################################################################################
     core.lib.ng = {
-        /** ################################################################################################
+        //################################################################################################
+        /** Loads a new Angular `require` into our app.
          * @name lazyLoad
          * @namespace ish.lib.ng
-         * @desc Loads a new Angular `require` into our app.
          * @param {string} sRequire - String specifying the Angular `require` to load into our app.
-        ################################################################################################# */
+         * @ignore
+         */ //############################################################################################
         lazyLoad: function (sRequire) {
             core.lib.ng.app.requires.push(sRequire);
         }, //# core.lib.ng.lazyLoad
 
 
-        /** ################################################################################################
+        //################################################################################################
+        /** Registers an Angular-based dependency injected require object via `ish.lib.ng`.
          * @name register
          * @namespace ish.lib.ng
-         * @desc Registers an Angular-based dependency injected require object via `ish.lib.ng`.
          * @param {string} sRequireName - String specifying the name of the Angular `require` object.
          * @param {varient} vRequire - Varient representing the Angular `require` object.
          * @returns {boolean} - Boolean value indicating if the required interface was successfully registered.
-        ################################################################################################# */
+         * @ignore
+         */ //############################################################################################
         register: function (oRequires) {
             var bReturnVal = core.type.obj.is(oRequires, { nonEmpty: true });
 
@@ -46,14 +49,15 @@
         }, //# core.lib.ng.register
 
 
-        /** ################################################################################################
+        //################################################################################################
+        /** Resolves a key within an Angular-based scope object, traversing upward through parent scopes until it is found.
          * @name resolve
          * @namespace ish.lib.ng
-         * @desc Resolves a key within an Angular-based scope object, traversing upward through parent scopes until it is found.
          * @param {object} $scope - Object representing the starting Angular scope.
          * @param {string} sKey - String representing the required key in the Angular scope.
          * @returns {varient} - Varient representing the resolved key's value.
-        ################################################################################################# */
+         * @ignore
+         */ //############################################################################################
         resolve: function ($scope, sKey) {
             var vReturnVal /* = undefined*/;
 
@@ -66,13 +70,14 @@
         }, //# core.lib.ng.register
 
 
-        /** ################################################################################################
+        //################################################################################################
+        /** Retrieves the Angular scope associated with the referenced DOM object.
          * @name scope
          * @namespace ish.lib.ng
-         * @desc Retrieves the Angular scope associated with the referenced DOM object.
          * @param {varient} vDom - Varient representing the DOM object.
          * @returns {object} - Object representing the DOM object's Angular scope.
-        ################################################################################################# */
+         * @ignore
+         */ //############################################################################################
         scope: function (vDom) {
             var _dom = core.type.dom.mk(vDom, null),
                 $returnVal /* = undefined*/
@@ -87,14 +92,15 @@
         }, //# core.lib.ng.scope
 
 
-        /** ################################################################################################
-         * Compiles the referenced DOM object using referenced the Angular scope.
+        //################################################################################################
+        /** Compiles the referenced DOM object using referenced the Angular scope.
          * @name compile
          * @namespace ish.lib.ng
          * @param {varient} vDom - Varient representing the DOM object.
          * @param {varient} [vScope] - Optional varient representing the DOM object under the required Angular scope.
          * @returns {object} - DOM object managed by Angular.
-        ################################################################################################# */
+         * @ignore
+         */ //############################################################################################
         compile: function (vDom, vScope) {
             var _dom = core.type.dom.mk(vDom, null),
                 $scope = core.lib.ng.scope(vScope || vDom),
@@ -111,12 +117,13 @@
         }, //# core.lib.ng.compile
 
 
-        /** ################################################################################################
+        //################################################################################################
+        /** Initilizes a new Angular app based on the passed options.
          * @name init
          * @namespace ish.lib.ng
-         * @desc Initilizes a new Angular app based on the passed options.
          * @param {object} [oOptions] - Object specifying the options used to configure the new Angular app.
-        ################################################################################################# */
+         * @ignore
+         */ //############################################################################################
         init: function (oOptions) {
             //# Collect our ngApp then .config and .run it
             var oSettings = core.extend({

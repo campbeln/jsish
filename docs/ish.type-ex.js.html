@@ -1,4 +1,49 @@
-//################################################################################################
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    
+    <meta charset="utf-8">
+    <title>ish.type-ex.js - Documentation</title>
+    
+    
+    <script src="scripts/prettify/prettify.js"></script>
+    <script src="scripts/prettify/lang-css.js"></script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc.css">
+    <script src="scripts/nav.js" defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+
+<input type="checkbox" id="nav-trigger" class="nav-trigger" />
+<label for="nav-trigger" class="navicon-button x">
+  <div class="navicon"></div>
+</label>
+
+<label for="nav-trigger" class="overlay"></label>
+
+<nav class="wrap">
+    
+    <input type="text" id="nav-search" placeholder="Search" />
+    
+    <h2><a href="index.html">Home</a></h2><h3>Namespaces</h3><ul><li><a href="ish.html">ish</a><ul class='methods'><li data-type='method'><a href="ish.html#.extend">extend</a></li><li data-type='method'><a href="ish.html#.resolve">resolve</a></li><li data-type='method'><a href="ish.html#.type!">type</a></li></ul></li><li><a href="ish.app.html">ish.app</a></li><li><a href="ish.config.html">ish.config</a><ul class='methods'><li data-type='method'><a href="ish.config.html#.!"> </a></li><li data-type='method'><a href="ish.config.html#.ish">ish</a></li><li data-type='method'><a href="ish.config.html#.require">require</a></li><li data-type='method'><a href="ish.config.html#.type:date">type.date <mixin title='From Mixin: ish.type.date-format.js'>[M]</mixin></a></li></ul></li><li><a href="ish.io.console.html">ish.io.console</a><ul class='methods'><li data-type='method'><a href="ish.io.console.html#.error">error</a></li><li data-type='method'><a href="ish.io.console.html#.log">log</a></li><li data-type='method'><a href="ish.io.console.html#.warn">warn</a></li></ul></li><li><a href="ish.io.event.html">ish.io.event</a><ul class='methods'><li data-type='method'><a href="ish.io.event.html#.fire">fire</a></li><li data-type='method'><a href="ish.io.event.html#.fired">fired</a></li><li data-type='method'><a href="ish.io.event.html#.registered">registered</a></li><li data-type='method'><a href="ish.io.event.html#.unregister">unregister</a></li><li data-type='method'><a href="ish.io.event.html#.unwatch">unwatch</a></li><li data-type='method'><a href="ish.io.event.html#.watch">watch</a></li></ul></li><li><a href="ish.lib.html">ish.lib</a></li><li><a href="ish.oop.html">ish.oop</a><ul class='methods'><li data-type='method'><a href="ish.oop.html#.partial">partial</a></li><li data-type='method'><a href="ish.oop.html#.protected">protected</a></li></ul></li><li><a href="ish.require.html">ish.require</a><ul class='methods'><li data-type='method'><a href="ish.require.html#.!"> </a></li><li data-type='method'><a href="ish.require.html#.css">css <client title='Client-side only'>[C]</client></a></li><li data-type='method'><a href="ish.require.html#.links">links <client title='Client-side only'>[C]</client></a></li><li data-type='method'><a href="ish.require.html#.modules">modules</a></li><li data-type='method'><a href="ish.require.html#.scripts">scripts</a></li></ul></li><li><a href="ish.type.arr.html">ish.type.arr</a><ul class='methods'><li data-type='method'><a href="ish.type.arr.html#.is">is</a></li><li data-type='method'><a href="ish.type.arr.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.arr.html#.of">of</a></li><li data-type='method'><a href="ish.type.arr.html#.rm">rm</a></li></ul></li><li><a href="ish.type.bool.html">ish.type.bool</a><ul class='methods'><li data-type='method'><a href="ish.type.bool.html#.is">is</a></li><li data-type='method'><a href="ish.type.bool.html#.mk">mk</a></li></ul></li><li><a href="ish.type.date.html">ish.type.date</a><ul class='methods'><li data-type='method'><a href="ish.type.date.html#.dayOfYear">dayOfYear <mixin title='From Mixin: ish.type.date-format.js'>[M]</mixin></a></li><li data-type='method'><a href="ish.type.date.html#.enums">enums <mixin title='From Mixin: ish.type.date-format.js'>[M]</mixin></a></li><li data-type='method'><a href="ish.type.date.html#.format">format <mixin title='From Mixin: ish.type.date-format.js'>[M]</mixin></a></li><li data-type='method'><a href="ish.type.date.html#.is">is</a></li><li data-type='method'><a href="ish.type.date.html#.isoLocalString">isoLocalString <mixin title='From Mixin: ish.type.date-format.js'>[M]</mixin></a></li><li data-type='method'><a href="ish.type.date.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.date.html#.timestamp">timestamp</a></li><li data-type='method'><a href="ish.type.date.html#.weekOfYear">weekOfYear <mixin title='From Mixin: ish.type.date-format.js'>[M]</mixin></a></li></ul></li><li><a href="ish.type.dom.html">ish.type.dom <client title='Client-side only'>[C]</client></a><ul class='methods'><li data-type='method'><a href="ish.type.dom.html#.is">is</a></li><li data-type='method'><a href="ish.type.dom.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.dom.html#.parse">parse</a></li></ul></li><li><a href="ish.type.float.html">ish.type.float</a><ul class='methods'><li data-type='method'><a href="ish.type.float.html#.is">is</a></li><li data-type='method'><a href="ish.type.float.html#.mk">mk</a></li></ul></li><li><a href="ish.type.fn.html">ish.type.fn</a><ul class='methods'><li data-type='method'><a href="ish.type.fn.html#.call">call</a></li><li data-type='method'><a href="ish.type.fn.html#.convert">convert</a></li><li data-type='method'><a href="ish.type.fn.html#.debounce">debounce</a></li><li data-type='method'><a href="ish.type.fn.html#.is">is</a></li><li data-type='method'><a href="ish.type.fn.html#.is:args">is.args</a></li><li data-type='method'><a href="ish.type.fn.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.fn.html#.noop">noop</a></li><li data-type='method'><a href="ish.type.fn.html#.once">once</a></li><li data-type='method'><a href="ish.type.fn.html#.poll">poll</a></li><li data-type='method'><a href="ish.type.fn.html#.poll:expBackoff">poll.expBackoff</a></li><li data-type='method'><a href="ish.type.fn.html#.run">run</a></li><li data-type='method'><a href="ish.type.fn.html#.throttle">throttle</a></li><li data-type='method'><a href="ish.type.fn.html#.tryCatch">tryCatch</a></li></ul></li><li><a href="ish.type.int.html">ish.type.int</a><ul class='methods'><li data-type='method'><a href="ish.type.int.html#.is">is</a></li><li data-type='method'><a href="ish.type.int.html#.mk">mk</a></li></ul></li><li><a href="ish.type.is.html">ish.type.is</a><ul class='methods'><li data-type='method'><a href="ish.type.is.html#.!"> </a></li><li data-type='method'><a href="ish.type.is.html#.collection">collection</a></li><li data-type='method'><a href="ish.type.is.html#.ish">ish</a></li><li data-type='method'><a href="ish.type.is.html#.ish:import">ish.import</a></li><li data-type='method'><a href="ish.type.is.html#.native">native</a></li><li data-type='method'><a href="ish.type.is.html#.numeric">numeric</a></li><li data-type='method'><a href="ish.type.is.html#.primitive">primitive</a></li><li data-type='method'><a href="ish.type.is.html#.value">value</a></li></ul></li><li><a href="ish.type.obj.html">ish.type.obj</a><ul class='methods'><li data-type='method'><a href="ish.type.obj.html#.get">get</a></li><li data-type='method'><a href="ish.type.obj.html#.mk">mk</a></li><li data-type='method'><a href="ish.type.obj.html#.ownKeys">ownKeys</a></li><li data-type='method'><a href="ish.type.obj.html#.rm">rm</a></li></ul></li><li><a href="ish.type.str.html">ish.type.str</a><ul class='methods'><li data-type='method'><a href="ish.type.str.html#.is">is</a></li><li data-type='method'><a href="ish.type.str.html#.is:json">is.json</a></li><li data-type='method'><a href="ish.type.str.html#.is:selector">is.selector <client title='Client-side only'>[C]</client></a></li><li data-type='method'><a href="ish.type.str.html#.mk">mk</a></li></ul></li><li><a href="ish.type.symbol.html">ish.type.symbol</a><ul class='methods'><li data-type='method'><a href="ish.type.symbol.html#.exists">exists</a></li><li data-type='method'><a href="ish.type.symbol.html#.is">is</a></li><li data-type='method'><a href="ish.type.symbol.html#.mk">mk</a></li></ul></li><li><a href="ish.ui.html">ish.ui <client title='Client-side only'>[C]</client></a><ul class='methods'><li data-type='method'><a href="ish.ui.html#.clearSelection">clearSelection</a></li><li data-type='method'><a href="ish.ui.html#.scrollTo">scrollTo</a></li></ul></li></ul><h3>Namespace Mixins</h3><ul><li><a href="ish.io.csv.html">ish.io.csv <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.io.csv.html#.parse">parse</a></li><li data-type='method'><a href="ish.io.csv.html#.stringify">stringify</a></li></ul></li><li><a href="ish.io.fs.html">ish.io.fs <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.io.fs.html#.save">save</a></li><li data-type='method'><a href="ish.io.fs.html#.upload">upload</a></li></ul></li><li><a href="ish.io.net.html">ish.io.net <mixin title='Mixin'>[M]</mixin></a></li><li></li><li><a href="ish.io.punycode.html">ish.io.punycode <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.io.punycode.html#.is">is</a></li><li data-type='method'><a href="ish.io.punycode.html#.parse">parse</a></li><li data-type='method'><a href="ish.io.punycode.html#.stringify">stringify</a></li></ul></li><li><a href="ish.io.web.html">ish.io.web <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.io.web.html#.cookie">cookie</a></li><li data-type='method'><a href="ish.io.web.html#.cookie:*:stringify">cookie.*.stringify</a></li><li data-type='method'><a href="ish.io.web.html#.queryString">queryString</a></li><li data-type='method'><a href="ish.io.web.html#.queryString:parse">queryString.parse</a></li><li data-type='method'><a href="ish.io.web.html#.queryString:stringify">queryString.stringify</a></li><li data-type='method'><a href="ish.io.web.html#.url">url</a></li></ul></li><li><a href="ish.io.xml.html">ish.io.xml <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.io.xml.html#.parse">parse</a></li><li data-type='method'><a href="ish.io.xml.html#.stringify">stringify</a></li></ul></li><li><a href="ish.oop.inherit.html">ish.oop.inherit <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.oop.inherit.html#.!"> </a></li><li data-type='method'><a href="ish.oop.inherit.html#.derivedFrom">derivedFrom</a></li><li data-type='method'><a href="ish.oop.inherit.html#.instanceOf">instanceOf</a></li><li data-type='method'><a href="ish.oop.inherit.html#.is">is</a></li></ul></li><li><a href="ish.oop.overload.html">ish.oop.overload <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.oop.overload.html#.!"> </a></li><li data-type='method'><a href="ish.oop.overload.html#.*:add">*.add</a></li><li data-type='method'><a href="ish.oop.overload.html#.*:default">*.default</a></li><li data-type='method'><a href="ish.oop.overload.html#.*:list">*.list</a></li><li data-type='method'><a href="ish.oop.overload.html#.is">is</a></li></ul></li><li><a href="ish.type.enum.html">ish.type.enum <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.type.enum.html#.!"> </a></li><li data-type='method'><a href="ish.type.enum.html#.decode">decode</a></li><li data-type='method'><a href="ish.type.enum.html#.encode">encode</a></li><li data-type='method'><a href="ish.type.enum.html#.exists">exists</a></li><li data-type='method'><a href="ish.type.enum.html#.interface">interface</a></li><li data-type='method'><a href="ish.type.enum.html#.is">is</a></li><li data-type='method'><a href="ish.type.enum.html#.is:label">is.label</a></li><li data-type='method'><a href="ish.type.enum.html#.is:value">is.value</a></li><li data-type='method'><a href="ish.type.enum.html#.load">load</a></li><li data-type='method'><a href="ish.type.enum.html#.mk">mk</a></li></ul></li><li></li><li></li><li><a href="ish.type.is.numeric.large.html">ish.type.is.numeric.large <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.type.is.numeric.large.html#.cmp">cmp</a></li><li data-type='method'><a href="ish.type.is.numeric.large.html#.precision">precision</a></li><li data-type='method'><a href="ish.type.is.numeric.large.html#.range">range</a></li></ul></li><li><a href="ish.type.obj.pojo.html">ish.type.obj.pojo <mixin title='Mixin'>[M]</mixin></a><ul class='methods'><li data-type='method'><a href="ish.type.obj.pojo.html#.!"> </a></li><li data-type='method'><a href="ish.type.obj.pojo.html#.check">check</a></li></ul></li></ul>
+    <div style="height: 30px;"></div> <!-- neek -->
+</nav>
+
+<div id="main">
+    
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>//################################################################################################
 /** @file Additional Type Functionality mixin for ish.js
  * @mixin ish.type
  * @author Nick Campbell
@@ -27,11 +72,11 @@
                 is: {
                     truthy: function (v) {
                         return (
-                            v !== 0 &&
-                            v !== "" &&
-                            v !== NaN &&
-                            v !== _null &&
-                            v !== false &&
+                            v !== 0 &amp;&amp;
+                            v !== "" &amp;&amp;
+                            v !== NaN &amp;&amp;
+                            v !== _null &amp;&amp;
+                            v !== false &amp;&amp;
                             v !== _undefined
                         );
                     }, //# type.is.truthy
@@ -40,7 +85,7 @@
                     numeric: {
                         /*
                         Function: eq
-                        Determines if the passed numeric values are equal (includes implicit casting per the Javascript rules, see: <core.type.int.mk>).
+                        Determines if the passed numeric values are equal (includes implicit casting per the Javascript rules, see: &lt;core.type.int.mk>).
                         Parameters:
                         s - The first numeric value to compare.
                         t - The second numeric value to compare.
@@ -51,7 +96,7 @@
                             var bReturnVal = false;
 
                             //# If the passed x and y .is.numeric, .mk them .floats and reset our bReturnVal to their comparison
-                            if (core.type.is.numeric(x) && core.type.is.numeric(y)) {
+                            if (core.type.is.numeric(x) &amp;&amp; core.type.is.numeric(y)) {
                                 bReturnVal = (core.type.float.mk(x) === core.type.float.mk(y));
                             }
 
@@ -60,7 +105,7 @@
 
                         /*
                         Function: cmp
-                        Determines the relationship between the passed numeric values (includes implicit casting per the Javascript rules, see: <core.type.int.mk>).
+                        Determines the relationship between the passed numeric values (includes implicit casting per the Javascript rules, see: &lt;core.type.int.mk>).
                         Parameters:
                         x - The first numeric value to compare.
                         y - The second numeric value to compare.
@@ -73,8 +118,8 @@
                                 dY = core.type.float.mk(y, _null)
                             ;
 
-                            if (core.type.is.numeric(dX) && core.type.is.numeric(dY)) {
-                                if (dX < dY) {
+                            if (core.type.is.numeric(dX) &amp;&amp; core.type.is.numeric(dY)) {
+                                if (dX &lt; dY) {
                                     iReturnVal = -1;
                                 }
                                 else if (dX > dY) {
@@ -106,7 +151,7 @@
 
                     //#
                     if (core.type.arr.is(a_vValues, true)) {
-                        for (i = 0; i < a_vValues.length; i++) {
+                        for (i = 0; i &lt; a_vValues.length; i++) {
                             if (fnTest(x, a_vValues[i])) {
                                 bReturnVal = true;
                                 break;
@@ -135,8 +180,8 @@
                         }
                         //# Else we'll consider the vCurrent oQuery value as singular
                         else {
-                            bReturnVal = (core.type.obj.is(oSource) &&
-                                (oOptions.useCoercion && vTestValue == vQueryValue) ||
+                            bReturnVal = (core.type.obj.is(oSource) &amp;&amp;
+                                (oOptions.useCoercion &amp;&amp; vTestValue == vQueryValue) ||
                                 (vTestValue === vQueryValue)
                             );
                         }
@@ -178,16 +223,16 @@
                         );
 
                         //# If we have a_oCollection and a vQuery
-                        if (core.type.arr.is(a_oCollection, true) && core.type.arr.is(a_sKeys, true)) {
+                        if (core.type.arr.is(a_oCollection, true) &amp;&amp; core.type.arr.is(a_sKeys, true)) {
                             //# If vQuery was an array
                             if (bExtract) {
-                                for (i = 0; i < a_oCollection.length; i++) {
+                                for (i = 0; i &lt; a_oCollection.length; i++) {
                                     //#
                                     if (a_sKeys.length > 1) {
                                         vCurrent = {};
                                         a_oReturnVal.push(vCurrent);
 
-                                        for (j = 0; j < a_sKeys.length; j++) {
+                                        for (j = 0; j &lt; a_sKeys.length; j++) {
                                             vCurrent[a_sKeys[j]] = core.resolve(a_oCollection[i], a_sKeys[j]);
                                         }
                                     }
@@ -200,15 +245,15 @@
                             //# Else vQuery was an object
                             else {
                                 //# Traverse our a_oCollection
-                                for (i = 0; i < a_oCollection.length; i++) {
+                                for (i = 0; i &lt; a_oCollection.length; i++) {
                                     //# Traverse our vQuery's a_sKeys, resetting bIsMatch and vCurrent for each loop
-                                    for (j = 0; j < a_sKeys.length; j++) {
+                                    for (j = 0; j &lt; a_sKeys.length; j++) {
                                         bIsMatch = false;
                                         vCurrent = vQuery[a_sKeys[j]];
 
                                         //# If we have an .is .arr of vQuery values to traverse, do so now
                                         if (core.type.arr.is(vCurrent)) {
-                                            for (k = 0; k < vCurrent.length; k++) {
+                                            for (k = 0; k &lt; vCurrent.length; k++) {
                                                 //# If the vCurrent value matches our current a_oCollection item, flip bIsMatch and fall from the inner loop
                                                 if (doQuery(a_sKeys[j], vCurrent[k], a_oCollection[i], oOptions)) {
                                                     bIsMatch = true;
@@ -222,7 +267,7 @@
                                         }
 
                                         //# If this is an AND-based vQuery and the vCurrent vQuery isn't an bIsMatch or this is an OR-based vQuery and we've already found our bIsMatch, fall from the middle loop
-                                        if ((!oOptions.or && !bIsMatch) || (oOptions.or && bIsMatch)) {
+                                        if ((!oOptions.or &amp;&amp; !bIsMatch) || (oOptions.or &amp;&amp; bIsMatch)) {
                                             break;
                                         }
                                     }
@@ -253,10 +298,10 @@
                     var fnReturnValue, d;
 
                     //# If _root.Uint8Array and _root.crypto are available, use them in our fnReturnValue
-                    if (core.type.fn.is(_root.Uint8Array) && core.type.fn.is(core.resolve(_root, "crypto.getRandomValues"))) {
+                    if (core.type.fn.is(_root.Uint8Array) &amp;&amp; core.type.fn.is(core.resolve(_root, "crypto.getRandomValues"))) {
                         fnReturnValue = function () {
                             return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
-                                return (c ^ _root.crypto.getRandomValues(new _root.Uint8Array(1))[0] & 15 >> c / 4).toString(16);
+                                return (c ^ _root.crypto.getRandomValues(new _root.Uint8Array(1))[0] &amp; 15 >> c / 4).toString(16);
                             });
                         };
                     }
@@ -269,7 +314,7 @@
                         return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
                             var r = (d + Math.random() * 16) % 16 | 0;
                             d = Math.floor(d / 16);
-                            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+                            return (c === 'x' ? r : (r &amp; 0x3 | 0x8)).toString(16);
                         });
 
                         /*
@@ -277,8 +322,8 @@
                             a_bLookupTable = []
                         ;
                         //# Pre-populate our a_bLookupTable
-                        for (i = 0; i < 256; i++) {
-                            a_bLookupTable[i] = (i < 16 ? '0' : '') + (i).toString(16);
+                        for (i = 0; i &lt; 256; i++) {
+                            a_bLookupTable[i] = (i &lt; 16 ? '0' : '') + (i).toString(16);
                         }
                         //# Set our fnReturnValue to the
                         //#     Based on code from: Jeff Ward, https://stackoverflow.com/a/21963136/235704
@@ -290,11 +335,11 @@
                                 d2 = (Math.random() + iPrefNow) * xffffffff | 0,
                                 d3 = (Math.random() + iPrefNow) * xffffffff | 0
                             ;
-                            return a_bLookupTable[d0&0xff] + a_bLookupTable[d0>>8&0xff] + a_bLookupTable[d0>>16&0xff] + a_bLookupTable[d0>>24&0xff] +
-                                '-' + a_bLookupTable[d1&0xff] + a_bLookupTable[d1>>8&0xff] +
-                                '-' + a_bLookupTable[d1>>16&0x0f|0x40] + a_bLookupTable[d1>>24&0xff] +
-                                '-' + a_bLookupTable[d2&0x3f|0x80] + a_bLookupTable[d2>>8&0xff] +
-                                '-' + a_bLookupTable[d2>>16&0xff] + a_bLookupTable[d2>>24&0xff] + a_bLookupTable[d3&0xff] + a_bLookupTable[d3>>8&0xff] + a_bLookupTable[d3>>16&0xff] + a_bLookupTable[d3>>24&0xff]
+                            return a_bLookupTable[d0&amp;0xff] + a_bLookupTable[d0>>8&amp;0xff] + a_bLookupTable[d0>>16&amp;0xff] + a_bLookupTable[d0>>24&amp;0xff] +
+                                '-' + a_bLookupTable[d1&amp;0xff] + a_bLookupTable[d1>>8&amp;0xff] +
+                                '-' + a_bLookupTable[d1>>16&amp;0x0f|0x40] + a_bLookupTable[d1>>24&amp;0xff] +
+                                '-' + a_bLookupTable[d2&amp;0x3f|0x80] + a_bLookupTable[d2>>8&amp;0xff] +
+                                '-' + a_bLookupTable[d2>>16&amp;0xff] + a_bLookupTable[d2>>24&amp;0xff] + a_bLookupTable[d3&amp;0xff] + a_bLookupTable[d3>>8&amp;0xff] + a_bLookupTable[d3>>16&amp;0xff] + a_bLookupTable[d3>>24&amp;0xff]
                             ;
                         };
                         */
@@ -321,9 +366,9 @@
                         var dDateX = core.type.date.mk(x, _null);
                         var dDateY = core.type.date.mk(y, _null);
 
-                        //#     NOTE: `new Date("1970/01/01") === new Date("1970/01/01")` is always false as they are 2 different objects, while <= && >= will give the expected result
+                        //#     NOTE: `new Date("1970/01/01") === new Date("1970/01/01")` is always false as they are 2 different objects, while &lt;= &amp;&amp; >= will give the expected result
                         //#     SEE: Comment from Jason Sebring @ http://stackoverflow.com/a/493018/235704
-                        return (core.type.date.is(dDateX) && core.type.date.is(dDateY) && dDateX <= dDateY && dDateX >= dDateY);
+                        return (core.type.date.is(dDateX) &amp;&amp; core.type.date.is(dDateY) &amp;&amp; dDateX &lt;= dDateY &amp;&amp; dDateX >= dDateY);
                     }, //# type.date.eq
 
 
@@ -339,12 +384,12 @@
                     cmp: function (x, y) {
                         var iReturnVal = _undefined,
                             dDateX = core.type.date.mk(x, _null),
-                            dDateY = (arguments.length < 2 ? new Date() : core.type.date.mk(y, _null))
+                            dDateY = (arguments.length &lt; 2 ? new Date() : core.type.date.mk(y, _null))
                         ;
 
                         //# If the passed dates are valid, determine dDateX's relationship to dNow
-                        if (core.type.date.is(dDateX) && core.type.date.is(dDateY)) {
-                            if (dDateX < dDateY) {
+                        if (core.type.date.is(dDateX) &amp;&amp; core.type.date.is(dDateY)) {
+                            if (dDateX &lt; dDateY) {
                                 iReturnVal = -1;
                             }
                             else if (dDateX > dDateY) {
@@ -448,14 +493,14 @@
                         //# If we are supposed to bLPad the passed s(tring)
                         if (bLPad) {
                             //# Left pad out this [string] while it's .length is less than the passed iLength
-                            while (sReturnVal.length < iLength) {
+                            while (sReturnVal.length &lt; iLength) {
                                 sReturnVal = sChar + sReturnVal;
                             }
                         }
                         //# Else we are supposed to RPad the passed s(tring)
                         else {
                             //# Left pad out this [string] while it's .length is less than the passed iLength
-                            while (sReturnVal.length < iLength) {
+                            while (sReturnVal.length &lt; iLength) {
                                 sReturnVal = sReturnVal + sChar;
                             }
                         }
@@ -479,7 +524,7 @@
                         }
 
                         //#
-                        for (i = 0; i < a_sCriteria.length; i++) {
+                        for (i = 0; i &lt; a_sCriteria.length; i++) {
                             a_sCriteria[i] = core.type.str.mk(a_sCriteria[i]);
                             iLocation = s.indexOf(bCaseInsensitive ? a_sCriteria[i].toLowerCase() : a_sCriteria[i]);
 
@@ -549,7 +594,7 @@
 
                                 //# If the passed y .is an .arr, traverse it, bReturnVal'ing on the first .compare hit
                                 if (core.type.arr.is(y)) {
-                                    for (i = 0; i < y.length; i++) {
+                                    for (i = 0; i &lt; y.length; i++) {
                                         bReturnVal = compare(x, y[i]);
                                         if (bReturnVal) {
                                             break;
@@ -608,7 +653,7 @@
 
                                     //# If the caller passed in a a_sQuery array with values, traverse it looking for the first truthy vReturnVal
                                     if (core.type.arr.is(a_sQuery, true)) {
-                                        for (i = 0; i < a_sQuery.length; i++) {
+                                        for (i = 0; i &lt; a_sQuery.length; i++) {
                                             vReturnVal = fnReturnVal(x, a_sQuery[i], bTrim);
                                             if (vReturnVal) {
                                                 break;
@@ -650,8 +695,8 @@
                             ;
 
                             return sReturnVal.substring(
-                                (iStart < 0 ? 0 : iStart),
-                                (iEnd < 0 ? 0 : iEnd)
+                                (iStart &lt; 0 ? 0 : iStart),
+                                (iEnd &lt; 0 ? 0 : iEnd)
                             );
                         }, //# type.str.sub
 
@@ -669,7 +714,7 @@
                                 reCurrentPattern = oOptions.pattern || rePattern;
 
                                 //#
-                                if (oOptions.start && oOptions.end) {
+                                if (oOptions.start &amp;&amp; oOptions.end) {
                                     reCurrentPattern = new RegExp(oOptions.start + "([^" + oOptions.start + "]+)" + oOptions.end, "g");
                                 }
 
@@ -707,7 +752,7 @@
                             //} catch (e) {
                                 //#
                                 if (a.length > 0) {
-                                    for (i = 0; i < a.length; i++) {
+                                    for (i = 0; i &lt; a.length; i++) {
                                         sEval += "a[" + i + "],";
                                     }
                                     sEval = sEval.substr(0, sEval.length - 1);
@@ -753,7 +798,7 @@
                     cmp: function (x, y, bInOrderOnly) {
                         var a_vYClone, iIndex, i,
                             vReturnVal = (
-                                core.type.arr.is(x) && core.type.arr.is(y) &&
+                                core.type.arr.is(x) &amp;&amp; core.type.arr.is(y) &amp;&amp;
                                 x.length === y.length
                             ),
                             iLen = (vReturnVal ? x.length : 0)
@@ -762,7 +807,7 @@
                         //# If the passed x and y .is .arr and both have the same iLen
                         if (vReturnVal) {
                             //# Traverse the passed arrays, flipping our vReturnVal if an index isn't === or ==
-                            for (i = 0; i < iLen; i++) {
+                            for (i = 0; i &lt; iLen; i++) {
                                 if (x[i] !== y[i]) {
                                     if (x[i] == y[i]) {
                                         vReturnVal = 1;
@@ -781,7 +826,7 @@
                                 a_vYClone = y.slice(0);
 
                                 //# Traverse x, determining the iIndex in a_vYClone as we go
-                                for (i = 0; i < iLen; i++) {
+                                for (i = 0; i &lt; iLen; i++) {
                                     iIndex = a_vYClone.indexOf(x[i]);
 
                                     //# If we could not find the current iIndex, flip our vReturnVal and fall from the loop
@@ -815,7 +860,7 @@
                                 a_vReturnVal = [];
 
                                 //#
-                                for (i = 0; i < a.length; i++) {
+                                for (i = 0; i &lt; a.length; i++) {
                                     vCurrent = a[i];
 
                                     if (core.type.arr.is(vCurrent)) {
@@ -853,12 +898,12 @@
                         if (core.type.arr.is(a_vArray)) {
                             if (core.type.arr.is(a_vArray2)) {
                                 return a_vArray.filter(function (v) {
-                                    return (a_vArray2.indexOf(v) === -1 && (!bCaseInsensitive || a_vArray2.indexOf((v + "").toLowerCase()) === -1));
+                                    return (a_vArray2.indexOf(v) === -1 &amp;&amp; (!bCaseInsensitive || a_vArray2.indexOf((v + "").toLowerCase()) === -1));
                                 });
                             }
                             else {
                                 return a_vArray.reduce(function (acc, v) {
-                                    if (acc.indexOf(v) === -1 && (!bCaseInsensitive || acc.indexOf((v + "").toLowerCase()) === -1)) {
+                                    if (acc.indexOf(v) === -1 &amp;&amp; (!bCaseInsensitive || acc.indexOf((v + "").toLowerCase()) === -1)) {
                                         acc.push(v);
                                     }
                                     return acc;
@@ -868,7 +913,7 @@
                     }, //# type.arr.unique
 
                     matches: function (a_vArray, a_vArray2) {
-                        if (core.type.arr.is(a_vArray) && core.type.arr.is(a_vArray2)) {
+                        if (core.type.arr.is(a_vArray) &amp;&amp; core.type.arr.is(a_vArray2)) {
                             return a_vArray.filter(function (v) {
                                 return a_vArray2.indexOf(v) !== -1;
                             });
@@ -894,12 +939,12 @@
                     */
                     of: function (a, fnTest) {
                         var i,
-                            bReturnVal = (core.type.arr.is(a, true) && core.type.fn.is(fnTest))
+                            bReturnVal = (core.type.arr.is(a, true) &amp;&amp; core.type.fn.is(fnTest))
                         ;
 
                         //# If the arguments are properly recognized traverse the passed a(rray), fnTest'ing each current value as we go (flipping our bReturnVal and falling from the loop on a failure)
                         if (bReturnVal) {
-                            for (i = 0; i < a.length; i++) {
+                            for (i = 0; i &lt; a.length; i++) {
                                 if (!fnTest(a[i])) {
                                     bReturnVal = false;
                                     break;
@@ -916,7 +961,7 @@
                         //#
                         if (core.type.arr.is(a_oObj)) {
                             o_vReturnVal = [];
-                            for (i = 0; i < a_oObj.length; i++) {
+                            for (i = 0; i &lt; a_oObj.length; i++) {
                                 o_vReturnVal.push(core.resolve(a_oObj, vPath));
                             }
                         }
@@ -944,7 +989,7 @@
                             a.replace(/(\d+)|(\D+)/g, function(_, $1, $2) { ax.push([$1 || Infinity, $2 || ""]); });
                             b.replace(/(\d+)|(\D+)/g, function(_, $1, $2) { bx.push([$1 || Infinity, $2 || ""]); });
 
-                            while (ax.length && bx.length) {
+                            while (ax.length &amp;&amp; bx.length) {
                                 an = ax.shift();
                                 bn = bx.shift();
                                 nn = (an[0] - bn[0]) || an[1].localeCompare(bn[1]);
@@ -974,7 +1019,7 @@
 
                                     return (
                                         vA > vB ? (bReverse ? -1 : 1) :
-                                        vA < vB ? (bReverse ? 1 : -1) :
+                                        vA &lt; vB ? (bReverse ? 1 : -1) :
                                         0
                                     );
                                 })
@@ -1007,7 +1052,7 @@
                             oReturnVal = {}
                         ;
 
-                        for (i = 0; i < a_sOwnKeys.length; i++) {
+                        for (i = 0; i &lt; a_sOwnKeys.length; i++) {
                             sKey = a_sOwnKeys[i];
                             oReturnVal[oFromTo[sKey]] = oSource[sKey];
                         }
@@ -1027,20 +1072,20 @@
                         fnCompares.push(
                             oOptions.caseInsensitive ? (
                                 oOptions.trim ?
-                                function (vSource, vCompare) { return core.type.str.is(vSource) && core.type.str.cmp(vSource, vCompare); } :
-                                function (vSource, vCompare) { return core.type.str.is(vSource) && core.type.str.ep(vSource, vCompare, true); }
+                                function (vSource, vCompare) { return core.type.str.is(vSource) &amp;&amp; core.type.str.cmp(vSource, vCompare); } :
+                                function (vSource, vCompare) { return core.type.str.is(vSource) &amp;&amp; core.type.str.ep(vSource, vCompare, true); }
                             ) : (
                                 oOptions.trim ?
-                                function (vSource, vCompare) { return core.type.str.is(vSource) && core.type.str.mk(vSource).trim() === core.type.str.mk(vCompare).trim(); } :
-                                function (vSource, vCompare) { return core.type.str.is(vSource) && core.type.str.mk(vSource) === core.type.str.mk(vCompare); }
+                                function (vSource, vCompare) { return core.type.str.is(vSource) &amp;&amp; core.type.str.mk(vSource).trim() === core.type.str.mk(vCompare).trim(); } :
+                                function (vSource, vCompare) { return core.type.str.is(vSource) &amp;&amp; core.type.str.mk(vSource) === core.type.str.mk(vCompare); }
                             )
                         );
 
                         //# If we are still to recurse, setup the fnCompares to do so
-                        if (core.type.int.is(oOptions.maxDepth) && oOptions.maxDepth !== 0) {
+                        if (core.type.int.is(oOptions.maxDepth) &amp;&amp; oOptions.maxDepth !== 0) {
                             fnCompares.push(
                                 function (vSource, vCompare) {
-                                    return core.type.obj.is(vSource) &&
+                                    return core.type.obj.is(vSource) &amp;&amp;
                                         core.type.obj.eq(vSource, vCompare, core.extend({}, oOptions, { maxDepth: oOptions.maxDepth - 1 }))
                                     ;
                                 }
@@ -1059,7 +1104,7 @@
                             ;
 
                             //#
-                            for (i = 0; i < fnCompares.length; i++) {
+                            for (i = 0; i &lt; fnCompares.length; i++) {
                                 if (fnCompares[i](vSource, vCompare)) {
                                     bReturnVal = true;
                                     break;
@@ -1093,7 +1138,7 @@
                                 bReturnVal = true;
 
                                 //#
-                                for (i = 0; i < a_sSourceKeys.length; i++) {
+                                for (i = 0; i &lt; a_sSourceKeys.length; i++) {
                                     if (!fnCompare(oSource[a_sSourceKeys[i]], oCompare[a_sSourceKeys[i]])) {
                                         bReturnVal = false;
                                         break;
@@ -1152,7 +1197,7 @@
                                 //#
                                 if (a_sOwnKeys) {
                                     //# Traverse a_sOwnKeys, setting each into our (flat) oFromTo definition
-                                    for (i = 0; i < a_sOwnKeys.length; i++) {
+                                    for (i = 0; i &lt; a_sOwnKeys.length; i++) {
                                         oFromTo[a_sOwnKeys[i]] = a_sOwnKeys[i];
                                     }
                                 }
@@ -1165,7 +1210,7 @@
                                     vReturnVal = [];
 
                                     //# Traverse the vSource, .push'ing each .doCopy into our vReturnVal
-                                    for (i = 0; i < vSource.length; i++) {
+                                    for (i = 0; i &lt; vSource.length; i++) {
                                         vReturnVal.push(doCopy(vSource[i], oFromTo, a_sOwnKeys));
                                     }
                                 }
@@ -1188,7 +1233,7 @@
                             //# If the passed oSource .is .obj, traverse its a_sKeys and setup our a_vReturnVal
                             if (a_sKeys) {
                                 a_vReturnVal = [];
-                                for (i = 0; i < a_sKeys.length; i++) {
+                                for (i = 0; i &lt; a_sKeys.length; i++) {
                                     //#
                                     if (oSource.hasOwnProperty(a_sKeys[i])) {
                                         a_vReturnVal.push(oSource[a_sKeys[i]]);
@@ -1213,7 +1258,7 @@
 
                             //#
                             if (a_sOwnKeys) {
-                                for (i = 0; i < a_sOwnKeys.length - 1; i++) {
+                                for (i = 0; i &lt; a_sOwnKeys.length - 1; i++) {
                                     sReturnVal += oSource[a_sOwnKeys[i]] + sDelimiter;
                                 }
                                 sReturnVal += oSource[a_sOwnKeys[i]];
@@ -1238,14 +1283,14 @@
                         has: function (vSource, vKeys, bKeysArePaths) {
                             var i,
                                 a_sKeys = (core.type.arr.is(vKeys) ? vKeys : [vKeys]),
-                                bReturnVal = (vSource && core.type.fn.is(vSource.hasOwnProperty))
+                                bReturnVal = (vSource &amp;&amp; core.type.fn.is(vSource.hasOwnProperty))
                             ;
 
                             //# If the vSource is valid
                             if (bReturnVal) {
                                 //# If the bKeysArePaths traverse the a_sKeys accordingly
                                 if (bKeysArePaths) {
-                                    for (i = 0; i < a_sKeys.length; i++) {
+                                    for (i = 0; i &lt; a_sKeys.length; i++) {
                                         //# If the current a_sKeys doesn't .existed in vSource, unflip our bReturnVal and fall from the loop
                                         if (!core.resolve(core.resolve.returnMetadata, vSource, a_sKeys[i]).existed) {
                                             bReturnVal = false;
@@ -1255,7 +1300,7 @@
                                 }
                                 //# Else we just have to traverse the a_sKeys as-is
                                 else {
-                                    for (i = 0; i < a_sKeys.length; i++) {
+                                    for (i = 0; i &lt; a_sKeys.length; i++) {
                                         //# If this a_sKeys isn't a .hasOwnProperty of vSource, unflip our bReturnVal and fall from the loop
                                         if (!vSource.hasOwnProperty(a_sKeys[i])) {
                                             bReturnVal = false;
@@ -1279,10 +1324,10 @@
                             a_sAddlKeysToPrune = core.type.arr.mk(a_sAddlKeysToPrune);
 
                             //#
-                            for (i = 0; i < a_sOwnKeys.length; i++) {
+                            for (i = 0; i &lt; a_sOwnKeys.length; i++) {
                                 sCurrentKey = a_sOwnKeys[i];
 
-                                if (o[sCurrentKey] !== _undefined && a_sAddlKeysToPrune.indexOf(sCurrentKey) === -1) {
+                                if (o[sCurrentKey] !== _undefined &amp;&amp; a_sAddlKeysToPrune.indexOf(sCurrentKey) === -1) {
                                     oReturnVal[sCurrentKey] = o[sCurrentKey];
                                 }
                             }
@@ -1299,7 +1344,7 @@
                             ;
 
                             //# If we have a_sSourceKeys and a_sCompareKeys (which also determines that the passed oSource and oCompare .is .obj)
-                            if (core.type.arr.is(a_sSourceKeys) && core.type.arr.is(a_sCompareKeys)) {
+                            if (core.type.arr.is(a_sSourceKeys) &amp;&amp; core.type.arr.is(a_sCompareKeys)) {
                                 //# Set the defaults for the passed oOptions (forcing it into an .is .obj as we go) then calculate our fnCompare
                                 oOptions = core.extend({
                                     //compare: core.type.fn.noop,
@@ -1315,7 +1360,7 @@
                                 //# If we are to find .caseInsensitiveKeys, use core.type.obj.get to resolve each a_sSourceKeys
                                 if (oOptions.caseInsensitiveKeys) {
                                     //# Traverse the a_sSourceKeys, fnCompare'ing the passed oSource to the oCompare (loading any mismatches into our oReturnVal) as we go
-                                    for (i = 0; i < a_sSourceKeys.length; i++) {
+                                    for (i = 0; i &lt; a_sSourceKeys.length; i++) {
                                         if (!fnCompare(core.type.obj.get(oSource, a_sSourceKeys[i]), core.type.obj.get(oCompare, a_sSourceKeys[i]))) {
                                             oReturnVal[a_sSourceKeys[i]] = oCompare[a_sSourceKeys[i]];
                                         }
@@ -1327,7 +1372,7 @@
                                 //# Else the a_sSourceKeys are case sensitive, so resolve each a_sSourceKeys normally
                                 else {
                                     //# Traverse the a_sSourceKeys, fnCompare'ing the passed oSource to the oCompare (loading any mismatches into our oReturnVal) as we go
-                                    for (i = 0; i < a_sSourceKeys.length; i++) {
+                                    for (i = 0; i &lt; a_sSourceKeys.length; i++) {
                                         if (!fnCompare(oSource[a_sSourceKeys[i]], oCompare[a_sSourceKeys[i]])) {
                                             oReturnVal[a_sSourceKeys[i]] = oCompare[a_sSourceKeys[i]];
                                         }
@@ -1339,7 +1384,7 @@
 
                                 //# If we are to .includeMissingKeys, traverse any remaining a_sCompareKeys and set them into our oReturnVal
                                 if (oOptions.includeMissingKeys) {
-                                    for (i = 0; i < a_sCompareKeys.length; i++) {
+                                    for (i = 0; i &lt; a_sCompareKeys.length; i++) {
                                         oReturnVal[a_sCompareKeys[i]] = oCompare[a_sCompareKeys[i]];
                                     }
                                 }
@@ -1355,8 +1400,8 @@
                             ;
 
                             //# If the caller passed in valid arguments, traverse the a_vPaths
-                            if (core.type.obj.is(oObject) && core.type.arr.is(a_vPaths, true)) {
-                                for (i = 0; i < a_vPaths.length; i++) {
+                            if (core.type.obj.is(oObject) &amp;&amp; core.type.arr.is(a_vPaths, true)) {
+                                for (i = 0; i &lt; a_vPaths.length; i++) {
                                     //# .resolve the current a_vPaths, .returnMetadata'ing into oResolved
                                     oResolved = core.resolve(core.resolve.returnMetadata, oObject, a_vPaths[i]);
 
@@ -1388,7 +1433,7 @@
                         var i,
                             _parent = core.type.dom.mk(vDomParent, null),
                             _domToAdd = core.type.dom.mk(vDomToAdd, null),
-                            bReturnVal = !!(_parent && vDomToAdd)
+                            bReturnVal = !!(_parent &amp;&amp; vDomToAdd)
                         ;
 
                         //# If we have a _parent and _domToAdd, bPrepend or .appendChild it
@@ -1398,14 +1443,14 @@
                                 if (bPrepend) {
                                     for (i = vDomToAdd.length; i > 0; i--) {
                                         _domToAdd = core.type.dom.mk(vDomToAdd[i], null);
-                                        _domToAdd && _parent.insertBefore(_domToAdd, _parent.childNodes[0]);
+                                        _domToAdd &amp;&amp; _parent.insertBefore(_domToAdd, _parent.childNodes[0]);
                                     }
                                 }
                                 //#
                                 else {
-                                    for (i = 0; i < vDomToAdd.length; i++) {
+                                    for (i = 0; i &lt; vDomToAdd.length; i++) {
                                         _domToAdd = core.type.dom.mk(vDomToAdd[i], null);
-                                        _domToAdd && _parent.appendChild(_domToAdd);
+                                        _domToAdd &amp;&amp; _parent.appendChild(_domToAdd);
                                     }
                                 }
                             }
@@ -1426,7 +1471,7 @@
                         // cmp:
 
                         cp: function (x, bDeepCopy) {
-                            if (core.type.dom.is(x) && core.type.fn.is(x.cloneNode)) {
+                            if (core.type.dom.is(x) &amp;&amp; core.type.fn.is(x.cloneNode)) {
                                 return x.cloneNode(core.type.bool.mk(bDeepCopy));
                             }
                         }, //# type.dom.cp
@@ -1442,7 +1487,7 @@
                         replace: function (vTarget, vReplacement) {
                             var _target = core.type.dom.mk(vTarget, null),
                                 _replacement = (vReplacement ? core.type.dom.parse(vReplacement)[0] : null), //# TODO: add looping
-                                bReturnVal = !!(_target && _target.parentNode)
+                                bReturnVal = !!(_target &amp;&amp; _target.parentNode)
                             ;
 
                             //# If the _target and _replacement are valid, .replaceChild now
@@ -1481,11 +1526,11 @@
 
     //# If we are running server-side
     //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
-    if (typeof module === 'object' && module.exports) { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
+    if (typeof module === 'object' &amp;&amp; module.exports) { //if (typeof module !== 'undefined' &amp;&amp; this.module !== module &amp;&amp; module.exports) {
         module.exports = init;
     }
     //# Else if we are running in an .amd environment, register as an anonymous module
-    else if (typeof define === 'function' && define.amd) {
+    else if (typeof define === 'function' &amp;&amp; define.amd) {
         define([], init);
     }
     //# Else we are running in the browser, so we need to setup the _document-based features
@@ -1493,3 +1538,30 @@
         init(document.querySelector("SCRIPT[ish]").ish);
     }
 }();
+</code></pre>
+        </article>
+    </section>
+
+
+
+
+    
+    
+</div>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Mon, 11 Nov 2019 08:15:16 GMT using the <a href="https://github.com/clenemt/docdash">docdash</a> theme and tested with <a href="https://www.chaijs.com/api/assert/">Chai.Assert</a>.
+</footer>
+
+<script>prettyPrint();</script>
+<script src="scripts/polyfill.js"></script>
+<script src="scripts/linenumber.js"></script>
+
+<script src="scripts/search.js" defer></script>
+
+
+
+</body>
+</html>

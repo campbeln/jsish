@@ -1,5 +1,5 @@
 //################################################################################################
-/** @file CSV mixin for ishJS
+/** @file CSV mixin for ish.js
  * @mixin ish.io.csv
  * @author Nick Campbell
  * @license MIT

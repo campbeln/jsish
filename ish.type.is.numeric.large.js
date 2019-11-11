@@ -1,5 +1,5 @@
 //################################################################################################
-/** @file Long Number mixin for ishJS
+/** @file Long Number mixin for ish.js
  * @mixin ish.type.is.numeric.large
  * @author Nick Campbell
  * @license MIT

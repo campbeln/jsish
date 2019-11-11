@@ -1,5 +1,5 @@
 //################################################################################################
-/** @file Browser-based File System mixin for ishJS
+/** @file Browser-based File System mixin for ish.js
  * @mixin ish.io.fs
  * @author Nick Campbell
  * @license MIT

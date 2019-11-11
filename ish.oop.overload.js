@@ -1,5 +1,5 @@
 //################################################################################################
-/** @file OOP Dynamic Polymorphism (Function Overloading) mixin for ishJS
+/** @file OOP Dynamic Polymorphism (Function Overloading) mixin for ish.js
  * @mixin ish.oop.overload
  * @author Nick Campbell
  * @license MIT
