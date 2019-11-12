@@ -118,11 +118,43 @@
                             var oModel,
                                 fnCookies = fnIsomorphic(oOptions),
                                 $returnValue = {
-                                    name: sName,
-                                    original: _undefined,
                                     //options: oOptions,
+
+                                    //#########
+                                    /** Represents the cookie's name.
+                                     * @function ish.io.web.cookie:*:name
+                                     * @$asProperty
+                                     * @returns {string} Value representing the cookie's name.
+                                     */ //#####
+                                    name: sName,
+
+
+                                    //#########
+                                    /** Represents the cookie's original data.
+                                     * @function ish.io.web.cookie:*:original
+                                     * @$asProperty
+                                     * @returns {object} Value representing the cookie's original data.
+                                     */ //#####
+                                    original: _undefined,
+
+
+                                    //#########
+                                    /** Represents the cookie's data.
+                                     * @function ish.io.web.cookie:*:data
+                                     * @$asProperty
+                                     * @returns {object} Value representing the cookie's data.
+                                     */ //#####
                                     data: _undefined,
+
+
+                                    //#########
+                                    /** Indicates if the cookie wasn't previously present in the browser's collection.
+                                     * @function ish.io.web.cookie:*:isNew
+                                     * @$asProperty
+                                     * @returns {object} Value representing if the cookie wasn't previously present in the browser's collection.
+                                     */ //#####
                                     isNew: true,
+
 
                                     //#########
                                     /** Converts the cookie data into a JSON string.
@@ -133,6 +165,11 @@
                                         return JSON.stringify($returnValue.data);
                                     }, //# stringify
 
+
+                                    //#########
+                                    /** Sets the cookie into the browser's collection.
+                                     * @function ish.io.web.cookie:*:set
+                                     */ //#####
                                     set: function () {
                                         var dExpires, sDomain, sPath, iMaxAge;
 
@@ -160,11 +197,15 @@
                                         $returnValue.isNew = false;
                                     }, //# set
 
+
+                                    //#########
+                                    /** Removes the cookie from the browser's collection.
+                                     * @function ish.io.web.cookie:*:rm
+                                     */ //#####
                                     rm: function () {
                                         //# Set the max-age and path and toss it into the .cookie collection
                                         //$returnValue.data = _undefined;
                                         fnCookies.set(sName, "; expires=Thu, 01 Jan 1970 00:00:01 GMT;" + " path=" + oOptions.path + "; ");
-                                        return true;
                                     } //# rm
                                 }
                             ;

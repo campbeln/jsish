@@ -77,6 +77,9 @@ type.is.numeric.precision => type.is.numeric.large.precision
 type.is.numeric.compare => type.is.numeric.large.compare
 ===
 io.web.cookie.str => io.web.cookie.stringify
+ish.type.str.cmp.any => ish.type.str.cmp
+ish.type.str.cmp.starts => ish.type.str.begins
+ish.type.str.cmp.ends => ish.type.str.cmp.ends
 */
 
 

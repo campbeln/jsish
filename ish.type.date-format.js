@@ -135,7 +135,6 @@
                 //#########
                 /** Enumerations for Days (<code>ish.type.date.enum.days</code>) and Week of Year (<code>ish.type.date.enum.weekOfYear</code>).
                  * @function ish.type.date.enums
-                 * @$partialMixin true
                  */ //#####
                 enums: {
                     days: enumDays,
@@ -150,7 +149,6 @@
                 //#########
                 /** Formats the passed value based on the passed format.
                  * @function ish.type.date.format
-                 * @$partialMixin true
                  * @$note The date format is specified using the following values:
                  * <ul>
                  *  <li><code>D</code>: Day of Month as number</li><li><code>DD</code>: Day of Month as 2-digit number (zero-padded)</li><li><code>S</code>: Day of Month's One's Place Suffix (e.g. <code>st</code>, <code>nd</code>, <code>rd</code>, <code>th</code>).</li>
@@ -296,7 +294,6 @@
                 //#########
                 /** Formats the passed value in ISO 8601 format with the local timezone offset.
                  * @function ish.type.date.isoLocalString
-                 * @$partialMixin true
                  * @param {variant} vDateTime Value to interrogate.
                  * @returns {string} Value representing the passed value in ISO 8601 format with the local timezone offset.
                  * @see {@link https://stackoverflow.com/a/17415677/235704|StackOverflow.com}
@@ -323,7 +320,6 @@
                 //#########
                 /** Determines the day of the year of the passed value.
                  * @function ish.type.date.dayOfYear
-                 * @$partialMixin true
                  * @param {variant} vDateTime Value to interrogate.
                  * @returns {string} Value representing the day of the year of the passed value.
                  */ //#####
@@ -346,7 +342,6 @@
                 //#########
                 /** Determines the week of the year of the passed value.
                  * @function ish.type.date.weekOfYear
-                 * @$partialMixin true
                  * @param {variant} vDateTime Value to interrogate.
                  * @returns {string} Value representing the week of the year of the passed value.
                  */ //#####
@@ -407,7 +402,6 @@
             //#########
             /** <code>ish.type.date</code> configuration values.
              * @function ish.config.type:date
-             * @$partialMixin true
              * @param {object} [oOptions] Value representing the updated configuration values.
              * @returns {object} Value representing <code>ish.type.date</code>'s configuration values.
              */ //#####

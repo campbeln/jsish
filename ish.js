@@ -95,8 +95,6 @@
     //################################################################################################
     /** Collection of Type-based functionality (<code>is</code> and <code>mk</code> only)
      * @namespace ish.type
-     * @see {@link ish.type!}
-     * @ignore
      */ //############################################################################################
     core.type = function () {
         //# Thanks to Symbol()s not wanting to be casted to strings or numbers (i.e. parseFloat, regexp.test, new Date), we need to wrap the test below for the benefit of ish.type()
@@ -111,7 +109,7 @@
 
         //#########
         /** Determines the type of the passed value.
-         * @function ish.type!
+         * @function ish.type.!
          * @param {variant} x Value to interrogate.
          * @param {variant[]} [a_vOrder=ish.config.ish().typeOrder] Type ordering to use during interrogation.
          * @returns {function} Value indicating the type of the passed value.
@@ -2459,7 +2457,7 @@
                      * @param {string|string[]} vUrls Value representing the URL(s) of the functionality to include.
                      * @param {object} [oOptions] Value representing the following options:
                      *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.
-                     *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing  the function to be called when the DOM element is added; <code>oOptions.onAppend(_dom, sUrl)</code>.
+                     *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing the function to be called when the DOM element is added; <code>oOptions.onAppend(_dom, sUrl)</code>.
                      *      @param {boolean} [oOptions.onError=undefined] Value representing the function to be called when an error occurs; <code>oOptions.onError(_dom, sUrl)</code>.
                      *      @param {boolean} [oOptions.waitSeconds=7] Value representing the maximum number of seconds to wait before an error is returned.
                      *      @param {boolean} [oOptions.baseUrl=""] Value representing the base URL to prepend on the <code>src</code> attribute (must end with <code>/</code>).
@@ -2603,7 +2601,7 @@
                         //#########
                         /** Includes link-based functionality into the current context.
                          * @function ish.require.links
-                         * @$clientsideonly true
+                         * @$clientsideonly
                          * @param {string|string[]} vUrls Value representing the URL(s) of the functionality to include.
                          * @param {object} [oOptions] Value representing the following options:
                          *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.
@@ -2666,7 +2664,7 @@
                         //#########
                         /** Includes CSS-based functionality into the current context.
                          * @function ish.require.css
-                         * @$clientsideonly true
+                         * @$clientsideonly
                          * @param {string|string[]} vUrls Value representing the URL(s) of the functionality to include.
                          * @param {object} [oOptions] Value representing the following options:
                          *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.
@@ -2907,7 +2905,7 @@
             //#########
             /** Determines if the passed value is a valid CSS selector.
              * @function ish.type.str.is:selector
-             * @$clientsideonly true
+             * @$clientsideonly
              * @param {variant} x Value to interrogate.
              * @returns {boolean} Value representing if the passed value is a valid CSS selector.
              * @see {@link https://stackoverflow.com/a/42149818/235704|Based on this example}
@@ -2932,7 +2930,7 @@
             //#########
             /** Document Object Model-based type functionality.
              * @namespace ish.type.dom
-             * @$clientsideonly true
+             * @$clientsideonly
              */ //#####
             core.type.dom = function () {
                 var a_oWrapMap = {
@@ -3122,7 +3120,7 @@
             //################################################################################################
             /** Collection of UI-based functionality.
              * @namespace ish.ui
-             * @$clientsideonly true
+             * @$clientsideonly
              */ //############################################################################################
             core.ui = {
                 //#########
