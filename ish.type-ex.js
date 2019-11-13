@@ -1207,7 +1207,7 @@
 
                         //#
                         clone: function (vSource, vKeysOrFromTo) {
-                            var a_sOwnKeys, i,
+                            var i, a_sOwnKeys,
                                 oFromTo = {},
                                 vReturnVal /*= undefined*/
                             ;
@@ -1217,8 +1217,27 @@
                                 vKeysOrFromTo = [vKeysOrFromTo];
                             }
 
+                            /*
+                            //# If the caller passed in an .is .arr of keys, set it into our a_sOwnKeys
+                            //#     NOTE: `core.type.obj.is` returns true for arrays, so this test must come first
+                            if (core.type.arr.is(vKeysOrFromTo)) {
+                                a_sOwnKeys = vKeysOrFromTo;
+                                oFromTo = {};
+
+                                //# Traverse a_sOwnKeys, setting each into our (flat) oFromTo definition
+                                for (i = 0; i < a_sOwnKeys.length; i++) {
+                                    oFromTo[a_sOwnKeys[i]] = a_sOwnKeys[i];
+                                }
+                            }
+                            //# Else if the caller passed in a mapping .is .obj, set it into our oFromTo definition and collect a_sOwnKeys
+                            else if (core.type.obj.is(vKeysOrFromTo)) {
+                                oFromTo = vKeysOrFromTo;
+                                a_sOwnKeys = core.type.obj.ownKeys(oFromTo);
+                            }
+                            */
+
                             //# If the caller passed in a mapping .is .obj, set it into our oFromTo definition and collect a_sOwnKeys
-                            if (core.type.obj.is(vKeysOrFromTo)) {
+                            if (core.type.obj.is(vKeysOrFromTo, { strict: true })) {
                                 oFromTo = vKeysOrFromTo;
                                 a_sOwnKeys = core.type.obj.ownKeys(oFromTo);
                             }
