@@ -359,13 +359,13 @@
                     /** Compares the passed value to the reference value, determining if it is greater then, less then or equal.
                      * @$note The passed values are implicitly casted per <code>{@link ish.type.date.mk}</code>.
                      * @function ish.type.date.cmp
-                     * @param {variant} vDate Value representing the date to compare.
+                     * @param {variant} x Value representing the date to compare.
                      * @param {variant} [vRelativeTo=new Date()] Value representing the relative date to compare to.
                      * @returns {integer} Value representing if the passed value is greater then (<code>1</code>), less then (<code>-1</code>) or equal to (<code>0</code>) the passed relative value with <code>undefined</code> indicating one of the passed values was not a reconized date.
                      */ //#####
-                    cmp: function (vDate, vRelativeTo) {
+                    cmp: function (x, vRelativeTo) {
                         var iReturnVal = _undefined,
-                            dDateX = core.type.date.mk(vDate, _null),
+                            dDateX = core.type.date.mk(x, _null),
                             dDateY = (arguments.length < 2 ? new Date() : core.type.date.mk(vRelativeTo, _null))
                         ;
 
@@ -390,12 +390,12 @@
                     /** Copies the passed value into a new instance.
                      * @$note The passed values are implicitly casted per <code>{@link ish.type.date.mk}</code>.
                      * @function ish.type.date.cp
-                     * @param {variant} vDate Value representing the date to copy.
+                     * @param {variant} x Value representing the date to copy.
                      * @returns {date} Value representing the passed value as a new instance.
                      */ //#####
-                    cp: function (vDate) {
+                    cp: function (x) {
                         var dReturnVal, // = _undefined
-                            dParsed = core.type.date.mk(vDate, _null)
+                            dParsed = core.type.date.mk(x, _null)
                         ;
 
                         //# If the caller passed in a valid d(ate),
@@ -411,12 +411,12 @@
                     /** Determines the full years since the passed value.
                      * @$note The passed values are implicitly casted per <code>{@link ish.type.date.mk}</code>.
                      * @function ish.type.date.age
-                     * @param {variant} vDOB Value representing the date of birth.
+                     * @param {variant} x Value representing the date of birth.
                      * @returns {integer} Value representing the full years since the passed value.
                      */ //#####
-                    age: function (vDOB) {
+                    age: function (x) {
                         var dAgeSpan,
-                            dDOB = core.type.date.mk(vDOB, _null),
+                            dDOB = core.type.date.mk(x, _null),
                             iReturnVal = -1
                         ;
 
@@ -435,13 +435,13 @@
                     /** Determines the date of the passed value formatted as <code>YYYY/MM/DD</code>.
                      * @$note The passed values are implicitly casted per <code>{@link ish.type.date.mk}</code>.
                      * @function ish.type.date.yyyymmdd
-                     * @param {variant} [vDate=new Date()] Value representing the date.
+                     * @param {variant} [x=new Date()] Value representing the date.
                      * @param {variant} [vDefault=undefined] Value representing the default return value if casting fails.
                      * @param {string} [sDelimiter="/"] Value representing the date delimiter.
                      * @returns {integer} Value representing the passed value formatted as <code>YYYY/MM/DD</code>.
                      */ //#####
-                    yyyymmdd: function (vDate, vDefault, sDelimiter) {
-                        var dDate = core.type.date.mk(vDate, (arguments.length > 1 ? vDefault : new Date()));
+                    yyyymmdd: function (x, vDefault, sDelimiter) {
+                        var dDate = core.type.date.mk(x, (arguments.length > 1 ? vDefault : new Date()));
 
                         sDelimiter = core.type.str.mk(sDelimiter, "/");
 
@@ -457,12 +457,12 @@
                     /** Determines the date part only of the passed value.
                      * @$note The passed values are implicitly casted per <code>{@link ish.type.date.mk}</code>.
                      * @function ish.type.date.only
-                     * @param {variant} [vDate=new Date()] Value representing the date.
+                     * @param {variant} [x=new Date()] Value representing the date.
                      * @param {variant} [vDefault=undefined] Value representing the default return value if casting fails.
                      * @returns {integer} Value representing the date part only of the passed value.
                      */ //#####
-                    only: function (vDate, vDefault) {
-                        return core.type.date.mk(core.type.date.yyyymmdd.apply(this, [vDate, vDefault]) + " 00:00:00");
+                    only: function (x, vDefault) {
+                        return core.type.date.mk(core.type.date.yyyymmdd.apply(this, [x, vDefault]) + " 00:00:00");
                     }, //# date.only
 
 
@@ -470,12 +470,12 @@
                     /** Resets the datetime offset of the passed value to the local system's datetime offset.
                      * @$note The passed values are implicitly casted per <code>{@link ish.type.date.mk}</code>.
                      * @function ish.type.date.fixOffset
-                     * @param {variant} [vDate=new Date()] Value representing the date.
+                     * @param {variant} [x=new Date()] Value representing the date.
                      * @returns {integer} Value representing the passed value reset to the local system's datetime offset.
                      */ //#####
                     //# TODO: Verify this works as expected
-                    fixOffset: function (vDate) {
-                        var dDate = core.type.date.mk(vDate);
+                    fixOffset: function (x) {
+                        var dDate = core.type.date.mk(x);
 
                         return new Date(
                             dDate.getUTCFullYear(), dDate.getUTCMonth(), dDate.getUTCDate(),
@@ -562,19 +562,19 @@
                         /** Determines if the passed values are equal.
                          * @$note The passed values are implicitly casted per <code>{@link ish.type.str.mk}</code>.
                          * @function ish.type.str.eq
-                         * @param {variant} s Value to interrogate.
-                         * @param {variant} t Value to interrogate.
+                         * @param {variant} x Value to interrogate.
+                         * @param {variant} y Value to interrogate.
                          * @param {boolean} [bCaseInsensitive=true] Value representing if the keys are to be searched for in a case-insensitive manor.
                          * @returns {boolean} Value representing if the passed values are equal.
                          */ //#####
-                        eq: function (s, t, bCaseInsensitive) {
-                            s = core.type.str.mk(s, "");
-                            t = core.type.str.mk(t, "");
+                        eq: function (x, y, bCaseInsensitive) {
+                            x = core.type.str.mk(x, "");
+                            y = core.type.str.mk(y, "");
 
                             //# Unless specifically told not to, compare the passed string as bCaseInsensitive
                             return (bCaseInsensitive !== false ?
-                                (s.toLowerCase() === t.toLowerCase()) :
-                                (s === t)
+                                (x.toLowerCase() === y.toLowerCase()) :
+                                (x === y)
                             );
                         }, //# type.str.eq
 
@@ -583,7 +583,7 @@
                         /** Compares the passed value to the reference value(s), determining if it is equal, equal when case-insensitive and trimmed or not equal.
                          * @$note The passed values are implicitly casted per <code>{@link ish.type.str.mk}</code>.
                          * @function ish.type.str.cmp
-                         * @param {variant} s Value representing the string to compare.
+                         * @param {variant} x Value representing the string to compare.
                          * @param {variant|variant[]} [vReference] Value representing the reference string(s) to compare to.
                          * @returns {boolean|integer} Value representing if the passed value is equal (<code>true</code>), equal when case-insensitive and trimmed (<code>1</code>) or not equal (<code>false</code>) to the passed relative value.
                          */ //#####
@@ -608,7 +608,7 @@
                             } //# compare
 
 
-                            return function (s, vRelativeTo) {
+                            return function (x, vRelativeTo) {
                                 var i,
                                     bReturnVal = false
                                 ;
@@ -616,7 +616,7 @@
                                 //# If the passed vRelativeTo .is an .arr, traverse it, bReturnVal'ing on the first .compare hit
                                 if (core.type.arr.is(vRelativeTo)) {
                                     for (i = 0; i < vRelativeTo.length; i++) {
-                                        bReturnVal = compare(s, vRelativeTo[i]);
+                                        bReturnVal = compare(x, vRelativeTo[i]);
                                         if (bReturnVal) {
                                             break;
                                         }
@@ -624,7 +624,7 @@
                                 }
                                 //# Else the passed vReference .is not an .arr, so bReturnVal the result of .compare
                                 else {
-                                    bReturnVal = compare(s, vReference);
+                                    bReturnVal = compare(x, vReference);
                                 }
 
                                 return bReturnVal;
@@ -637,13 +637,13 @@
                         /** Prepends the passed character onto the passed value to a minimum length.
                          * @$note The passed values are implicitly casted per <code>{@link ish.type.str.mk}</code>.
                          * @function ish.type.str.lpad
-                         * @param {variant} s Value representing the string to pad.
+                         * @param {variant} x Value representing the string to pad.
                          * @param {string} sChar Value representing the character to pad with.
                          * @param {integer} iLength Value representing the minimum length to pad to.
                          * @returns {string} Value representing the passed value prepended with the pad character to the minimum length.
                          */ //#####
-                        lpad: function (s, sChar, iLength) {
-                            return doPad(s, sChar, iLength, true);
+                        lpad: function (x, sChar, iLength) {
+                            return doPad(x, sChar, iLength, true);
                         }, //# type.str.lpad
 
 
@@ -651,13 +651,13 @@
                         /** Appends the passed character onto the passed value to a minimum length.
                          * @$note The passed values are implicitly casted per <code>{@link ish.type.str.mk}</code>.
                          * @function ish.type.str.rpad
-                         * @param {variant} s Value representing the string to pad.
+                         * @param {variant} x Value representing the string to pad.
                          * @param {string} sChar Value representing the character to pad with.
                          * @param {integer} iLength Value representing the minimum length to pad to.
                          * @returns {string} Value representing the passed value appended with the pad character to the minimum length.
                          */ //#####
-                        rpad: function (s, sChar, iLength) {
-                            return doPad(s, sChar, iLength, false);
+                        rpad: function (x, sChar, iLength) {
+                            return doPad(x, sChar, iLength, false);
                         }, //# type.str.rpad
 
 
@@ -665,12 +665,12 @@
                         /** Compares the passed value to the reference value, determining if it begins with, begins with when case-insensitive and trimmed or does not begin with the reference value.
                          * @$note The passed values are implicitly casted per <code>{@link ish.type.str.mk}</code>.
                          * @function ish.type.str.starts
-                         * @param {variant} s Value representing the string to compare.
+                         * @param {variant} x Value representing the string to compare.
                          * @param {variant|variant[]} [vReference] Value representing the reference string(s) to compare to.
                          * @returns {boolean|integer} Value representing if the passed value begins with (<code>true</code>), begins with when case-insensitive and trimmed (<code>1</code>) or does not begin with (<code>false</code>) to the passed reference value.
                          */ //#####
-                        begins: function (s, vReference) {
-                            return doSearch(s, core.type.arr.mk(vReference, [vReference]), function (iIndexOf /*, iS, iReference*/) {
+                        begins: function (x, vReference) {
+                            return doSearch(x, core.type.arr.mk(vReference, [vReference]), function (iIndexOf /*, iX, iReference*/) {
                                 return (iIndexOf === 0);
                             });
                         }, //# type.str.begins
@@ -680,13 +680,13 @@
                         /** Compares the passed value to the reference value, determining if it ends with, ends with when case-insensitive and trimmed or does not end with the reference value.
                          * @$note The passed values are implicitly casted per <code>{@link ish.type.str.mk}</code>.
                          * @function ish.type.str.ends
-                         * @param {variant} s Value representing the string to compare.
+                         * @param {variant} x Value representing the string to compare.
                          * @param {variant|variant[]} [vReference] Value representing the reference string(s) to compare to.
                          * @returns {boolean|integer} Value representing if the passed value ends with (<code>true</code>), ends with when case-insensitive and trimmed (<code>1</code>) or does not end with (<code>false</code>) to the passed reference value.
                          */ //#####
-                        ends: function (s, vReference) {
-                            return doSearch(s, core.type.arr.mk(vReference, [vReference]), function (iIndexOf, iS, iReference) {
-                                return (iIndexOf === (iS - iReference));
+                        ends: function (x, vReference) {
+                            return doSearch(x, core.type.arr.mk(vReference, [vReference]), function (iIndexOf, iX, iReference) {
+                                return (iIndexOf === (iX - iReference));
                             });
                         }, //# type.str.ends
 
@@ -695,12 +695,12 @@
                         /** Compares the passed value to the reference value, determining if it ends with, ends with when case-insensitive and trimmed or does not end with the reference value.
                          * @$note The passed values are implicitly casted per <code>{@link ish.type.str.mk}</code>.
                          * @function ish.type.str.ends
-                         * @param {variant} s Value representing the string to compare.
+                         * @param {variant} x Value representing the string to compare.
                          * @param {variant|variant[]} [vReference] Value representing the reference string(s) to compare to.
                          * @returns {boolean|integer} Value representing if the passed value ends with (<code>true</code>), ends with when case-insensitive and trimmed (<code>1</code>) or does not end with (<code>false</code>) to the passed reference value.
                          */ //#####
-                        contains: function (s, vReference) {
-                            return doSearch(s, core.type.arr.mk(vReference, [vReference]), function (iIndexOf /*, iS, iReference*/) {
+                        contains: function (x, vReference) {
+                            return doSearch(x, core.type.arr.mk(vReference, [vReference]), function (iIndexOf /*, iX, iReference*/) {
                                 return (iIndexOf > -1);
                             });
                         }, //# type.str.contains
@@ -710,13 +710,13 @@
                         /** Removes the referenced leading and trailing characters from the passed value.
                          * @$note The passed values are implicitly casted per <code>{@link ish.type.str.mk}</code>.
                          * @function ish.type.str.sub
-                         * @param {variant} s Value representing the string.
+                         * @param {variant} x Value representing the string.
                          * @param {integer} iFromStart Value representing the number of characters to remove from the beginning of the passed value.
                          * @param {integer} iFromEnd Value representing the number of characters to remove from the end of the passed value.
                          * @returns {string} Value representing the remaining characters from the passed value.
                          */ //#####
-                        sub: function (s, iFromStart, iFromEnd) {
-                            var sReturnVal = core.type.str.mk(s),
+                        sub: function (x, iFromStart, iFromEnd) {
+                            var sReturnVal = core.type.str.mk(x),
                                 iStart = core.type.int.mk(iFromStart),
                                 iEnd = sReturnVal.length - core.type.int.mk(iFromEnd)
                             ;
@@ -732,7 +732,7 @@
                         /** Interpolates variables within the passed value.
                          * @$note The passed values are implicitly casted per <code>{@link ish.type.str.mk}</code>.
                          * @function ish.type.str.replace
-                         * @param {variant} s Value representing the string.
+                         * @param {variant} x Value representing the string.
                          * @param {object} oData Value representing the data to interpolate within the passed value.
                          * @param {object} [oOptions] Value representing the following options:
                          *      @param {RegExp} [oOptions.pattern] Value representing the regular expression that defines the interpolation delimiters.
@@ -743,11 +743,11 @@
                         replace: function() {
                             var rePattern = /{([^{]+)}/g;
 
-                            return function(s, oData, oOptions) {
+                            return function(x, oData, oOptions) {
                                 var reCurrentPattern, vCurrent;
 
                                 //#
-                                s = core.type.str.mk(s);
+                                x = core.type.str.mk(x);
                                 oData = core.type.obj.mk(oData);
                                 oOptions = core.type.obj.mk(oOptions);
                                 reCurrentPattern = oOptions.pattern || rePattern;
@@ -757,7 +757,7 @@
                                     reCurrentPattern = new RegExp(oOptions.start + "([^" + oOptions.start + "]+)" + oOptions.end, "g");
                                 }
 
-                                return s.replace(reCurrentPattern, function(ignore, sKey) {
+                                return x.replace(reCurrentPattern, function(ignore, sKey) {
                                     vCurrent = core.resolve(oData, sKey);
 
                                     return (core.type.fn.is(vCurrent) ?
@@ -824,16 +824,14 @@
                 arr: {
                     //eq: function () {}, //# type.arr.eq
 
-                    /*
-                    Function: cmp
-                    Determines the relationship between the passed arrays (matching values, matching coerced values and matching values in different order).
-                    Parameters:
-                    x - The first array to compare.
-                    y - The second array to compare.
-                    (Optional) bInOrderOnly - Boolean value indicating if the comparison is to be in matching order only.
-                    Returns:
-                    Truthy value representing `true` if x[i] === y[i] in all cases, 1 if x[i] == y[i] in all cases, 2 if x.indexOf(y[i]) !== -1 in all cases or `false` if any value in x is missing from y
-                    */
+                    //#########
+                    /** Compares the passed value to the reference value, determining if the values match, match when coerced or match in a different order.
+                     * @function ish.type.arr.cmp
+                     * @param {variant[]} x Value representing the array to compare.
+                     * @param {variant[]} y Value representing the reference array.
+                     * @param {boolean} [bInOrderOnly=false] Value representing if the comparison is to be in matching order only.
+                     * @returns {integer|boolean} Value representing if the values match (<code>true</code>), match when coerced (<code>1</code>) or match in a different order (<code>2</code>) the passed relative value with <code>false</code> indicating the arrays do not match.
+                     */ //#####
                     cmp: function (x, y, bInOrderOnly) {
                         var a_vYClone, iIndex, i,
                             vReturnVal = (
@@ -884,7 +882,15 @@
                         return vReturnVal;
                     }, //# type.arr.cmp
 
-                    cp: function (a, vDeepCopy) {
+
+                    //#########
+                    /** Copies the passed value into a new instance.
+                     * @function ish.type.arr.cp
+                     * @param {variant[]} x Value representing the array to copy.
+                     * @param {boolean|integer} [vDeepCopy=0] Indicates if a deep copy is to occur. <code>false</code> performs a shallow copy, a positive integer indicates the max depth to perform a deep copy to, <code>true</code> and all other integer values perform a deep copy to an unlimited depth.
+                     * @returns {variant[]} Value representing the passed value as a new instance.
+                     */ //#####
+                    cp: function (x, vDeepCopy) {
                         var vCurrent, i,
                             a_vReturnVal /* = _undefined */
                         ;
@@ -893,14 +899,14 @@
                         vDeepCopy = core.type.int.mk((vDeepCopy === true ? -1 : vDeepCopy), 0);
 
                         //# If the caller passed in a valid a(rray)
-                        if (core.type.arr.is(a)) {
+                        if (core.type.arr.is(x)) {
                             //#
                             if (vDeepCopy !== 0) {
                                 a_vReturnVal = [];
 
                                 //#
-                                for (i = 0; i < a.length; i++) {
-                                    vCurrent = a[i];
+                                for (i = 0; i < x.length; i++) {
+                                    vCurrent = x[i];
 
                                     if (core.type.arr.is(vCurrent)) {
                                         a_vReturnVal.push(core.type.arr.cp(vCurrent, vDeepCopy - 1));
@@ -924,24 +930,37 @@
                             }
                             //# Else we don't need to do a vDeepCopy, so set our a_vReturnVal to a .slice'd clone of the a(rray)
                             else {
-                                a_vReturnVal = a.slice(0);
+                                a_vReturnVal = x.slice(0);
                             }
                         }
 
                         return a_vReturnVal;
                     }, //# type.arr.cp
 
-                    unique: function (a_vArray, a_vArray2, bCaseInsensitive) {
-                        bCaseInsensitive = (bCaseInsensitive === true || a_vArray2 === true);
 
-                        if (core.type.arr.is(a_vArray)) {
-                            if (core.type.arr.is(a_vArray2)) {
-                                return a_vArray.filter(function (v) {
-                                    return (a_vArray2.indexOf(v) === -1 && (!bCaseInsensitive || a_vArray2.indexOf((v + "").toLowerCase()) === -1));
+                    //#########
+                    /** Determines the unique entries within the passed value.
+                     * @function ish.type.arr.unique
+                     * @param {variant[]} x Value representing the array to compare.
+                     * @param {variant[]} [y] Value representing the reference array.
+                     * @param {boolean} [bCaseInsensitive=false] Value representing if the passed value is to be compared in a case-insensitive manor.
+                     * @returns {variant[]} Value representing the passed values' unique entries.
+                     */ //#####
+                    unique: function (x, y, bCaseInsensitive) {
+                        var a_vReturnVal = [];
+
+                        //#
+                        bCaseInsensitive = (bCaseInsensitive === true || y === true);
+
+                        //#
+                        if (core.type.arr.is(x)) {
+                            if (core.type.arr.is(y)) {
+                                a_vReturnVal = x.filter(function (v) {
+                                    return (y.indexOf(v) === -1 && (!bCaseInsensitive || y.indexOf((v + "").toLowerCase()) === -1));
                                 });
                             }
                             else {
-                                return a_vArray.reduce(function (acc, v) {
+                                a_vReturnVal = x.reduce(function (acc, v) {
                                     if (acc.indexOf(v) === -1 && (!bCaseInsensitive || acc.indexOf((v + "").toLowerCase()) === -1)) {
                                         acc.push(v);
                                     }
@@ -949,72 +968,91 @@
                                 }, []);
                             }
                         }
+
+                        return a_vReturnVal;
                     }, //# type.arr.unique
 
-                    matches: function (a_vArray, a_vArray2) {
-                        if (core.type.arr.is(a_vArray) && core.type.arr.is(a_vArray2)) {
-                            return a_vArray.filter(function (v) {
-                                return a_vArray2.indexOf(v) !== -1;
+
+                    //#########
+                    /** Determines the matching entries within the passed values.
+                     * @function ish.type.arr.matches
+                     * @param {variant[]} x Value representing the array to compare.
+                     * @param {variant[]} [y] Value representing the reference array.
+                     * @returns {variant[]} Value representing the passed values' matching entries.
+                     */ //#####
+                    matches: function (x, y) {
+                        var a_vReturnVal = [];
+
+                        if (core.type.arr.is(x) && core.type.arr.is(y)) {
+                            a_vReturnVal = x.filter(function (v) {
+                                return y.indexOf(v) !== -1;
                             });
                         }
+
+                        return a_vReturnVal;
                     }, //# type.arr.matches
 
-                    randomize: function (a_vArray) {
-                        if (core.type.arr.is(a_vArray)) {
-                            return a_vArray.sort(function (/*a, b*/) {
+
+                    //#########
+                    /** Randomizes the entries within the passed value.
+                     * @function ish.type.arr.randomize
+                     * @param {variant[]} x Value to interrogate.
+                     * @returns {variant[]} Value representing the passed value's randomized entries.
+                     */ //#####
+                    randomize: function (x) {
+                        var a_vReturnVal = [];
+
+                        if (core.type.arr.is(x)) {
+                            a_vReturnVal = x.sort(function (/*a, b*/) {
                                 return Math.random() >= 0.5 ? -1 : 1;
                             });
                         }
+
+                        return a_vReturnVal;
                     }, //# type.arr.randomize
 
-                    /*
-                    Function: of
-                    Determines if the passed value is an array of type (based on the passed test function).
-                    Parameters:
-                    a - The variant to interrogate.
-                    fnTest - Function returning true/false that tests each value for type.
-                    Returns:
-                    Boolean value representing if the value is an array of type.
-                    */
-                    of: function (a, fnTest) {
+
+                    //#########
+                    /** Extracts the passed paths from the within the passed value.
+                     * @function ish.type.arr.extract
+                     * @param {variant[]} x Value to interrogate.
+                     * @returns {variant[]} Value representing the extracted entries from the passed value.
+                     */ //#####
+                    extract: function (x, vPath) {
                         var i,
-                            bReturnVal = (core.type.arr.is(a, true) && core.type.fn.is(fnTest))
+                            o_vReturnVal = []
                         ;
 
-                        //# If the arguments are properly recognized traverse the passed a(rray), fnTest'ing each current value as we go (flipping our bReturnVal and falling from the loop on a failure)
-                        if (bReturnVal) {
-                            for (i = 0; i < a.length; i++) {
-                                if (!fnTest(a[i])) {
-                                    bReturnVal = false;
-                                    break;
-                                }
-                            }
-                        }
-
-                        return bReturnVal;
-                    }, //# type.arr.of
-
-                    extract: function (a_oObj, vPath) {
-                        var i, o_vReturnVal;
-
                         //#
-                        if (core.type.arr.is(a_oObj)) {
-                            o_vReturnVal = [];
-                            for (i = 0; i < a_oObj.length; i++) {
-                                o_vReturnVal.push(core.resolve(a_oObj, vPath));
+                        if (core.type.arr.is(x)) {
+                            for (i = 0; i < x.length; i++) {
+                                o_vReturnVal.push(core.resolve(x, vPath));
                             }
                         }
 
                         return o_vReturnVal
-                    }, //# type.arr.ofKey
+                    }, //# type.arr.extract
 
-                    countOf: function(a_vArray, vValue) {
-                        if (core.type.arr.is(a_vArray)) {
-                            return a_vArray.filter(function (v) {
+
+                    //#########
+                    /** Counts the instances of the passed value within the passed collection.
+                     * @function ish.type.arr.countOf
+                     * @param {variant[]} x Value representing the array to interrogate.
+                     * @param {variant} vValue Value representing the entries to count.
+                     * @returns {integer} Value representing the count of the passed value within the passed collection.
+                     */ //#####
+                    countOf: function(x, vValue) {
+                        var iReturnVal = 0;
+
+                        if (core.type.arr.is(x)) {
+                            iReturnVal = x.filter(function (v) {
                                 return v === vValue;
                             }).length;
                         }
+
+                        return iReturnVal;
                     }, //# type.arr.countOf
+
 
                     sort: function () {
                         //# Natural Sort implementation for feeding into Array.sort()
@@ -1046,42 +1084,81 @@
                         } //# natural
 
                         //#
-                        function orderBy(a_vArray, vOptions) {
-                            var a_vReturnVal /*= undefined*/,
-                                oOptions = core.type.obj.mk(vOptions),
-                                sPath = core.type.str.mk(oOptions.path),
-                                bReverse = (oOptions.reverse === true),
-                                fnCompare = core.type.fn.mk(oOptions.compare, function (a, b) {
-                                    var vA = core.resolve(a, sPath),
-                                        vB = core.resolve(b, sPath)
-                                    ;
-
-                                    return (
-                                        vA > vB ? (bReverse ? -1 : 1) :
-                                        vA < vB ? (bReverse ? 1 : -1) :
-                                        0
-                                    );
-                                })
-                            ;
-
-                            //# If the caller passed in a valid arr.is
-                            if (core.type.arr.is(a_vArray, true)) {
-                                //# Clone the a_vArray into our a_vReturnVal
-                                a_vReturnVal = a_vArray.slice(0);
-                                a_vReturnVal.sort(fnCompare);
-                            }
-
-                            return a_vReturnVal;
-                        } //# orderBy
+                         //# orderBy
 
 
                         //#
-                        return core.extend(natural, {
-                            natural: natural,
-                            by: orderBy
-                        });
+                        return core.extend(
+                            //#########
+                            /** Sorts the entries in the passed value into a new array via Javascript's default sort.
+                             * @function ish.type.arr.sort
+                             * @param {variant[]} x Value representing the array to interrogate.
+                             * @param {boolean} bReverse Value representing if the entries are to be reversed.
+                             * @returns {variant[]} Value the entries in the passed value into a new array via Javascript's default sort.
+                             * @see {@link https://stackoverflow.com/questions/15478954/sort-array-elements-string-with-numbers-natural-sort/15479354#15479354|StackOverflow.com}
+                             */ //#####
+                            function (x, bReverse) {
+                                var a_vReturnVal = core.type.arr.mk(x).slice(0).sort();
+                                return (bReverse ? a_vReturnVal.reverse() : a_vReturnVal);
+                            }, {
+                                //#########
+                                /** Sorts the entries in the passed value into a new array via a natural sort.
+                                 * @function ish.type.arr.sort:natural
+                                 * @param {variant[]} x Value representing the array to interrogate.
+                                 * @param {boolean} bReverse Value representing if the entries are to be reversed.
+                                 * @returns {variant[]} Value representing the entries in the passed value into a new array via a natural sort.
+                                 * @see {@link https://stackoverflow.com/questions/15478954/sort-array-elements-string-with-numbers-natural-sort/15479354#15479354|StackOverflow.com}
+                                 */ //#####
+                                natural: function (a_vArray, bReverse) {
+                                    if (core.type.arr.is(a_vArray)) {
+                                        var a_vReturnVal = a_vArray.slice(0).sort(naturalCompare);
+                                        return (bReverse === true ? a_vReturnVal.reverse() : a_vReturnVal);
+                                    }
+                                }, //# natural
+
+
+                                //#########
+                                /** Sorts the entries in the passed value into a new array via the comparator.
+                                 * @function ish.type.arr.sort:by
+                                 * @param {variant[]} x Value representing the array to interrogate.
+                                 * @param {object} [oOptions] Value representing the following options:
+                                 *      @param {string} [oOptions.path=""] Value representing the path to the requested property as a period-delimited string (e.g. "parent.child.array.0.key") or an array of strings.
+                                 *      @param {boolean} [oOptions.reverse=false] Value representing if the entries are to be reversed.
+                                 *      @param {function} [oOptions.compare=function (a, b) { return ish.resolve(a, oOptions.path) > ish.resolve(b, oOptions.path); }] Value representing the function that implements the compare, accepting 2 arguments (<code>a</code>, <code>b</code>) and returning truthy if <code>a > b</code>.
+                                 * @returns {variant[]} Value representing the entries in the passed value into a new array via the comparator.
+                                 */ //#####
+                                by: function (a_vArray, vOptions) {
+                                    var a_vReturnVal /*= undefined*/,
+                                        oOptions = core.type.obj.mk(vOptions),
+                                        sPath = core.type.str.mk(oOptions.path),
+                                        bReverse = (oOptions.reverse === true),
+                                        fnCompare = core.type.fn.mk(oOptions.compare, function (a, b) {
+                                            var vA = core.resolve(a, sPath),
+                                                vB = core.resolve(b, sPath)
+                                            ;
+
+                                            return (
+                                                vA > vB ? (bReverse ? -1 : 1) :
+                                                vA < vB ? (bReverse ? 1 : -1) :
+                                                0
+                                            );
+                                        })
+                                    ;
+
+                                    //# If the caller passed in a valid arr.is
+                                    if (core.type.arr.is(a_vArray, true)) {
+                                        //# Clone the a_vArray into our a_vReturnVal
+                                        a_vReturnVal = a_vArray.slice(0);
+                                        a_vReturnVal.sort(fnCompare);
+                                    }
+
+                                    return a_vReturnVal;
+                                } //# by
+                            }
+                        );
                     }() //# type.arr.sort
                 }, //# core.type.arr
+
 
                 //# cp, clone, toArr, join, mv, rm, has
                 obj: function () {
@@ -1237,22 +1314,23 @@
                             */
 
                             //# If the caller passed in a mapping .is .obj, set it into our oFromTo definition and collect a_sOwnKeys
+                            //#     NOTE: `core.type.obj.is` returns true for arrays, `{ strict: true }` is required
                             if (core.type.obj.is(vKeysOrFromTo, { strict: true })) {
                                 oFromTo = vKeysOrFromTo;
                                 a_sOwnKeys = core.type.obj.ownKeys(oFromTo);
                             }
-                            //# Else
+                            //# Else we need to look to the other sources
                             else {
-                                //# if the caller passed in an .is .arr of keys, set it into our a_sOwnKeys
+                                //# If the caller passed in an .is .arr of keys, set it into our a_sOwnKeys
                                 if (core.type.arr.is(vKeysOrFromTo)) {
                                     a_sOwnKeys = vKeysOrFromTo;
                                 }
-                                //#
+                                //# Else if the vSource .is .obj, pull it's .ownKeys
                                 else if (core.type.obj.is(vSource)) {
                                     a_sOwnKeys = core.type.obj.ownKeys(vSource);
                                 }
 
-                                //#
+                                //# If we were able to collect the a_sOwnKeys above
                                 if (a_sOwnKeys) {
                                     //# Traverse a_sOwnKeys, setting each into our (flat) oFromTo definition
                                     for (i = 0; i < a_sOwnKeys.length; i++) {

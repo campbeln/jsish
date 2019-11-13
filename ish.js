@@ -910,7 +910,7 @@
     /** Merges the content of the passed objects into the passed target, adding or overriding properties within the target.
      * <span style="display: none;">Heavily refactored code from http://gomakethings.com/vanilla-javascript-version-of-jquery-extend/<span>
      * @function ish.extend
-     * @param {boolean|integer} [vDeepCopy] Indicates if a deep copy is to occur. <code>false</code> performs a shallow copy, a positive integer indicates the max depth to perform a deep copy to, <code>true</code> and all other integer values perform a deep copy to an unlimited depth.
+     * @param {boolean|integer} [vDeepCopy=0] Indicates if a deep copy is to occur. <code>false</code> performs a shallow copy, a positive integer indicates the max depth to perform a deep copy to, <code>true</code> and all other integer values perform a deep copy to an unlimited depth.
      * @param {object|function} vTarget Target object to receive properties.
      * @param {...object|...function} vSource Source object(s) whose properties will be copied into the target.
      * @returns {object|function} Reference to the passed target.
@@ -1462,22 +1462,24 @@
                     return bReturnVal;
                 }, //# type.arr.rm
 
+
                 //#########
                 /** Determines if the passed array only contains values that conform to the passed test.
                  * @function ish.type.arr.of
-                 * @param {variant[]} a_vArray Values to interrogate.
-                 * @param {function} fnTest Function that returns truthy if the passed value is valid.
+                 * @param {variant[]} x Values to interrogate.
+                 * @param {function|string} vTest Value representing the test function (accepting one argument, returning truthy) or a string referencing a type under <code>ish.type</code>.
                  * @returns {boolean} Value representing if the passed array only contains values that conform to the passed test.
                  */ //#####
-                of: function (a_vArray, fnTest) {
+                of: function (x, vTest) {
                     var i,
-                        bReturnVal = (core.type.arr.is(a_vArray, true) && core.type.fn.is(fnTest))
+                        fnTest = (core.type.str.is(vTest) ? core.resolve(core.type, vTest + ".is") : vTest),
+                        bReturnVal = (core.type.arr.is(x, true) && core.type.fn.is(fnTest))
                     ;
 
-                    //# If the passed arguments are valid, traverse the a_vArray fnTest'ing each as we go
+                    //# If the arguments are properly recognized traverse the passed a(rray), fnTest'ing each current value as we go (flipping our bReturnVal and falling from the loop on a failure)
                     if (bReturnVal) {
-                        for (i = 0; i < a_vArray.length; i++) {
-                            if (!fnTest(a_vArray[i])) {
+                        for (i = 0; i < x.length; i++) {
+                            if (!fnTest(x[i])) {
                                 bReturnVal = false;
                                 break;
                             }
