@@ -887,21 +887,21 @@
                     /** Copies the passed value into a new instance.
                      * @function ish.type.arr.cp
                      * @param {variant[]} x Value representing the array to copy.
-                     * @param {boolean|integer} [vDeepCopy=0] Indicates if a deep copy is to occur. <code>false</code> performs a shallow copy, a positive integer indicates the max depth to perform a deep copy to, <code>true</code> and all other integer values perform a deep copy to an unlimited depth.
+                     * @param {boolean|integer} [vMaxDepth=0] Indicates if a deep copy is to occur. <code>false</code>/<code>0</code> performs a shallow copy, a positive integer indicates the max depth to perform a deep copy to, <code>true</code> and all other integer values perform a deep copy to an unlimited depth.
                      * @returns {variant[]} Value representing the passed value as a new instance.
                      */ //#####
-                    cp: function (x, vDeepCopy) {
+                    cp: function (x, vMaxDepth) {
                         var vCurrent, i,
                             a_vReturnVal /* = _undefined */
                         ;
 
                         //#
-                        vDeepCopy = core.type.int.mk((vDeepCopy === true ? -1 : vDeepCopy), 0);
+                        vMaxDepth = core.type.int.mk((vMaxDepth === true ? -1 : vMaxDepth), 0);
 
                         //# If the caller passed in a valid a(rray)
                         if (core.type.arr.is(x)) {
                             //#
-                            if (vDeepCopy !== 0) {
+                            if (vMaxDepth !== 0) {
                                 a_vReturnVal = [];
 
                                 //#
@@ -909,10 +909,10 @@
                                     vCurrent = x[i];
 
                                     if (core.type.arr.is(vCurrent)) {
-                                        a_vReturnVal.push(core.type.arr.cp(vCurrent, vDeepCopy - 1));
+                                        a_vReturnVal.push(core.type.arr.cp(vCurrent, vMaxDepth - 1));
                                     }
                                     else if (core.type.obj.is(vCurrent)) {
-                                        a_vReturnVal.push(core.type.obj.cp(vCurrent, vDeepCopy - 1));
+                                        a_vReturnVal.push(core.type.obj.cp(vCurrent, vMaxDepth - 1));
                                     }
                                     else if (core.type.date.is(vCurrent)) {
                                         a_vReturnVal.push(core.type.date.cp(vCurrent));
@@ -928,7 +928,7 @@
                                     }
                                 }
                             }
-                            //# Else we don't need to do a vDeepCopy, so set our a_vReturnVal to a .slice'd clone of the a(rray)
+                            //# Else we don't need to do a vMaxDepth, so set our a_vReturnVal to a .slice'd clone of the a(rray)
                             else {
                                 a_vReturnVal = x.slice(0);
                             }
@@ -1076,16 +1076,6 @@
                             return (ax.length - bx.length);
                         } //# naturalCompare
 
-                        function natural(a_vArray, bReverse) {
-                            if (core.type.arr.is(a_vArray)) {
-                                var a_vReturnVal = a_vArray.slice(0).sort(naturalCompare);
-                                return (bReverse === true ? a_vReturnVal.reverse() : a_vReturnVal);
-                            }
-                        } //# natural
-
-                        //#
-                         //# orderBy
-
 
                         //#
                         return core.extend(
@@ -1232,7 +1222,19 @@
                     } //# objCompare
 
                     return {
-                        //#
+                        //#########
+                        /** Determines if the passed values are equal.
+                         * @function ish.type.obj.eq
+                         * @param {variant} oSource Value to interrogate.
+                         * @param {variant} oCompare Value to interrogate.
+                         * @param {object} [oOptions] Value representing the following options:
+                         *      @param {function} [oOptions.compare=undefined] Value representing the function that implements the compare, accepting 2 arguments (<code>a</code>, <code>b</code>) and returning truthy if <code>a > b</code>.
+                         *      @param {boolean} [oOptions.useCoercion=true] Value representing if coercion is to be used during comparisons.
+                         *      @param {boolean} [oOptions.caseInsensitive=false] Value representing if the values are to be compared in a case-insensitive manor.
+                         *      @param {boolean} [oOptions.trimWhitespace=false] Value representing if leading and trailing whitespace is to be trimmed prior to comparison.
+                         *      @param {boolean|integer} [oOptions.maxDepth=0] Value representing if a deep comparison is to occur. <code>false</code>/<code>0</code> performs a shallow comparison, a positive integer indicates the max depth to perform a deep comparison to, <code>true</code> and all other integer values perform a deep comparison to an unlimited depth.
+                         * @returns {boolean} Value representing if the passed values are equal.
+                         */ //#####
                         eq: function (oSource, oCompare, oOptions) {
                             var i,
                                 a_sSourceKeys = core.type.obj.ownKeys(oSource),
@@ -1247,9 +1249,16 @@
                                     //compare: core.type.fn.noop,
                                     useCoercion: true,
                                     caseInsensitive: false,
-                                    trim: false,
+                                    trimWhitespace: false,
                                     maxDepth: 0
                                 }, oOptions);
+                                oOptions.maxDepth = (
+                                    oOptions.maxDepth === false ?
+                                    0 :
+                                        oOptions.maxDepth === true ?
+                                        -1 :
+                                            core.type.int.mk(oOptions.maxDepth)
+                                );
                                 fnCompare = objCompare(oOptions);
                                 bReturnVal = true;
 
@@ -1267,14 +1276,20 @@
 
                         //cmp:
 
-                        //#
-                        cp: function (o, vDeepCopy) {
+                        //#########
+                        /** Copies the passed value into a new instance.
+                         * @function ish.type.obj.cp
+                         * @param {variant[]} x Value representing the object to copy.
+                         * @param {boolean|integer} [vMaxDepth=0] Indicates if a deep copy is to occur. <code>false</code>/<code>0</code> performs a shallow copy, a positive integer indicates the max depth to perform a deep copy to, <code>true</code> and all other integer values perform a deep copy to an unlimited depth.
+                         * @returns {variant[]} Value representing the passed value as a new instance.
+                         */ //#####
+                        cp: function (o, vMaxDepth) {
                             var oReturnVal /* = _undefined */;
 
                             //# If the caller passed in a valid o(bject), .extend our oReturnVal as a new .is .obj
                             if (core.type.obj.is(o)) {
-                                oReturnVal = (vDeepCopy ?
-                                    core.extend(vDeepCopy, {}, o) :
+                                oReturnVal = (vMaxDepth ?
+                                    core.extend(vMaxDepth, {}, o) :
                                     core.extend({}, o)
                                 );
                             }
@@ -1282,7 +1297,14 @@
                             return oReturnVal;
                         }, //# type.obj.cp
 
-                        //#
+
+                        //#########
+                        /** Copies the referenced keys into a new instance.
+                         * @function ish.type.obj.clone
+                         * @param {variant[]} vSource Value representing the object to copy.
+                         * @param {boolean|integer} [vKeysOrFromTo] Indicates if a deep copy is to occur. <code>false</code>/<code>0</code> performs a shallow copy, a positive integer indicates the max depth to perform a deep copy to, <code>true</code> and all other integer values perform a deep copy to an unlimited depth.
+                         * @returns {variant[]} Value representing the passed value as a new instance.
+                         */ //#####
                         clone: function (vSource, vKeysOrFromTo) {
                             var i, a_sOwnKeys,
                                 oFromTo = {},
@@ -1486,7 +1508,7 @@
                                     //compare: core.type.fn.noop,
                                     useCoercion: true,
                                     caseInsensitive: true,
-                                    trim: true,
+                                    trimWhitespace: true,
                                     includeMissingKeys: true,
                                     caseInsensitiveKeys: true,
                                     pruneUndefinedValues: false

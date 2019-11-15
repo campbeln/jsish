@@ -293,7 +293,7 @@
             is: function isBool(x, bAllowString) {
                 var sB = mkStr(x).toLowerCase().trim();
 
-                return (
+                return !!(
                     _Object_prototype_toString.call(x) === '[object Boolean]' ||
                     (bAllowString && (sB === "true" || sB === "false"))
                 );
@@ -910,9 +910,9 @@
     /** Merges the content of the passed objects into the passed target, adding or overriding properties within the target.
      * <span style="display: none;">Heavily refactored code from http://gomakethings.com/vanilla-javascript-version-of-jquery-extend/<span>
      * @function ish.extend
-     * @param {boolean|integer} [vDeepCopy=0] Indicates if a deep copy is to occur. <code>false</code> performs a shallow copy, a positive integer indicates the max depth to perform a deep copy to, <code>true</code> and all other integer values perform a deep copy to an unlimited depth.
-     * @param {object|function} vTarget Target object to receive properties.
-     * @param {...object|...function} vSource Source object(s) whose properties will be copied into the target.
+     * @param {boolean|integer} [vMaxDepth=0] Value representing if a deep copy is to occur. <code>false</code>/<code>0</code> performs a shallow copy, a positive integer indicates the max depth to perform a deep copy to, <code>true</code> and all other integer values perform a deep copy to an unlimited depth.
+     * @param {object|function} vTarget Value representing the target object to receive properties.
+     * @param {...object|...function} vSource Value(s) representing the source object(s) whose properties will be copied into the target.
      * @returns {object|function} Reference to the passed target.
      * @example
      *   <caption>
@@ -920,7 +920,7 @@
      *   </caption>
      *     var oResult = ish.extend({}, { i: 1 }, { i: 2 }); // `oResult.i` will equal `2`.
      */ //############################################################################################
-    core.extend = function (/*[vDeepCopy], vTarget, vSource, vSource2...*/) {
+    core.extend = function (/*[vMaxDepth], vTarget, vSource, vSource2...*/) {
         var a_sKeys, oTarget, oSource, sKey, iExtendDepth, i, j, k,
             a = arguments,
             //fnIsDom = core.type.fn.mk(core.resolve(core, "type.dom.is")),
@@ -1364,6 +1364,27 @@
                 //    }
                 //}, //# type.is.numeric
             }, //# core.type.is.*
+
+            bool: {
+                is: {
+                    //#########
+                    /** Determines if the passed value represents true.
+                     * @$note Values interpreted as <code>true</code> are: <code>true</code>, <code>"true"</code> (case-insensitive and trimmed) and non-<code>0</code> integers.
+                     * @function ish.type.bool.is:true
+                     * @param {variant} x Value to interrogate.
+                     * @returns {boolean} Value representing if the passed value represents true.
+                     */ //#####
+                    'true': function(x) {
+                        var sX = core.type.str.mk(x).trim().toLowerCase();
+
+                        return !!(
+                            x === true ||
+                            (core.type.str.is(x) && sX === "true") ||
+                            (core.type.int.is(x) && x !== 0)
+                        );
+                    }
+                }
+            }, //# core.type.bool
 
             date: {
                 //#########

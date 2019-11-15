@@ -240,6 +240,10 @@
                         register("H", i);
                         register("HH", fnLpad(i, '0', 2));
 
+                        //# If the .Hour within i is before noon, set tt to "am", else set tt to "pm"
+                        register("t", oConfig.format.T[(i % 12) === i ? 0 : 1]);
+                        register("tt", oConfig.format.TT[(i % 12) === i ? 0 : 1]);
+
                         //#### Determine the 12-hour time from the above collected .Hour (fixing 0 hours as necessary), then set hh and hh accordingly
                         i = (i % 12 || 12);
                         register("h", i);
@@ -254,10 +258,6 @@
                         i = vDateTime.getSeconds();
                         register("s", i);
                         register("ss", fnLpad(i, '0', 2));
-
-                        //# If the .Hour within i is before noon, set tt to "am", else set tt to "pm"
-                        register("t", oConfig.format.T[(i % 12) === i ? 0 : 1]);
-                        register("tt", oConfig.format.TT[(i % 12) === i ? 0 : 1]);
 
                         //# Borrow the use of i to store the .getTimezoneOffset, setting zzzz accordingly
                         i = -vDateTime.getTimezoneOffset();
