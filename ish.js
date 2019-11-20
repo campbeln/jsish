@@ -18,7 +18,7 @@
  *      All features are organized in individually includable mixins organized by namespace/major features with only the core <code>ish.js</code> functionality required to bootstrap.
  *  </p>
  * </div>
- * @version 0.12.2019-11-09
+ * @version 0.12.2019-11-19
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2019, Nick Campbell

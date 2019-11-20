@@ -21,7 +21,7 @@
          * @namespace ish.type
          * @ignore
          */ //############################################################################################
-        core.oop.partial(core.type, function (/*oProtected*/) {
+        core.oop.partial(core.type, function (oProtected) {
             var oReturnVal = {
                 //#
                 is: {
@@ -290,15 +290,17 @@
                     }
                     //# Else something went wrong using the ES6 approach, so fall back to the old skool way
                     else {
-                        d = (
-                            Date.now() + (core.type.fn.call(core.resolve(_root, "performance.now")) || 0)
-                        );
+                        fnReturnValue = function () {
+                            d = (
+                                Date.now() + (core.type.fn.call(core.resolve(_root, "performance.now")) || 0)
+                            );
 
-                        return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-                            var r = (d + Math.random() * 16) % 16 | 0;
-                            d = Math.floor(d / 16);
-                            return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-                        });
+                            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                                var r = (d + Math.random() * 16) % 16 | 0;
+                                d = Math.floor(d / 16);
+                                return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+                            });
+                        };
 
                         /*
                         var i,
@@ -666,7 +668,7 @@
                          * @$note The passed values are implicitly casted per <code>{@link ish.type.str.mk}</code>.
                          * @function ish.type.str.starts
                          * @param {variant} x Value representing the string to compare.
-                         * @param {variant|variant[]} [vReference] Value representing the reference string(s) to compare to.
+                         * @param {variant|variant[]} vReference Value representing the reference string(s) to compare to.
                          * @returns {boolean|integer} Value representing if the passed value begins with (<code>true</code>), begins with when case-insensitive and trimmed (<code>1</code>) or does not begin with (<code>false</code>) to the passed reference value.
                          */ //#####
                         begins: function (x, vReference) {
@@ -681,7 +683,7 @@
                          * @$note The passed values are implicitly casted per <code>{@link ish.type.str.mk}</code>.
                          * @function ish.type.str.ends
                          * @param {variant} x Value representing the string to compare.
-                         * @param {variant|variant[]} [vReference] Value representing the reference string(s) to compare to.
+                         * @param {variant|variant[]} vReference Value representing the reference string(s) to compare to.
                          * @returns {boolean|integer} Value representing if the passed value ends with (<code>true</code>), ends with when case-insensitive and trimmed (<code>1</code>) or does not end with (<code>false</code>) to the passed reference value.
                          */ //#####
                         ends: function (x, vReference) {
@@ -696,7 +698,7 @@
                          * @$note The passed values are implicitly casted per <code>{@link ish.type.str.mk}</code>.
                          * @function ish.type.str.ends
                          * @param {variant} x Value representing the string to compare.
-                         * @param {variant|variant[]} [vReference] Value representing the reference string(s) to compare to.
+                         * @param {variant|variant[]} vReference Value representing the reference string(s) to compare to.
                          * @returns {boolean|integer} Value representing if the passed value ends with (<code>true</code>), ends with when case-insensitive and trimmed (<code>1</code>) or does not end with (<code>false</code>) to the passed reference value.
                          */ //#####
                         contains: function (x, vReference) {
@@ -1128,9 +1130,9 @@
                                             ;
 
                                             return (
-                                                vA > vB ? (bReverse ? -1 : 1) :
-                                                vA < vB ? (bReverse ? 1 : -1) :
-                                                0
+                                                vA < vB ?
+                                                    (bReverse ? false : true) :
+                                                    true
                                             );
                                         })
                                     ;
@@ -1225,8 +1227,8 @@
                         //#########
                         /** Determines if the passed values are equal.
                          * @function ish.type.obj.eq
-                         * @param {variant} oSource Value to interrogate.
-                         * @param {variant} oCompare Value to interrogate.
+                         * @param {object|function} x Value to interrogate.
+                         * @param {object|function} y Value to interrogate.
                          * @param {object} [oOptions] Value representing the following options:
                          *      @param {function} [oOptions.compare=undefined] Value representing the function that implements the compare, accepting 2 arguments (<code>a</code>, <code>b</code>) and returning truthy if <code>a > b</code>.
                          *      @param {boolean} [oOptions.useCoercion=true] Value representing if coercion is to be used during comparisons.
@@ -1235,14 +1237,14 @@
                          *      @param {boolean|integer} [oOptions.maxDepth=0] Value representing if a deep comparison is to occur. <code>false</code>/<code>0</code> performs a shallow comparison, a positive integer indicates the max depth to perform a deep comparison to, <code>true</code> and all other integer values perform a deep comparison to an unlimited depth.
                          * @returns {boolean} Value representing if the passed values are equal.
                          */ //#####
-                        eq: function (oSource, oCompare, oOptions) {
+                        eq: function (x, y, oOptions) {
                             var i,
-                                a_sSourceKeys = core.type.obj.ownKeys(oSource),
-                                a_sCompareKeys = core.type.obj.ownKeys(oCompare),
+                                a_sSourceKeys = core.type.obj.ownKeys(x),
+                                a_sCompareKeys = core.type.obj.ownKeys(y),
                                 bReturnVal = false
                             ;
 
-                            //# If both oSource and oCompare's .ownkeys match (ignoring the order of the respective arrays)
+                            //# If both x and y's .ownkeys match (ignoring the order of the respective arrays)
                             if (core.type.arr.cmp(a_sSourceKeys, a_sCompareKeys /*, false*/)) {
                                 //# Set the defaults for the passed oOptions (forcing it into an .is .obj as we go) then calculate our fnCompare
                                 oOptions = core.extend({
@@ -1264,7 +1266,7 @@
 
                                 //#
                                 for (i = 0; i < a_sSourceKeys.length; i++) {
-                                    if (!fnCompare(oSource[a_sSourceKeys[i]], oCompare[a_sSourceKeys[i]])) {
+                                    if (!fnCompare(x[a_sSourceKeys[i]], y[a_sSourceKeys[i]])) {
                                         bReturnVal = false;
                                         break;
                                     }
@@ -1280,17 +1282,17 @@
                         /** Copies the passed value into a new instance.
                          * @function ish.type.obj.cp
                          * @param {variant[]} x Value representing the object to copy.
-                         * @param {boolean|integer} [vMaxDepth=0] Indicates if a deep copy is to occur. <code>false</code>/<code>0</code> performs a shallow copy, a positive integer indicates the max depth to perform a deep copy to, <code>true</code> and all other integer values perform a deep copy to an unlimited depth.
+                         * @param {boolean|integer} [vMaxDepth=0] Value representing if a deep copy is to occur. <code>false</code>/<code>0</code> performs a shallow copy, a positive integer indicates the max depth to perform a deep copy to, <code>true</code> and all other integer values perform a deep copy to an unlimited depth.
                          * @returns {variant[]} Value representing the passed value as a new instance.
                          */ //#####
-                        cp: function (o, vMaxDepth) {
+                        cp: function (x, vMaxDepth) {
                             var oReturnVal /* = _undefined */;
 
                             //# If the caller passed in a valid o(bject), .extend our oReturnVal as a new .is .obj
-                            if (core.type.obj.is(o)) {
+                            if (core.type.obj.is(x)) {
                                 oReturnVal = (vMaxDepth ?
-                                    core.extend(vMaxDepth, {}, o) :
-                                    core.extend({}, o)
+                                    core.extend(vMaxDepth, {}, x) :
+                                    core.extend({}, x)
                                 );
                             }
 
@@ -1301,11 +1303,11 @@
                         //#########
                         /** Copies the referenced keys into a new instance.
                          * @function ish.type.obj.clone
-                         * @param {variant[]} vSource Value representing the object to copy.
-                         * @param {boolean|integer} [vKeysOrFromTo] Indicates if a deep copy is to occur. <code>false</code>/<code>0</code> performs a shallow copy, a positive integer indicates the max depth to perform a deep copy to, <code>true</code> and all other integer values perform a deep copy to an unlimited depth.
+                         * @param {variant[]} x Value representing the object to copy.
+                         * @param {string|string[]|object} [vKeysOrFromTo] Value representing the key(s) to copy into the new object, with the option to remap keys when an object is passed.
                          * @returns {variant[]} Value representing the passed value as a new instance.
                          */ //#####
-                        clone: function (vSource, vKeysOrFromTo) {
+                        clone: function (x, vKeysOrFromTo) {
                             var i, a_sOwnKeys,
                                 oFromTo = {},
                                 vReturnVal /*= undefined*/
@@ -1363,43 +1365,47 @@
 
                             //# If vKeysOrFromTo was either an .is .arr or .is .obj
                             if (a_sOwnKeys) {
-                                //# If the passed vSource .is .arr, set our vReturnVal to an array
-                                if (core.type.arr.is(vSource)) {
+                                //# If the passed x .is .arr, set our vReturnVal to an array
+                                if (core.type.arr.is(x)) {
                                     vReturnVal = [];
 
-                                    //# Traverse the vSource, .push'ing each .doCopy into our vReturnVal
-                                    for (i = 0; i < vSource.length; i++) {
-                                        vReturnVal.push(doCopy(vSource[i], oFromTo, a_sOwnKeys));
+                                    //# Traverse the x, .push'ing each .doCopy into our vReturnVal
+                                    for (i = 0; i < x.length; i++) {
+                                        vReturnVal.push(doCopy(x[i], oFromTo, a_sOwnKeys));
                                     }
                                 }
-                                //# Else if the passed vSource .is .obj, .doCopy directly into our vReturnVal
-                                else if (core.type.obj.is(vSource)) {
-                                    vReturnVal = doCopy(vSource, oFromTo, a_sOwnKeys);
+                                //# Else if the passed x .is .obj, .doCopy directly into our vReturnVal
+                                else if (core.type.obj.is(x)) {
+                                    vReturnVal = doCopy(x, oFromTo, a_sOwnKeys);
                                 }
                             }
 
                             return vReturnVal;
                         }, //# type.obj.clone
 
-                        //#
-                        toArr: function (oSource, sSetKeyAs) {
+
+                        //#########
+                        /** Mutates the passed value into an array.
+                         * @function ish.type.obj.toArr
+                         * @param {object|function} x Value representing the object to mutate.
+                         * @param {string} [sSetKeyAs=undefined] Value representing the name of the key to set the original key's name under.
+                         * @returns {variant[]} Value representing the passed value mutated into an array.
+                         */ //#####
+                        toArr: function (x, sSetKeyAs) {
                             var a_vReturnVal, i,
                                 bSetKey = core.type.str.is(sSetKeyAs, true),
-                                a_sKeys = (core.type.obj.is(oSource) ? Object.keys(oSource) : _undefined)
+                                a_sKeys = (core.type.obj.is(x, { allowFn: true }) ? Object.keys(x) : _undefined)
                             ;
 
-                            //# If the passed oSource .is .obj, traverse its a_sKeys and setup our a_vReturnVal
+                            //# If the passed x .is .obj, setup our a_vReturnVal
                             if (a_sKeys) {
                                 a_vReturnVal = [];
-                                for (i = 0; i < a_sKeys.length; i++) {
-                                    //#
-                                    if (oSource.hasOwnProperty(a_sKeys[i])) {
-                                        a_vReturnVal.push(oSource[a_sKeys[i]]);
 
-                                        //#
-                                        if (bSetKey) {
-                                            oSource[a_sKeys[i]][sSetKeyAs] = a_sKeys[i];
-                                        }
+                                //# Traverse the a_sKeys, .push'ing each into our a_vReturnVal and bSetKey (if necessary)
+                                for (i = 0; i < a_sKeys.length; i++) {
+                                    a_vReturnVal.push(x[a_sKeys[i]]);
+                                    if (bSetKey) {
+                                        x[a_sKeys[i]][sSetKeyAs] = a_sKeys[i];
                                     }
                                 }
                             }
@@ -1407,50 +1413,92 @@
                             return a_vReturnVal;
                         }, //# type.obj.toArr
 
-                        //#
-                        join: function (oSource, sDelimiter) {
+
+                        //#########
+                        /** Joins the passed value into a string.
+                         * @function ish.type.obj.join
+                         * @param {object|function} x Value representing the object to join.
+                         * @param {string} [sDelimiter=""] Value representing the delimiter to be included between values.
+                         * @param {string} [sKeyDelimiter=undefined] Value representing if the keys are to be included within the string, defining the delimiter to be included between keys and their related values.
+                         * @returns {variant[]} Value representing the passed value mutated into an array.
+                         */ //#####
+                        join: function (x, sDelimiter, sKeyDelimiter) {
                             var i,
-                                a_sOwnKeys = core.type.obj.ownKeys(oSource),
+                                a_sOwnKeys = core.type.obj.ownKeys(x),
+                                bIncludeKeys = core.type.str.is(sKeyDelimiter),
                                 sReturnVal = ""
                             ;
 
-                            //#
+                            //# Ensure the passed sDelimiter .is a .str, defaulting to "" if need be
+                            sDelimiter = core.type.str.mk(sDelimiter);
+
+                            //# If we were able to collect the passed x's a_sOwnKeys
                             if (a_sOwnKeys) {
-                                for (i = 0; i < a_sOwnKeys.length - 1; i++) {
-                                    sReturnVal += oSource[a_sOwnKeys[i]] + sDelimiter;
+                                //# If we are supposed to bIncludeKeys, build our sReturnVal accordingly
+                                if (bIncludeKeys) {
+                                    for (i = 0; i < a_sOwnKeys.length - 1; i++) {
+                                        sReturnVal += a_sOwnKeys[i] + sKeyDelimiter + x[a_sOwnKeys[i]] + sDelimiter;
+                                    }
+
+                                    //# Append the final key onto our sReturnVal
+                                    sReturnVal += a_sOwnKeys[i] + sKeyDelimiter;
                                 }
-                                sReturnVal += oSource[a_sOwnKeys[i]];
+                                //# Else we are not supposed to bIncludeKeys, building our sReturnVal accordingly
+                                else {
+                                    for (i = 0; i < a_sOwnKeys.length - 1; i++) {
+                                        sReturnVal += x[a_sOwnKeys[i]] + sDelimiter;
+                                    }
+                                }
+
+                                //# Append the final value onto our sReturnVal
+                                sReturnVal += x[a_sOwnKeys[i]];
                             }
 
                             return sReturnVal;
                         }, //# type.obj.join
 
-                        //#
-                        mv: function (vSource, oFromTo, bSetToUndefined) {
-                            var bReturnVal = core.type.obj.is(oFromTo);
 
-                            //#
+                        //#########
+                        /** Moves the referenced keys into the passed new keys.
+                         * @function ish.type.obj.mv
+                         * @param {object|function|variant[]} x Value representing the object(s) to interrogate.
+                         * @param {object} [oFromTo] Value representing the keys to move.
+                         * @param {boolean} [bSetToUndefined=false] Value representing if the moved keys are to be <code>delete</code>d (<code>false</code>) or reset to <code>undefined</code> (<code>true</code>).
+                         * @returns {boolean} Value representing if the keys have been moved.
+                         */ //#####
+                        mv: function (x, oFromTo, bSetToUndefined) {
+                            var bReturnVal = core.type.obj.is(oFromTo, { nonEmpty: true });
+
+                            //# If the caller passed in a valid oFromTo, toss our arguments into the oProtected.processObj
                             if (bReturnVal) {
-                                bReturnVal = this.processObj(vSource, oFromTo, bSetToUndefined);
+                                bReturnVal = oProtected.processObj(x, oFromTo, bSetToUndefined);
                             }
 
                             return bReturnVal;
                         }, //# type.obj.mv
 
-                        //#
-                        has: function (vSource, vKeys, bKeysArePaths) {
+
+                        //#########
+                        /** Determines if the referenced keys are present in the passed value.
+                         * @function ish.type.obj.has
+                         * @param {object|function} x Value representing the object to interrogate.
+                         * @param {string|string[]} [vKeys] Value representing the key(s) to interrogate.
+                         * @param {boolean} [bKeysArePaths=false] Value representing if the passed keys represent dot-delimited paths (e.g. <code>grandparent.parent.array.1.property</code>, see: {@link: ish.resolve}).
+                         * @returns {boolean} Value representing if the referenced keys are present in the passed value.
+                         */ //#####
+                        has: function (x, vKeys, bKeysArePaths) {
                             var i,
                                 a_sKeys = (core.type.arr.is(vKeys) ? vKeys : [vKeys]),
-                                bReturnVal = (vSource && core.type.fn.is(vSource.hasOwnProperty))
+                                bReturnVal = core.type.fn.is(x, { allowFn: true })
                             ;
 
-                            //# If the vSource is valid
+                            //# If x is valid
                             if (bReturnVal) {
                                 //# If the bKeysArePaths traverse the a_sKeys accordingly
                                 if (bKeysArePaths) {
                                     for (i = 0; i < a_sKeys.length; i++) {
-                                        //# If the current a_sKeys doesn't .existed in vSource, unflip our bReturnVal and fall from the loop
-                                        if (!core.resolve(core.resolve.returnMetadata, vSource, a_sKeys[i]).existed) {
+                                        //# If the current a_sKeys doesn't .existed in x, unflip our bReturnVal and fall from the loop
+                                        if (!core.resolve(core.resolve.returnMetadata, x, a_sKeys[i]).existed) {
                                             bReturnVal = false;
                                             break;
                                         }
@@ -1459,8 +1507,8 @@
                                 //# Else we just have to traverse the a_sKeys as-is
                                 else {
                                     for (i = 0; i < a_sKeys.length; i++) {
-                                        //# If this a_sKeys isn't a .hasOwnProperty of vSource, unflip our bReturnVal and fall from the loop
-                                        if (!vSource.hasOwnProperty(a_sKeys[i])) {
+                                        //# If this a_sKeys isn't a .hasOwnProperty of x, unflip our bReturnVal and fall from the loop
+                                        if (!x.hasOwnProperty(a_sKeys[i])) {
                                             bReturnVal = false;
                                             break;
                                         }
@@ -1471,37 +1519,59 @@
                             return bReturnVal;
                         }, //# type.obj.has
 
-                        //#
-                        prune: function (o, a_sAddlKeysToPrune) {
+
+                        //#########
+                        /** Removes values set to <code>undefined</code> along with any referenced keys from the passed value.
+                         * @function ish.type.obj.prune
+                         * @param {object|function} x Value representing the object to interrogate.
+                         * @param {string|string[]} [vAddlKeysToPrune] Value representing any additional key(s) to remove.
+                         * @returns {boolean} Value representing the remaining keys from the passed value.
+                         */ //#####
+                        prune: function (x, vAddlKeysToPrune) {
                             var sCurrentKey, i,
-                                a_sOwnKeys = core.type.obj.ownKeys(o),
+                                a_sOwnKeys = core.type.obj.ownKeys(x),
                                 oReturnVal = core.type.obj.empty()
                             ;
 
-                            //#
-                            a_sAddlKeysToPrune = core.type.arr.mk(a_sAddlKeysToPrune);
+                            //# Ensure the passed vAddlKeysToPrune is an .arr
+                            vAddlKeysToPrune = core.type.arr.mk(vAddlKeysToPrune, vAddlKeysToPrune);
 
                             //#
                             for (i = 0; i < a_sOwnKeys.length; i++) {
                                 sCurrentKey = a_sOwnKeys[i];
 
-                                if (o[sCurrentKey] !== _undefined && a_sAddlKeysToPrune.indexOf(sCurrentKey) === -1) {
-                                    oReturnVal[sCurrentKey] = o[sCurrentKey];
+                                if (x[sCurrentKey] !== _undefined && vAddlKeysToPrune.indexOf(sCurrentKey) === -1) {
+                                    oReturnVal[sCurrentKey] = x[sCurrentKey];
                                 }
                             }
 
                             return oReturnVal;
                         }, //# type.obj.prune
 
-                        //#
-                        diff: function (oSource, oCompare, oOptions) {
+
+                        //#########
+                        /** Determines the differences between the passed values.
+                         * @function ish.type.obj.diff
+                         * @param {object|function} x Value to interrogate.
+                         * @param {object|function} y Value to interrogate.
+                         * @param {object} [oOptions] Value representing the following options:
+                         *      @param {function} [oOptions.compare=undefined] Value representing the function that implements the compare, accepting 2 arguments (<code>a</code>, <code>b</code>) and returning truthy if <code>a > b</code>.
+                         *      @param {boolean} [oOptions.useCoercion=true] Value representing if coercion is to be used during comparisons.
+                         *      @param {boolean} [oOptions.caseInsensitive=false] Value representing if the values are to be compared in a case-insensitive manor.
+                         *      @param {boolean} [oOptions.trimWhitespace=false] Value representing if leading and trailing whitespace is to be trimmed prior to comparison.
+                         *      @param {boolean} [oOptions.includeMissingKeys=false] Value representing if keys present in <code>y</code> but missing from <code>x</code> are to be included in the reported differences.
+                         *      @param {boolean} [oOptions.caseInsensitiveKeys=false] Value representing if keys are to be treated as case insensitive.
+                         *      @param {boolean} [oOptions.pruneUndefinedValues=false] Value representing if if keys with <code>undefined</code> as their value are to be removed from the return value.
+                         * @returns {boolean} Value representing if the passed values are equal.
+                         */ //#####
+                        diff: function (x, y, oOptions) {
                             var fnCompare, i,
-                                a_sSourceKeys = core.type.obj.ownKeys(oSource),
-                                a_sCompareKeys = core.type.obj.ownKeys(oCompare),
+                                a_sSourceKeys = core.type.obj.ownKeys(x),
+                                a_sCompareKeys = core.type.obj.ownKeys(y),
                                 oReturnVal = core.type.obj.empty()
                             ;
 
-                            //# If we have a_sSourceKeys and a_sCompareKeys (which also determines that the passed oSource and oCompare .is .obj)
+                            //# If we have a_sSourceKeys and a_sCompareKeys (which also determines that the passed x and y .is .obj)
                             if (core.type.arr.is(a_sSourceKeys) && core.type.arr.is(a_sCompareKeys)) {
                                 //# Set the defaults for the passed oOptions (forcing it into an .is .obj as we go) then calculate our fnCompare
                                 oOptions = core.extend({
@@ -1509,6 +1579,7 @@
                                     useCoercion: true,
                                     caseInsensitive: true,
                                     trimWhitespace: true,
+                                    //maxDepth: 0,
                                     includeMissingKeys: true,
                                     caseInsensitiveKeys: true,
                                     pruneUndefinedValues: false
@@ -1517,10 +1588,10 @@
 
                                 //# If we are to find .caseInsensitiveKeys, use core.type.obj.get to resolve each a_sSourceKeys
                                 if (oOptions.caseInsensitiveKeys) {
-                                    //# Traverse the a_sSourceKeys, fnCompare'ing the passed oSource to the oCompare (loading any mismatches into our oReturnVal) as we go
+                                    //# Traverse the a_sSourceKeys, fnCompare'ing the passed x to the y (loading any mismatches into our oReturnVal) as we go
                                     for (i = 0; i < a_sSourceKeys.length; i++) {
-                                        if (!fnCompare(core.type.obj.get(oSource, a_sSourceKeys[i]), core.type.obj.get(oCompare, a_sSourceKeys[i]))) {
-                                            oReturnVal[a_sSourceKeys[i]] = oCompare[a_sSourceKeys[i]];
+                                        if (!fnCompare(core.type.obj.get(x, a_sSourceKeys[i]), core.type.obj.get(y, a_sSourceKeys[i]))) {
+                                            oReturnVal[a_sSourceKeys[i]] = y[a_sSourceKeys[i]];
                                         }
 
                                         //# .rm the current a_sSourceKeys from our a_sCompareKeys
@@ -1529,10 +1600,10 @@
                                 }
                                 //# Else the a_sSourceKeys are case sensitive, so resolve each a_sSourceKeys normally
                                 else {
-                                    //# Traverse the a_sSourceKeys, fnCompare'ing the passed oSource to the oCompare (loading any mismatches into our oReturnVal) as we go
+                                    //# Traverse the a_sSourceKeys, fnCompare'ing the passed x to the y (loading any mismatches into our oReturnVal) as we go
                                     for (i = 0; i < a_sSourceKeys.length; i++) {
-                                        if (!fnCompare(oSource[a_sSourceKeys[i]], oCompare[a_sSourceKeys[i]])) {
-                                            oReturnVal[a_sSourceKeys[i]] = oCompare[a_sSourceKeys[i]];
+                                        if (!fnCompare(x[a_sSourceKeys[i]], y[a_sSourceKeys[i]])) {
+                                            oReturnVal[a_sSourceKeys[i]] = y[a_sSourceKeys[i]];
                                         }
 
                                         //# .rm the current a_sSourceKeys from our a_sCompareKeys
@@ -1543,15 +1614,22 @@
                                 //# If we are to .includeMissingKeys, traverse any remaining a_sCompareKeys and set them into our oReturnVal
                                 if (oOptions.includeMissingKeys) {
                                     for (i = 0; i < a_sCompareKeys.length; i++) {
-                                        oReturnVal[a_sCompareKeys[i]] = oCompare[a_sCompareKeys[i]];
+                                        oReturnVal[a_sCompareKeys[i]] = y[a_sCompareKeys[i]];
                                     }
                                 }
                             }
 
                             return (oOptions.pruneUndefinedValues ? core.type.obj.prune(oReturnVal) : oReturnVal);
-                        },
+                        }, //# type.obj.diff
 
-                        //#
+
+                        //#########
+                        /** Provides access to an object structure's nested properties, returning the first found path.
+                         * @function ish.type.obj.resolveFirst
+                         * @param {object} oObject Value to interrogate.
+                         * @param {Array<string>|Array<Array<string>>} a_vPaths Value representing the paths to the requested property's as a period-delimited string (e.g. "parent.child.array.0.key") or an array of strings.
+                         * @returns {variant} Value representing the variant at the referenced path.
+                         */ //#####
                         resolveFirst: function (oObject, a_vPaths) {
                             var i, oResolved,
                                 vReturnVal /*= undefined */
@@ -1574,8 +1652,14 @@
                             return vReturnVal;
                         }, //# type.obj.resolveFirst
 
-                        //# No object properties exist until you add them
-                        //#     FROM: https://davidwalsh.name/javascript-tricks
+
+                        //#########
+                        /** Creates an empty object.
+                         * @$note Creating an object via <code>{}</code> results in an object that includes <code>__proto__</code> and <code>hasOwnProperty</code>. This method returns an object with no properties.
+                         * @function ish.type.obj.empty
+                         * @returns {boolean} Value representing an empty object.
+                         * @see {@link https://davidwalsh.name/javascript-tricks|DavidWalsh.name}
+                         */ //#####
                         empty: function () {
                             return Object.create(_null);
                         } //# type.obj.empty
@@ -1628,9 +1712,17 @@
                         // eq:
                         // cmp:
 
+                        //#########
+                        /** Copies the passed value into a new instance using {@link https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode|cloneNode}.
+                         * @$note This is functionally a type-safe wrapper of {@link https://developer.mozilla.org/en-US/docs/Web/API/Node/cloneNode|cloneNode}.
+                         * @function ish.type.dom.cp
+                         * @param {variant[]} x Value representing the DOM element to copy.
+                         * @param {boolean} [bDeepCopy=false] Value representing if the children of the DOM element should also be cloned. <code>false</code> performs a copy of the DOM element only while <code>true</code> also performs a copy of the child DOM elements.
+                         * @returns {variant[]} Value representing the passed value as a new instance.
+                         */ //#####
                         cp: function (x, bDeepCopy) {
                             if (core.type.dom.is(x) && core.type.fn.is(x.cloneNode)) {
-                                return x.cloneNode(core.type.bool.mk(bDeepCopy));
+                                return x.cloneNode(bDeepCopy === true);
                             }
                         }, //# type.dom.cp
 
