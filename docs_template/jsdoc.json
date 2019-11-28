@@ -1,0 +1,22 @@
+{
+    "docdash": {
+        "search": true,
+        "wrap": true,
+        "menu2": {
+            "ishJS": {
+                "href":"https://campbeln.github.com/core",
+                "target":"_blank",
+                "class":"menu-item",
+                "id":"website_link"
+            }
+        }
+    },
+    "templates" : {
+        "default": {
+            "useLongnameInNav": true
+        }
+    },
+    "opts": {
+        "template": "node_modules/docdash"
+    }
+}
