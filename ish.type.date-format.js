@@ -175,7 +175,9 @@
                         oDecoders = {
                             $order: []
                         },
-                        fnLpad = core.type.str.lpad
+                        fnLpad = core.type.fn.mk(core.type.str.lpad, function (x) {
+                            return (core.resolve(x, "length") === 0 ? "0" + x : x);
+                        })
                     ;
 
                     //# .registers the decoder value

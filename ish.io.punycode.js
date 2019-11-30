@@ -347,7 +347,7 @@
                  * @returns {boolean} Value representing if the passed value represents ASCII Punycode data.
                  */ //#####
                 is: function (x, bVerify) {
-                    var bReturnVal = (core.type.str.is(x, true) && x.match(/^xn--/));
+                    var bReturnVal = (core.type.str.is(x, true) && x.match(/^xn--/i));
 
                     if (bVerify && bReturnVal) {
                         bReturnVal = (core.io.punycode.parse(x) !== "");
@@ -365,11 +365,7 @@
                  * @see {@link https://stackoverflow.com/questions/183485/converting-punycode-with-dash-character-to-unicode|StackOverflow.com}
                  */ //#####
                 parse: function (x) { //# was: decode
-                    try {
-                        return punycode.ToUnicode(x);
-                    } catch (e) {
-                        return "";
-                    }
+                    return punycode.ToUnicode(core.type.str.mk(x).toLowerCase());
                 }, //# io.punycode.parse
 
 

@@ -20,12 +20,48 @@
     <script type="text/javascript" src="ish.io.net.js"></script>
     <script type="text/javascript" src="ish.io.web.js"></script>
     <script type="text/javascript" src="ish.ui.dom.js"></script>
+    <script type="text/javascript" src="ish.io.punycode.js"></script>
 
     <object id="neek" type="text/html" data="temp.html"></object>
     <!--
     <script type="text/javascript" src="ish.ui.clipboard.js"></script>
     <script type="text/javascript" src="ish.ui.tooltip.js"></script>
     -->
+
+    <style>
+        INPUT.input-select,
+        SELECT.input-select {
+            border: 2px solid teal;
+
+            padding: 5px;
+            font-size: 16px;
+            line-height: 1;
+            height: 34px;
+        }
+            INPUT.input-select {
+                border-left: none;
+                margin-left: -5px;
+                padding-left: 10px;
+            }
+            SELECT.input-select {
+                border-right: none;
+                background-color: silver;
+
+                width: 168px;
+                background: url(img/select_down.png) no-repeat right #ddd;
+                -webkit-appearance: none;
+                background-position-x: 144px;
+            }
+    </style>
+
+    <select class="input-select">
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+        <option>4</option>
+        <option>5</option>
+    </select>
+    <input type="text" placeholder="neek" class="input-select">
 
     <script type="text/javascript">
         console.log(document.getElementById("neek").innerHTML);

@@ -63,9 +63,9 @@ var self = this;
     </div>
 <?js } ?>
 
-<?js if (item.customTags.$aka) { ?>
+<?js if (customTags.$aka || item.customTags.$aka) { ?>
     <div class="description">
-        <b>AKA:</b> <code><?js= item.customTags.$aka ?></code>
+        <b>AKA:</b> <code><?js= customTags.$aka || item.customTags.$aka ?></code>
     </div>
 <?js } ?>
 

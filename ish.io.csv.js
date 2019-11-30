@@ -9,12 +9,12 @@
     'use strict';
 
     function init(core) {
-    //################################################################################################
-    /** Collection of CSV-based functionality.
-     * @namespace ish.io.csv
-     * @ignore
-     */ //############################################################################################
-    core.oop.partial(core.io, {
+        //################################################################################################
+        /** Collection of CSV-based functionality.
+         * @namespace ish.io.csv
+         * @ignore
+         */ //############################################################################################
+        core.oop.partial(core.io, {
             csv: { // core.extend(core.resolve(true, core.data, "csv"), {
                 //#########
                 /** Parses the passed value into a Javascript object representing the CSV data.

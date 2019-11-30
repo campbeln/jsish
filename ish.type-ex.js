@@ -90,7 +90,129 @@
                             }
 
                             return iReturnVal;
-                        } //# type.is.numeric.cmp
+                        }, //# type.is.numeric.cmp
+
+
+                        //#########
+                        /** Sums the referenced numbers in the passed value.
+                         * @function ish.type.is.numeric:sum
+                         * @param {Array<integer>|object[]} a_vCollection Value representing the numbers to sum.
+                         * @param {string|string[]} [vPath] Value representing the path to the requested property as a period-delimited string (e.g. "parent.child.array.0.key") or an array of strings.
+                         * @returns {integer} Value representing sum of the passed values.
+                         */ //#####
+                        sum: function (a_vCollection, vPath) {
+                            var i,
+                                fReturnVal = (core.type.arr.is(a_vCollection, true) ? 0 : undefined)
+                            ;
+
+                            //#
+                            if (fReturnVal === 0) {
+                                //#
+                                if (arguments.length === 2) {
+                                    for (i = 0; i < a_vCollection.length; i++) {
+                                        fReturnVal += core.type.float.mk(core.resolve(a_vCollection[i], vPath));
+                                    }
+                                }
+                                //#
+                                else {
+                                    for (i = 0; i < a_vCollection.length; i++) {
+                                        fReturnVal += core.type.float.mk(a_vCollection[i]);
+                                    }
+                                }
+                            }
+
+                            return fReturnVal;
+                        }, //# type.is.numeric.sum
+
+
+                        //#########
+                        /** Statistical analysis (mean/average, median, mode, range, sum, count and sorted list of values) of the referenced numbers in the passed value.
+                         * @function ish.type.is.numeric:stats
+                         * @param {Array<integer>|object[]} a_vCollection Value representing the numbers to analyse.
+                         * @param {string|string[]} [vPath] Value representing the path to the requested property as a period-delimited string (e.g. "parent.child.array.0.key") or an array of strings.
+                         * @returns {integer} Value representing sum of the passed values.
+                         */ //#####
+                        stats: function (a_vCollection, vPath) {
+                            var sKey, fCurrent, i,
+                                oMode = {},
+                                oReturnVal = {
+                                    count: 0,
+                                    //average: mean,
+                                    //mean: undefined,
+                                    //median: undefined,
+                                    mode: [],
+                                    //sum: undefined,
+                                    //range: undefined,
+                                    values: []
+                                }
+                            ;
+
+                            //#
+                            if (core.type.arr.is(a_vCollection, true)) {
+                                oReturnVal.sum = 0;
+
+                                //# If we were passed a vPath, then a_vCollection is an array of objects
+                                if (arguments.length === 2) {
+                                    //#
+                                    for (i = 0; i < a_vCollection.length; i++) {
+                                        fCurrent = core.type.float.mk(core.resolve(a_vCollection[i], vPath));
+                                        oReturnVal.sum += fCurrent;
+                                        oReturnVal.values.push(fCurrent);
+                                    }
+                                }
+                                //# Else a_vCollection is an array of numeric values
+                                else {
+                                    //#
+                                    for (i = 0; i < a_vCollection.length; i++) {
+                                        fCurrent = core.type.float.mk(a_vCollection[i]);
+                                        oReturnVal.sum += core.type.float.mk(a_vCollection[i]);
+                                        oReturnVal.values.push(fCurrent);
+                                    }
+                                }
+
+                                //#
+                                oReturnVal.count = oReturnVal.values.length;
+                                oReturnVal.mean = oReturnVal.average = (oReturnVal.sum / oReturnVal.count);
+                                oReturnVal.values.sort();
+
+                                //# If we have an odd number of values in our .values, grab the middle most one
+                                //#     NOTE: We need to use Math.floor because array indexes are 0-based rather than 1-based
+                                if (oReturnVal.count % 2 === 1) {
+                                    i = Math.floor(oReturnVal.count / 2);
+                                    oReturnVal.median = oReturnVal.values[i];
+                                }
+                                //# Else we have an even number of values in our .values, so we need to average the middle-most 2
+                                //#     NOTE: We need to -1 from the calculated i because array indexes are 0-based rather than 1-based
+                                else {
+                                    i = (oReturnVal.count / 2);
+                                    oReturnVal.median = ((oReturnVal.values[i - 1] + oReturnVal.values[i]) / 2);
+                                }
+
+                                //#
+                                for (i = 0; i < oReturnVal.count; i++) {
+                                    oMode[oReturnVal.values[i]] = oMode[oReturnVal.values[i]] || 0;
+                                    oMode[oReturnVal.values[i]]++;
+                                }
+
+                                //# Calculate the .mode(s) of the .values
+                                fCurrent = 1;
+                                for (sKey in oMode) {
+                                    if (oMode[sKey] > fCurrent) {
+                                        fCurrent = oMode[sKey];
+                                        oReturnVal.mode = [core.type.float.mk(sKey)];
+                                    }
+                                    else if (oMode[sKey] === fCurrent) {
+                                        oReturnVal.mode.push(core.type.float.mk(sKey));
+                                    }
+                                }
+                                oReturnVal.mode.sort();
+
+                                //# Calculate the .range (largest value - smallest)
+                                oReturnVal.range = (oReturnVal.values[oReturnVal.count - 1] - oReturnVal.values[0]);
+                            }
+
+                            return oReturnVal;
+                        } //# type.is.numeric.stats
                     } //# type.is.numeric
                 }, //# core.type.is
 
@@ -471,19 +593,18 @@
                     //#########
                     /** Resets the datetime offset of the passed value to the local system's datetime offset.
                      * @$note The passed values are implicitly casted per <code>{@link ish.type.date.mk}</code>.
-                     * @function ish.type.date.fixOffset
+                     * @function ish.type.date.utcToLocalOffset
                      * @param {variant} [x=new Date()] Value representing the date.
                      * @returns {integer} Value representing the passed value reset to the local system's datetime offset.
                      */ //#####
-                    //# TODO: Verify this works as expected
-                    fixOffset: function (x) {
+                    utcToLocalOffset: function (x) {
                         var dDate = core.type.date.mk(x);
 
                         return new Date(
                             dDate.getUTCFullYear(), dDate.getUTCMonth(), dDate.getUTCDate(),
                             dDate.getUTCHours(), dDate.getUTCMinutes(), dDate.getUTCSeconds()
                         );
-                    }
+                    } //# date.utcToLocalOffset
                 }, //# core.type.date
 
                 //# eq, cmp, lpad, rpad, begins, ends, contains, sub
@@ -586,7 +707,7 @@
                          * @$note The passed values are implicitly casted per <code>{@link ish.type.str.mk}</code>.
                          * @function ish.type.str.cmp
                          * @param {variant} x Value representing the string to compare.
-                         * @param {variant|variant[]} [vReference] Value representing the reference string(s) to compare to.
+                         * @param {variant|variant[]} vReference Value representing the reference string(s) to compare to.
                          * @returns {boolean|integer} Value representing if the passed value is equal (<code>true</code>), equal when case-insensitive and trimmed (<code>1</code>) or not equal (<code>false</code>) to the passed relative value.
                          */ //#####
                         cmp: function () {
@@ -610,15 +731,15 @@
                             } //# compare
 
 
-                            return function (x, vRelativeTo) {
+                            return function (x, vReference) {
                                 var i,
                                     bReturnVal = false
                                 ;
 
-                                //# If the passed vRelativeTo .is an .arr, traverse it, bReturnVal'ing on the first .compare hit
-                                if (core.type.arr.is(vRelativeTo)) {
-                                    for (i = 0; i < vRelativeTo.length; i++) {
-                                        bReturnVal = compare(x, vRelativeTo[i]);
+                                //# If the passed vReference .is an .arr, traverse it, bReturnVal'ing on the first .compare hit
+                                if (core.type.arr.is(vReference)) {
+                                    for (i = 0; i < vReference.length; i++) {
+                                        bReturnVal = compare(x, vReference[i]);
                                         if (bReturnVal) {
                                             break;
                                         }
@@ -666,7 +787,7 @@
                         //#########
                         /** Compares the passed value to the reference value, determining if it begins with, begins with when case-insensitive and trimmed or does not begin with the reference value.
                          * @$note The passed values are implicitly casted per <code>{@link ish.type.str.mk}</code>.
-                         * @function ish.type.str.starts
+                         * @function ish.type.str.begins
                          * @param {variant} x Value representing the string to compare.
                          * @param {variant|variant[]} vReference Value representing the reference string(s) to compare to.
                          * @returns {boolean|integer} Value representing if the passed value begins with (<code>true</code>), begins with when case-insensitive and trimmed (<code>1</code>) or does not begin with (<code>false</code>) to the passed reference value.
@@ -696,7 +817,7 @@
                         //#########
                         /** Compares the passed value to the reference value, determining if it ends with, ends with when case-insensitive and trimmed or does not end with the reference value.
                          * @$note The passed values are implicitly casted per <code>{@link ish.type.str.mk}</code>.
-                         * @function ish.type.str.ends
+                         * @function ish.type.str.contains
                          * @param {variant} x Value representing the string to compare.
                          * @param {variant|variant[]} vReference Value representing the reference string(s) to compare to.
                          * @returns {boolean|integer} Value representing if the passed value ends with (<code>true</code>), ends with when case-insensitive and trimmed (<code>1</code>) or does not end with (<code>false</code>) to the passed reference value.
@@ -1657,7 +1778,7 @@
                         /** Creates an empty object.
                          * @$note Creating an object via <code>{}</code> results in an object that includes <code>__proto__</code> and <code>hasOwnProperty</code>. This method returns an object with no properties.
                          * @function ish.type.obj.empty
-                         * @returns {boolean} Value representing an empty object.
+                         * @returns {object} Value representing an empty object.
                          * @see {@link https://davidwalsh.name/javascript-tricks|DavidWalsh.name}
                          */ //#####
                         empty: function () {
@@ -1726,14 +1847,41 @@
                             }
                         }, //# type.dom.cp
 
+
+                        //#########
+                        /** Prepends the passed value into the referenced parent as the first element.
+                         * @$note The passed DOM elements are passed through {@link: ish.type.dom.mk}.
+                         * @function ish.type.dom.prepend
+                         * @param {variant} vDomParent Value representing the parent DOM element.
+                         * @param {variant} vDomToAdd Value representing the DOM element to insert.
+                         * @returns {boolean} Value representing if the passed value was successfully inserted.
+                         */ //#####
                         prepend: function (vDomParent, vDomToAdd) {
                             return pender(vDomParent, vDomToAdd, true);
                         }, //# type.dom.prepend
 
+
+                        //#########
+                        /** Appends the passed value into the referenced parent as the last element.
+                         * @$note The passed DOM elements are passed through {@link: ish.type.dom.mk}.
+                         * @function ish.type.dom.append
+                         * @param {variant} vDomParent Value representing the parent DOM element.
+                         * @param {variant} vDomToAdd Value representing the DOM element to insert.
+                         * @returns {boolean} Value representing if the passed value was successfully inserted.
+                         */ //#####
                         append: function (vDomParent, vDomToAdd) {
                             return pender(vDomParent, vDomToAdd /*, false*/);
                         }, //# type.dom.append
 
+
+                        //#########
+                        /** Replaces the referenced DOM element with the passed value.
+                         * @$note The passed DOM elements are passed through {@link: ish.type.dom.mk}.
+                         * @function ish.type.dom.replace
+                         * @param {variant} vTarget Value representing the target DOM element to replace.
+                         * @param {variant} vReplacement Value representing the DOM element to insert.
+                         * @returns {boolean} Value representing if the passed value was successfully inserted.
+                         */ //#####
                         replace: function (vTarget, vReplacement) {
                             var _target = core.type.dom.mk(vTarget, null),
                                 _replacement = (vReplacement ? core.type.dom.parse(vReplacement)[0] : null), //# TODO: add looping
