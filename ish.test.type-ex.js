@@ -62,19 +62,34 @@
                         },
 
                         stats: function ($) {
-                            var oResult = core.type.is.numeric.stats([5, 5, 5, 4, 2, 8, 4, 1, 1, 1, 1, 5]);
+                            $.expect(16);
 
-                            $.expect(6);
+                            var oResult = core.type.is.numeric.stats([5, 5, 5, 4, 2, 8, 4, 1, 1, 1, 1, 5]);
                             $.assert(oResult.average === 3.5, "average");
                             $.assert(oResult.mean === 3.5, "mean");
                             $.assert(oResult.median === 4, "median");
-                            $.assert(oResult.mode === 3.5, "mode");
+                            $.assert.deepEqual(oResult.mode, [1, 5], "mode");
                             $.assert(oResult.count === 12, "count");
                             $.assert(oResult.range === 7, "count");
-                            $.assert(oResult.sum === 41, "sum");
-                            //$.assert(oResult.values === 41, "values");
+                            $.assert(oResult.sum === 42, "sum");
+                            $.assert.deepEqual(oResult.values, [1, 1, 1, 1, 2, 4, 4, 5, 5, 5, 5, 8], "values");
+
+                            oResult = core.type.is.numeric.stats([{a:5}, {a:5}, {a:5}, {a:4}, {a:2}, {a:"8"}, {a:4}, {a:1}, {a:1}, {a:1}, {a:1}, {a:5}], "a");
+                            $.assert(oResult.average === 3.5, "average");
+                            $.assert(oResult.mean === 3.5, "mean");
+                            $.assert(oResult.median === 4, "median");
+                            $.assert.deepEqual(oResult.mode, [1, 5], "mode");
+                            $.assert(oResult.count === 12, "count");
+                            $.assert(oResult.range === 7, "count");
+                            $.assert(oResult.sum === 42, "sum");
+                            $.assert.deepEqual(oResult.values, [1, 1, 1, 1, 2, 4, 4, 5, 5, 5, 5, 8], "values");
                         }
-                    } //# numeric
+                    }, //# numeric
+
+                    any: function ($) {
+                        $.expect(8);
+                        $.assert(!core.type.is.truthy(0), "0");
+                    }
                 } //# is
 
             };

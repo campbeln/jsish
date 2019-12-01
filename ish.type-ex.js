@@ -400,29 +400,37 @@
                 //####
 
                 //#########
-                /** Generates a v4 Universally Unique Identifier (UUIDv4).
+                /** Generates a Universally Unique Identifier (UUID).
                  * @function ish.type.uuid
-                 * @returns {boolean} Value representing UUIDv4.
+                 * @param {integer} [iVersion=4] Value representing the UUID version to create, with valid values ranging between 1-5.
+                 * @returns {boolean} Value representing UUID.
+                 * @see {@link https://stackoverflow.com/a/2117523/235704|StackOverflow.com}
                  */ //#####
                 uuid: function() {
                     var fnReturnValue, d;
 
+                    //#
+                    function fixVersion(iVersion) {
+                        iVersion = core.type.int.mk(iVersion, 0);
+                        return (iVersion < 1 || iVersion > 5 ? 4 : iVersion);
+                    } //# fixVersion
+
                     //# If _root.Uint8Array and _root.crypto are available, use them in our fnReturnValue
                     if (core.type.fn.is(_root.Uint8Array) && core.type.fn.is(core.resolve(_root, "crypto.getRandomValues"))) {
-                        fnReturnValue = function () {
+                        fnReturnValue = function (iVersion) {
                             return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
                                 return (c ^ _root.crypto.getRandomValues(new _root.Uint8Array(1))[0] & 15 >> c / 4).toString(16);
-                            });
+                            }).replace(/^(.{13})-4/, "$1-" + fixVersion(iVersion));
                         };
                     }
                     //# Else something went wrong using the ES6 approach, so fall back to the old skool way
                     else {
-                        fnReturnValue = function () {
+                        fnReturnValue = function (iVersion) {
                             d = (
                                 Date.now() + (core.type.fn.call(core.resolve(_root, "performance.now")) || 0)
                             );
 
-                            return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                            return 'xxxxxxxx-xxxx-' + fixVersion(iVersion) + 'xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
                                 var r = (d + Math.random() * 16) % 16 | 0;
                                 d = Math.floor(d / 16);
                                 return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
@@ -457,7 +465,79 @@
                         */
                     }
 
-                    return fnReturnValue;
+                    //#
+                    return core.extend(fnReturnValue, {
+                        //#########
+                        /** Determines if the passed value represents a UUID.
+                         * @function ish.type.uuid:is
+                         * @param {variant} x Value to interrogate.
+                         * @param {boolean|object} [vOptions] Value representing if Nil UUIDs are to be ignored or the following options:
+                         *      @param {boolean} [vOptions.excludeNilUUID=false] Value representing if Nil UUIDs are to be ignored.
+                         *      @param {boolean} [vOptions.allowBrackets=false] Value representing if enclosing brackets (<code>{}</code>) are to be allowed.
+                         * @returns {boolean} Value representing if the passed value represents a UUID.
+                         * @see {@link https://tools.ietf.org/html/rfc4122#section-4.1.7|ietf.org}
+                         */ //#####
+                        is: function (x, vOptions) {
+                            var oOptions = core.type.obj.mk(vOptions),
+                                bExcludeNilUUID = (vOptions === true || oOptions.excludeNilUUID === true)
+                                bReturnVal = false
+                            ;
+
+                            //# If x .is a .str
+                            if (core.type.str.is(x, true)) {
+                                //# If we are to .allowBrackets, .trim and remove any {}'s
+                                if (oOptions.allowBrackets) {
+                                    x = core.type.uuid.format(x);
+                                }
+
+                                //# Determine our RegExp based on if we are to bExcludeNilUUID or not, then .test x
+                                bReturnVal = (bExcludeNilUUID ?
+                                    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i :
+                                    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i
+                                ).test(x);
+                            }
+
+                            return bReturnVal;
+                        }, //# type.uuid.is
+
+
+                        //#########
+                        /** Casts the passed value into a UUID.
+                         * @function ish.type.uuid:mk
+                         * @param {variant} x Value to interrogate.
+                         * @param {variant} [vDefaultVal=ish.type.uuid()] Value representing the default return value if casting fails.
+                         * @returns {object} Value representing the passed value as a UUID.
+                         */ //#####
+                        mk: function (x, vDefaultVal) {
+                            var vReturnVal;
+
+                            //#
+                            if (core.type.uuid.is(x, true)) {
+                                vReturnVal = x;
+                            }
+                            //#
+                            else if (arguments.length > 1) {
+                                vReturnVal = vDefaultVal;
+                            }
+                            //#
+                            else {
+                                vReturnVal = core.type.uuid();
+                            }
+
+                            return vReturnVal;
+                        }, //# type.uuid.mk
+
+
+                        //#########
+                        /** Removes any non-canonical brackets (e.g. <code>{}</code>) from the passed value.
+                         * @function ish.type.uuid:format
+                         * @param {variant} x Value to interrogate.
+                         * @returns {object} Value representing the passed value as a UUID.
+                         */ //#####
+                        format: function (x) {
+                            return core.type.str.mk(x).trim().replace(/^\{/, "").replace(/\}$/, "");
+                        }
+                    });
                 }(), //# core.type.uuid
 
                 //####
