@@ -35,10 +35,14 @@
                         return (
                             x !== 0 &&
                             x !== "" &&
-                            x !== NaN &&
                             x !== _null &&
                             x !== false &&
-                            x !== _undefined
+                            x !== _undefined &&
+
+                            //# Rely on the inline polyfill of Number.isNaN from MDN to determine if x is NaN
+                            //#     NOTE: The following works because NaN is the only value in javascript which is not equal to itself.
+                            //#     See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number/isNaN
+                            /*x !== NaN*/ !(typeof x === 'number' && x !== x)
                         );
                     }, //# type.is.truthy
 
@@ -46,7 +50,7 @@
                     numeric: {
                         //#########
                         /** Determines if the passed values are equal.
-                         * @$note The passed values are implicitly casted per the Javascript rules (see: {@link ish.type.int.mk}).
+                         * @$note The passed values are implicitly casted per the Javascript rules (see: {@link ish.type.float.mk}).
                          * @function ish.type.is.numeric:eq
                          * @param {variant} x Value to interrogate.
                          * @param {variant} y Value to interrogate.
@@ -66,6 +70,7 @@
 
                         //#########
                         /** Compares the passed value to the reference value, determining if it is greater then, less then or equal.
+                         * @$note The passed values are implicitly casted per the Javascript rules (see: {@link ish.type.float.mk}).
                          * @function ish.type.is.numeric:cmp
                          * @param {variant} vNumber Value representing the number to compare.
                          * @param {variant} vRelativeTo Value representing the relative number to compare to.
@@ -108,7 +113,7 @@
                             //#
                             if (fReturnVal === 0) {
                                 //#
-                                if (arguments.length === 2) {
+                                if (core.type.str.is(vPath, true) || core.type.arr.is(vPath, true)) {
                                     for (i = 0; i < a_vCollection.length; i++) {
                                         fReturnVal += core.type.float.mk(core.resolve(a_vCollection[i], vPath));
                                     }

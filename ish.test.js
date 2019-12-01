@@ -283,22 +283,24 @@
                             */
                         },
 
-                        numeric: function ($) {
-                            $.expect(12);
-                            $.assert(core.type.is.numeric(1), "is 1");
-                            $.assert(core.type.is.numeric(0), "is 0");
-                            $.assert(core.type.is.numeric(1.1), "is 1.1");
-                            $.assert(!core.type.is.numeric([]), "!is []");
-                            $.assert(!core.type.is.numeric(null), "!is null");
-                            $.assert(!core.type.is.numeric(undefined), "!is undefined");
+                        numeric: {
+                            _: function ($) {
+                                $.expect(12);
+                                $.assert(core.type.is.numeric(1), "is 1");
+                                $.assert(core.type.is.numeric(0), "is 0");
+                                $.assert(core.type.is.numeric(1.1), "is 1.1");
+                                $.assert(!core.type.is.numeric([]), "!is []");
+                                $.assert(!core.type.is.numeric(null), "!is null");
+                                $.assert(!core.type.is.numeric(undefined), "!is undefined");
 
-                            $.assert(core.type.is.numeric("1"), "is str 1");
-                            $.assert(core.type.is.numeric("0"), "is str 0");
-                            $.assert(core.type.is.numeric("1.1"), "is str 1.1");
-                            //$.assert(core.type.is.numeric("1,1", true), "is str 1,1");
-                            $.assert(!core.type.is.numeric("1,1"), "!is str 1,1");
-                            $.assert(!core.type.is.numeric("0.0.0"), "!is str 0.0.0");
-                            $.assert(!core.type.is.numeric("1,100.5"), "!is str 1,100.5");
+                                $.assert(core.type.is.numeric("1"), "is str 1");
+                                $.assert(core.type.is.numeric("0"), "is str 0");
+                                $.assert(core.type.is.numeric("1.1"), "is str 1.1");
+                                //$.assert(core.type.is.numeric("1,1", true), "is str 1,1");
+                                $.assert(!core.type.is.numeric("1,1"), "!is str 1,1");
+                                $.assert(!core.type.is.numeric("0.0.0"), "!is str 0.0.0");
+                                $.assert(!core.type.is.numeric("1,100.5"), "!is str 1,100.5");
+                            }
                         },
 
                         ish: core.extend(
