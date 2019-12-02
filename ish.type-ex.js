@@ -101,28 +101,35 @@
                         //#########
                         /** Sums the referenced numbers in the passed value.
                          * @function ish.type.is.numeric:sum
-                         * @param {Array<integer>|object[]} a_vCollection Value representing the numbers to sum.
+                         * @param {Array<integer>|object[]|object} vCollection Value representing the numbers to sum.
                          * @param {string|string[]} [vPath] Value representing the path to the requested property as a period-delimited string (e.g. "parent.child.array.0.key") or an array of strings.
                          * @returns {integer} Value representing sum of the passed values.
                          */ //#####
-                        sum: function (a_vCollection, vPath) {
+                        sum: function (vCollection, vPath) {
                             var i,
-                                fReturnVal = (core.type.arr.is(a_vCollection, true) ? 0 : undefined)
+                                fReturnVal = 0
                             ;
 
                             //#
-                            if (fReturnVal === 0) {
+                            if (core.type.arr.is(vCollection, true)) {
                                 //#
                                 if (core.type.str.is(vPath, true) || core.type.arr.is(vPath, true)) {
-                                    for (i = 0; i < a_vCollection.length; i++) {
-                                        fReturnVal += core.type.float.mk(core.resolve(a_vCollection[i], vPath));
+                                    for (i = 0; i < vCollection.length; i++) {
+                                        fReturnVal += core.type.float.mk(core.resolve(vCollection[i], vPath));
                                     }
                                 }
                                 //#
                                 else {
-                                    for (i = 0; i < a_vCollection.length; i++) {
-                                        fReturnVal += core.type.float.mk(a_vCollection[i]);
+                                    for (i = 0; i < vCollection.length; i++) {
+                                        fReturnVal += core.type.float.mk(vCollection[i]);
                                     }
+                                }
+                            }
+                            //#
+                            else if (core.type.obj.is(vCollection, true)) {
+                                //#
+                                for (i in vCollection) {
+                                    fReturnVal += core.type.float.mk(vCollection[i]);
                                 }
                             }
 
@@ -267,7 +274,6 @@
                  *      @param {boolean} [oOptions.caseInsensitive=false] Value representing if the keys are to be searched for in a case-insensitive manor.
                  *      @param {boolean} [oOptions.useCoercion=false] Value representing if coercion is to be used during comparisons.
                  *      @param {boolean} [oOptions.or=false] Value representing if multiple entries within the passed query are to be considered <code>or</code> rather than <code>and</code>.
-                 *      @param {boolean} [oOptions.setKeyAs="$key"] Value representing the property name of the key set by <code>{@link ish.type.obj.toArr}</code> if the passed value is converted from an <code>object</code> to an <code>array</code>.
                  * @returns {variant[]|variant} Value representing the passed values that matched the query.
                  */ //#####
                 query: function () {
@@ -300,25 +306,23 @@
                     //# ["val1", "val2"] = core.type.query([{}, {}], ["path.to.val"])
                     //# [{}, {}] = core.type.query([{}, {}], { key: "val", key2: ["val1", "val2"], "path.to.key3": function(vTestValue, oSourceIndex, oOptions) { return true || false; } })
                     return function (vCollection, vQuery, oOptions) {
-                        var a_oCollection, vCurrent, bIsMatch, i, j, k,
+                        var a_oCollection, vCurrent, bIsMatch, i, j, k, h,
                             a_oReturnVal = [],
-                            bExtract = core.type.arr.is(vQuery, true),
-                            a_sKeys = (bExtract ?
-                                vQuery : (
-                                    core.type.obj.is(vQuery) ?
-                                    Object.keys(vQuery) :
-                                    _undefined
-                                )
+                            a_sKeys = (core.type.obj.is(vQuery) ?
+                                Object.keys(vQuery) :
+                                _undefined
                             )
                         ;
+
+                        //#
+                        vQuery = core.type.arr.mk(vQuery, [vQuery]);
 
                         //# .extend the passed oOptions with the defaults (which also ensures the passed oOptions .is .obj)
                         oOptions = core.extend({
                             firstEntryOnly: false,
                             caseInsensitive: false,
                             useCoercion: false,
-                            or: false,
-                            setKeyAs: "$key"
+                            or: false
                         }, oOptions);
 
                         //# Calculate our a_oCollection based on the passed vCollection
@@ -330,62 +334,53 @@
                         );
 
                         //# If we have a_oCollection and a vQuery
-                        if (core.type.arr.is(a_oCollection, true) && core.type.arr.is(a_sKeys, true)) {
-                            //# If vQuery was an array
-                            if (bExtract) {
-                                for (i = 0; i < a_oCollection.length; i++) {
+                        if (core.type.arr.is(a_oCollection, true)) {
+                            //# Traverse our a_oCollection
+                            for (i = 0; i < a_oCollection.length; i++) {
+                                //#
+                                for (h = 0; h < vQuery.length; h++) {
                                     //#
-                                    if (a_sKeys.length > 1) {
-                                        vCurrent = {};
-                                        a_oReturnVal.push(vCurrent);
+                                    a_sKeys = (core.type.obj.is(vQuery[h]) ?
+                                        Object.keys(vQuery[h]) :
+                                        _undefined
+                                    );
 
+                                    //#
+                                    if (core.type.arr.is(a_sKeys, true)) {
+                                        //# Traverse our vQuery's a_sKeys, resetting bIsMatch and vCurrent for each loop
                                         for (j = 0; j < a_sKeys.length; j++) {
-                                            vCurrent[a_sKeys[j]] = core.resolve(a_oCollection[i], a_sKeys[j]);
-                                        }
-                                    }
-                                    //#
-                                    else {
-                                        a_oReturnVal.push(core.resolve(a_oCollection[i], a_sKeys[0]));
-                                    }
-                                }
-                            }
-                            //# Else vQuery was an object
-                            else {
-                                //# Traverse our a_oCollection
-                                for (i = 0; i < a_oCollection.length; i++) {
-                                    //# Traverse our vQuery's a_sKeys, resetting bIsMatch and vCurrent for each loop
-                                    for (j = 0; j < a_sKeys.length; j++) {
-                                        bIsMatch = false;
-                                        vCurrent = vQuery[a_sKeys[j]];
+                                            bIsMatch = false;
+                                            vCurrent = vQuery[h][a_sKeys[j]];
 
-                                        //# If we have an .is .arr of vQuery values to traverse, do so now
-                                        if (core.type.arr.is(vCurrent)) {
-                                            for (k = 0; k < vCurrent.length; k++) {
-                                                //# If the vCurrent value matches our current a_oCollection item, flip bIsMatch and fall from the inner loop
-                                                if (doQuery(a_sKeys[j], vCurrent[k], a_oCollection[i], oOptions)) {
-                                                    bIsMatch = true;
-                                                    break;
+                                            //# If we have an .is .arr of vQuery values to traverse, do so now
+                                            if (core.type.arr.is(vCurrent)) {
+                                                for (k = 0; k < vCurrent.length; k++) {
+                                                    //# If the vCurrent value matches our current a_oCollection item, flip bIsMatch and fall from the inner loop
+                                                    if (doQuery(a_sKeys[j], vCurrent[k], a_oCollection[i], oOptions)) {
+                                                        bIsMatch = true;
+                                                        break;
+                                                    }
                                                 }
                                             }
-                                        }
-                                        //# Else we'll consider the vCurrent vQuery value as singular, so reset bIsMatch based on doQuery
-                                        else {
-                                            bIsMatch = doQuery(a_sKeys[j], vCurrent, a_oCollection[i], oOptions);
+                                            //# Else we'll consider the vCurrent vQuery value as singular, so reset bIsMatch based on doQuery
+                                            else {
+                                                bIsMatch = doQuery(a_sKeys[j], vCurrent, a_oCollection[i], oOptions);
+                                            }
+
+                                            //# If this is an AND-based vQuery and the vCurrent vQuery isn't an bIsMatch or this is an OR-based vQuery and we've already found our bIsMatch, fall from the middle loop
+                                            if ((!oOptions.or && !bIsMatch) || (oOptions.or && bIsMatch)) {
+                                                break;
+                                            }
                                         }
 
-                                        //# If this is an AND-based vQuery and the vCurrent vQuery isn't an bIsMatch or this is an OR-based vQuery and we've already found our bIsMatch, fall from the middle loop
-                                        if ((!oOptions.or && !bIsMatch) || (oOptions.or && bIsMatch)) {
-                                            break;
-                                        }
-                                    }
+                                        //# If the current a_oCollection record passed each vQuery value, .push it into our a_oReturnVal
+                                        if (bIsMatch) {
+                                            a_oReturnVal.push(a_oCollection[i]);
 
-                                    //# If the current a_oCollection record passed each vQuery value, .push it into our a_oReturnVal
-                                    if (bIsMatch) {
-                                        a_oReturnVal.push(a_oCollection[i]);
-
-                                        //# If we are looking for the .firstEntryOnly, fall from the outer loop
-                                        if (oOptions.firstEntryOnly) {
-                                            break;
+                                            //# If we are looking for the .firstEntryOnly, fall from the outer loop
+                                            if (oOptions.firstEntryOnly) {
+                                                break;
+                                            }
                                         }
                                     }
                                 }
@@ -470,7 +465,7 @@
                         //#########
                         /** Determines if the passed value represents a UUID.
                          * @function ish.type.uuid:is
-                         * @param {variant} x Value to interrogate.
+                         * @param {string} x Value to interrogate.
                          * @param {boolean|object} [vOptions] Value representing if Nil UUIDs are to be ignored or the following options:
                          *      @param {boolean} [vOptions.excludeNilUUID=false] Value representing if Nil UUIDs are to be ignored.
                          *      @param {boolean} [vOptions.allowBrackets=false] Value representing if enclosing brackets (<code>{}</code>) are to be allowed.
@@ -479,7 +474,7 @@
                          */ //#####
                         is: function (x, vOptions) {
                             var oOptions = core.type.obj.mk(vOptions),
-                                bExcludeNilUUID = (vOptions === true || oOptions.excludeNilUUID === true)
+                                bExcludeNilUUID = (vOptions === true || oOptions.excludeNilUUID === true),
                                 bReturnVal = false
                             ;
 
@@ -504,7 +499,7 @@
                         //#########
                         /** Casts the passed value into a UUID.
                          * @function ish.type.uuid:mk
-                         * @param {variant} x Value to interrogate.
+                         * @param {string} x Value to interrogate.
                          * @param {variant} [vDefaultVal=ish.type.uuid()] Value representing the default return value if casting fails.
                          * @returns {object} Value representing the passed value as a UUID.
                          */ //#####
@@ -531,11 +526,30 @@
                         //#########
                         /** Removes any non-canonical brackets (e.g. <code>{}</code>) from the passed value.
                          * @function ish.type.uuid:format
-                         * @param {variant} x Value to interrogate.
-                         * @returns {object} Value representing the passed value as a UUID.
+                         * @param {string} x Value to interrogate.
+                         * @param {boolean} [bUppercase=false] Value representing if the UUID should be represented in uppercase letters.
+                         * @returns {object} Value representing the passed value as a formatted UUID.
                          */ //#####
-                        format: function (x) {
-                            return core.type.str.mk(x).trim().replace(/^\{/, "").replace(/\}$/, "");
+                        format: function (x, bUppercase) {
+                            //# Ensure the passed x .is a .str, then .trim and leading/trailing spaces and {}'s and case it based on the passed bUppercase
+                            x = core.type.str.mk(x)
+                                .trim()
+                                .replace(/^\{/, "").replace(/\}$/, "")
+                                [bUppercase === true ? "toUpperCase" : "toLowerCase"]()
+                            ;
+
+                            //#
+                            if (/^[0-9a-f]{32}$/i.test(x)) {
+                                x = x.replace(/^([a-f0-9]{8})([a-f0-9]{4})([a-f0-9]{4})([a-f0-9]{4})([a-f0-9]{12})$/i, "$1-$2-$3-$4-$5");
+                            }
+
+                            //# If the above formatted x .is a .uuid (ensuring that we do not enter an infinite loop by passing allowBrackets = false), return it to the caller, else return a (falsy) null-string
+                            //#     NOTE: As we are not explicitly .excludeNilUUID, this will properly format it as well.
+                            return (
+                                core.type.uuid.is(x /*, { allowBrackets: false }*/) ?
+                                    x :
+                                    ""
+                            );
                         }
                     });
                 }(), //# core.type.uuid
