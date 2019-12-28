@@ -18,7 +18,7 @@
  *      All features are organized in individually includable mixins organized by namespace/major features with only the core <code>ish.js</code> functionality required to bootstrap.
  *  </p>
  * </div>
- * @version 0.12.2019-11-19
+ * @version 0.12.2019-12-27
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
@@ -40,7 +40,7 @@
         oPrivate = {},
         oTypeIsIsh = { //# Set the .ver and .target under .type.is.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             config: {
-                ver: '0.12.2019-10-02',
+                ver: '0.12.2019-12-27',
                 onServer: bServerside,
                 debug: true,
                 //script: _undefined,
@@ -221,7 +221,7 @@
         /** Determines if the passed value is a list type (e.g. HTMLCollection|HTMLFormControlsCollection|HTMLOptionsCollection|NodeList|NamedNodeMap|Arguments + Object to support &lt;IE9).
          * @function ish.type.is.collection
          * @param {variant} x Value to interrogate.
-         * @param {object|boolean} [vOptions=false] Value representing if empty collections are to be ignored.
+         * @param {object|boolean} [vOptions=false] Value representing if empty collections are to be ignored or the desired options:
          *      @param {boolean} [vOptions.disallow0Length=false] Value representing if empty collections are to be ignored.
          *      @param {boolean} [vOptions.allowObject=false] Value representing if Objects are to be included in the test (to support &lt;IE9).
          *      @param {boolean} [vOptions.allowArray=false] Value representing if Arrays are to be included in the test.
@@ -985,13 +985,13 @@
                                 }
                             }
                         }
-                        //# Else if we're in the midst of a deep copy and the sKey .is an .obj, .extend it into our oTarget[sKey]
-                        else if (iExtendDepth !== 1 && core.type.obj.is(oSource[sKey])) {
-                            oTarget[sKey] = core.extend(iExtendDepth - 1, oTarget[sKey], oSource[sKey]);
-                        }
                         //#
                         else if (core.type.date.is(oSource[sKey])) {
                             oTarget[sKey] = new Date(oSource[sKey]);
+                        }
+                        //# Else if we're in the midst of a deep copy and the sKey .is an .obj, .extend it into our oTarget[sKey]
+                        else if (iExtendDepth !== 1 && core.type.obj.is(oSource[sKey])) {
+                            oTarget[sKey] = core.extend(iExtendDepth - 1, oTarget[sKey], oSource[sKey]);
                         }
                         //# Else treat the oSource[sKey] as a value, setting it into oTarget[sKey]
                         else {
@@ -1386,6 +1386,63 @@
             }, //# core.type.bool
 
             date: {
+                time: {
+                    //#########
+                    /** Determines if the passed value is a valid time string.
+                     * @function ish.type.date.time:is
+                     * @param {variant} x Value to interrogate.
+                     * @returns {boolean} Value representing if the passed value is a valid time string.
+                     */ //#####
+                    is: function (x) {
+                        //# TODO tests
+                        return /^([0-1][0-9]|2[0-3]):([0-5][0-9])(:([0-5][0-9]))?$/.test(x);
+                    },
+
+                    //#########
+                    /** Determines the number of seconds from midnight the time string represents.
+                     * @function ish.type.date.time:is
+                     * @param {variant} [x=new Date()] Value to interrogate.
+                     * @returns {boolean} Value representing the number of seconds from midnight the time string represents.
+                     */ //#####
+                    seconds: function (x) {
+                        var iReturnVal = 0;
+
+                        //# If x wasn't passed, determine the .seconds for now
+                        if (arguments.length === 0) {
+                            iReturnVal = Math.floor(
+                                Math.abs(new Date() - new Date(core.type.date.yyyymmdd() + ' 00:00')) / 1000
+                            )
+                        }
+                        //# Else if the passed x .is .time, determine the .seconds from it
+                        else if (core.type.date.time.is(x)) {
+                            iReturnVal = (Math.abs(new Date('1970-01-01 ' + x) - new Date('1970-01-01 00:00')) / 1000);
+                        }
+
+                        return iReturnVal;
+                    }
+                },
+
+                //#########
+                /** Determines the date of the passed value formatted as <code>YYYY/MM/DD</code>.
+                 * @$note The passed values are implicitly casted per <code>{@link ish.type.date.mk}</code>.
+                 * @function ish.type.date.yyyymmdd
+                 * @param {variant} [x=new Date()] Value representing the date.
+                 * @param {variant} [vDefault=undefined] Value representing the default return value if casting fails.
+                 * @param {string} [sDelimiter="/"] Value representing the date delimiter.
+                 * @returns {integer} Value representing the passed value formatted as <code>YYYY/MM/DD</code>.
+                 */ //#####
+                yyyymmdd: function (x, vDefault, sDelimiter) {
+                    var dDate = core.type.date.mk(x, (arguments.length > 1 ? vDefault : new Date()));
+
+                    sDelimiter = core.type.str.mk(sDelimiter, "/");
+
+                    return (core.type.date.is(dDate) ?
+                        dDate.getFullYear() + sDelimiter + core.type.str.lpad((dDate.getMonth() + 1), "0", 2) + sDelimiter + core.type.str.lpad(dDate.getDate(), "0", 2) :
+                        ""
+                    );
+                    //dCalDate.getHours() + ':' + core.type.str.mk(dCalDate.getMinutes()).lPad("0", 2) + ':' + core.type.str.mk(dCalDate.getSeconds()).lPad("0", 2)
+                }, //# date.yyyymmdd
+
                 //#########
                 /** Provides the current <code>window.performance</code>-based timestamp.
                  * @function ish.type.date.timestamp
@@ -1539,7 +1596,7 @@
                 /** Determines the enumerable and/or non-enumerable keys of the passed value.
                  * @function ish.type.obj.ownKeys
                  * @param {object} oSource Value to interrogate.
-                 * @param {object|boolean} [vOptions=false] Value representing if non-enumerable properties are to be included.
+                 * @param {object|boolean} [vOptions=false] Value representing if non-enumerable properties are to be included or the desired options:
                  *      @param {boolean} [vOptions.includeNonEnumerable=false] Value representing if non-enumerable properties are to be included.
                  *      @param {boolean} [vOptions.onlyNonEnumerable=false] Value representing if only non-enumerable properties are to be returned.
                  * @returns {string[]} Value representing the requested keys of the passed value.
@@ -1670,7 +1727,7 @@
                     /** Executes the passed function.
                      *   <br/>The passed function is executed via <code>function.apply()</code>.
                      * @function ish.type.fn.call
-                     * @param {function} fn Function to execute.
+                     * @param {function} fn Value representing the function to execute.
                      * @param {variant} [vContext=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
                      * @param {variant} vArguments Value representing the arguments to pass into the passed function.<br/><b>Note:</b> This value is passed through <code>ish.type.fn.convert</code> to ensure an array.
                      * @returns {variant} Value representing the passed function's return value.
@@ -1705,7 +1762,7 @@
                     /** Executes the passed function.
                      *   <br/>The passed function is executed via <code>function.apply()</code>.
                      * @function ish.type.fn.run
-                     * @param {function} fn Function to execute.
+                     * @param {function} fn Value representing the function to execute.
                      * @param {arguments|variant[]|object} [vOptions] Value representing an arguments instance, an array of arguments or an object representing the desired options:
                      *      @param {variant} [vOptions.context=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
                      *      @param {variant} [vOptions.default=undefined] Value representing the default value to return if the passed function is invalid.
@@ -1745,7 +1802,7 @@
                     /** Wraps the passed function, ensuring it is executed no more than once.
                      *   <br/>The passed function is executed via <code>function.apply()</code>.
                      * @function ish.type.fn.once
-                     * @param {function} fn Function to execute.
+                     * @param {function} fn Value representing the function to execute.
                      * @param {object} [oOptions] Value representing the desired options:
                      *      @param {variant} [oOptions.context=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
                      *      @param {variant} [oOptions.default=undefined] Value representing the default value to return if the passed function is invalid.
@@ -1779,7 +1836,7 @@
                     /** Wraps the passed function, ensuring it is executed within a <code>try...catch</code> block.
                      *   <br/>The passed function is executed via <code>function.apply()</code>.
                      * @function ish.type.fn.tryCatch
-                     * @param {function} fn Function to execute.
+                     * @param {function} fn Value representing the function to execute.
                      * @param {object} [oOptions] Value representing the desired options:
                      *      @param {variant} [oOptions.context=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
                      *      @param {variant} [oOptions.default=undefined] Value representing the default value to return if the passed function errors.
@@ -1821,7 +1878,7 @@
                     /** Wraps the passed function, ensuring it is executed as much as possible without ever executing more than once per wait duration.
                      *   <br/>The passed function is executed via <code>function.apply()</code>.
                      * @function ish.type.fn.throttle
-                     * @param {function} fn Function to execute.
+                     * @param {function} fn Value representing the function to execute.
                      * @param {object} [oOptions] Value representing the desired options:
                      *      @param {variant} [oOptions.context=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
                      *      @param {integer} [oOptions.wait=500] Value representing the minimum number of milliseconds (1/1000ths of a second) between each call.
@@ -1876,7 +1933,7 @@
                     /** Wraps the passed function, ensuring it cannot be executed until the wait duration has passed without a call being made.
                      *   <br/>The passed function is executed via <code>function.apply()</code>.
                      * @function ish.type.fn.debounce
-                     * @param {function} fn Function to execute.
+                     * @param {function} fn Value representing the function to execute.
                      * @param {object} [oOptions] Value representing the desired options:
                      *      @param {variant} [oOptions.context=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
                      *      @param {integer} [oOptions.wait=500] Value representing the minimum number of milliseconds (1/1000ths of a second) between each call.
@@ -1931,7 +1988,7 @@
                     /** Wraps the passed function, executing it once per wait duration until it returns truthy or the maximum attempts are exhaused.
                      *   <br/>The passed function is executed via <code>function.apply()</code>.
                      * @function ish.type.fn.poll
-                     * @param {function} fn Function to execute.
+                     * @param {function} fn Value representing the function to execute.
                      * @param {object} [oOptions] Value representing the desired options:
                      *      @param {variant} [oOptions.context=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
                      *      @param {integer|function} [oOptions.wait=500] Value representing the number of milliseconds (1/1000ths of a second) or function called per attempt that returns the number of milliseconds between each call; <code>iWaitMilliseconds = oOptions.wait(iAttemptCount)</code>.
@@ -2750,7 +2807,7 @@
                 } //# loaded
 
                 //#
-                oOptions = processOptions(vOptions);
+                oOptions = processOptions(oOptions);
                 fnPassedCallback = oOptions.callback;
 
                 //#
@@ -2898,10 +2955,11 @@
                         //# Else attempt to load the value of _script[ish] as a JSON file, flag bProcessAttribute to skip the .process below and .extend it into our oOptions on bSuccess
                         else {
                             bProcessAttribute = _null;
-                            core.io.net.get(sTemp, function (bSuccess, oResponse /*, vArg, $xhr*/) {
+                            /*
+                            core.io.net.get(sTemp, function (bSuccess, oResponse /*, vArg, $xhr* /) {
                                 core.extend(oOptions, bSuccess ? oResponse.data : _null);
                                 process(_script, bSuccess);
-                            });
+                            });*/
                         }
                     }
                 }
@@ -2979,7 +3037,7 @@
                     /** Determines if the passed value is a DOM element.
                      * @function ish.type.dom.is
                      * @param {variant} x Value to interrogate.
-                     * @param {object|boolean} [vOptions=false] Value representing if CSS selectors that successfully resolve to DOM elements are to be reconized.
+                     * @param {object|boolean} [vOptions=false] Value representing if CSS selectors that successfully resolve to DOM elements are to be reconized or the desired options:
                      *      @param {boolean} [vOptions.allowSelector=false] Value representing if CSS selectors that successfully resolve to DOM elements are to be reconized.
                      *      @param {boolean} [vOptions.allowHTML=false] Value representing if HTML that successfully parses to DOM elements are to be reconized.
                      * @returns {boolean} Value representing if the passed value is a DOM element.
@@ -3009,17 +3067,20 @@
                         );
                     }, //# dom.is
 
-                    //######### Can be a CSS Selector (used by document.querySelector), jQuery reference (x[0] will be returned), HTML string defining a single root element or DOM element.
+                    //#########
                     /** Casts the passed value into a DOM element.
+                     * @$note Can be a CSS Selector (used by document.querySelector), jQuery reference (x[0] will be returned), HTML string defining a single root element or DOM element.
+                     * @$note If the value to interrogate represents multiple top-level DOM elements, they will be returned under a single <code><div></div></code> who has a property of <code>parsedMultiple=true</code>.
                      * @function ish.type.dom.mk
                      * @param {variant|string} x Value to interrogate.
                      * @param {element} [_defaultVal=<div></div>] Value representing the default return value if casting fails.
-                     * @returns {element} Value representing the passed value as a DOM element.
+                     * @param {boolean} bReturnMultipleAsArray Value representing if we are to return multiple DOM elements as an array.
+                     * @returns {element|element[]} Value representing the passed value as a DOM element.
                      */ //#####
-                    mk: function (x, _defaultVal) {
+                    mk: function (x, _defaultVal, bReturnMultipleAsArray) {
                         var a__parsed, i,
                             _div = _document.createElement("div"),
-                            _returnVal = (arguments.length > 1 ? _defaultVal : _div)
+                            vReturnVal = (arguments.length > 1 ? _defaultVal : _div)
                         ;
 
                         //# If the passed x .is .str, .trim it
@@ -3028,19 +3089,18 @@
 
                             //# If the passed x .is a .selector, try and collect it
                             if (core.type.str.is.selector(x)) {
-                                _returnVal = _document_querySelector(x) || _document.getElementById(x) || _returnVal;
+                                vReturnVal = _document_querySelector(x) || _document.getElementById(x) || vReturnVal;
                             }
                             //# Else try to parse the passed .is .str as HTML
                             //#     NOTE: Old logic for reference
                             /*else if (true) {
                                 _div.innerHTML = x;
 
-                                //# If we were able to parse a single non-#text node, set it into our _returnVal
-                                //# TODO: Make testing more betterer
+                                //# If we were able to parse a single non-#text node, set it into our vReturnVal
                                 if (_div.childNodes.length <= 2 && _div.childNodes[0].nodeType !== 3) {
-                                    _returnVal = _div.childNodes[0];
+                                    vReturnVal = _div.childNodes[0];
                                 }
-                                //# Else if our _returnVal was defaulted to the _div above, reset the _div's .innerHTML
+                                //# Else if our vReturnVal was defaulted to the _div above, reset the _div's .innerHTML
                                 else {
                                     _div.innerHTML = "";
                                 }
@@ -3052,32 +3112,40 @@
 
                                 //# If we a__parsed out elements
                                 if (core.type.arr.is(a__parsed, true)) {
-                                    //# If we parsed out more than one element, loop over them, adding each under the generic _div, then reset our _returnVal accordingly
+                                    //# If we parsed out more than one element
                                     if (a__parsed.length > 1) {
-                                        for (i = 0; i < a__parsed.length; i++) {
-                                            _div.append(a__parsed[i]);
+                                        //# If we are supposed to bReturnMultipleAsArray, set our vReturnVal to a__parsed
+                                        if (bReturnMultipleAsArray) {
+                                            vReturnVal = a__parsed;
                                         }
-                                        _returnVal = _div;
+                                        //# Else we need to .append the a__parsed elements into the _div, so loop over them, adding each under the generic _div, then set .parsedMultiple and reset our vReturnVal accordingly
+                                        else {
+                                            for (i = 0; i < a__parsed.length; i++) {
+                                                _div.append(a__parsed[i]);
+                                            }
+                                            _div.parsedMultiple = true;
+                                            vReturnVal = _div;
+                                        }
                                     }
-                                    //# Else we only a__parsed out a single element, so set it into our _returnVal
+                                    //# Else we only a__parsed out a single element, so set it into our vReturnVal
                                     else {
-                                        _returnVal = a__parsed[0];
+                                        vReturnVal = a__parsed[0];
                                     }
                                 }
                             }
                         }
-                        //# Else if the passed x .is .dom, set our _returnVal to it
+                        //# Else if the passed x .is .dom, set our vReturnVal to it
                         else if (core.type.dom.is(x)) {
-                            _returnVal = x;
+                            vReturnVal = x;
                         }
-                        //# Else if the first index of the passed x .is .dom, set our _returnVal to it
+                        //# Else if the first index of the passed x .is .dom, set our vReturnVal to it
                         //#     NOTE: This is pretty much to support jQuery objects
                         //#     TODO: is this a good idea? Should we loop over them like above?
                         else if (x && x[0] && core.type.dom.is(x[0])) {
-                            _returnVal = x[0];
+                            vReturnVal = x[0];
                         }
 
-                        return _returnVal;
+                        return vReturnVal;
                     }, //# dom.mk
 
                     //#########
@@ -3134,7 +3202,37 @@
                         );
 
                         return a__returnVal;
-                    } //# dom.parse
+                    }, //# dom.parse
+
+                    //#########
+                    /** Generates a unique DOM ID.
+                     * @function ish.type.dom:id
+                     * @param {string} [sPrefix=""] Value representing the DOM ID's prefix.
+                     * @returns {element} Value representing a unique DOM ID.
+                     */ //#####
+                    id: core.extend(
+                        function (sPrefix) {
+                            var sID;
+
+                            sPrefix = core.type.str.mk(sPrefix);
+
+                            do {
+                                sID = sPrefix + Math.random().toString(36).substr(2,5);
+                            } while (_document.getElementById(sID));
+
+                            return sID;
+                        }, {
+                            //#########
+                            /** Determines if the passed value represents a reconized DOM ID.
+                             * @function ish.type.dom:id:is
+                             * @param {string} sID Value representing the DOM ID to test.
+                             * @returns {boolean} Value representing if the passed value represents a reconized DOM ID.
+                             */ //#####
+                            is: function (sID) {
+                                return !!_document.getElementById(sID);
+                            }
+                        }
+                    ) //# dom.id
                 };
             }(); //# core.type.dom
 

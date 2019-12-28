@@ -87,11 +87,44 @@
                     }, //# numeric
 
                     any: function ($) {
-                        $.expect(8);
-                        $.assert(!core.type.is.truthy(0), "0");
+                        $.expect(5);
+                        $.assert(core.type.any(0, [0, 1, 2, 3, 4]), "0");
+                        $.assert(!core.type.any(0, [1, 2, 3, '0', 4]), "'0'");
+                        $.assert(core.type.any(0, [1, 2, 3, '0', 4], true), "'0', bUseCoercion");
+                        $.assert(!core.type.any('0', [1, 2, 3, 0, 4]), "'0' !== 0");
+                        $.assert(core.type.any('0', [1, 2, 3, 4, 0], true), "'0' == 0");
                     }
-                } //# is
+                }, //# is
 
+                query: function ($) {
+                    var a_oResult,
+                        a_oData = [
+                            { a: 1, b: "two", c: [1, 2, 3] },
+                            { a: 10, b: "to", c: [1, 2, 3, 4] },
+                            { a: 100, b: "too", c: [4, 5, 6] },
+                            { a: 10, b: "tu", c: [4, 5, 6] },
+                            { a: 10000, b: "two", c: [9, 8, 7, 6] }
+                        ]
+                    ;
+
+                    //# [{}, {}] = core.type.query([{}, {}], { key: "val", key2: ["val1", "val2"], "path.to.key3": function(vTestValue, oSourceIndex, oOptions) { return true || false; } })
+
+                    $.expect(5);
+                    a_oResult = core.type.query(a_oData, { b: "two" });
+                    $.assert(a_oResult.length === 2 && a_oResult[0].a === 1 && a_oResult[1].a === 10000, "two");
+
+                    a_oResult = core.type.query(a_oData, { a: [1, 100] });
+                    $.assert(a_oResult.length === 2 && a_oResult[0].b === "two" && a_oResult[1].b === "too", "two,too");
+
+                    a_oResult = core.type.query(a_oData, [{ a: 10}, { b: "too" }]);
+                    $.assert(a_oResult.length === 3 && a_oResult[0].b === "to" && a_oResult[1].b === "tu" && a_oResult[2].b === "too", "to,tu,too");
+
+                    a_oResult = core.type.query(a_oData, { a: function (vTestValue /*, oSource, oOptions*/) { return vTestValue >= 100; } });
+                    $.assert(a_oResult.length === 2 && a_oResult[0].a === 100 && a_oResult[1].a === 10000, "too,two");
+
+                    a_oResult = core.type.query(a_oData, { c: function (vTestValue /*, oSource, oOptions*/) { return vTestValue.length > 3; } });
+                    $.assert(a_oResult.length === 2 && a_oResult[0].c[3] === 4 && a_oResult[1].c[0] === 9, "to,two");
+                } //# query
             };
         }); //# core.test.*
 

@@ -1326,6 +1326,14 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                             $.assert(a__test.length === 1, "textnode");
                             $.assert(a__test[0].tagName !== "DIV", "textnode.tagName");
                             $.assert(a__test[0].nodeName === "#text", "textnode.nodeName");
+                        },
+                        id: { //# TODO
+                            _: function ($) {
+                                $.expect(1);
+                            },
+                            is: function ($) {
+                                $.expect(1);
+                            }
                         }
                     })
                 },

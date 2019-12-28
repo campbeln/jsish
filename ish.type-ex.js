@@ -268,12 +268,11 @@
                 /** Queries the passed value.
                  * @function ish.type.query
                  * @param {variant[]|object} vCollection Value representing the collection to interrogate.
-                 * @param {variant[]|object} vQuery Value representing the query.
+                 * @param {object|object[]} vQuery Value representing the query.
                  * @param {object} [oOptions] Value representing the following options:
                  *      @param {boolean} [oOptions.firstEntryOnly=false] Value representing if only the first result is to be returned.
                  *      @param {boolean} [oOptions.caseInsensitive=false] Value representing if the keys are to be searched for in a case-insensitive manor.
                  *      @param {boolean} [oOptions.useCoercion=false] Value representing if coercion is to be used during comparisons.
-                 *      @param {boolean} [oOptions.or=false] Value representing if multiple entries within the passed query are to be considered <code>or</code> rather than <code>and</code>.
                  * @returns {variant[]|variant} Value representing the passed values that matched the query.
                  */ //#####
                 query: function () {
@@ -306,23 +305,18 @@
                     //# ["val1", "val2"] = core.type.query([{}, {}], ["path.to.val"])
                     //# [{}, {}] = core.type.query([{}, {}], { key: "val", key2: ["val1", "val2"], "path.to.key3": function(vTestValue, oSourceIndex, oOptions) { return true || false; } })
                     return function (vCollection, vQuery, oOptions) {
-                        var a_oCollection, vCurrent, bIsMatch, i, j, k, h,
-                            a_oReturnVal = [],
-                            a_sKeys = (core.type.obj.is(vQuery) ?
-                                Object.keys(vQuery) :
-                                _undefined
-                            )
+                        var a_oCollection, a_sKeys, vCurrent, bIsMatch, h, i, j, k,
+                            a_oReturnVal = []
                         ;
 
-                        //#
+                        //# Ensure the passed vQuery is an array
                         vQuery = core.type.arr.mk(vQuery, [vQuery]);
 
                         //# .extend the passed oOptions with the defaults (which also ensures the passed oOptions .is .obj)
                         oOptions = core.extend({
                             firstEntryOnly: false,
                             caseInsensitive: false,
-                            useCoercion: false,
-                            or: false
+                            useCoercion: false
                         }, oOptions);
 
                         //# Calculate our a_oCollection based on the passed vCollection
@@ -333,20 +327,20 @@
                             )
                         );
 
-                        //# If we have a_oCollection and a vQuery
+                        //# If we have a_oCollection
                         if (core.type.arr.is(a_oCollection, true)) {
-                            //# Traverse our a_oCollection
-                            for (i = 0; i < a_oCollection.length; i++) {
-                                //#
-                                for (h = 0; h < vQuery.length; h++) {
-                                    //#
-                                    a_sKeys = (core.type.obj.is(vQuery[h]) ?
-                                        Object.keys(vQuery[h]) :
-                                        _undefined
-                                    );
+                            //# Traverse the passed vQuery(ies)
+                            for (h = 0; h < vQuery.length; h++) {
+                                //# Pull the a_sKeys for the current vQuery
+                                a_sKeys = (core.type.obj.is(vQuery[h]) ?
+                                    Object.keys(vQuery[h]) :
+                                    _undefined
+                                );
 
-                                    //#
-                                    if (core.type.arr.is(a_sKeys, true)) {
+                                //# If the current vQuery has a_sKeys
+                                if (core.type.arr.is(a_sKeys, true)) {
+                                    //# Traverse our a_oCollection
+                                    for (i = 0; i < a_oCollection.length; i++) {
                                         //# Traverse our vQuery's a_sKeys, resetting bIsMatch and vCurrent for each loop
                                         for (j = 0; j < a_sKeys.length; j++) {
                                             bIsMatch = false;
@@ -377,8 +371,9 @@
                                         if (bIsMatch) {
                                             a_oReturnVal.push(a_oCollection[i]);
 
-                                            //# If we are looking for the .firstEntryOnly, fall from the outer loop
+                                            //# If we are looking for the .firstEntryOnly, reset h to fall from the outer loop then fall from the middle loop
                                             if (oOptions.firstEntryOnly) {
+                                                h = vQuery.length;
                                                 break;
                                             }
                                         }
@@ -397,7 +392,7 @@
                 //#########
                 /** Generates a Universally Unique Identifier (UUID).
                  * @function ish.type.uuid
-                 * @param {integer} [iVersion=4] Value representing the UUID version to create, with valid values ranging between 1-5.
+                 * @param {integer} [iVersion=4] Value representing the UUID version to create, with valid values ranging between <code>1</code>-<code>5</code>.
                  * @returns {boolean} Value representing UUID.
                  * @see {@link https://stackoverflow.com/a/2117523/235704|StackOverflow.com}
                  */ //#####
@@ -469,12 +464,21 @@
                          * @param {boolean|object} [vOptions] Value representing if Nil UUIDs are to be ignored or the following options:
                          *      @param {boolean} [vOptions.excludeNilUUID=false] Value representing if Nil UUIDs are to be ignored.
                          *      @param {boolean} [vOptions.allowBrackets=false] Value representing if enclosing brackets (<code>{}</code>) are to be allowed.
+                         *      @param {integer} [vOptions.version] Value representing the required UUID version, with valid values ranging between <code>1</code>-<code>5</code>.
                          * @returns {boolean} Value representing if the passed value represents a UUID.
                          * @see {@link https://tools.ietf.org/html/rfc4122#section-4.1.7|ietf.org}
                          */ //#####
                         is: function (x, vOptions) {
                             var oOptions = core.type.obj.mk(vOptions),
                                 bExcludeNilUUID = (vOptions === true || oOptions.excludeNilUUID === true),
+                                sVersion = (fixVersion(oOptions.version) === oOptions.version ?
+                                    oOptions.version :
+                                    "1-5"
+                                ),
+                                reTest = new RegExp(bExcludeNilUUID ?
+                                    "^[0-9a-f]{8}-[0-9a-f]{4}-[" + sVersion + "][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$" :
+                                    "^[0-9a-f]{8}-[0-9a-f]{4}-[0," + sVersion + "][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$",
+                                "i"),
                                 bReturnVal = false
                             ;
 
@@ -485,11 +489,7 @@
                                     x = core.type.uuid.format(x);
                                 }
 
-                                //# Determine our RegExp based on if we are to bExcludeNilUUID or not, then .test x
-                                bReturnVal = (bExcludeNilUUID ?
-                                    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i :
-                                    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-5][0-9a-f]{3}-[089ab][0-9a-f]{3}-[0-9a-f]{12}$/i
-                                ).test(x);
+                                bReturnVal = reTest.test(x);
                             }
 
                             return bReturnVal;
@@ -652,28 +652,6 @@
 
                         return iReturnVal;
                     }, //# date.age
-
-
-                    //#########
-                    /** Determines the date of the passed value formatted as <code>YYYY/MM/DD</code>.
-                     * @$note The passed values are implicitly casted per <code>{@link ish.type.date.mk}</code>.
-                     * @function ish.type.date.yyyymmdd
-                     * @param {variant} [x=new Date()] Value representing the date.
-                     * @param {variant} [vDefault=undefined] Value representing the default return value if casting fails.
-                     * @param {string} [sDelimiter="/"] Value representing the date delimiter.
-                     * @returns {integer} Value representing the passed value formatted as <code>YYYY/MM/DD</code>.
-                     */ //#####
-                    yyyymmdd: function (x, vDefault, sDelimiter) {
-                        var dDate = core.type.date.mk(x, (arguments.length > 1 ? vDefault : new Date()));
-
-                        sDelimiter = core.type.str.mk(sDelimiter, "/");
-
-                        return (core.type.date.is(dDate) ?
-                            dDate.getFullYear() + sDelimiter + core.type.str.lpad((dDate.getMonth() + 1), "0", 2) + sDelimiter + core.type.str.lpad(dDate.getDate(), "0", 2) :
-                            ""
-                        );
-                        //dCalDate.getHours() + ':' + core.type.str.mk(dCalDate.getMinutes()).lPad("0", 2) + ':' + core.type.str.mk(dCalDate.getSeconds()).lPad("0", 2)
-                    }, //# date.yyyymmdd
 
 
                     //#########

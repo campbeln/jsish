@@ -487,6 +487,7 @@
                                 de: deserialize
                             }, //# ser
 
+                            //# TODO
                             //# Parses the query string into an object model, returning an object containing the .model and a .value function to retrieve the values (see note below).
                             //#     Supports: ?test=Hello&person=neek&person=jeff&person[]=jim&person[extra]=john&test3&nocache=1398914891264&person=frank,jim;person=aaron
                             get: get,

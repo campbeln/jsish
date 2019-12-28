@@ -126,6 +126,10 @@
             oMask = {}
         ;
 
+        //#
+        a_sKeys.push("eval");
+        a_sKeys.push("Function");
+
         //# oMask out the locally accessible objects (including i, oMask and a_sKeys), then ensure that oMask is still accessible via `this` (per: https://stackoverflow.com/questions/543533/restricting-eval-to-a-narrow-scope/543820#comment36708109_543820)
         for (i = 0; i < a_sKeys.length; i++) {
             oMask[a_sKeys[i]] = undefined;
@@ -143,7 +147,7 @@
 
         try {
             //eval("oData.r=" + oData.js);
-            oData.r = (new Function("with(this){return " + oData.js + "}")).call(oMask);
+            oData.r = (new Function("'use strict';with(this){return " + oData.js + "}")).call(oMask);
         } catch (e) {
             //# An error occurred fnEval'ing the current index, so set .r(esult) to null and log the .e(rror)
             oData.r = null;
