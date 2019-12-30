@@ -1,6 +1,6 @@
 //################################################################################################
 /** @file Javascript Evaluation mixin for ish.js
- * @mixin ish.io.eval
+ * @mixin ish.io.evaler
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
@@ -8,8 +8,13 @@
 !function (fnEvalerMetaFactory) {
     'use strict';
 
+    var bServerside = (typeof window === 'undefined'),
+        _root = (bServerside ? global : window),
+        _document = (bServerside ? {} : document)
+    ;
 
-    function init(core, _root, _document) {
+
+    function init(core) {
         //# Build the passed fnEvalerMetaFactory
         //#     NOTE: The fnLocalEvaler is specifically placed outside of the "use strict" block to allow for the local eval calls below to persist across eval'uations
         var $evalFactory = fnEvalerMetaFactory(_root, _document, { //# baseServices
@@ -29,10 +34,12 @@
                 }
             }, //# is
 
-            newId: function (sPrefix) {
-                return core.type.fn.run(core.type.dom.id, [sPrefix]);
-            } //# newId
+            newId: core.resolve(core.type, "dom.id"), //# !bServerside
+
+            extend: core.extend,
+            serverside: bServerside
         });
+
 
         //################################################################################################
         /** Collection of Javascript Evaluation-based functionality.
@@ -40,24 +47,54 @@
          * @ignore
          */ //############################################################################################
         core.oop.partial(core.io, function (/*oProtected*/) {
-            
+            var eEnvironments = {
+                global: "global",
+                local: "local",
+                masked: "masked",
+                useStrict: "useStrict",
+                json: "json"
+            };
+
+            //# If we are not on the bServerside, also setup .isolated and .sandbox (as they require DOM interaction)
+            if (!bServerside) {
+                eEnvironments.isolated = "isolated";
+                eEnvironments.sandbox = "sandbox";
+            }
 
             return {
-                eval: {
-                    //#########
-                    /** Converts the passed value to a CSV string.
-                     * @function ish.io.csv.stringify
-                     * @param {object[]} a_oData Value representing the data to serialize into a CSV string.
-                     * @param {string|object} [vOptions] Value representing the CSV delimiter or the desired options:
-                     *      @param {string} [vOptions.delimiter=','] Value representing the CSV delimiter.
-                     *      @param {boolean} [vOptions.quotes=false] Value representing each serialized value is to be surrounded by double-quotes (e.g. <code>"</code>).
-                     *      @param {string[]} [vOptions.keys=undefined] Value representing the keys to include within the serialized CSV string.
-                     * @returns {string} Value representing the CSV data.
-                     */ //#####
-                    stringify: function () {
+                //#########
+                /** Provides an interface to evaluate Javascript under the passed context and environment.
+                 * @function ish.io.csv.stringify
+                 * @param {object} oThis Value representing the <code>this</code> context to evaluate the Javascript under. <note><code>ish.io.evaler.types.masked</code> utilize this argument as the scope rather than <code>this</code> context.</note>
+                 * @param {string} [eEnvironment=ish.io.evaler.environment.masked] Value representing the type of evaluation .
+                 * @returns {function} Value representing the requested evaler function as <code>evaler(vJS, oInjectData, bReturnAsMetadata)</code>.
+                 */ //#####
+                evaler: core.extend(
+                    function (oThis, eEnvironment) {
+                        var fnReturnVal;
 
-                    } //# io.csv.stringify
-                } //# io.daemon
+                        //# Ensure the eEnvironment defaults to .masked if it was not passed in
+                        eEnvironment = core.type.str.mk(eEnvironment, eEnvironments.masked);
+
+                        //# If the passed eEnvironment is recognized
+                        if (core.type.fn.is($evalFactory[eEnvironment])) {
+                            //# If this is a .sandbox request, create a new $iframe
+                            if (eEnvironment === eEnvironments.sandbox) {
+                                fnReturnVal = $evalFactory[eEnvironment]($evalFactory.iframeFactory("allow-scripts", "" /*, undefined*/)).global();
+                            }
+                            //# Else setup the .evaler via our $evalFactory
+                            else {
+                                fnReturnVal = $evalFactory[eEnvironment](oThis);
+                            }
+                        }
+
+                        //(vJS, oInject, bReturnObject)
+                        return fnReturnVal;
+                    }, //# io.evaler
+                    {
+                        environments: eEnvironments
+                    }
+                )
             };
         }); //# core.io.eval
     } //# init
@@ -80,16 +117,16 @@
     //# Pass in the fnEvalerMetaFactory used by cjs3Core
     //#     NOTE: We pass in the fnEvalerFactory requirements locally into the metaFactory, with the generated $services (along with window and document) passed into the factory later
     function /*fnEvalerMetaFactory*/(fnEvalerFactory, fnLocalEvaler, fnMaskedEvaler, fnUseStrictEvaler, fnSandboxEvalerFactory /*, $services*/) {
-        return function (_window, _document, $services) {
+        return function (_root, _document, $services) {
             //# Build the passed fnEvalerFactory
             //#     NOTE: The fnLocalEvaler is specifically placed outside of the "use strict" block to allow for the local eval calls below to persist across eval'uations
-            return fnEvalerFactory(_window, _document, $services, fnLocalEvaler, fnMaskedEvaler, fnUseStrictEvaler, fnSandboxEvalerFactory);
+            return fnEvalerFactory(_root, _document, $services, fnLocalEvaler, fnMaskedEvaler, fnUseStrictEvaler, fnSandboxEvalerFactory);
         };
     }(
         //# <EvalerJS>
         //# Base factory for the evaler logic
         //#     NOTE: $services requires - is.arr(x), is.obj(x), is.fn(x), is.str(x) [fnSandboxEvalerFactory], newId(sPrefix)
-        function /*fnEvalerFactory*/(_window, _document, $services, fnLocalEvaler, fnMaskedEvaler, fnUseStrictEvaler, fnSandboxEvalerFactory) {
+        function /*fnEvalerFactory*/(_root, _document, $services, fnLocalEvaler, fnMaskedEvaler, fnUseStrictEvaler, fnSandboxEvalerFactory) {
             "use strict";
 
             var fnJSONParse, oReturnVal,
@@ -104,10 +141,11 @@
                 //#     NOTE: Based on http://perfectionkills.com/global-eval-what-are-the-options/#the_problem_with_geval_windowexecscript_eval
                 var sGetGlobalEval =
                         "try{" +
+                            "var _root=(typeof window==='undefined'?global:window)" //# Node support
                             "return(function(g,Object){" +
                                 "return((1,eval)('Object')===g" +
                                     "?function(){return(1,eval)(arguments[0]);}" +
-                                    ":(window.execScript?function(){return window.execScript(arguments[0]);}:undefined)" +
+                                    ":(_root.execScript?function(){return _root.execScript(arguments[0]);}:undefined)" +
                                 ");" +
                             "})(Object,{});" +
                         "}catch(e){return undefined;}"
@@ -126,9 +164,9 @@
 
 
             //# Factory function that configures and returns a looper function for the passed fnEval and oContext
-            function looperFactory(fnEval, $window, oContext, bInContext /*, $sandboxWin*/) {
+            function looperFactory(fnEval, $root, oContext, bInContext /*, $sandboxWin*/) {
                 //# Return the configured .looper function to the caller
-                return function (vJS, oInject, bReturnObject) {
+                return function evaler(vJS, oInject, bReturnObject) {
                     var i,
                         bAsArray = $services.is.arr(vJS),
                         bInjections = $services.is.obj(oInject),
@@ -164,12 +202,12 @@
                             break;
                         }
                         default: {
-                            //# If we have a $window (as 'json' does not) and the passed oInject .is.obj
-                            if ($window && bInjections) {
-                                //# Traverse oInject, setting each .hasOwnProperty into the $window (leaving $window's current definition if there is one)
+                            //# If we have a $root (as 'json' does not) and the passed oInject .is.obj
+                            if ($root && bInjections) {
+                                //# Traverse oInject, setting each .hasOwnProperty into the $root (leaving $root's current definition if there is one)
                                 for (i in oInject) {
-                                    if ($window[i] === undefined && oInject.hasOwnProperty(i)) {
-                                        $window[i] = oInject[i];
+                                    if ($root[i] === undefined && oInject.hasOwnProperty(i)) {
+                                        $root[i] = oInject[i];
                                     }
                                 }
                             }
@@ -223,23 +261,23 @@
                     bContextPassed = (oContext !== undefined && oContext !== null)
                 ;
 
-                //# Default the oContext to _window if it wasn't passed
+                //# Default the oContext to _root if it wasn't passed
                 //#     TODO: Is this default value logic still required?
-                oContext = (bContextPassed ? oContext : _window);
+                oContext = (bContextPassed ? oContext : _root);
 
                 //# Determine the eMode and process accordingly
                 switch (eMode/*.substr(0, 1).toLowerCase()*/) {
                     //# global (meaning oContext should be a window object)
                     case "g": {
-                        //# If this is a request for the current _window
-                        if (oContext === _window) {
+                        //# If this is a request for the current _root
+                        if (oContext === _root) {
                             //# Ensure the fnGlobalEvaler has been setup, then safely set it (or optionally fnLocalEvaler if we are to .f(allback)) into fnEvaler
                             getGlobalEvaler();
                             fnEvaler = (!fnGlobalEvaler && oConfig.f ? fnLocalEvaler : fnGlobalEvaler);
 
                             //# If we were able to collect an fnEvaler above, return the configured looper
                             if (fnEvaler) {
-                                fnReturnValue = looperFactory(fnEvaler, _window/*, undefined, false*/);
+                                fnReturnValue = looperFactory(fnEvaler, _root/*, undefined, false*/);
                             }
                         }
                         //# Else if the passed oContext has an .eval function (e.g. it's a window object)
@@ -263,47 +301,49 @@
                     }
                     //# local
                     case "l": {
-                        fnReturnValue = looperFactory(fnLocalEvaler, _window, oContext, bContextPassed);
+                        fnReturnValue = looperFactory(fnLocalEvaler, _root, oContext, bContextPassed);
                         break;
                     }
                     //# masked
                     case "m": {
-                        fnReturnValue = looperFactory(fnMaskedEvaler, _window, oContext, bContextPassed);
+                        fnReturnValue = looperFactory(fnMaskedEvaler, _root, oContext, bContextPassed);
                         break;
                     }
                     //# "use strict"
                     case "u": {
-                        fnReturnValue = looperFactory(fnUseStrictEvaler, _window, oContext, bContextPassed);
+                        fnReturnValue = looperFactory(fnUseStrictEvaler, _root, oContext, bContextPassed);
                         break;
                     }
                     //# isolated
                     case "i": {
-                        //# Ensure the passed oConfig .is.obj, then build the IFRAME and collect its .contentWindow
-                        //#     NOTE: We send null into .iframeFactory rather than "allow-scripts allow-same-origin" as browsers log a warning when this combo is set, and as this is simply an isolated (rather than a sandboxed) scope the code is trusted, but needs to have its own environment
-                        oConfig = ($services.is.obj(oConfig) ? oConfig : {});
-                        oConfig.iframe = iframeFactory(null, "" /*, undefined*/);
-                        oConfig.window = oConfig.iframe.contentWindow;
+                        if (!$services.serverside) {
+                            //# Ensure the passed oConfig .is.obj, then build the IFRAME and collect its .contentWindow
+                            //#     NOTE: We send null into .iframeFactory rather than "allow-scripts allow-same-origin" as browsers log a warning when this combo is set, and as this is simply an isolated (rather than a sandboxed) scope the code is trusted, but needs to have its own environment
+                            oConfig = ($services.is.obj(oConfig) ? oConfig : {});
+                            oConfig.iframe = iframeFactory(null, "" /*, undefined*/);
+                            oConfig.window = oConfig.iframe.contentWindow;
 
-                        //# Recurse to collect the isolated .window's fnEvaler (signaling to .f(allback) and that we are .r(ecursing))
-                        fnEvaler = evalerFactory("g", oConfig.window, { f: 1, r: 1 });
+                            //# Recurse to collect the isolated .window's fnEvaler (signaling to .f(allback) and that we are .r(ecursing))
+                            fnEvaler = evalerFactory("g", oConfig.window, { f: 1, r: 1 });
 
-                        //# Return the configured looper, defaulting oContext to the $sandboxWin if !bContextPassed
-                        //#     NOTE: Since we default oContext to _window above, we need to look at bContextPassed to send the correct second argument
-                        //#     NOTE: Due to the nature of eval'ing in the global namespace, we are not able to .call with a oContext
-                        //fnReturnValue = looperFactory(fnEvaler, oConfig.window, (bContextPassed ? oContext : null), bContextPassed);
-                        //fnReturnValue = looperFactory(fnEvaler, oConfig.window /*, oContext, bContextPassed*/);
-                        var fnReturnValue2 = looperFactory(fnEvaler, oConfig.window /*, oContext, bContextPassed*/);
+                            //# Return the configured looper, defaulting oContext to the $sandboxWin if !bContextPassed
+                            //#     NOTE: Since we default oContext to _root above, we need to look at bContextPassed to send the correct second argument
+                            //#     NOTE: Due to the nature of eval'ing in the global namespace, we are not able to .call with a oContext
+                            //fnReturnValue = looperFactory(fnEvaler, oConfig.window, (bContextPassed ? oContext : null), bContextPassed);
+                            //fnReturnValue = looperFactory(fnEvaler, oConfig.window /*, oContext, bContextPassed*/);
+                            var fnReturnValue2 = looperFactory(fnEvaler, oConfig.window /*, oContext, bContextPassed*/);
 
-                        // neek
-                        fnReturnValue = function (one, two, three) {
-                            return fnReturnValue2(one, two, three);
-                        };
+                            // neek
+                            fnReturnValue = function (one, two, three) {
+                                return fnReturnValue2(one, two, three);
+                            };
+                        }
                         break;
                     }
                         //# json
                     case "j": {
                         //# JSON.parse never allows for oInject'ions nor a oContext, so never pass a oContext into the .looperFactory (which in turn locks out oInject'ions)
-                        fnReturnValue = looperFactory(fnJSONParse/*, _window, undefined, undefined, false*/);
+                        fnReturnValue = looperFactory(fnJSONParse/*, _root, undefined, undefined, false*/);
                         break;
                     }
                 }
@@ -314,27 +354,25 @@
 
             //# Set our .version and .extend the passed $services with our own EvalerJS (evaler) logic
             //#      NOTE: Setting up $services like this allows for any internal logic to be overridden as well as allows for all versions of CjsSS to coexist under a single definition (though some .conf logic would need to be used)
-            $services.version.evaler = sVersion;
-            $services.extend($services, {
-                evaler: {
-                    iframeFactory: iframeFactory
-                }
-            });
+            //$services.version.evaler = sVersion; //# neek
+            if (!$services.serverside) {
+                $services.extend($services, {
+                    evaler: {
+                        iframeFactory: iframeFactory
+                    }
+                });
+            }
 
             //# If the native JSON.parse is available, set fnJSONParse to it
-            if (_window.JSON && _window.JSON.parse) {
-                fnJSONParse = _window.JSON.parse;
-            }
-            //# Else if $jQuery's .parseJSON is available, set fnJSONParse to it
-            else if (_window.jQuery && _window.jQuery.parseJSON) {
-                fnJSONParse = _window.jQuery.parseJSON;
+            if (_root.JSON && _root.JSON.parse) {
+                fnJSONParse = _root.JSON.parse;
             }
 
             //# Configure and return our return value
             oReturnVal = {
                 ver: sVersion,
-                global: function (bFallback, $window) {
-                    return evalerFactory("g", $window || _window, { f: bFallback });
+                global: function (bFallback, $root) {
+                    return evalerFactory("g", $root || _root, { f: bFallback });
                 },
                 //local: undefined,
                 //masked: undefined,
@@ -351,7 +389,7 @@
                 };
             }
             if (fnMaskedEvaler) {
-                oReturnVal.local = function (oContext) {
+                oReturnVal.masked = function (oContext) {
                     return evalerFactory("m", oContext /*, {}*/);
                 };
             }
@@ -365,8 +403,8 @@
                     return evalerFactory("j" /*, undefined, {}*/);
                 };
             }
-            if (fnSandboxEvalerFactory) {
-                oReturnVal.sandbox = fnSandboxEvalerFactory(_window, $services, { looper: looperFactory, iframe: iframeFactory });
+            if (!$services.serverside && fnSandboxEvalerFactory) {
+                oReturnVal.sandbox = fnSandboxEvalerFactory(_root, $services, { looper: looperFactory, iframe: iframeFactory });
             }
             return oReturnVal;
         },
@@ -406,28 +444,37 @@
 
         //#     Based on code inspired by https://stackoverflow.com/a/543820/235704
         function /*fnMaskedEvaler*/(/* oData, i, oInjectData */) {
-            var i,
-                oMask = {},
-                a_sKeys = Object.keys(this || {})
-            ;
+            //# Create the oMask under a SEAF to keep it's locals out of scope
+            arguments[3] = (function /*setMask*/(oInjectData) {
+                var j,
+                    oMask = {},
+                    oThis = this || {},
+                    bServerside = (typeof window === 'undefined'),
+                    a_sKeys = Object.keys(bServerside ? global : window || {})
+                ;
 
-            //#
-            a_sKeys.push("eval");
-            a_sKeys.push("Function");
+                //# Also oMask the following reserved words
+                a_sKeys = a_sKeys.concat(["arguments", "eval", "Function"]);
 
-            //# oMask out the locally accessible objects (including i, oMask and a_sKeys)
-            for (i = 0; i < a_sKeys.length; i++) {
-                oMask[a_sKeys[i]] = undefined;
-            }
-
-            //# If oInjectData was passed, traverse the injection .o(bject) .shift'ing off a .k(ey) at a time as we set each as a local var
-            if (arguments[2]) {
-                while (arguments[2].k.length > 0) {
-                    arguments[2].c = arguments[2].k.shift();
-                    //eval("var " + arguments[2].c + "=arguments[2].o[arguments[2].c];");
-                    oMask[arguments[2].c] = arguments[2].o[arguments[2].c];
+                //# oMask out the locally accessible objects (including i, oMask and a_sKeys)
+                for (j = 0; j < a_sKeys.length; j++) {
+                    oMask[a_sKeys[j]] = undefined;
                 }
-            }
+
+                //# un-oMask the oThis-based variables
+                a_sKeys = Object.keys(oThis);
+                for (j = 0; j < a_sKeys.length; j++) {
+                    oMask[a_sKeys[j]] = oThis[a_sKeys[j]];
+                }
+
+                //# un-oMask the oInjectData.o-based variables
+                a_sKeys = Object.keys(oInjectData || {});
+                for (j = 0; j < a_sKeys.length; j++) {
+                    oMask[a_sKeys[j]] = oInjectData[a_sKeys[j]];
+                }
+
+                return oMask;
+            }).call(this, arguments[2].o);
 
             //# Ensure the passed i (aka arguments[1]) is 0
             //#     NOTE: i (aka arguments[1]) must be passed in as 0 ("bad assignment")
@@ -439,7 +486,7 @@
             while (arguments[1] < arguments[0].js.length) {
                 try {
                     //eval(arguments[0].js[arguments[1]]);
-                    (new Function("'use strict';with(this){" + arguments[0].js[arguments[1]] + "}")).call(oMask);
+                    (new Function("with(this){" + arguments[0].js[arguments[1]] + "}")).call(arguments[3]);
                 } catch (e) {
                     //# An error occured fnEval'ing the current index, so .push undefined into this index's entry in .results and log the .errors
                     arguments[0].results.push(undefined);
@@ -610,8 +657,8 @@
                     secure: bUsePostMessage,
 
                     //# Global/Isolated eval interface within the sandbox
-                    //#     NOTE: There is no point to pass a $window here as we use the passed $iframe's .contentWindow
-                    global: function (bFallback /*, $window*/) {
+                    //#     NOTE: There is no point to pass a $root here as we use the passed $iframe's .contentWindow
+                    global: function (bFallback /*, $root*/) {
                         var sInterface = (bFallback ? "isolated" : "global");
 
                         return fnProcess(
@@ -679,6 +726,9 @@
                     return (_Object_prototype_toString.call(f) === '[object Function]');
                 }
             }, //# is
+
+            extend: ish.extend,
+            serverside: (typeof window === 'undefined'),
 
             //# Returns an unused HTML ID
             //#     NOTE: Use the following snipit to ensure a DOM _element has an .id while still collecting the sID: `sID = _element.id = _element.id || $baseServices.newId();`

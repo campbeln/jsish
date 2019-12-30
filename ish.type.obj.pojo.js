@@ -43,9 +43,12 @@
 
                         //# If we (seem) to be eval'ing a valid POJO run it in our fnMaskedEvaler, collecting the .r(esult) into our oReturnVal
                         if (core.type.pojo.check(x, oOptions.reject)) {
-                            fnMaskedEvaler(oArguments, core.type.obj.is(oOptions.context, true) ?
-                                { o: oOptions.context, k: core.type.obj.ownKeys(oOptions.context), c: '' } :
-                                null
+                            fnMaskedEvaler(
+                                oArguments,
+                                0,
+                                core.type.obj.is(oOptions.context, true) ?
+                                    { o: oOptions.context, k: core.type.obj.ownKeys(oOptions.context), c: '' } :
+                                    null
                             );
                             oReturnVal = oArguments.r || oReturnVal;
                         }
@@ -120,42 +123,60 @@
     //#
     //#     NOTE: The fnMaskedEvaler is placed here to limit its scope and local variables as narrowly as possible (hence the use of `arguments[x]`)
     //#     Based on code inspired by https://stackoverflow.com/a/543820/235704
-    function /*fnMaskedEvaler*/(oData, oInjectData) {
-        var i,
-            a_sKeys = Object.keys(this || {}),
-            oMask = {}
-        ;
+    function /*fnMaskedEvaler*/(/* oData, i, oInjectData */) {
+        //# Create the oMask under a SEAF to keep it's locals out of scope
+        arguments[3] = (function /*setMask*/(oInjectData) {
+            var j,
+                oMask = {},
+                oThis = this || {},
+                bServerside = (typeof window === 'undefined'),
+                a_sKeys = Object.keys(bServerside ? global : window || {})
+            ;
 
-        //#
-        a_sKeys.push("eval");
-        a_sKeys.push("Function");
+            //# Also oMask the following reserved words
+            a_sKeys = a_sKeys.concat(["arguments", "eval", "Function"]);
 
-        //# oMask out the locally accessible objects (including i, oMask and a_sKeys), then ensure that oMask is still accessible via `this` (per: https://stackoverflow.com/questions/543533/restricting-eval-to-a-narrow-scope/543820#comment36708109_543820)
-        for (i = 0; i < a_sKeys.length; i++) {
-            oMask[a_sKeys[i]] = undefined;
-        }
-        oMask["this"] = oMask;
-
-        //# If oInjectData was passed, traverse the injection .o(bject) .shift'ing off the c(urrent) .k(ey) as we go and set each as a local var
-        if (oInjectData) {
-            while (oInjectData.k.length > 0) {
-                oInjectData.c = oInjectData.k.shift();
-                //eval("var " + oInjectData.c + "=oInjectData.o[oInjectData.c];");
-                oMask[oInjectData.c] = oInjectData.o[oInjectData.c];
+            //# oMask out the locally accessible objects (including i, oMask and a_sKeys)
+            for (j = 0; j < a_sKeys.length; j++) {
+                oMask[a_sKeys[j]] = undefined;
             }
-        }
 
-        try {
-            //eval("oData.r=" + oData.js);
-            oData.r = (new Function("'use strict';with(this){return " + oData.js + "}")).call(oMask);
-        } catch (e) {
-            //# An error occurred fnEval'ing the current index, so set .r(esult) to null and log the .e(rror)
-            oData.r = null;
-            oData.e = e;
+            //# un-oMask the oThis-based variables
+            a_sKeys = Object.keys(oThis);
+            for (j = 0; j < a_sKeys.length; j++) {
+                oMask[a_sKeys[j]] = oThis[a_sKeys[j]];
+            }
+
+            //# un-oMask the oInjectData.o-based variables
+            a_sKeys = Object.keys(oInjectData || {});
+            for (j = 0; j < a_sKeys.length; j++) {
+                oMask[a_sKeys[j]] = oInjectData[a_sKeys[j]];
+            }
+
+            return oMask;
+        }).call(this, arguments[2].o);
+
+        //# Ensure the passed i (aka arguments[1]) is 0
+        //#     NOTE: i (aka arguments[1]) must be passed in as 0 ("bad assignment")
+        //arguments[1] = 0;
+
+        //# Traverse the .js, processing each entry as we go
+        //#     NOTE: We use a getto-version of a for loop below to keep JSHint happy and to limit the exposed local variables to `arguments` only
+        //#     NOTE: .call the New Function with `use strict` inline to avoid automatic access to the Global object, see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call and https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply and fixes issues in setTimeout, see: https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setTimeout
+        while (arguments[1] < arguments[0].js.length) {
+            try {
+                //eval(arguments[0].js[arguments[1]]);
+                (new Function("with(this){" + arguments[0].js[arguments[1]] + "}")).call(arguments[3]);
+            } catch (e) {
+                //# An error occured fnEval'ing the current index, so .push undefined into this index's entry in .results and log the .errors
+                arguments[0].results.push(undefined);
+                arguments[0].errors.push({ index: arguments[1], error: e, js: arguments[0].js[arguments[1]] });
+            }
+            arguments[1]++;
         }
 
         //# Return the modified oData to the caller
         //#     NOTE: As this is modified byref there is no need to actually return oData
-        //return oData;
+        //return arguments[0];
     } //# fnMaskedEvaler
 );
