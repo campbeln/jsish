@@ -29,7 +29,7 @@ var self = this;
       } else if(kind === 'event' && data.alias) {
         print(data.alias);
       } else {
-        print(longname.replace(/\.![a-zA-Z]*$/g, "").replace("!", "").replace(":", ".")); //# neek print(name)
+        print(longname.replace(/\.![a-zA-Z]*$/g, "").replace(/!/g, "").replace(/:/g, ".")); //# neek print(name)
       }
     ?><?js= (data.signature || '') ?></h4>
 

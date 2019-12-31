@@ -4,6 +4,7 @@
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
+ * @ignore
  */ //############################################################################################
 /*global module, define */                                      //# Enable Node globals for JSHint
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint

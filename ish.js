@@ -1410,6 +1410,7 @@
                     seconds: function (x) {
                         var iReturnVal = 0;
 
+                        //# TODO tests
                         //# If x wasn't passed, determine the .seconds for now
                         if (arguments.length === 0) {
                             iReturnVal = Math.floor(
@@ -1437,6 +1438,7 @@
                 yyyymmdd: function (x, vDefault, sDelimiter) {
                     var dDate = core.type.date.mk(x, (arguments.length > 1 ? vDefault : new Date()));
 
+                    //# TODO tests
                     sDelimiter = core.type.str.mk(sDelimiter, "/");
 
                     return (core.type.date.is(dDate) ?
