@@ -5,7 +5,9 @@
  * @license MIT
  * @copyright 2014-2019, Nick Campbell (wrapper)
  */ //############################################################################################
-!function (fnMaskedEvaler) {
+/*global module, define, global */                              //# Enable Node globals for JSHint
+/*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
+(function (fnMaskedEvaler) {
     'use strict';
 
     //$z.type.obj.pojo('{ neek: false, camp: core.type.str.is("yep") }', null, { context: { core: $z }, check: true })
@@ -179,4 +181,4 @@
         //#     NOTE: As this is modified byref there is no need to actually return oData
         //return arguments[0];
     } //# fnMaskedEvaler
-);
+));

@@ -6,7 +6,9 @@
  * @copyright 2014-2019, Nick Campbell
  * @ignore
  */ //############################################################################################
-!function () {
+/*global module, define */                                      //# Enable Node globals for JSHint
+/*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
+(function () {
     'use strict';
 
     function init(core) {
@@ -432,4 +434,4 @@
     else {
         init(document.querySelector("SCRIPT[ish]").ish);
     }
-}();
+}());

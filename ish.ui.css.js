@@ -6,7 +6,9 @@
  * @copyright 2014-2019, Nick Campbell
  * @ignore
  */ //############################################################################################
-!function (core) {
+/*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
+/*jslint bitwise: true */                                       //# Enable bitwise operators for JSHint
+(function (core) {
     'use strict';
 
 
@@ -158,4 +160,4 @@
         };
     }); //# core.ui.css
 
-}(document.querySelector("SCRIPT[ish]").ish); //# Web-only
+}(document.querySelector("SCRIPT[ish]").ish)); //# Web-only

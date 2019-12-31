@@ -5,14 +5,17 @@
  * @license Public Domain
  * @copyright 2014-2019, Nick Campbell (wrapper)
  */ //############################################################################################
-!function () {
+/*global module, define */                                      //# Enable Node globals for JSHint
+/*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
+/*jslint bitwise: true */                                       //# Enable bitwise operators for JSHint
+(function () {
     'use strict';
 
     function init(core) {
         //Javascript Punycode converter derived from example in RFC3492.
         //This implementation is created by some@domain.name and released into public domain
         // FROM: https://stackoverflow.com/questions/183485/converting-punycode-with-dash-character-to-unicode
-        var punycode = new function Punycode() {
+        var punycode = function Punycode() {
             // This object converts to and from puny-code used in IDN
             //
             // punycode.ToASCII ( domain )
@@ -63,7 +66,7 @@
                     }
                     return output.join("");
                 }
-            }
+            };
 
             //Default parameters
             var initial_n = 0x80;
@@ -76,7 +79,7 @@
             var skew=38;
             var maxint = 0x7FFFFFFF;
 
-            // decode_digit(cp) returns the numeric value of a basic code 
+            // decode_digit(cp) returns the numeric value of a basic code
             // point (for use in representing integers) in the range 0 to
             // base-1, or base if cp is does not represent a value.
 
@@ -88,7 +91,7 @@
             // (when used for representing integers) is d, which needs to be in
             // the range 0 to base-1. The lowercase form is used unless flag is
             // nonzero, in which case the uppercase form is used. The behavior
-            // is undefined if flag is nonzero and digit d has no uppercase form. 
+            // is undefined if flag is nonzero and digit d has no uppercase form.
 
             function encode_digit(d, flag) {
                 return d + 22 + 75 * (d < 26) - ((flag != 0) << 5);
@@ -298,10 +301,10 @@
                         }
                     }
 
-                    ++delta, ++n;
+                    ++delta; ++n;
                 }
                 return output.join("");
-            }
+            };
 
             this.ToASCII = function ( domain ) {
                 var domain_array = domain.split(".");
@@ -315,7 +318,7 @@
                     );
                 }
                 return out.join(".");
-            }
+            };
             this.ToUnicode = function ( domain ) {
                 var domain_array = domain.split(".");
                 var out = [];
@@ -328,7 +331,7 @@
                     );
                 }
                 return out.join(".");
-            }
+            };
         }();
         //# punycode
 
@@ -401,4 +404,4 @@
     else {
         init(document.querySelector("SCRIPT[ish]").ish);
     }
-}();
+}());

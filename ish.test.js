@@ -6,7 +6,9 @@
  * @copyright 2014-2019, Nick Campbell
  * @ignore
  */ //############################################################################################
-!function () {
+/*global module, define */                                       //# Enable Node globals for JSHint
+/*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
+(function () {
     'use strict';
 
 
@@ -1733,4 +1735,4 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
     else {
         init(document.querySelector("SCRIPT[ish]").ish);
 	}
-}();
+}());

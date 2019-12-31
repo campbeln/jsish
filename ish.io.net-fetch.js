@@ -244,7 +244,7 @@
     }
     //# Else we are running in the browser, so we need to setup the _document-based features
     else {
-        /* global ActiveXObject: false */ //# JSHint "ActiveXObject variable undefined" error suppressor
+        /*global ActiveXObject: false */ //# JSHint "ActiveXObject variable undefined" error suppressor
         init(document.querySelector("SCRIPT[ish]").ish, fetch);
     }
 }();

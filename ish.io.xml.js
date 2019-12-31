@@ -5,7 +5,9 @@
  * @license Apache License, Version 2.0
  * @copyright 2014-2019, Nick Campbell (wrapper); 2015, Axinom; 2011-2013, Abdulla Abdurakhmanov
  */ //############################################################################################
-!function (X2JS) {
+/*global module, define */                                      //# Enable Node globals for JSHint
+/*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
+(function (X2JS) {
     "use strict";
 
     function init(core) {
@@ -712,7 +714,7 @@
                     xml = xml.substr(xml.indexOf("?>") + 2);
                 }
 
-                /* global ActiveXObject */
+                /*global ActiveXObject */
                 domNode = new ActiveXObject("Microsoft.XMLDOM");
                 domNode.async = "false";
                 domNode.loadXML(xml);
@@ -790,4 +792,4 @@
             return VERSION;
         };
     }
-);
+));

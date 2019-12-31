@@ -6,7 +6,7 @@
  * @copyright 2014-2019, Nick Campbell
  * @ignore
  */ //############################################################################################
-!function (core) {
+(function (core) {
     "use strict";
 
     //# Build the core.lib.ui.clipboard wrapper around ClipboardJS's implementation
@@ -67,4 +67,4 @@
         }); //# core.ui.clipboard
     }, { baseUrl: "" }); //# core.ui.clipboard
 
-}(document.querySelector("SCRIPT[ish]").ish); //# Web-only
+}(document.querySelector("SCRIPT[ish]").ish)); //# Web-only

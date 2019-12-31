@@ -5,7 +5,9 @@
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
  */ //############################################################################################
-!function () {
+/*global module, define */                                      //# Enable Node globals for JSHint
+/*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
+(function () {
     'use strict';
 
     function init(core) {
@@ -65,7 +67,7 @@
                             }
                             //#
                             else {
-                                throw "ish.oop.inherit: `a_oHierarchy` must be an array and `vTarget` must be an object or function."
+                                throw "ish.oop.inherit: `a_oHierarchy` must be an array and `vTarget` must be an object or function.";
                             }
                         }, { //# core.oop.inherit
                             //#########
@@ -122,4 +124,4 @@
     else {
         init(document.querySelector("SCRIPT[ish]").ish);
     }
-}();
+}());

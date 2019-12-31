@@ -5,7 +5,9 @@
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
  */ //############################################################################################
-!function (fnEvalerMetaFactory) {
+/*global module, define, global */                              //# Enable Node globals for JSHint
+/*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
+(function (fnEvalerMetaFactory) {
     'use strict';
 
     var bServerside = (typeof window === 'undefined'),
@@ -141,7 +143,7 @@
                 //#     NOTE: Based on http://perfectionkills.com/global-eval-what-are-the-options/#the_problem_with_geval_windowexecscript_eval
                 var sGetGlobalEval =
                         "try{" +
-                            "var _root=(typeof window==='undefined'?global:window)" //# Node support
+                            "var _root=(typeof window==='undefined'?global:window)" + //# Node support
                             "return(function(g,Object){" +
                                 "return((1,eval)('Object')===g" +
                                     "?function(){return(1,eval)(arguments[0]);}" +
@@ -749,4 +751,4 @@
         }*/
         //# </EvalerJS>
     ) //# fnEvalerMetaFactory
-);
+));

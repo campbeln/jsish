@@ -5,7 +5,9 @@
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
  */ //############################################################################################
-!function () {
+/*global module, define, require */                             //# Enable Node globals for JSHint
+/*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
+(function () {
     'use strict';
 
     function init(core, XHRConstructor) {
@@ -325,7 +327,7 @@
                                 update: doPost(fnRetry),
                                 'delete': doDelete(fnRetry)
                             }
-                        }
+                        };
                     }, //# io.net.retry
 
                     //# HTTP Status Codes
@@ -424,7 +426,7 @@
     }
     //# Else we are running in the browser, so we need to setup the _document-based features
     else {
-        /* global ActiveXObject: false */ //# JSHint "ActiveXObject variable undefined" error suppressor
+        /*global ActiveXObject: false */ //# JSHint "ActiveXObject variable undefined" error suppressor
         init(document.querySelector("SCRIPT[ish]").ish, XMLHttpRequest || ActiveXObject);
     }
-}();
+}());

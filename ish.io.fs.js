@@ -5,7 +5,8 @@
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
  */ //############################################################################################
-!function (core) {
+/*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
+(function (core) {
     'use strict';
 
     var _document = document;                                                       //# code-golf
@@ -114,4 +115,4 @@
         }
     }); //# core.io.fs
 
-}(document.querySelector("SCRIPT[ish]").ish); //# Web-only
+}(document.querySelector("SCRIPT[ish]").ish)); //# Web-only

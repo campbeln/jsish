@@ -18,7 +18,7 @@
  *      All features are organized in individually includable mixins organized by namespace/major features with only the core <code>ish.js</code> functionality required to bootstrap.
  *  </p>
  * </div>
- * @version 0.12.2019-12-27
+ * @version 0.12.2019-12-30
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
@@ -26,8 +26,9 @@
  * ish.js's (renameable) global object.
  * @namespace ish
  */ //############################################################################################
-/*jshint maxcomplexity:6 */
-!function (/*global, module, require, process, __dirname*/) {
+/*global module, define, global, require, process, __dirname*/  //# Enable Node globals for JSHint
+/*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
+(function (/*global, module, require, process, __dirname*/) {
     'use strict';
 
     var bServerside = (typeof window === 'undefined'), // this.window !== this      //# Are we running under nodeJS (or possibly have been required as a CommonJS module), SEE: https://stackoverflow.com/questions/4224606/how-to-check-whether-a-script-is-running-under-node-js
@@ -40,7 +41,7 @@
         oPrivate = {},
         oTypeIsIsh = { //# Set the .ver and .target under .type.is.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             config: {
-                ver: '0.12.2019-12-27',
+                ver: '0.12.2019-12-30',
                 onServer: bServerside,
                 debug: true,
                 //script: _undefined,
@@ -193,7 +194,7 @@
                     false
                 ;
             };
-        }(), //# ishtype.is.native
+        }(); //# ishtype.is.native
         /*native: function () {
             var toString = Object.prototype.toString,       // Used to resolve the internal `[[Class]]` of x
                 fnToString = Function.prototype.toString,   // Used to resolve the decompiled source of functions
@@ -741,6 +742,8 @@
              * @returns {symbol} Value representing if the passed value represents a symbol.
              */ //#####
             is: function (x) {
+                //#     NOTE: Since the typeof call is gated by .symbol.exists below, we need to selectively enable esnext for this function in JSHint below (besides, it's not a real error, just ES6 safety from JSHint)
+                /* jshint esnext: true */
                 return (core.type.symbol.exists() && typeof x === 'symbol');
             }, //# symbol.is
 
@@ -1411,7 +1414,7 @@
                         if (arguments.length === 0) {
                             iReturnVal = Math.floor(
                                 Math.abs(new Date() - new Date(core.type.date.yyyymmdd() + ' 00:00')) / 1000
-                            )
+                            );
                         }
                         //# Else if the passed x .is .time, determine the .seconds from it
                         else if (core.type.date.time.is(x)) {
@@ -2015,12 +2018,7 @@
                             oOptions.maxAttempts = core.type.int.mk(oOptions.maxAttempts, 4);
 
                             return function (/*arguments*/) {
-                                //# .convert the arguments into an _a(rray)
-                                _a = convert(arguments);
-
-                                //# Setup and call the polling function
-                                //#     NOTE: We need a named function below as we .setTimeout for each .wait interval
-                                !function polling() {
+                                function polling() {
                                     //# Inc our iAttempts and collect the vReturnVal
                                     iAttempts++;
                                     vReturnVal = core.type.fn.call(fn, oOptions.context, _a);
@@ -2037,7 +2035,14 @@
                                     else {
                                         core.type.fn.call(oOptions.callback, oOptions.context, [false, iAttempts, vReturnVal]);
                                     }
-                                }();
+                                }
+
+                                //# .convert the arguments into an _a(rray)
+                                _a = convert(arguments);
+
+                                //# Kick off the polling function
+                                //#     NOTE: We need a named function below as we .setTimeout for each .wait interval
+                                polling();
                             };
                         } //# fn.poll
 
@@ -2313,14 +2318,16 @@
                 //# <IE6thru8Support>
                 //# Else fallback to the non-modern browser (IE <= 8) attachEvent.onreadystatechange event (and attachEvent.onload as a fallback)
                 else {
-                    (_document.attachEvent ?
+                    if (_document.attachEvent) {
                         _document.attachEvent("onreadystatechange", function () {
                             if (_document.readyState === "complete") {
                                 fnDocReady();
                             }
-                        }) :
-                        _root.attachEvent("onload", fnDocReady)
-                    );
+                        });
+                    }
+                    else {
+                        _root.attachEvent("onload", fnDocReady);
+                    }
                 }
                 //# </IE6thru8Support>
             }
@@ -2471,6 +2478,39 @@
                         }
                     } //# loadHandler
 
+                    //#
+                    function eventHandler(_dom, bAlreadyLoaded, sUrl, iWaitSeconds) {
+                        var iTimeout,
+                            oReturnVal = {
+                                onError: function (bTimedOut) {
+                                    //# Flip bAllLoaded and call the .loadHandler
+                                    bAllLoaded = false;
+                                    loadHandler(oReturnVal, _dom, sUrl, true, bTimedOut);
+                                },
+                                onLoad: function () {
+                                    //# clearTimeout (if any) and call the .loadHandler
+                                    //#      NOTE: As per MDN, clearTimeout(undefined) does nothing, so we don't bother with an if() below
+                                    clearTimeout(iTimeout);
+                                    loadHandler(oReturnVal, _dom, sUrl /*, false, false*/);
+                                }
+                            }
+                        ;
+
+                        //# If the _dom element was bAlreadyLoaded on the page, call the .loadHandler via .onLoad (which .fn.noop's the oReturnVal's events byref)
+                        if (bAlreadyLoaded) {
+                            oReturnVal.onLoad();
+                        }
+                        //# Else we've got work to do, so setup our _dom element then .setTimeout at the passed .waitSeconds
+                        //#     NOTE: We wrap the oReturnVal call in functions to ensure the loadHandler's .fn.noop's updates are honored
+                        else {
+                            _dom.onload = function () { oReturnVal.onLoad(); };
+                            _dom.onerror = function () { oReturnVal.onError(); };
+                            iTimeout = setTimeout(function () { oReturnVal.onError(true); }, iWaitSeconds * 1000);
+                        }
+
+                        return oReturnVal;
+                    } //# eventHandler
+
 
                     //# If we have a_sUrls to fnProcessor
                     if (core.type.arr.is(a_sUrls, true)) {
@@ -2483,43 +2523,7 @@
                             //# Ensure a local var for the sUrl for use across the fnProcessor
                             //#     NOTE: i is inc'ed past it's current value before the fnEventHandler is called
                             //#     TODO: Array.each()?
-                            !function (sUrl) {
-                                fnProcessor(
-                                    sUrl,
-                                    oOptions,
-                                    function /*fnEventHandler*/(_dom, bAlreadyLoaded) {
-                                        var iTimeout,
-                                            oReturnVal = {
-                                                onError: function (bTimedOut) {
-                                                    //# Flip bAllLoaded and call the .loadHandler
-                                                    bAllLoaded = false;
-                                                    loadHandler(oReturnVal, _dom, sUrl, true, bTimedOut);
-                                                },
-                                                onLoad: function () {
-                                                    //# clearTimeout (if any) and call the .loadHandler
-                                                    //#      NOTE: As per MDN, clearTimeout(undefined) does nothing, so we don't bother with an if() below
-                                                    clearTimeout(iTimeout);
-                                                    loadHandler(oReturnVal, _dom, sUrl /*, false, false*/);
-                                                }
-                                            }
-                                        ;
-
-                                        //# If the _dom element was bAlreadyLoaded on the page, call the .loadHandler via .onLoad (which .fn.noop's the oReturnVal's events byref)
-                                        if (bAlreadyLoaded) {
-                                            oReturnVal.onLoad();
-                                        }
-                                        //# Else we've got work to do, so setup our _dom element then .setTimeout at the passed .waitSeconds
-                                        //#     NOTE: We wrap the oReturnVal call in functions to ensure the loadHandler's .fn.noop's updates are honored
-                                        else {
-                                            _dom.onload = function () { oReturnVal.onLoad(); };
-                                            _dom.onerror = function () { oReturnVal.onError(); };
-                                            iTimeout = setTimeout(function () { oReturnVal.onError(true); }, oOptions.waitSeconds * 1000);
-                                        }
-
-                                        return oReturnVal;
-                                    } //# fnEventHandler
-                                );
-                            }(a_sUrls[i]);
+                            fnProcessor(a_sUrls[i], oOptions, eventHandler);
                         }
                     }
                     //# Else the passed a_sUrls is empty, so .call the passed .callback now
@@ -2638,9 +2642,10 @@
                             } //# </IE6thru9Support>
 
                             //# Pass the call off to .processUrls, .process(ing the v)Options as we go
+                            vOptions = processOptions(vOptions);
                             processUrls(
                                 vUrls,
-                                processOptions(vOptions),
+                                vOptions,
                                 function /*fnProcessor*/(sUrl, oOptions, fnEventHandler) {
                                     var sSrc = oOptions.baseUrl + sUrl + oOptions.urlArgs,
                                         _script = _document_querySelector("script[src='" + sSrc + "']")
@@ -2649,12 +2654,12 @@
                                     //# If there was a _script already, call .onLoad on the fnEventHandler for the _script
                                     //#     NOTE: Technically the .onLoad call below is unnecessary as fnEventHandler has already called it and reset it to .fn.noop
                                     if (core.type.dom.is(_script)) {
-                                        fnEventHandler(_script, true)/*.onLoad()*/;
+                                        fnEventHandler(_script, true, sUrl, vOptions.waitSeconds)/*.onLoad()*/;
                                     }
                                     //# Else there wasn't a _script already, so build it
                                     else {
                                         _script = _document.createElement('script');
-                                        fnEventHandler(_script /*, false*/);
+                                        fnEventHandler(_script, false, sUrl, vOptions.waitSeconds);
 
                                         //# <IE6thru9Support>
                                         //# If our _script has .readyState defined, we need to monitor .onreadystatechange
@@ -2692,13 +2697,14 @@
                          */ //#####
                         links: function (vUrls, vOptions) {
                             //# Pass the call off to .processUrls, defaulting and .process(ing the v)Options as we go
+                            vOptions = core.extend({
+                                rel: "",
+                                type: "",   //# SEE: https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types
+                                media: ""   //# SEE: https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries
+                            }, processOptions(vOptions));
                             processUrls(
                                 vUrls,
-                                core.extend({
-                                    rel: "",
-                                    type: "",   //# SEE: https://developer.mozilla.org/en-US/docs/Web/HTML/Link_types
-                                    media: ""   //# SEE: https://developer.mozilla.org/en-US/docs/Web/CSS/Media_Queries/Using_media_queries
-                                }, processOptions(vOptions)),
+                                vOptions,
                                 function /*fnProcessor*/(sUrl, oOptions, fnEventHandler) {
                                     var oHandler,
                                         sHref = oOptions.baseUrl + sUrl + oOptions.urlArgs,
@@ -2708,12 +2714,12 @@
                                     //# If there was a _link already, call .onLoad on the fnEventHandler for the _link
                                     //#     NOTE: Technically the .onLoad call below is unnecessary as fnEventHandler has already called it and reset it to .fn.noop
                                     if (core.type.dom.is(_link)) {
-                                        fnEventHandler(_link, true)/*.onLoad()*/;
+                                        fnEventHandler(_link, true, sUrl, vOptions.waitSeconds)/*.onLoad()*/;
                                     }
                                     //# If there wasn't a _link already, build it and collect our oHandler
                                     else {
                                         _link = _document.createElement('link');
-                                        oHandler = fnEventHandler(_link /*, false*/);
+                                        oHandler = fnEventHandler(_link, false, sUrl, vOptions.waitSeconds);
 
                                         //# <NonLinkOnloadSupport>
                                         //# If our _link is missing the .onload event, steal the use of an IMG tag, which pulls the non-IMG .src and .onerror's (thus accomplishing the same goal)
@@ -2877,7 +2883,7 @@
     }
     //# Else we are running in the browser, so we need to setup the _document-based features
     else {
-        !function () {
+        (function () {
             var _head = _document.head,                                                     //# code-golf
                 //_body = _document.body,                                                     //# code-golf
                 _document_querySelector = _document.querySelector.bind(_document)           //# code-golf
@@ -3318,7 +3324,7 @@
                     return bReturn;
                 };*/
             }; //# core.ui
-        }();
+        }());
     }
 
 
@@ -3327,4 +3333,4 @@
 
     //# Procedural code
     oPrivate.init();
-}(/*global, module, require, process, __dirname*/); //# NodeJS-specific features that will be undefined in the browser; see: https://nodejs.org/docs/latest/api/globals.html + https://nodejs.org/docs/latest/api/modules.html#modules_dirname
+}(/*global, module, require, process, __dirname*/)); //# NodeJS-specific features that will be undefined in the browser; see: https://nodejs.org/docs/latest/api/globals.html + https://nodejs.org/docs/latest/api/modules.html#modules_dirname

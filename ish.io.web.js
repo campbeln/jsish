@@ -5,7 +5,9 @@
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
  */ //############################################################################################
-!function () {
+/*global module, define, global, require */                     //# Enable Node globals for JSHint
+/*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
+(function () {
     'use strict';
 
     function init(core) {
@@ -349,7 +351,12 @@
                                 for (var i = 1, j = arguments.length; i < j; i++) {
                                     //# If there is already an entry at the "new" index, .push the current arguments into the sk(sub-key)'s Array (or make one if it doesn't already exist)
                                     if (a[a.length]) {
-                                        core.type.arr.is(a[a.length]) ? a[a.length].push(arguments[i]) : a[a.length] = new Array(a[a.length], arguments[i]);
+                                        if (core.type.arr.is(a[a.length])) {
+                                            a[a.length].push(arguments[i]);
+                                        }
+                                        else {
+                                            a[a.length] = new Array(a[a.length], arguments[i]);
+                                        }
                                         a.length++;
                                     }
                                         //# Else this is a new entry, so just set the arguments
@@ -424,8 +431,15 @@
                                     //# If we have a sk(sub-key)
                                     if (sk) {
                                         //# If the sk(sub-key) already exists, .push the v(alue) into the sk(sub-key)'s Array (or make one if it doesn't already exist)
-                                        if (r[k][sk]) { core.type.arr.is(r[k][sk]) ? r[k][sk].push(v) : r[k][sk] = new Array(r[k][sk], v); }
-                                            //# Else the sk(sub-key) is new, so just set the v(alue)
+                                        if (r[k][sk]) {
+                                            if (core.type.arr.is(r[k][sk])) {
+                                                r[k][sk].push(v);
+                                            }
+                                            else {
+                                                r[k][sk] = new Array(r[k][sk], v);
+                                            }
+                                        }
+                                        //# Else the sk(sub-key) is new, so just set the v(alue)
                                         else { r[k][sk] = v; }
                                     }
                                         //# Else p(ush) the v(alue) into the k(ey)'s pseudo-Array object
@@ -641,4 +655,4 @@
     else {
         init(document.querySelector("SCRIPT[ish]").ish);
     }
-}();
+}());

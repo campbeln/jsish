@@ -6,7 +6,9 @@
  * @copyright 2014-2019, Nick Campbell
  * @ignore
  */ //############################################################################################
-!function () {
+/*global module, define, global */                              //# Enable Node globals for JSHint
+/*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
+(function () {
     'use strict';
 
     function init(core) {
@@ -129,7 +131,9 @@
                             else if (core.type.obj.is(vCollection, true)) {
                                 //#
                                 for (i in vCollection) {
-                                    fReturnVal += core.type.float.mk(vCollection[i]);
+                                    if (vCollection.hasOwnProperty(i)) {
+                                        fReturnVal += core.type.float.mk(vCollection[i]);
+                                    }
                                 }
                             }
 
@@ -408,6 +412,7 @@
                     //# If _root.Uint8Array and _root.crypto are available, use them in our fnReturnValue
                     if (core.type.fn.is(_root.Uint8Array) && core.type.fn.is(core.resolve(_root, "crypto.getRandomValues"))) {
                         fnReturnValue = function (iVersion) {
+                            /*jslint bitwise: true */           //# Enable bitwise operators for JSHint
                             return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
                                 return (c ^ _root.crypto.getRandomValues(new _root.Uint8Array(1))[0] & 15 >> c / 4).toString(16);
                             }).replace(/^(.{13})-4/, "$1-" + fixVersion(iVersion));
@@ -420,6 +425,7 @@
                                 Date.now() + (core.type.fn.call(core.resolve(_root, "performance.now")) || 0)
                             );
 
+                            /*jslint bitwise: true */           //# Enable bitwise operators for JSHint
                             return 'xxxxxxxx-xxxx-' + fixVersion(iVersion) + 'xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
                                 var r = (d + Math.random() * 16) % 16 | 0;
                                 d = Math.floor(d / 16);
@@ -646,7 +652,7 @@
                         //# If the passed dob is a valid date
                         if (core.type.date.is(dDOB)) {
                             //# Set dAgeSpan based on the milliseconds from epoch
-                            dAgeSpan = new Date(_Date_now() - core.type.date.mk(dDOB, _null));
+                            dAgeSpan = new Date(Date.now() - core.type.date.mk(dDOB, _null));
                             iReturnVal = Math.abs(dAgeSpan.getUTCFullYear() - 1970);
                         }
 
@@ -722,11 +728,11 @@
 
                             //#
                             if (bResult === true) {
-                                bReturnVal = iResult;
+                                bReturnVal = bResult; //iResult;
                                 break;
                             }
                             else if (bResult !== false) {
-                                bReturnVal = iResult;
+                                bReturnVal = bResult; //iResult;
                             }
                         }
 
@@ -965,7 +971,7 @@
                                         core.type.str.mk(vCurrent)
                                     );
                                 });
-                            }
+                            };
                         }() //# type.str.replace
                     };
                 }(), //# core.type.str
@@ -1230,7 +1236,7 @@
                             }
                         }
 
-                        return o_vReturnVal
+                        return o_vReturnVal;
                     }, //# type.arr.extract
 
 
@@ -1436,7 +1442,7 @@
                          * @returns {boolean} Value representing if the passed values are equal.
                          */ //#####
                         eq: function (x, y, oOptions) {
-                            var i,
+                            var fnCompare, i,
                                 a_sSourceKeys = core.type.obj.ownKeys(x),
                                 a_sCompareKeys = core.type.obj.ownKeys(y),
                                 bReturnVal = false
@@ -1547,9 +1553,9 @@
                                 if (core.type.arr.is(vKeysOrFromTo)) {
                                     a_sOwnKeys = vKeysOrFromTo;
                                 }
-                                //# Else if the vSource .is .obj, pull it's .ownKeys
-                                else if (core.type.obj.is(vSource)) {
-                                    a_sOwnKeys = core.type.obj.ownKeys(vSource);
+                                //# Else if x .is .obj, pull it's .ownKeys
+                                else if (core.type.obj.is(x)) {
+                                    a_sOwnKeys = core.type.obj.ownKeys(x);
                                 }
 
                                 //# If we were able to collect the a_sOwnKeys above
@@ -1883,23 +1889,29 @@
                                 if (bPrepend) {
                                     for (i = vDomToAdd.length; i > 0; i--) {
                                         _domToAdd = core.type.dom.mk(vDomToAdd[i], null);
-                                        _domToAdd && _parent.insertBefore(_domToAdd, _parent.childNodes[0]);
+                                        if (_domToAdd) {
+                                            _parent.insertBefore(_domToAdd, _parent.childNodes[0]);
+                                        }
                                     }
                                 }
                                 //#
                                 else {
                                     for (i = 0; i < vDomToAdd.length; i++) {
                                         _domToAdd = core.type.dom.mk(vDomToAdd[i], null);
-                                        _domToAdd && _parent.appendChild(_domToAdd);
+                                        if (_domToAdd) {
+                                            _parent.appendChild(_domToAdd);
+                                        }
                                     }
                                 }
                             }
                             //#
                             else if (core.type.dom.is(_domToAdd)) {
-                                (bPrepend ?
-                                    _parent.insertBefore(_domToAdd, _parent.childNodes[0]) :
-                                    _parent.appendChild(_domToAdd)
-                                );
+                                if (bPrepend) {
+                                    _parent.insertBefore(_domToAdd, _parent.childNodes[0]);
+                                }
+                                else {
+                                    _parent.appendChild(_domToAdd);
+                                }
                             }
                         }
 
@@ -2012,4 +2024,4 @@
     else {
         init(document.querySelector("SCRIPT[ish]").ish);
     }
-}();
+}());

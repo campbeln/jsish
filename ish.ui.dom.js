@@ -6,7 +6,8 @@
  * @copyright 2014-2019, Nick Campbell
  * @ignore
  */ //############################################################################################
-!function (core) {
+/*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
+(function (core) {
     'use strict';
 
     var _window = window,                                                           //# code-golf
@@ -707,7 +708,8 @@
                                         oModel = (core.type.arr.is(a_sPath, true) ? core.resolve(true, _window, a_sPath) : _window);
                                         vCurrentValue = oModel[sTarget];
 
-                                        !function (_element, oModel, sTarget) {
+                                        //# TODO: Move out of loop
+                                        (function (_element, oModel, sTarget) {
                                             Object.defineProperty(
                                                 oModel,
                                                 sTarget,
@@ -722,7 +724,7 @@
                                                 }
                                             );
                                             oModel[sTarget] = vCurrentValue;
-                                        }(_element, oModel, sTarget);
+                                        }(_element, oModel, sTarget));
                                     }
                                 }
                                 //#
@@ -941,4 +943,4 @@
         }); //# core.ui
     }, { baseUrl: "" }); //# core.ui.dom
 
-}(document.querySelector("SCRIPT[ish]").ish); //# Web-only
+}(document.querySelector("SCRIPT[ish]").ish)); //# Web-only
