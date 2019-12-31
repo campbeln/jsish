@@ -1686,7 +1686,7 @@
                         /** Determines if the referenced keys are present in the passed value.
                          * @function ish.type.obj.has
                          * @param {object|function} x Value representing the object to interrogate.
-                         * @param {string|string[]} [vKeys] Value representing the key(s) to interrogate.
+                         * @param {string|string[]} vKeys Value representing the key(s) to interrogate.
                          * @param {boolean} [bKeysArePaths=false] Value representing if the passed keys represent dot-delimited paths (e.g. <code>grandparent.parent.array.1.property</code>, see: {@link: ish.resolve}).
                          * @returns {boolean} Value representing if the referenced keys are present in the passed value.
                          */ //#####
@@ -2012,6 +2012,7 @@
 
 
     //# If we are running server-side
+    //#     NOTE: Generally compliant with UMD, see: https://github.com/umdjs/umd/blob/master/templates/returnExports.js
     //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
     if (typeof module === 'object' && module.exports) { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
         module.exports = init;

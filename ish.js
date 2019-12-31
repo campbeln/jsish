@@ -1,7 +1,7 @@
 //################################################################################################
 /** @file Q: Are you using Vanilla Javascript?<br/>A: ...ish
  * <div style="font-size: 75%; margin-top: 20px;">
- *  Javascript code snippets organized in an OOP structure, including:
+ *  Javascript code snippets organized in an isomorphic OOP structure, including:
  *  <ul>
  *      <li>Type-safety and type-casting - assisting developers in overcoming issues related to loose typing via Vanilla Javascript (rather than syntactic sugar à la TypeScript)</li>
  *      <li>OOP features - partial class definitions with shared private members, dynamic polymorphism/function overloading, and multiple inheritance</li>
@@ -2869,6 +2869,7 @@
         //##################################################################################################
         oPrivate.init = function () {
             //# If we are running server-side
+            //#     NOTE: Generally compliant with UMD, see: https://github.com/umdjs/umd/blob/master/templates/returnExports.js
             //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
             if (typeof module === 'object' && module.exports) {
                 module.exports = core;
