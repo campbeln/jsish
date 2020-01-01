@@ -634,6 +634,57 @@
                 };
             } //# objBase
 
+            function isCyclic(x, bReturnReport) {
+                var a_sKeys = [],
+                    a_oStack = [],
+                    set_oStack = new Set(), //# see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
+                    oReturnVal = {
+                        found: false,
+                        report: []
+                    }
+                ;
+
+                //#
+                function doIsCyclic(oTarget, sKey) {
+                    //#
+                    if (oTarget instanceof Object) {
+                        // it's cyclic! Print the object and its locations.
+                        if (set_oStack.has(oTarget)) {
+                            oReturnVal.report.push({
+                                instance: oTarget,
+                                source: a_sKeys.slice(0, a_oStack.indexOf(oTarget) + 1).join('.'),
+                                duplicate: a_sKeys.join('.') + "." + sKey
+                            });
+                            oReturnVal.found = true;
+                        }
+                        //#
+                        else {
+                            //#
+                            a_sKeys.push(sKey);
+                            a_oStack.push(oTarget);
+                            set_oStack.add(oTarget);
+
+                            //# Traverse the oTarget's k(ey)s, recursing for each entry
+                            Object.keys(oTarget).forEach(function (k) {
+                                if (k && Object.prototype.hasOwnProperty.call(oTarget, k)) {
+                                    if (oTarget[k] instanceof Object) {
+                                        doIsCyclic(oTarget[k], k);
+                                    }
+                                }
+                            });
+
+                            //#
+                            a_sKeys.pop();
+                            a_oStack.pop();
+                            set_oStack.delete(oTarget);
+                        }
+                    }
+                } //# doIsCyclic
+
+                doIsCyclic(x, 'x');
+                return (bReturnReport ? oReturnVal.report : oReturnVal.found);
+            } //# isCyclic
+
 
             return {
                 //#########
@@ -912,7 +963,7 @@
     /** Merges the content of the passed objects into the passed target, adding or overriding properties within the target.
      * <span style="display: none;">Heavily refactored code from http://gomakethings.com/vanilla-javascript-version-of-jquery-extend/<span>
      * @function ish.extend
-     * @param {boolean|integer} [vMaxDepth=0] Value representing if a deep copy is to occur. <code>false</code>/<code>0</code> performs a shallow copy, a positive integer indicates the max depth to perform a deep copy to, <code>true</code> and all other integer values perform a deep copy to an unlimited depth.
+     * @param {boolean|integer} [vMaxDepth=true] Value representing if a deep copy is to occur. <code>false</code>/<code>1</code> performs a shallow copy, a positive integer indicates the max depth to perform a deep copy to, <code>true</code> and all other integer values perform a deep copy to an unlimited depth.
      * @param {object|function} vTarget Value representing the target object to receive properties.
      * @param {...object|...function} vSource Value(s) representing the source object(s) whose properties will be copied into the target.
      * @returns {object|function} Reference to the passed target.
@@ -923,9 +974,9 @@
      *     var oResult = ish.extend({}, { i: 1 }, { i: 2 }); // `oResult.i` will equal `2`.
      */ //############################################################################################
     core.extend = function (/*[vMaxDepth], vTarget, vSource, vSource2...*/) {
-        var a_sKeys, oTarget, oSource, sKey, iExtendDepth, i, j, k,
+        var a_sKeys, oTarget, oSource, sKey, iExtendDepth, i, j, k, bOverMaxDepth,
             a = arguments,
-            //fnIsDom = core.type.fn.mk(core.resolve(core, "type.dom.is")),
+            fnIsDom = core.type.fn.mk(core.resolve(core, "type.dom.is")),
             fnHasOwnProp = function (oSource, sKey) {
                 return Object.prototype.hasOwnProperty.call(oSource, sKey);
             }
@@ -962,12 +1013,14 @@
             if (core.type.fn.is(oSource) && !fnHasOwnProp(oTarget, sKey)) {
                 oTarget = oSource;
             }
-            //# Else if the oSource doesn't have any Object.keys, (safely) .warn that it's being ignored
-            /*else if (a_sKeys.length === 0) { // && (core.type.date.is(oSource) || core.type.is.native(oSource) || fnIsDom(oSource))
+            //# Else if the oSource doesn't have any of it's own Object.keys and it .is a .date, .native or .dom, set it into the oTarget as-is
+            else if (core.type.date.is(oSource) || core.type.is.native(oSource) || fnIsDom(oSource)) {
                 try {
-                    core.io.console.warn("ish.extend: Non-extendable source object ignored ", oSource);
-                } catch (e) {}
-            }*/
+                    oTarget = oSource;
+                } catch (e) {
+                    core.io.console.warn("ish.extend: Copy of the following object failed -", oSource, e);
+                }
+            }
             //# Else we have to traverse the oSource's a_sKeys
             else if (a_sKeys.length > 0) {
                 //# Traverse the sKeys in the oSource object
@@ -976,25 +1029,27 @@
 
                     //# If the oSource fnHasOwnProp of sKey, we'll need to set it into our oTarget
                     if (oSource[sKey] !== _undefined && fnHasOwnProp(oSource, sKey)) {
+                        //# Determine if we're bOverMaxDepth, .warn'ing if we are
+                        bOverMaxDepth = (iExtendDepth < -100);
+                        if (bOverMaxDepth) {
+                            core.io.console.warn("ish.extend: Copy depth exceeds 100; aborting deep copy."); //, oTarget, oSource);
+                        }
+
                         //# If we're in the midst of a deep copy and the sKey .is an .arr, setup the oTarget[sKey] as a new array
                         //#     NOTE: .arr goes first as []'s return true from .is .obj
-                        if (iExtendDepth !== 1 && core.type.arr.is(oSource[sKey])) {
+                        if (iExtendDepth !== 1 && !bOverMaxDepth && core.type.arr.is(oSource[sKey])) {
                             oTarget[sKey] = oSource[sKey].slice();
 
                             //# Traverse the newly created oTarget[sKey] array, .extending any .is .obj's or .arr's as we go
                             for (k = 0; k < oTarget[sKey].length; k++) {
                                 if (core.type.obj.is(oTarget[sKey][k]) || core.type.arr.is(oTarget[sKey][k])) {
-                                    oTarget[sKey][k] = core.extend(iExtendDepth - 1, {}, oSource[sKey][k]);
+                                    oTarget[sKey][k] = core.extend(iExtendDepth - 1, {}, oSource[sKey][k]);//neek
                                 }
                             }
                         }
-                        //#
-                        else if (core.type.date.is(oSource[sKey])) {
-                            oTarget[sKey] = new Date(oSource[sKey]);
-                        }
                         //# Else if we're in the midst of a deep copy and the sKey .is an .obj, .extend it into our oTarget[sKey]
-                        else if (iExtendDepth !== 1 && core.type.obj.is(oSource[sKey])) {
-                            oTarget[sKey] = core.extend(iExtendDepth - 1, oTarget[sKey], oSource[sKey]);
+                        else if (iExtendDepth !== 1 && !bOverMaxDepth && core.type.obj.is(oSource[sKey])) {
+                            oTarget[sKey] = core.extend(iExtendDepth - 1, oTarget[sKey], oSource[sKey]);//neek
                         }
                         //# Else treat the oSource[sKey] as a value, setting it into oTarget[sKey]
                         else {
@@ -3068,9 +3123,8 @@
                         }
 
                         return (
-                            x && //# core.type.is.native(x) &&
-                            core.type.str.is(x.tagName) &&
-                            x.tagName !== "" &&
+                            x &&
+                            core.type.str.is(x.tagName, true) &&
                             //core.type.fn.is(x.cloneNode) &&
                             core.type.fn.is(x.getAttribute)
                         );

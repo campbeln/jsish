@@ -1461,7 +1461,7 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
 
                                 //# .require the necessary ish plugins
                                 //#     NOTE: core.require includes the required scripts/CSS then runs the provided function
-                                core.require(["ish.test.require.js"], function (a_sUrls, bAllLoaded) {
+                                core.require(["../ish.test.require.js"], function (a_sUrls, bAllLoaded) {
                                     $.asyncTests(function () {
                                         $.assert(bAllLoaded === true, "bAllLoaded");
                                         $.assert(bRequireSuccessful === true, "bRequireSuccessful");

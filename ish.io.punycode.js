@@ -15,7 +15,8 @@
         //Javascript Punycode converter derived from example in RFC3492.
         //This implementation is created by some@domain.name and released into public domain
         // FROM: https://stackoverflow.com/questions/183485/converting-punycode-with-dash-character-to-unicode
-        var punycode = function Punycode() {
+        //#     NOTE: `new` is required below thanks to the use of `this`
+        var punycode = new function Punycode() {
             // This object converts to and from puny-code used in IDN
             //
             // punycode.ToASCII ( domain )
