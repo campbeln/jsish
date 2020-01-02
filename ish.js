@@ -18,7 +18,7 @@
  *      All features are organized in individually includable mixins organized by namespace/major features with only the core <code>ish.js</code> functionality required to bootstrap.
  *  </p>
  * </div>
- * @version 0.12.2019-12-30
+ * @version 0.12.2020-01-02
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2019, Nick Campbell
@@ -634,57 +634,6 @@
                 };
             } //# objBase
 
-            function isCyclic(x, bReturnReport) {
-                var a_sKeys = [],
-                    a_oStack = [],
-                    set_oStack = new Set(), //# see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Set
-                    oReturnVal = {
-                        found: false,
-                        report: []
-                    }
-                ;
-
-                //#
-                function doIsCyclic(oTarget, sKey) {
-                    //#
-                    if (oTarget instanceof Object) {
-                        // it's cyclic! Print the object and its locations.
-                        if (set_oStack.has(oTarget)) {
-                            oReturnVal.report.push({
-                                instance: oTarget,
-                                source: a_sKeys.slice(0, a_oStack.indexOf(oTarget) + 1).join('.'),
-                                duplicate: a_sKeys.join('.') + "." + sKey
-                            });
-                            oReturnVal.found = true;
-                        }
-                        //#
-                        else {
-                            //#
-                            a_sKeys.push(sKey);
-                            a_oStack.push(oTarget);
-                            set_oStack.add(oTarget);
-
-                            //# Traverse the oTarget's k(ey)s, recursing for each entry
-                            Object.keys(oTarget).forEach(function (k) {
-                                if (k && Object.prototype.hasOwnProperty.call(oTarget, k)) {
-                                    if (oTarget[k] instanceof Object) {
-                                        doIsCyclic(oTarget[k], k);
-                                    }
-                                }
-                            });
-
-                            //#
-                            a_sKeys.pop();
-                            a_oStack.pop();
-                            set_oStack.delete(oTarget);
-                        }
-                    }
-                } //# doIsCyclic
-
-                doIsCyclic(x, 'x');
-                return (bReturnReport ? oReturnVal.report : oReturnVal.found);
-            } //# isCyclic
-
 
             return {
                 //#########
@@ -966,7 +915,7 @@
      * @param {boolean|integer} [vMaxDepth=true] Value representing if a deep copy is to occur. <code>false</code>/<code>1</code> performs a shallow copy, a positive integer indicates the max depth to perform a deep copy to, <code>true</code> and all other integer values perform a deep copy to an unlimited depth.
      * @param {object|function} vTarget Value representing the target object to receive properties.
      * @param {...object|...function} vSource Value(s) representing the source object(s) whose properties will be copied into the target.
-     * @returns {object|function} Reference to the passed target.
+     * @returns {object|function} Value representing the passed target.
      * @example
      *   <caption>
      *      Right-most source object wins:
@@ -976,7 +925,7 @@
     core.extend = function (/*[vMaxDepth], vTarget, vSource, vSource2...*/) {
         var a_sKeys, oTarget, oSource, sKey, iExtendDepth, i, j, k, bOverMaxDepth,
             a = arguments,
-            fnIsDom = core.type.fn.mk(core.resolve(core, "type.dom.is")),
+            //fnIsDom = core.type.fn.mk(core.resolve(core, "type.dom.is")),
             fnHasOwnProp = function (oSource, sKey) {
                 return Object.prototype.hasOwnProperty.call(oSource, sKey);
             }
@@ -1010,17 +959,25 @@
             a_sKeys = Object.keys(oSource || {});
 
             //# If the oSource .is a .fn and the oTarget doesn't have that sKey yet, copy it in as-is (ignoring iExtendDepth as we can't copy functions)
+            //#     TODO: Should this be set / override? E.g. not test for fnHasOwnProp
             if (core.type.fn.is(oSource) && !fnHasOwnProp(oTarget, sKey)) {
                 oTarget = oSource;
             }
-            //# Else if the oSource doesn't have any of it's own Object.keys and it .is a .date, .native or .dom, set it into the oTarget as-is
-            else if (core.type.date.is(oSource) || core.type.is.native(oSource) || fnIsDom(oSource)) {
-                try {
-                    oTarget = oSource;
-                } catch (e) {
-                    core.io.console.warn("ish.extend: Copy of the following object failed -", oSource, e);
+            //# Else if the oSource doesn't have any Object.keys, (safely) .warn that it's being ignored
+            /*else if (a_sKeys.length === 0) { // && (core.type.date.is(oSource) || core.type.is.native(oSource) || fnIsDom(oSource))
+                //try {
+                //    core.io.console.warn("ish.extend: Non-extendable source object ignored ", oSource);
+                //} catch (e) {}
+                //# If the oSource .is a .date, copy it (ignoring iExtendDepth as we can't copy dates)
+                if (core.type.date.is(oSource)) {
+                    oTarget = new Date(oSource);
                 }
-            }
+                //# Else if the oSource doesn't have any of it's own Object.keys or it .is a .native or .dom, set it into the oTarget as-is
+                //#     NOTE: Technically .is .native and .dom tests are unnecessary as Object.keys doesn't return any a_sKeys for these objects
+                else if (core.type.is.native(oSource) || fnIsDom(oSource)) {
+                    oTarget = oSource;
+                }
+            }*/
             //# Else we have to traverse the oSource's a_sKeys
             else if (a_sKeys.length > 0) {
                 //# Traverse the sKeys in the oSource object
@@ -1037,25 +994,29 @@
 
                         //# If we're in the midst of a deep copy and the sKey .is an .arr, setup the oTarget[sKey] as a new array
                         //#     NOTE: .arr goes first as []'s return true from .is .obj
-                        if (iExtendDepth !== 1 && !bOverMaxDepth && core.type.arr.is(oSource[sKey])) {
+                        if (!bOverMaxDepth && iExtendDepth !== 1 && core.type.arr.is(oSource[sKey])) {
                             oTarget[sKey] = oSource[sKey].slice();
 
                             //# Traverse the newly created oTarget[sKey] array, .extending any .is .obj's or .arr's as we go
                             for (k = 0; k < oTarget[sKey].length; k++) {
                                 if (core.type.obj.is(oTarget[sKey][k]) || core.type.arr.is(oTarget[sKey][k])) {
-                                    oTarget[sKey][k] = core.extend(iExtendDepth - 1, {}, oSource[sKey][k]);//neek
+                                    oTarget[sKey][k] = core.extend(iExtendDepth - 1, {}, oSource[sKey][k]);
                                 }
                             }
                         }
                         //# Else if we're in the midst of a deep copy and the sKey .is an .obj, .extend it into our oTarget[sKey]
-                        else if (iExtendDepth !== 1 && !bOverMaxDepth && core.type.obj.is(oSource[sKey])) {
-                            oTarget[sKey] = core.extend(iExtendDepth - 1, oTarget[sKey], oSource[sKey]);//neek
+                        else if (!bOverMaxDepth && iExtendDepth !== 1 && core.type.obj.is(oSource[sKey])) {
+                            oTarget[sKey] = core.extend(iExtendDepth - 1, oTarget[sKey], oSource[sKey]);
+                        }
+                        //#
+                        else if (core.type.date.is(oSource[sKey])) {
+                            oTarget[sKey] = new Date(oSource[sKey]);
                         }
                         //# Else treat the oSource[sKey] as a value, setting it into oTarget[sKey]
                         else {
-                            try {
+                            //try {
                                 oTarget[sKey] = oSource[sKey];
-                            } catch (e) {/*expectederror*/}
+                            //} catch (e) {/*expectederror*/}
                         }
                     }
                 }

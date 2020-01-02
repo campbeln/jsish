@@ -1428,6 +1428,83 @@
                     } //# objCompare
 
                     return {
+                        is: {
+                            //#########
+                            /** Determines if the passed value has any circular references.
+                             * @function ish.type.obj.is:cyclic
+                             * @param {object|function} x Value to interrogate.
+                             * @param {boolean} bReturnReport Value indicating if an array of circular references is to be returned.
+                             * @returns {boolean} Value representing if the passed values are equal.
+                             */ //#####
+                            cyclic: function cr(x, bReturnReport) {
+                                var a_sKeys = [],
+                                    a_oStack = [],
+                                    wm_oSeenObjects = new WeakMap(), //# see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/WeakMap
+                                    oReturnVal = {
+                                        found: false,
+                                        report: []
+                                    }
+                                ;
+
+                                //# Setup the recursive logic to locate any circular references while kicking off the initial call
+                                (function doIsCyclic(oTarget, sKey) {
+                                    var a_sTargetKeys, sCurrentKey, i;
+
+                                    //# If we've seen this oTarget before, flip our .found to true
+                                    if (wm_oSeenObjects.has(oTarget)) {
+                                        oReturnVal.found = true;
+
+                                        //# If we are to bReturnReport, add the entries into our .report
+                                        if (bReturnReport) {
+                                            oReturnVal.report.push({
+                                                instance: oTarget,
+                                                source: a_sKeys.slice(0, a_oStack.indexOf(oTarget) + 1).join('.'),
+                                                duplicate: a_sKeys.join('.') + "." + sKey
+                                            });
+                                        }
+                                    }
+                                    //# Else if oTarget is an instanceof Object, determine the a_sTargetKeys and .set our oTarget into the wm_oSeenObjects
+                                    else if (oTarget instanceof Object) {
+                                        a_sTargetKeys = Object.keys(oTarget);
+                                        wm_oSeenObjects.set(oTarget /*, undefined*/);
+
+                                        //# If we are to bReturnReport, .push the  current level's/call's items onto our stacks
+                                        if (bReturnReport) {
+                                            if (sKey) { a_sKeys.push(sKey) };
+                                            a_oStack.push(oTarget);
+                                        }
+
+                                        //# Traverse the a_sTargetKeys, pulling each into sCurrentKey as we go
+                                        //#     NOTE: If you want all properties, even non-enumerables, see Object.getOwnPropertyNames() so there is no need to call .hasOwnProperty (per: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/keys)
+                                        for (i = 0; i < a_sTargetKeys.length; i++) {
+                                            sCurrentKey = a_sTargetKeys[i];
+
+                                            //# If we've already .found a circular reference and we're not bReturnReport, fall from the loop
+                                            if (oReturnVal.found && !bReturnReport) {
+                                                break;
+                                            }
+                                            //# Else if the sCurrentKey is an instanceof Object, recurse to test
+                                            else if (oTarget[sCurrentKey] instanceof Object) {
+                                                doIsCyclic(oTarget[sCurrentKey], sCurrentKey);
+                                            }
+                                        }
+
+                                        //# .delete our oTarget into the wm_oSeenObjects
+                                        //#     NOTE: Not 100% sure why this is required, but without it .source is missing above and less .duplicates are found(!?)
+                                        wm_oSeenObjects.delete(oTarget);
+
+                                        //# If we are to bReturnReport, .pop the current level's/call's items off our stacks
+                                        if (bReturnReport) {
+                                            if (sKey) { a_sKeys.pop() };
+                                            a_oStack.pop();
+                                        }
+                                    }
+                                }(x, '')); //# doIsCyclic
+
+                                return (bReturnReport ? oReturnVal.report : oReturnVal.found);
+                            } //# type.obj.is.cyclic
+                        }, //# type.obj.is
+
                         //#########
                         /** Determines if the passed values are equal.
                          * @function ish.type.obj.eq
