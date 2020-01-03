@@ -3,7 +3,7 @@
  * @mixin ish.ui.clipboard
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2019, Nick Campbell
+ * @copyright 2014-2020, Nick Campbell
  * @ignore
  */ //############################################################################################
 (function (core) {
@@ -66,5 +66,8 @@
             };
         }); //# core.ui.clipboard
     }, { baseUrl: "" }); //# core.ui.clipboard
+
+    //# .fire the plugin's loaded event
+    core.io.event.fire("ish.ui.clipboard");
 
 }(document.querySelector("SCRIPT[ish]").ish)); //# Web-only

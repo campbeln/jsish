@@ -2,7 +2,7 @@
  * Remapper for ish.js
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2019, Nick Campbell
+ * @copyright 2014-2020, Nick Campbell
  * @ignore
 ################################################################################################# */
 !function (core) {

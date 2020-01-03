@@ -3,7 +3,7 @@
  * @mixin ish.ui.dom
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2019, Nick Campbell
+ * @copyright 2014-2020, Nick Campbell
  * @ignore
  */ //############################################################################################
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
@@ -159,7 +159,8 @@
                 return a__scripts;
             } //# loadScripts
 
-            //# 
+
+            //#
             function get(sSelector, bAll) {
                 var vReturnVal;
 
@@ -173,6 +174,7 @@
 
                 return vReturnVal;
             } //# get
+
 
             //#
             function input_value_CheckboxOrRadio(_formElement, vNewValue, bSet) {
@@ -942,5 +944,8 @@
             };
         }); //# core.ui
     }, { baseUrl: "" }); //# core.ui.dom
+
+    //# .fire the plugin's loaded event
+    core.io.event.fire("ish.ui.dom");
 
 }(document.querySelector("SCRIPT[ish]").ish)); //# Web-only

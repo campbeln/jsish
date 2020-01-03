@@ -3,7 +3,7 @@
  * @mixin ish.type.obj.pojo
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2019, Nick Campbell (wrapper)
+ * @copyright 2014-2020, Nick Campbell (wrapper)
  */ //############################################################################################
 /*global module, define, global */                              //# Enable Node globals for JSHint
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
@@ -105,6 +105,9 @@
                 )
             };
         }); //# core.type.obj.pojo
+
+        //# .fire the plugin's loaded event
+        core.io.event.fire("ish.type.obj.pojo");
     } //# init
 
 

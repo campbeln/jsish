@@ -3,7 +3,7 @@
  * @mixin ish.type
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2019, Nick Campbell
+ * @copyright 2014-2020, Nick Campbell
  * @ignore
  */ //############################################################################################
 /*global module, define, global */                              //# Enable Node globals for JSHint
@@ -2072,6 +2072,9 @@
 
             return oReturnVal;
         }); //# core.type
+
+        //# .fire the plugin's loaded event
+        core.io.event.fire("ish.type-ex");
     } //# init
 
     /*

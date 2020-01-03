@@ -3,7 +3,7 @@
  * @mixin ish.io.xml
  * @author Nick Campbell (wrapper); Axinom; Abdulla Abdurakhmanov
  * @license Apache License, Version 2.0
- * @copyright 2014-2019, Nick Campbell (wrapper); 2015, Axinom; 2011-2013, Abdulla Abdurakhmanov
+ * @copyright 2014-2020, Nick Campbell (wrapper); 2015, Axinom; 2011-2013, Abdulla Abdurakhmanov
  */ //############################################################################################
 /*global module, define */                                      //# Enable Node globals for JSHint
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
@@ -44,6 +44,9 @@
                 }
             }
         }); //# core.io
+
+        //# .fire the plugin's loaded event
+        core.io.event.fire("ish.io.xml");
     }
 
 

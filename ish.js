@@ -21,7 +21,7 @@
  * @version 0.12.2020-01-02
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2019, Nick Campbell
+ * @copyright 2014-2020, Nick Campbell
  */ /**
  * ish.js's (renameable) global object.
  * @namespace ish
@@ -41,7 +41,7 @@
         oPrivate = {},
         oTypeIsIsh = { //# Set the .ver and .target under .type.is.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             config: {
-                ver: '0.12.2019-12-30',
+                ver: '0.12.2020-01-02',
                 onServer: bServerside,
                 debug: true,
                 //script: _undefined,

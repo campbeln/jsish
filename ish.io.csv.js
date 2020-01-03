@@ -3,7 +3,7 @@
  * @mixin ish.io.csv
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2019, Nick Campbell
+ * @copyright 2014-2020, Nick Campbell
  */ //############################################################################################
 /*global module, define */                                      //# Enable Node globals for JSHint
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
@@ -148,6 +148,9 @@
                 } //# io.csv.stringify
             }
         }); //# core.io.csv
+
+        //# .fire the plugin's loaded event
+        core.io.event.fire("ish.io.csv");
     } //# init
 
 

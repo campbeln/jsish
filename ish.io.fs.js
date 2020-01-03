@@ -3,7 +3,7 @@
  * @mixin ish.io.fs
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2019, Nick Campbell
+ * @copyright 2014-2020, Nick Campbell
  */ //############################################################################################
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
 (function (core) {
@@ -44,6 +44,7 @@
                 if (core.type.obj.is(vData)) {
                     sData = JSON.stringify(vData, null, (oOptions.pretty ? "\t" : ""));
                 }
+                //#
                 else {
                     sData = core.type.str.mk(vData);
                 }
@@ -114,5 +115,8 @@
             } //# io.fs.download
         }
     }); //# core.io.fs
+
+    //# .fire the plugin's loaded event
+    core.io.event.fire("ish.io.fs");
 
 }(document.querySelector("SCRIPT[ish]").ish)); //# Web-only

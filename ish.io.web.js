@@ -3,7 +3,7 @@
  * @mixin ish.io.web
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2019, Nick Campbell
+ * @copyright 2014-2020, Nick Campbell
  */ //############################################################################################
 /*global module, define, global, require */                     //# Enable Node globals for JSHint
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
@@ -107,13 +107,12 @@
                         //#########
                         /** Retrieves the passed value from the cookie data.
                          * @function ish.io.web.cookie
-                         * @$aka ish.io.web.queryString.get
                          * @param {string} sName Value representing the cookie to retrieve.
                          * @param {object} [oDefault=undefined] Value representing if the default value of the cookie data if it hasn't been previously set.
                          * @param {object} [vOptions] Value representing the desired options:
                          *      @param {boolean} [vOptions.path="/"] Value representing if the Querystring's delimiter is to be semicolons (<code>;</code>) rather than ampersands (<code>&</code>).
-                         *      @param {boolean} [vOptions.domain] Value representing if <code>encodeURIComponent</code> is to be used.
-                         *      @param {boolean} [vOptions.maxAge] Value representing if <code>encodeURIComponent</code> is to be used.
+                         *      @param {boolean} [vOptions.domain] Value representing the domain the cookie is related to.
+                         *      @param {boolean} [vOptions.maxAge] Value representing max age in milliseconds the cookie is to be valid for.
                          * @returns {object} Value representing the data for the passed value.
                          */ //#####
                         return function (sName, oDefault, oOptions) {
@@ -178,7 +177,7 @@
                                         //# Ensure the .path and .maxAge are valid or defaulted to root and .seconds7Days respectively
                                         sPath = oOptions.path = core.type.str.mk(oOptions.path, "/");
                                         sDomain = oOptions.domain = core.type.str.mk(oOptions.domain);
-                                        iMaxAge = oOptions.maxAge = core.type.int.mk(oOptions.maxAge, (1000 * 60 * 24 * 7));
+                                        iMaxAge = oOptions.maxAge = core.type.int.mk(oOptions.maxAge, (1000 * 60 * 60 * 24 * 7));
 
                                         //# If this is not a session cookie, setup dExpires
                                         if (iMaxAge > 0) {
@@ -488,7 +487,7 @@
                         //#########
                         /** Retrieves the passed value from the Querystring data.
                          * @$note If <code>ish.io.web.queryString.parse</code> was not called previously, the Querystring is implicitly parsed prior to the passed value being retrieved. This will result in an error on the server-side as the Querystring cannot be automatically collected.
-                         * @function ish.io.web.queryString
+                         * @function ish.io.web.queryString.!
                          * @$aka ish.io.web.queryString.get
                          * @param {string} sKey Value representing the Querystring key to retrieve.
                          * @param {boolean} [bCaseInsensitive=false] Value representing if the passed value is to be retrieved from the Querystring data in a case-insensitive manor.
@@ -501,9 +500,7 @@
                                 de: deserialize
                             }, //# ser
 
-                            //# TODO
-                            //# Parses the query string into an object model, returning an object containing the .model and a .value function to retrieve the values (see note below).
-                            //#     Supports: ?test=Hello&person=neek&person=jeff&person[]=jim&person[extra]=john&test3&nocache=1398914891264&person=frank,jim;person=aaron
+                            //#     NOTE: AKA'd above
                             get: get,
 
                             //#########
@@ -607,6 +604,13 @@
                 //# If we aren't running bServerside (or possibly have been required as a CommonJS module), add in the browser-specific stuff
                 (bServerside ? _null : {
                     //# Aliases to window.localstorage and window.sessionStorage with automajic stringification of non-string values
+
+                    //################################################################################################
+                    /** Collection of <code>window.*Storage</code>-based functionality.
+                     * @namespace ish.io.web.storage
+                     * @$clientsideonly
+                     * @ignore
+                     */ //############################################################################################
                     storage: function () {
                         var window_localStorage = _root.localStorage,         //# code-golf
                             window_sessionStorage = _root.sessionStorage      //# code-golf
@@ -618,16 +622,50 @@
                             return core.type.obj.mk(sValue, sValue);
                         }
 
+                        //#########
+                        /** Retrieves the passed value from the browser's <code>window.*Storage</code> data.
+                         * @function ish.io.web.storage.!
+                         * @$aka ish.io.web.storage.get
+                         * @$clientsideonly
+                         * @param {string} sKey Value representing the browser's <code>window.*Storage</code> key to retrieve.
+                         * @param {boolean} [bSession=false] Value representing if the passed value is to be retrieved from the browser's <code>window.sessionStorage</code> data rather than <code>window.localStorage</code>.
+                         * @returns {variant} Value representing the data for the passed value.
+                         */ //#####
                         return core.extend(get, {
+                            //#########
+                            /** Sets the passed value into the browser's <code>window.*Storage</code> data.
+                             * @function ish.io.web.storage:set
+                             * @$clientsideonly
+                             * @param {string} sKey Value representing the key to set.
+                             * @param {variant} vValue Value representing the value to set.
+                             * @param {boolean} [bSession=false] Value representing if the passed value is to be set into the browser's <code>window.sessionStorage</code> data rather than <code>window.localStorage</code>.
+                             */ //#####
                             set: function (sKey, vValue, bSession) {
                                 var sValue = (core.type.obj.is(vValue) ? JSON.stringify(vValue) : core.type.str.mk(vValue));
 
                                 (bSession ? window_sessionStorage : window_localStorage).setItem(sKey, sValue);
                             },
+
+                            //#     NOTE: AKA'd above
                             get: get,
+
+                            //#########
+                            /** Removes the passed value from the browser's <code>window.*Storage</code> data.
+                             * @function ish.io.web.storage:rm
+                             * @$clientsideonly
+                             * @param {string} sKey Value representing the key to remove.
+                             * @param {boolean} [bSession=false] Value representing if the passed value is to be removed from the browser's <code>window.sessionStorage</code> data rather than <code>window.localStorage</code>.
+                             */ //#####
                             rm: function (sKey, bSession) {
                                 (bSession ? window_sessionStorage : window_localStorage).removeItem(sKey);
                             },
+
+                            //#########
+                            /** Clears the browser's <code>window.*Storage</code> data.
+                             * @function ish.io.web.storage:clear
+                             * @$clientsideonly
+                             * @param {boolean} [bSession=false] Value representing if the passed value is to be cleared from the browser's <code>window.sessionStorage</code> data rather than <code>window.localStorage</code>.
+                             */ //#####
                             clear: function (bSession) {
                                 (bSession ? window_sessionStorage : window_localStorage).clear();
                             }
@@ -637,7 +675,7 @@
             )
         }); //# core.io.web
 
-        //#
+        //# .fire the plugin's loaded event
         core.io.event.fire("ish.io.web");
     }
 

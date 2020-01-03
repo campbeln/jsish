@@ -3,7 +3,7 @@
  * @mixin ish.ui.tooltip
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2019, Nick Campbell
+ * @copyright 2014-2020, Nick Campbell
  * @ignore
  */ //############################################################################################
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
@@ -145,6 +145,7 @@
         });
         _body.appendChild(_tooltip);
 
+
         return {
             tooltip: function (_element, oContext, vOptions) {
                 var oOptions = fnProcessOptions(vOptions);
@@ -158,5 +159,8 @@
             }
         };
     }); //# core.ui.tooltip
+
+    //# .fire the plugin's loaded event
+    core.io.event.fire("ish.ui.tooltip");
 
 }(document.querySelector("SCRIPT[ish]").ish)); //# Web-only

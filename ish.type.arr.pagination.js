@@ -3,7 +3,7 @@
  * @mixin ish.type.arr.pagination
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2019, Nick Campbell
+ * @copyright 2014-2020, Nick Campbell
  * @ignore
  */ //############################################################################################
 /*global module, define */                                      //# Enable Node globals for JSHint
@@ -233,8 +233,8 @@
             };
         });
 
-        //#
-        //core.io.event.fire("ish.ui.pagination");
+        //# .fire the plugin's loaded event
+        core.io.event.fire("ish.type.arr.pagination");
     } //# init
 
 
