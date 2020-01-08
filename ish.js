@@ -3228,7 +3228,7 @@
 
                     //#########
                     /** Generates a unique DOM ID.
-                     * @function ish.type.dom:id
+                     * @function ish.type.dom.id
                      * @param {string} [sPrefix=""] Value representing the DOM ID's prefix.
                      * @returns {element} Value representing a unique DOM ID.
                      */ //#####
@@ -3246,7 +3246,7 @@
                         }, {
                             //#########
                             /** Determines if the passed value represents a reconized DOM ID.
-                             * @function ish.type.dom:id:is
+                             * @function ish.type.dom.id:is
                              * @param {string} sID Value representing the DOM ID to test.
                              * @returns {boolean} Value representing if the passed value represents a reconized DOM ID.
                              */ //#####

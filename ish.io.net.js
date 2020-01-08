@@ -254,7 +254,7 @@
                      */ //#####
                     crud: {
                         //#########
-                        /** Calls the passed URL to create (via <code>PUT</code>) a new entity.
+                        /** Calls the passed URL to create a new entity (via <code>PUT</code>).
                          * @function ish.io.net.crud:create
                          * @param {string} sURL Value representing the URL to interrogate.
                          * @param {object} [oBody] Value representing the body of the request.
@@ -271,7 +271,7 @@
                         create: doPut(/*_undefined*/),
 
                         //#########
-                        /** Calls the passed URL to read (via <code>GET</code>) an entity.
+                        /** Calls the passed URL to read an entity (via <code>GET</code>).
                          * @function ish.io.net.crud:read
                          * @param {string} sURL Value representing the URL to interrogate.
                          * @param {fnIshIoNetCallback|object} [vCallback] Value representing the function to be called when the request returns or the desired options:
@@ -287,7 +287,7 @@
                         read: doGet(/*_undefined*/),
 
                         //#########
-                        /** Calls the passed URL to update (via <code>POST</code>) an entity.
+                        /** Calls the passed URL to update an entity (via <code>POST</code>).
                          * @function ish.io.net.crud:update
                          * @param {string} sURL Value representing the URL to interrogate.
                          * @param {object} [oBody] Value representing the body of the request.
@@ -304,7 +304,7 @@
                         update: doPost(/*_undefined*/),
 
                         //#########
-                        /** Calls the passed URL to remove (via <code>DELETE</code>) an entity.
+                        /** Calls the passed URL to remove an entity (via <code>DELETE</code>).
                          * @function ish.io.net.crud:delete
                          * @param {string} sURL Value representing the URL to interrogate.
                          * @param {fnIshIoNetCallback|object} [vCallback] Value representing the function to be called when the request returns or the desired options:
@@ -348,7 +348,12 @@
                      *      @param {boolean} [vCallback.useCache=false] Value representing if the response is to be sourced from the cache if it's available.<note>When <code>!vCallback.useCache</code>, the HTTP Header <code>Cache-Control</code> is set to <code>no-cache, max-age=0</code>.</note>
                      * @param {function} fnRetry Value representing the function to be called when the request is to be retried.
                      * @param {object} [oBody] Value representing the body of the request.
-                     * @returns {object} Value representing the ability to <code>send(vBody, fnHook)</code> the request, <code>abort()</code> the request and access to the <code>xhr</code> object.
+                     * @returns {object} =interface Value representing the following properties:
+                     *      @returns {function} =interface.send Sends the request; <code>send(vBody, fnHook)</code>.
+                     *          <br/><code>vBody</code> <span class="param-type">variant|object</span> Value representing the body of the call.
+                     *          <br/><code>fnHook</code> <span class="param-type">function</span> Value representing the function to be called before the request is sent via the underlying <code>XMLHttpRequest</code> management object; <code>fnHook($xhr)</code>.
+                     *      @returns {function} =interface.abort Aborts the request; <code>abort()</code>.
+                     *      @returns {object} =interface.xhr Value representing the underlying <code>XMLHttpRequest</code> management object.
                      */ //#####
                     xhr: xhr,
                     //promise: promise,
@@ -522,7 +527,7 @@
                     /** Provides an interface that retries up to the passed number of attempts before returning an unsuccessful result.
                      * @function ish.io.net.retry
                      * @param {object} [oOptions] Value representing the desired options:
-                     *      @param {integer} [oOptions.wait=500] Value representing the function to be called when the request returns; <code>vCallback.fn(bSuccess, oResponse, vArg, $xhr)</code>.
+                     *      @param {integer|function} [oOptions.wait=500] Value representing the number of milliseconds (1/1000ths of a second) or function called per attempt that returns the number of milliseconds between each call; <code>iWaitMilliseconds = oOptions.wait(iAttemptCount)</code>.
                      *      @param {integer} [oOptions.maxAttempts=5] Value representing the maximum number of attempts before returning an unsuccessful result.
                      * @returns {object} =interface Value representing the following properties:
                      *      @returns {object} =interface.get {@link: ish.io.net.get}.
@@ -532,42 +537,54 @@
                      *      @returns {object} =interface.head {@link: ish.io.net.head}.
                      *      @returns {object} =interface.crud {@link: ish.io.net.crud}.
                      */ //#####
-                    retry: function (oOptions) {
-                        var fnRetry, iWait;
+                    retry: core.extend(
+                        function (oOptions) {
+                            var fnRetry, iWait;
 
-                        //#
-                        oOptions = core.extend({
-                            //wait: 500,
-                            //maxAttempts: 5
-                        }, oOptions);
-                        iWait = (core.type.int.mk(oOptions.wait, 500));
-                        oOptions.wait = (core.type.fn.is(oOptions.wait) ? oOptions.wait : function (/*iAttempts*/) { return iWait; });
-                        oOptions.maxAttempts = core.type.int.mk(oOptions.maxAttempts, 5);
-                        oOptions.attempts = 1;
+                            //#
+                            oOptions = core.extend({
+                                //wait: 500,
+                                //maxAttempts: 5
+                            }, oOptions);
+                            iWait = (core.type.int.mk(oOptions.wait, 500));
+                            oOptions.wait = (core.type.fn.is(oOptions.wait) ? oOptions.wait : function (/*iAttemptCount*/) { return iWait; });
+                            oOptions.maxAttempts = core.type.int.mk(oOptions.maxAttempts, 5);
+                            oOptions.attempts = 1;
 
-                        //#
-                        fnRetry = function () {
-                            return (
-                                oOptions.attempts++ < oOptions.maxAttempts ?
-                                oOptions.wait(oOptions.attempts) :
-                                null
-                            );
-                        };
+                            //#
+                            fnRetry = function () {
+                                return (
+                                    oOptions.attempts++ < oOptions.maxAttempts ?
+                                    oOptions.wait(oOptions.attempts) :
+                                    null
+                                );
+                            };
 
-                        return {
-                            get: doGet(fnRetry),
-                            put: doPut(fnRetry),
-                            post: doPost(fnRetry),
-                            'delete': doDelete(fnRetry),
-                            head: doHead(fnRetry),
-                            crud: {
-                                create: doPut(fnRetry),
-                                read: doGet(fnRetry),
-                                update: doPost(fnRetry),
-                                'delete': doDelete(fnRetry)
-                            }
-                        };
-                    }, //# io.net.retry
+                            return {
+                                get: doGet(fnRetry),
+                                put: doPut(fnRetry),
+                                post: doPost(fnRetry),
+                                'delete': doDelete(fnRetry),
+                                head: doHead(fnRetry),
+                                crud: {
+                                    create: doPut(fnRetry),
+                                    read: doGet(fnRetry),
+                                    update: doPost(fnRetry),
+                                    'delete': doDelete(fnRetry)
+                                }
+                            };
+                        }, //# io.net.retry
+                        {
+                            //#########
+                            /** Calculates the exponential back-off based on the passed base interval and attempt count.
+                             * @function ish.io.net.retry:expBackoff
+                             * @$aka ish.type.fn.poll:expBackoff
+                             * @param {integer} [iBaseInterval=100] Value representing the number of milliseconds (1/1000ths of a second) to base the exponential interval on.<br/>E.g. <code>100</code> results in intervals of <code>100</code>, <code>200</code>, <code>400</code>, <code>800</code>, <code>1600</code>, etc.
+                             * @returns {function} Function that returns a value representing the number of milliseconds for the current polling attempt.
+                             */ //#####
+                            expBackoff: core.type.fn.poll.expBackoff
+                        }
+                    ),
 
 
                     //#########

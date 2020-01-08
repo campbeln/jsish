@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>config - Documentation</title>
+    <title>ish.io.evaler - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -45,16 +45,14 @@
 
 <header>
     
-        <h1 class="page-title">ish.config</h1><!-- neek added to line 27 -->
+        <h1 class="page-title">ish.io.evaler</h1><!-- neek added to line 27 -->
         
-            <h2 class="description">Configuration-based functionality.</h2>
+            <h2 class="description">Javascript Evaluation mixin for ish.js</h2>
         
 
         <!-- neek
         <h2>
-            <span class="ancestors"><a href="ish.html">ish</a>.</span>
-        
-        config
+        ish.io.evaler
         </h2>
         
         neek -->
@@ -72,7 +70,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line1032">line 1032</a>
+        <a href="ish.io.evaler.js.html">ish.io.evaler.js</a>, <a href="ish.io.evaler.js.html#line2">line 2</a>
     </li></ul></dd>
     
 
@@ -93,9 +91,22 @@
     
 
     
-
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Nick Campbell</li>
+        </ul>
+    </dd>
     
 
+    
+    <dt class="tag-copyright">Copyright:</dt>
+    <dd class="tag-copyright"><ul class="dummy"><li>2014-2020, Nick Campbell</li></ul></dd>
+    
+
+    
+    <dt class="tag-license">License:</dt>
+    <dd class="tag-license"><ul class="dummy"><li>MIT</li></ul></dd>
     
 
     
@@ -111,7 +122,7 @@
 
 
             
-                <div class="description" style="display: none;">Configuration-based functionality.</div> <!-- neek added style="display: none;" -->
+                <div class="description" style="display: none;">Javascript Evaluation mixin for ish.js</div> <!-- neek added style="display: none;" -->
             
 
             
@@ -143,627 +154,9 @@
 
     <h4 class="name" id=".!">
       <!-- neek -->
-      
-      <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.config<span class="signature">(oConfig)</span><span class="type-signature"> &rarr; {function}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line1034">line 1034</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Creates an interface that merges the content of the passed options into the underlying configuration, overriding any original values.
-</div>
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
-    
-        <p class="code-caption">
-     When used internally for <code>ish</code> mixins, the recommended pattern to setup a related <code>ish.config</code> entry is:
-  </p>
-    
-    <pre class="prettyprint"><code>    ish.config.mixinPath = ish.config({ some: "mixin configuration value" });</code></pre>
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>oConfig</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Object that stores the underlying configuration values.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Function that manages and returns the object representing the configuration values.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
- <!-- neek -->
- <!-- neek -->
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".ish">
-      <!-- neek -->
-      
-      <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.config.ish<span class="signature">(oOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line1315">line 1315</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    ish.js configuration values.
-</div>
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>oOptions</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Value representing the updated configuration values.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Value representing ish.js's configuration values.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
- <!-- neek -->
- <!-- neek -->
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".require">
-      <!-- neek -->
-      
-      <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.config.require<span class="signature">(oOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line2792">line 2792</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    <code>ish.require</code> configuration values.
-</div>
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>oOptions</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Value representing the updated configuration values.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Value representing <code>ish.require</code>'s configuration values.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
- <!-- neek -->
- <!-- neek -->
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".type:date">
-      <!-- neek -->
       <mixin>[mixin]</mixin>
       <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.config.type.date<span class="signature">(oOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
+      <!-- neek <span class="type-signature">(static) </span> -->ish.io.evaler<span class="signature">(oThis, eEnvironment<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {<a href="global.html#fnIshIoEvaler">fnIshIoEvaler</a>}</span></h4>
 
     
 
@@ -775,7 +168,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.type.date-format.js.html">ish.type.date-format.js</a>, <a href="ish.type.date-format.js.html#line407">line 407</a>
+        <a href="ish.io.evaler.js.html">ish.io.evaler.js</a>, <a href="ish.io.evaler.js.html#line76">line 76</a>
     </li></ul></dd>
     
 
@@ -815,14 +208,14 @@
 
 
 <div class="description">
-    <code>ish.type.date</code> configuration values.
+    Provides an interface to evaluate Javascript under the passed <code>this</code>/context and environment.
 </div>
 
 
 <!-- neek -->
 
     <div class="description">
-        <b><mixin>From Mixin:</mixin></b> <code>ish.type.date-format.js</code> must be included for <code>ishJS</code> to access this functionality.
+        <b><mixin>From Mixin:</mixin></b> <code>ish.io.evaler.js</code> must be included for <code>ishJS</code> to access this functionality.
     </div>
 
 
@@ -859,6 +252,8 @@
         
 
         
+        <th>Default</th>
+        
 
         <th class="last">Description</th>
     </tr>
@@ -869,13 +264,48 @@
 
         <tr>
             
-                <td class="name"><code>oOptions</code></td>
+                <td class="name"><code>oThis</code></td>
             
 
             <td class="type">
             
                 
 <span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Value representing the <code>this</code> context to evaluate the Javascript under. <note><code>ish.io.evaler.types.masked</code> utilize this argument as the scope rather than <code>this</code> context.</note></td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>eEnvironment</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
 
 
             
@@ -894,8 +324,14 @@
             
 
             
+                <td class="default">
+                
+                    <code>ish.io.evaler.environment.masked</code>
+                
+                </td>
+            
 
-            <td class="description last">Value representing the updated configuration values.</td>
+            <td class="description last">Value representing the type of evaluation environment.</td>
         </tr>
 
     
@@ -944,7 +380,7 @@
             <td class="type">
             
                 
-<span class="param-type">object</span>
+<span class="param-type"><a href="global.html#fnIshIoEvaler">fnIshIoEvaler</a></span>
 
 
             
@@ -954,7 +390,7 @@
 
             
 
-            <td class="description last">Value representing <code>ish.type.date</code>'s configuration values.</td>
+            <td class="description last">Value representing the requested evaler function; <code>evaler(vJS, oInjectData, bReturnAsMetadata)</code>.</td>
         </tr>
 
     

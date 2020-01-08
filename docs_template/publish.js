@@ -422,11 +422,13 @@ function buildMemberNav(items, itemHeading, itemsSeen, linktoFn) {
                         if(docdash.collapse)
                             itemsNav += " style='display: none;'";
                         itemsNav += ">";
-                        itemsNav += linkto(method.longname, method.name.replace(/^!.*/, " ").replace(/!/g, "").replace(/:/g, ".") +
-                            (method.customTags.$frommixin ? " <mixin title='From Mixin: " + method.meta.shortpath + "'>[M]</mixin>" : "") +
-                            (method.customTags.$clientsideonly ? " <client title='Client-side only'>[C]</client>" : "") +
-                            (method.customTags.$serversideonly ? " <server title='Server-side only'>[S]</server>" : "")
-                        ); //# neek added: .replace("!", "").replace(",", "﹒")...
+                        if (method.name.replace(/^!.*/, " ").replace(/!/g, "").replace(/:/g, ".").trim()) { //# neek
+                            itemsNav += linkto(method.longname, method.name.replace(/^!.*/, " ").replace(/!/g, "").replace(/:/g, ".") +
+                                (method.customTags.$frommixin ? " <mixin title='From Mixin: " + method.meta.shortpath + "'>[M]</mixin>" : "") +
+                                (method.customTags.$clientsideonly ? " <client title='Client-side only'>[C]</client>" : "") +
+                                (method.customTags.$serversideonly ? " <server title='Server-side only'>[S]</server>" : "")
+                            ); //# neek added: .replace("!", "").replace(",", "﹒")...
+                        } //# neek
                         itemsNav += "</li>";
                     });
 

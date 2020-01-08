@@ -394,8 +394,12 @@
                 //####
 
                 //#########
+                /** Universally Unique Identifier (UUID)-based type functionality.
+                 * @namespace ish.type.uuid
+                 */ //#####
+                //#########
                 /** Generates a Universally Unique Identifier (UUID).
-                 * @function ish.type.uuid
+                 * @function ish.type.uuid.!
                  * @param {integer} [iVersion=4] Value representing the UUID version to create, with valid values ranging between <code>1</code>-<code>5</code>.
                  * @returns {boolean} Value representing UUID.
                  * @see {@link https://stackoverflow.com/a/2117523/235704|StackOverflow.com}
@@ -465,7 +469,7 @@
                     return core.extend(fnReturnValue, {
                         //#########
                         /** Determines if the passed value represents a UUID.
-                         * @function ish.type.uuid:is
+                         * @function ish.type.uuid.is
                          * @param {string} x Value to interrogate.
                          * @param {boolean|object} [vOptions] Value representing if Nil UUIDs are to be ignored or the following options:
                          *      @param {boolean} [vOptions.excludeNilUUID=false] Value representing if Nil UUIDs are to be ignored.
@@ -504,7 +508,7 @@
 
                         //#########
                         /** Casts the passed value into a UUID.
-                         * @function ish.type.uuid:mk
+                         * @function ish.type.uuid.mk
                          * @param {string} x Value to interrogate.
                          * @param {variant} [vDefaultVal=ish.type.uuid()] Value representing the default return value if casting fails.
                          * @returns {object} Value representing the passed value as a UUID.
@@ -531,7 +535,7 @@
 
                         //#########
                         /** Removes any non-canonical brackets (e.g. <code>{}</code>) from the passed value.
-                         * @function ish.type.uuid:format
+                         * @function ish.type.uuid.format
                          * @param {string} x Value to interrogate.
                          * @param {boolean} [bUppercase=false] Value representing if the UUID should be represented in uppercase letters.
                          * @returns {object} Value representing the passed value as a formatted UUID.

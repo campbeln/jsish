@@ -63,13 +63,21 @@
                 eEnvironments.sandbox = "sandbox";
             }
 
+            //#########
+            /** Interface to evaluate Javascript under the established <code>this</code>/context and environment.
+             * @callback fnIshIoEvaler
+             * @param {string|string[]} vJS Value representing the Javascript string(s) to evaluate.
+             * @param {object} [oInjectData=undefined] Value representing the variables to expose to the code to be evaluated.
+             * @param {boolean} [bReturnAsMetadata=false] Value representing if the metadata object <code>{ js: string[], results: variant[], errors: object[{ index: integer, error: object, js: string }] }</code> is returned in place of any returned value(s) from the evaluated Javascript.
+             * @returns {variant|object} Value representing the returned value(s) (if any) from the evaluated Javascript or the metadata object.
+             */ //#####
             return {
                 //#########
                 /** Provides an interface to evaluate Javascript under the passed <code>this</code>/context and environment.
-                 * @function ish.io.evaler
+                 * @function ish.io.evaler.!
                  * @param {object} oThis Value representing the <code>this</code> context to evaluate the Javascript under. <note><code>ish.io.evaler.types.masked</code> utilize this argument as the scope rather than <code>this</code> context.</note>
                  * @param {string} [eEnvironment=ish.io.evaler.environment.masked] Value representing the type of evaluation environment.
-                 * @returns {function} Value representing the requested evaler function as <code>evaler(vJS, oInjectData, bReturnAsMetadata)</code>.
+                 * @returns {fnIshIoEvaler} Value representing the requested evaler function; <code>evaler(vJS, oInjectData, bReturnAsMetadata)</code>.
                  */ //#####
                 evaler: core.extend(
                     function (oThis, eEnvironment) {
@@ -97,14 +105,6 @@
                         environments: eEnvironments
                     }
                 )
-                //#########
-                /** Interface to evaluate Javascript under the established <code>this</code>/context and environment.
-                 * @function ish.io.evaler:*
-                 * @param {string|string[]} vJS Value representing the Javascript string(s) to evaluate.
-                 * @param {object} [oInjectData=undefined] Value representing the variables to expose to the code to be evaluated.
-                 * @param {boolean} [bReturnAsMetadata=false] Value representing if the metadata object <code>{ js: string[], results: variant[], errors: object[{ index: integer, error: object, js: string }] }</code> is returned in place of any returned value(s) from the evaluated Javascript.
-                 * @returns {variant|object} Value representing the returned value(s) (if any) from the evaluated Javascript or the metadata object.
-                 */ //#####
             };
         }); //# core.io.evaler
 

@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>config - Documentation</title>
+    <title>uuid - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -45,16 +45,16 @@
 
 <header>
     
-        <h1 class="page-title">ish.config</h1><!-- neek added to line 27 -->
+        <h1 class="page-title">ish.type.uuid</h1><!-- neek added to line 27 -->
         
-            <h2 class="description">Configuration-based functionality.</h2>
+            <h2 class="description">Universally Unique Identifier (UUID)-based type functionality.</h2>
         
 
         <!-- neek
         <h2>
-            <span class="ancestors"><a href="ish.html">ish</a>.</span>
+            <span class="ancestors"><a href="ish.html">ish</a><a href="ish.type.html">.type</a>.</span>
         
-        config
+        uuid
         </h2>
         
         neek -->
@@ -72,7 +72,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line1032">line 1032</a>
+        <a href="ish.type-ex.js.html">ish.type-ex.js</a>, <a href="ish.type-ex.js.html#line397">line 397</a>
     </li></ul></dd>
     
 
@@ -111,7 +111,7 @@
 
 
             
-                <div class="description" style="display: none;">Configuration-based functionality.</div> <!-- neek added style="display: none;" -->
+                <div class="description" style="display: none;">Universally Unique Identifier (UUID)-based type functionality.</div> <!-- neek added style="display: none;" -->
             
 
             
@@ -143,627 +143,9 @@
 
     <h4 class="name" id=".!">
       <!-- neek -->
-      
-      <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.config<span class="signature">(oConfig)</span><span class="type-signature"> &rarr; {function}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line1034">line 1034</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Creates an interface that merges the content of the passed options into the underlying configuration, overriding any original values.
-</div>
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-
-    <h5>Example</h5>
-    
-        <p class="code-caption">
-     When used internally for <code>ish</code> mixins, the recommended pattern to setup a related <code>ish.config</code> entry is:
-  </p>
-    
-    <pre class="prettyprint"><code>    ish.config.mixinPath = ish.config({ some: "mixin configuration value" });</code></pre>
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>oConfig</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Object that stores the underlying configuration values.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Function that manages and returns the object representing the configuration values.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
- <!-- neek -->
- <!-- neek -->
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".ish">
-      <!-- neek -->
-      
-      <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.config.ish<span class="signature">(oOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line1315">line 1315</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    ish.js configuration values.
-</div>
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>oOptions</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Value representing the updated configuration values.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Value representing ish.js's configuration values.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
- <!-- neek -->
- <!-- neek -->
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".require">
-      <!-- neek -->
-      
-      <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.config.require<span class="signature">(oOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line2792">line 2792</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    <code>ish.require</code> configuration values.
-</div>
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>oOptions</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-
-            <td class="description last">Value representing the updated configuration values.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">object</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Value representing <code>ish.require</code>'s configuration values.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
- <!-- neek -->
- <!-- neek -->
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".type:date">
-      <!-- neek -->
       <mixin>[mixin]</mixin>
       <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.config.type.date<span class="signature">(oOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.uuid<span class="signature">(iVersion<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
 
     
 
@@ -775,7 +157,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.type.date-format.js.html">ish.type.date-format.js</a>, <a href="ish.type.date-format.js.html#line407">line 407</a>
+        <a href="ish.type-ex.js.html">ish.type-ex.js</a>, <a href="ish.type-ex.js.html#line401">line 401</a>
     </li></ul></dd>
     
 
@@ -806,6 +188,13 @@
     
 
     
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://stackoverflow.com/a/2117523/235704">StackOverflow.com</a></li>
+        </ul>
+    </dd>
+    
 
     
 </dl>
@@ -815,14 +204,494 @@
 
 
 <div class="description">
-    <code>ish.type.date</code> configuration values.
+    Generates a Universally Unique Identifier (UUID).
 </div>
 
 
 <!-- neek -->
 
     <div class="description">
-        <b><mixin>From Mixin:</mixin></b> <code>ish.type.date-format.js</code> must be included for <code>ishJS</code> to access this functionality.
+        <b><mixin>From Mixin:</mixin></b> <code>ish.type-ex.js</code> must be included for <code>ishJS</code> to access this functionality.
+    </div>
+
+
+
+
+
+
+
+<!-- neek -->
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>iVersion</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">integer</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>4</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing the UUID version to create, with valid values ranging between <code>1</code>-<code>5</code>.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Value representing UUID.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+ <!-- neek -->
+ <!-- neek -->
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".format">
+      <!-- neek -->
+      <mixin>[mixin]</mixin>
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.uuid.format<span class="signature">(x, bUppercase<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.type-ex.js.html">ish.type-ex.js</a>, <a href="ish.type-ex.js.html#line537">line 537</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Removes any non-canonical brackets (e.g. <code>{}</code>) from the passed value.
+</div>
+
+
+<!-- neek -->
+
+    <div class="description">
+        <b><mixin>From Mixin:</mixin></b> <code>ish.type-ex.js</code> must be included for <code>ishJS</code> to access this functionality.
+    </div>
+
+
+
+
+
+
+
+<!-- neek -->
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Value to interrogate.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bUppercase</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>false</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing if the UUID should be represented in uppercase letters.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Value representing the passed value as a formatted UUID.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+ <!-- neek -->
+ <!-- neek -->
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".is">
+      <!-- neek -->
+      <mixin>[mixin]</mixin>
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.uuid.is<span class="signature">(x, vOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.type-ex.js.html">ish.type-ex.js</a>, <a href="ish.type-ex.js.html#line471">line 471</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://tools.ietf.org/html/rfc4122#section-4.1.7">ietf.org</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Determines if the passed value represents a UUID.
+</div>
+
+
+<!-- neek -->
+
+    <div class="description">
+        <b><mixin>From Mixin:</mixin></b> <code>ish.type-ex.js</code> must be included for <code>ishJS</code> to access this functionality.
     </div>
 
 
@@ -869,12 +738,46 @@
 
         <tr>
             
-                <td class="name"><code>oOptions</code></td>
+                <td class="name"><code>x</code></td>
             
 
             <td class="type">
             
                 
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Value to interrogate.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vOptions</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+|
+
 <span class="param-type">object</span>
 
 
@@ -895,7 +798,406 @@
 
             
 
-            <td class="description last">Value representing the updated configuration values.</td>
+            <td class="description last">Value representing if Nil UUIDs are to be ignored or the following options:
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>excludeNilUUID</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>false</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing if Nil UUIDs are to be ignored.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>allowBrackets</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>false</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing if enclosing brackets (<code>{}</code>) are to be allowed.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>version</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">integer</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Value representing the required UUID version, with valid values ranging between <code>1</code>-<code>5</code>.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Value representing if the passed value represents a UUID.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+ <!-- neek -->
+ <!-- neek -->
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".mk">
+      <!-- neek -->
+      <mixin>[mixin]</mixin>
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.uuid.mk<span class="signature">(x, vDefaultVal<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.type-ex.js.html">ish.type-ex.js</a>, <a href="ish.type-ex.js.html#line510">line 510</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Casts the passed value into a UUID.
+</div>
+
+
+<!-- neek -->
+
+    <div class="description">
+        <b><mixin>From Mixin:</mixin></b> <code>ish.type-ex.js</code> must be included for <code>ishJS</code> to access this functionality.
+    </div>
+
+
+
+
+
+
+
+<!-- neek -->
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Value to interrogate.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vDefaultVal</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">variant</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>ish.type.uuid()</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing the default return value if casting fails.</td>
         </tr>
 
     
@@ -954,7 +1256,7 @@
 
             
 
-            <td class="description last">Value representing <code>ish.type.date</code>'s configuration values.</td>
+            <td class="description last">Value representing the passed value as a UUID.</td>
         </tr>
 
     
