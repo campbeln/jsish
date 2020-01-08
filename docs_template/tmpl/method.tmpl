@@ -10,6 +10,9 @@ var self = this;
     <h4 class="name" id="<?js= id ?>">
       <!-- neek -->
       <?js
+        var customTags = customTags || self.customTags || {};
+        var item = item || self.item || { customTags: {} };
+
         if (customTags.$frommixin || item.customTags.$frommixin) {
             print("<mixin>[mixin]</mixin>");
         }
@@ -159,15 +162,8 @@ var self = this;
 
 <?js if (data.returns && returns.length) { ?>
 <h5>Returns:</h5>
-<?js if (returns.length > 1) { ?><ul><?js
-    returns.forEach(function(r) { ?>
-        <li><?js= self.partial('returns.tmpl', r) ?></li>
-    <?js });
-?></ul><?js } else {
-    returns.forEach(function(r) { ?>
-        <?js= self.partial('returns.tmpl', r) ?>
-    <?js });
-} } ?>
+    <?js= self.partial('returnsParams.tmpl', returns) ?> <!-- neek -->
+<?js } ?> <!-- neek -->
 
 <?js if (data.yields && yields.length) { ?>		
 <h5>Yields:</h5>		

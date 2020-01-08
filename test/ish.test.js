@@ -569,6 +569,20 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                         timestamp: function ($) {
                             $.expect(1);
                             $.assert.isNumber(core.type.date.timestamp(), "timestamp is numeric");
+                        },
+
+                        time: {
+                            is: function ($) { //# TODO
+                                $.expect(1);
+                            },
+
+                            seconds: function ($) { //# TODO
+                                $.expect(1);
+                            }
+                        },
+
+                        yyyymmdd: function ($) { //# TODO
+                            $.expect(1);
                         }
                     },
 
@@ -1329,11 +1343,11 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                             $.assert(a__test[0].tagName !== "DIV", "textnode.tagName");
                             $.assert(a__test[0].nodeName === "#text", "textnode.nodeName");
                         },
-                        id: { //# TODO
-                            _: function ($) {
+                        id: {
+                            _: function ($) { //# TODO
                                 $.expect(1);
                             },
-                            is: function ($) {
+                            is: function ($) { //# TODO
                                 $.expect(1);
                             }
                         }
@@ -1723,7 +1737,7 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
 
 
     //# If we are running server-side
-    //#     NOTE: Generally compliant with UMD, see: https://github.com/umdjs/umd/blob/master/templates/returnExports.js
+    //#     NOTE: Compliant with UMD, see: https://github.com/umdjs/umd/blob/master/templates/returnExports.js
     //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
     if (typeof module === 'object' && module.exports) { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
         module.exports = init;

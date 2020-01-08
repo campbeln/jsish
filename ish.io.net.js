@@ -5,7 +5,7 @@
  * @license MIT
  * @copyright 2014-2020, Nick Campbell
  */ //############################################################################################
-/*global module, define, require */                             //# Enable Node globals for JSHint
+/*global module, define, require, XMLHttpRequest, ActiveXObject */  //# Enable Node globals for JSHint
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
 (function () {
     'use strict';
@@ -43,7 +43,7 @@
                 if (core.type.fn.is(vCallback)) {
                     vCallback = { fn: vCallback, arg: null /*, cache: oXHROptions.cache, useCache: oXHROptions.useCache */ };
                 }
-                bResponseTypeText = (!vCallback.responseType || (core.type.str.is(vCallback.responseType, true) && vCallback.responseType === "text"));
+                bResponseTypeText = (!vCallback.responseType || (core.type.str.is(vCallback.responseType, true) && vCallback.responseType.trim().toLowerCase() === "text"));
 
                 //# Determine if this is a bValidRequest
                 bValidRequest = ($xhr && core.type.str.is(sUrl, true));
@@ -185,6 +185,9 @@
             //}
 
 
+            //# GET, POST, PUT, PATCH, DELETE, HEAD + TRACE, CONNECT, OPTIONS - https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
+
+
             //#
             function doGet(fnRetry) {
                 return function (sUrl, vCallback) {
@@ -224,41 +227,252 @@
 
 
             //# Return the core.io.net functionality
+            //#########
+            /** Callback utilized by <code>ish.io.net</code> on completion of a XMLHttpRequest request.
+             * @callback fnIshIoNetCallback
+             * @param {boolean} bSuccess Value representing if the request returned successfully.
+             * @param {object} oResponse Value representing the results of the request:
+             *      @param {integer} oResponse.status Value representing the XMLHttpRequest's <code>status</code>.
+             *      @param {string} oResponse.url Value representing the URL of the request.
+             *      @param {string} oResponse.verb Value representing the HTTP Verb of the request.
+             *      @param {boolean} oResponse.async Value representing if the request was asynchronous.
+             *      @param {boolean} oResponse.aborted Value representing if the request was aborted prior to completion.
+             *      @param {boolean} oResponse.loaded Value representing if the URL was successfully loaded.
+             *      @param {variant} oResponse.response Value representing the XMLHttpRequest's <code>responseText</code> or <code>response</code>.
+             *      @param {string} oResponse.text Value representing the XMLHttpRequest's <code>responseText</code>.
+             *      @param {object} oResponse.json Value representing the XMLHttpRequest's <code>responseText</code> as parsed JSON.
+             * @param {variant} vArg Value representing the value passed in the original call as <code>vCallback.arg</code>.
+             * @param {object} $xhr Value representing the underlying <code>XMLHttpRequest</code> management object.
+             */ //#####
             return {
                 net: {
+                    //#########
+                    /** Represents the HTTP Request Verbs as a CRUD (Create, Read, Update, Delete) interface.
+                     * @function ish.io.net.crud
+                     * @$asProperty
+                     * @ignore
+                     */ //#####
                     crud: {
+                        //#########
+                        /** Calls the passed URL to create (via <code>PUT</code>) a new entity.
+                         * @function ish.io.net.crud:create
+                         * @param {string} sURL Value representing the URL to interrogate.
+                         * @param {object} [oBody] Value representing the body of the request.
+                         * @param {fnIshIoNetCallback|object} [vCallback] Value representing the function to be called when the request returns or the desired options:
+                         *      @param {fnIshIoNetCallback} [vCallback.fn] Value representing the function to be called when the request returns; <code>vCallback.fn(bSuccess, oResponse, vArg, $xhr)</code>.
+                         *      @param {variant} [vCallback.arg] Value representing the argument that will be passed to the callback function.
+                         *      @param {object} [vCallback.headers] Value representing the HTTP headers of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).
+                         *      @param {string} [vCallback.mimeType] Value representing the MIME Type of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/overrideMimeType|Mozilla.org}).
+                         *      @param {string} [vCallback.contentType] Value representing the Content Type HTTP Header of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).<note>When <code>vCallback.contentType</code> is set, its value will override any value set in <code>vCallback.headers['content-type']</code>.</note>
+                         *      @param {string} [vCallback.responseType='text'] Value representing the type of data contained in the response (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType|Mozilla.org}).
+                         *      @param {boolean} [vCallback.cache=false] Value representing if the response is to be cached.
+                         *      @param {boolean} [vCallback.useCache=false] Value representing if the response is to be sourced from the cache if it's available.<note>When <code>!vCallback.useCache</code>, the HTTP Header <code>Cache-Control</code> is set to <code>no-cache, max-age=0</code>.</note>
+                         */ //#####
                         create: doPut(/*_undefined*/),
-                        read: doGet(/*_undefined*/),
-                        update: doPost(/*_undefined*/),
-                        'delete': doDelete(/*_undefined*/)
-                    },
 
+                        //#########
+                        /** Calls the passed URL to read (via <code>GET</code>) an entity.
+                         * @function ish.io.net.crud:read
+                         * @param {string} sURL Value representing the URL to interrogate.
+                         * @param {fnIshIoNetCallback|object} [vCallback] Value representing the function to be called when the request returns or the desired options:
+                         *      @param {fnIshIoNetCallback} [vCallback.fn] Value representing the function to be called when the request returns; <code>vCallback.fn(bSuccess, oResponse, vArg, $xhr)</code>.
+                         *      @param {variant} [vCallback.arg] Value representing the argument that will be passed to the callback function.
+                         *      @param {object} [vCallback.headers] Value representing the HTTP headers of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).
+                         *      @param {string} [vCallback.mimeType] Value representing the MIME Type of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/overrideMimeType|Mozilla.org}).
+                         *      @param {string} [vCallback.contentType] Value representing the Content Type HTTP Header of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).<note>When <code>vCallback.contentType</code> is set, its value will override any value set in <code>vCallback.headers['content-type']</code>.</note>
+                         *      @param {string} [vCallback.responseType='text'] Value representing the type of data contained in the response (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType|Mozilla.org}).
+                         *      @param {boolean} [vCallback.cache=false] Value representing if the response is to be cached.
+                         *      @param {boolean} [vCallback.useCache=false] Value representing if the response is to be sourced from the cache if it's available.<note>When <code>!vCallback.useCache</code>, the HTTP Header <code>Cache-Control</code> is set to <code>no-cache, max-age=0</code>.</note>
+                         */ //#####
+                        read: doGet(/*_undefined*/),
+
+                        //#########
+                        /** Calls the passed URL to update (via <code>POST</code>) an entity.
+                         * @function ish.io.net.crud:update
+                         * @param {string} sURL Value representing the URL to interrogate.
+                         * @param {object} [oBody] Value representing the body of the request.
+                         * @param {fnIshIoNetCallback|object} [vCallback] Value representing the function to be called when the request returns or the desired options:
+                         *      @param {fnIshIoNetCallback} [vCallback.fn] Value representing the function to be called when the request returns; <code>vCallback.fn(bSuccess, oResponse, vArg, $xhr)</code>.
+                         *      @param {variant} [vCallback.arg] Value representing the argument that will be passed to the callback function.
+                         *      @param {object} [vCallback.headers] Value representing the HTTP headers of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).
+                         *      @param {string} [vCallback.mimeType] Value representing the MIME Type of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/overrideMimeType|Mozilla.org}).
+                         *      @param {string} [vCallback.contentType] Value representing the Content Type HTTP Header of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).<note>When <code>vCallback.contentType</code> is set, its value will override any value set in <code>vCallback.headers['content-type']</code>.</note>
+                         *      @param {string} [vCallback.responseType='text'] Value representing the type of data contained in the response (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType|Mozilla.org}).
+                         *      @param {boolean} [vCallback.cache=false] Value representing if the response is to be cached.
+                         *      @param {boolean} [vCallback.useCache=false] Value representing if the response is to be sourced from the cache if it's available.<note>When <code>!vCallback.useCache</code>, the HTTP Header <code>Cache-Control</code> is set to <code>no-cache, max-age=0</code>.</note>
+                         */ //#####
+                        update: doPost(/*_undefined*/),
+
+                        //#########
+                        /** Calls the passed URL to remove (via <code>DELETE</code>) an entity.
+                         * @function ish.io.net.crud:delete
+                         * @param {string} sURL Value representing the URL to interrogate.
+                         * @param {fnIshIoNetCallback|object} [vCallback] Value representing the function to be called when the request returns or the desired options:
+                         *      @param {fnIshIoNetCallback} [vCallback.fn] Value representing the function to be called when the request returns; <code>vCallback.fn(bSuccess, oResponse, vArg, $xhr)</code>.
+                         *      @param {variant} [vCallback.arg] Value representing the argument that will be passed to the callback function.
+                         *      @param {object} [vCallback.headers] Value representing the HTTP headers of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).
+                         *      @param {string} [vCallback.mimeType] Value representing the MIME Type of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/overrideMimeType|Mozilla.org}).
+                         *      @param {string} [vCallback.contentType] Value representing the Content Type HTTP Header of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).<note>When <code>vCallback.contentType</code> is set, its value will override any value set in <code>vCallback.headers['content-type']</code>.</note>
+                         *      @param {string} [vCallback.responseType='text'] Value representing the type of data contained in the response (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType|Mozilla.org}).
+                         *      @param {boolean} [vCallback.cache=false] Value representing if the response is to be cached.
+                         *      @param {boolean} [vCallback.useCache=false] Value representing if the response is to be sourced from the cache if it's available.<note>When <code>!vCallback.useCache</code>, the HTTP Header <code>Cache-Control</code> is set to <code>no-cache, max-age=0</code>.</note>
+                         */ //#####
+                        'delete': doDelete(/*_undefined*/)
+                    }, //# io.net.crud
+
+                    //#########
+                    /** Provides access to the request cache.
+                     * @function ish.io.net.cache
+                     * @param {object} oImportCache Value representing the cached entries to import into the current cache as <code>verb.url.data</code>.
+                     * @returns {object} Value representing the request cache.
+                     */ //#####
                     cache: function (oImportCache) {
                         core.extend(oCache, oImportCache);
                         return oCache;
-                    },
+                    }, //# io.net.cache
 
+                    //#########
+                    /** XMLHttpRequest (XHR) management function.
+                     * @function ish.io.net.xhr
+                     * @param {string} sVerb Value representing the HTTP Verb.
+                     * @param {boolean} bAsync Value representing if the HTTP request is to be asynchronous.
+                     * @param {string} sUrl Value representing the URL to interrogate.
+                     * @param {fnIshIoNetCallback|object} [vCallback] Value representing the function to be called when the request returns or the desired options:
+                     *      @param {fnIshIoNetCallback} [vCallback.fn] Value representing the function to be called when the request returns; <code>vCallback.fn(bSuccess, oResponse, vArg, $xhr)</code>.
+                     *      @param {variant} [vCallback.arg] Value representing the argument that will be passed to the callback function.
+                     *      @param {object} [vCallback.headers] Value representing the HTTP headers of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).
+                     *      @param {string} [vCallback.mimeType] Value representing the MIME Type of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/overrideMimeType|Mozilla.org}).
+                     *      @param {string} [vCallback.contentType] Value representing the Content Type HTTP Header of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).<note>When <code>vCallback.contentType</code> is set, its value will override any value set in <code>vCallback.headers['content-type']</code>.</note>
+                     *      @param {string} [vCallback.responseType='text'] Value representing the type of data contained in the response (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType|Mozilla.org}).
+                     *      @param {boolean} [vCallback.cache=false] Value representing if the response is to be cached.
+                     *      @param {boolean} [vCallback.useCache=false] Value representing if the response is to be sourced from the cache if it's available.<note>When <code>!vCallback.useCache</code>, the HTTP Header <code>Cache-Control</code> is set to <code>no-cache, max-age=0</code>.</note>
+                     * @param {function} fnRetry Value representing the function to be called when the request is to be retried.
+                     * @param {object} [oBody] Value representing the body of the request.
+                     * @returns {object} Value representing the ability to <code>send(vBody, fnHook)</code> the request, <code>abort()</code> the request and access to the <code>xhr</code> object.
+                     */ //#####
                     xhr: xhr,
                     //promise: promise,
                     //xhr.options = xhr.options,
 
-                    //# GET, POST, PUT, PATCH, DELETE, HEAD + TRACE, CONNECT, OPTIONS - https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
+                    //#########
+                    /** Calls the passed URL via the <code>GET</code> HTTP Verb.
+                     * @function ish.io.net.get
+                     * @param {string} sURL Value representing the URL to interrogate.
+                     * @param {fnIshIoNetCallback|object} [vCallback] Value representing the function to be called when the request returns or the desired options:
+                     *      @param {fnIshIoNetCallback} [vCallback.fn] Value representing the function to be called when the request returns; <code>vCallback.fn(bSuccess, oResponse, vArg, $xhr)</code>.
+                     *      @param {variant} [vCallback.arg] Value representing the argument that will be passed to the callback function.
+                     *      @param {object} [vCallback.headers] Value representing the HTTP headers of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).
+                     *      @param {string} [vCallback.mimeType] Value representing the MIME Type of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/overrideMimeType|Mozilla.org}).
+                     *      @param {string} [vCallback.contentType] Value representing the Content Type HTTP Header of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).<note>When <code>vCallback.contentType</code> is set, its value will override any value set in <code>vCallback.headers['content-type']</code>.</note>
+                     *      @param {string} [vCallback.responseType='text'] Value representing the type of data contained in the response (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType|Mozilla.org}).
+                     *      @param {boolean} [vCallback.cache=false] Value representing if the response is to be cached.
+                     *      @param {boolean} [vCallback.useCache=false] Value representing if the response is to be sourced from the cache if it's available.<note>When <code>!vCallback.useCache</code>, the HTTP Header <code>Cache-Control</code> is set to <code>no-cache, max-age=0</code>.</note>
+                     */ //#####
                     get: doGet(/*_undefined*/),
+
+                    //#########
+                    /** Calls the passed URL via the <code>PUT</code> HTTP Verb.
+                     * @function ish.io.net.put
+                     * @param {string} sURL Value representing the URL to interrogate.
+                     * @param {object} [oBody] Value representing the body of the request.
+                     * @param {fnIshIoNetCallback|object} [vCallback] Value representing the function to be called when the request returns or the desired options:
+                     *      @param {fnIshIoNetCallback} [vCallback.fn] Value representing the function to be called when the request returns; <code>vCallback.fn(bSuccess, oResponse, vArg, $xhr)</code>.
+                     *      @param {variant} [vCallback.arg] Value representing the argument that will be passed to the callback function.
+                     *      @param {object} [vCallback.headers] Value representing the HTTP headers of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).
+                     *      @param {string} [vCallback.mimeType] Value representing the MIME Type of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/overrideMimeType|Mozilla.org}).
+                     *      @param {string} [vCallback.contentType] Value representing the Content Type HTTP Header of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).<note>When <code>vCallback.contentType</code> is set, its value will override any value set in <code>vCallback.headers['content-type']</code>.</note>
+                     *      @param {string} [vCallback.responseType='text'] Value representing the type of data contained in the response (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType|Mozilla.org}).
+                     *      @param {boolean} [vCallback.cache=false] Value representing if the response is to be cached.
+                     *      @param {boolean} [vCallback.useCache=false] Value representing if the response is to be sourced from the cache if it's available.<note>When <code>!vCallback.useCache</code>, the HTTP Header <code>Cache-Control</code> is set to <code>no-cache, max-age=0</code>.</note>
+                     */ //#####
                     put: doPut(/*_undefined*/),
+
+                    //#########
+                    /** Calls the passed URL via the <code>POST</code> HTTP Verb.
+                     * @function ish.io.net.post
+                     * @param {string} sURL Value representing the URL to interrogate.
+                     * @param {object} [oBody] Value representing the body of the request.
+                     * @param {fnIshIoNetCallback|object} [vCallback] Value representing the function to be called when the request returns or the desired options:
+                     *      @param {fnIshIoNetCallback} [vCallback.fn] Value representing the function to be called when the request returns; <code>vCallback.fn(bSuccess, oResponse, vArg, $xhr)</code>.
+                     *      @param {variant} [vCallback.arg] Value representing the argument that will be passed to the callback function.
+                     *      @param {object} [vCallback.headers] Value representing the HTTP headers of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).
+                     *      @param {string} [vCallback.mimeType] Value representing the MIME Type of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/overrideMimeType|Mozilla.org}).
+                     *      @param {string} [vCallback.contentType] Value representing the Content Type HTTP Header of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).<note>When <code>vCallback.contentType</code> is set, its value will override any value set in <code>vCallback.headers['content-type']</code>.</note>
+                     *      @param {string} [vCallback.responseType='text'] Value representing the type of data contained in the response (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType|Mozilla.org}).
+                     *      @param {boolean} [vCallback.cache=false] Value representing if the response is to be cached.
+                     *      @param {boolean} [vCallback.useCache=false] Value representing if the response is to be sourced from the cache if it's available.<note>When <code>!vCallback.useCache</code>, the HTTP Header <code>Cache-Control</code> is set to <code>no-cache, max-age=0</code>.</note>
+                     */ //#####
                     post: doPost(/*_undefined*/),
+
+                    //#########
+                    /** Calls the passed URL via the <code>DELETE</code> HTTP Verb.
+                     * @function ish.io.net.delete
+                     * @param {string} sURL Value representing the URL to interrogate.
+                     * @param {function|object} [vCallback] Value representing the function to be called when the request returns or the desired options:
+                     *      @param {function} [vCallback.fn] Value representing the function to be called when the request returns; <code>vCallback.fn(bSuccess, oResponse, vArg, $xhr)</code>.
+                     *      @param {variant} [vCallback.arg] Value representing the argument that will be passed to the callback function.
+                     *      @param {object} [vCallback.headers] Value representing the HTTP headers of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).
+                     *      @param {string} [vCallback.mimeType] Value representing the MIME Type of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/overrideMimeType|Mozilla.org}).
+                     *      @param {string} [vCallback.contentType] Value representing the Content Type HTTP Header of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).<note>When <code>vCallback.contentType</code> is set, its value will override any value set in <code>vCallback.headers['content-type']</code>.</note>
+                     *      @param {string} [vCallback.responseType='text'] Value representing the type of data contained in the response (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType|Mozilla.org}).
+                     *      @param {boolean} [vCallback.cache=false] Value representing if the response is to be cached.
+                     *      @param {boolean} [vCallback.useCache=false] Value representing if the response is to be sourced from the cache if it's available.<note>When <code>!vCallback.useCache</code>, the HTTP Header <code>Cache-Control</code> is set to <code>no-cache, max-age=0</code>.</note>
+                     */ //#####
                     'delete': doDelete(/*_undefined*/),
+
+                    //#########
+                    /** Calls the passed URL via the <code>HEAD</code> HTTP Verb.
+                     * @function ish.io.net.head
+                     * @param {string} sURL Value representing the URL to interrogate.
+                     * @param {fnIshIoNetCallback|object} [vCallback] Value representing the function to be called when the request returns or the desired options:
+                     *      @param {fnIshIoNetCallback} [vCallback.fn] Value representing the function to be called when the request returns; <code>vCallback.fn(bSuccess, oResponse, vArg, $xhr)</code>.
+                     *      @param {variant} [vCallback.arg] Value representing the argument that will be passed to the callback function.
+                     *      @param {object} [vCallback.headers] Value representing the HTTP headers of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).
+                     *      @param {string} [vCallback.mimeType] Value representing the MIME Type of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/overrideMimeType|Mozilla.org}).
+                     *      @param {string} [vCallback.contentType] Value representing the Content Type HTTP Header of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).<note>When <code>vCallback.contentType</code> is set, its value will override any value set in <code>vCallback.headers['content-type']</code>.</note>
+                     *      @param {string} [vCallback.responseType='text'] Value representing the type of data contained in the response (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType|Mozilla.org}).
+                     *      @param {boolean} [vCallback.cache=false] Value representing if the response is to be cached.
+                     *      @param {boolean} [vCallback.useCache=false] Value representing if the response is to be sourced from the cache if it's available.<note>When <code>!vCallback.useCache</code>, the HTTP Header <code>Cache-Control</code> is set to <code>no-cache, max-age=0</code>.</note>
+                     */ //#####
                     head: doHead(/*_undefined*/),
+
+                    //#########
+                    /** Calls the passed URL simulating a ping via the <code>HEAD</code> HTTP Verb.
+                     * @function ish.io.net.ping
+                     * @param {string} sURL Value representing the URL to interrogate.
+                     * @param {fnIshIoNetCallback|object} [vCallback] Value representing the function to be called when the request returns or the desired options:
+                     *      @param {fnIshIoNetCallback} [vCallback.fn] Value representing the function to be called when the request returns; <code>vCallback.fn(bSuccess, oResponse, vArg, $xhr)</code>.
+                     *      @param {variant} [vCallback.arg] Value representing the argument that will be passed to the callback function.
+                     *      @param {object} [vCallback.headers] Value representing the HTTP headers of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).
+                     *      @param {string} [vCallback.mimeType] Value representing the MIME Type of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/overrideMimeType|Mozilla.org}).
+                     *      @param {string} [vCallback.contentType] Value representing the Content Type HTTP Header of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).<note>When <code>vCallback.contentType</code> is set, its value will override any value set in <code>vCallback.headers['content-type']</code>.</note>
+                     *      @param {string} [vCallback.responseType='text'] Value representing the type of data contained in the response (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType|Mozilla.org}).
+                     *      @param {boolean} [vCallback.cache=false] Value representing if the response is to be cached.
+                     *      @param {boolean} [vCallback.useCache=false] Value representing if the response is to be sourced from the cache if it's available.<note>When <code>!vCallback.useCache</code>, the HTTP Header <code>Cache-Control</code> is set to <code>no-cache, max-age=0</code>.</note>
+                     */ //#####
                     ping: function (sUrl, vCallback) {
                         doHead(/*_undefined*/)(sUrl, vCallback || function (/* bSuccess, oData, vArg, $xhr */) {});
                     },
 
+                    //#########
+                    /** IP-based type functionality.
+                     * @function ish.io.net.ip
+                     * @$asProperty
+                     * @ignore
+                     */ //#####
                     ip: {
+                        //#########
+                        /** Determines if the passed value represents an IP.
+                         * @function ish.io.net.ip:is
+                         * @param {variant} x Value to interrogate.
+                         * @returns {integer} Value representing the type of IP; <code>4</code> representing an IPv4, <code>6</code> representing an IPv6 and <code>0</code> (<code>falsey</code>) representing a non-IP.
+                        */ //#####
                         is: core.extend(
-                            function (sIP) {
+                            function (x) {
                                 return (
-                                    core.app.ip.is.v4(sIP) ?
+                                    core.app.ip.is.v4(x) ?
                                     4 :
-                                        core.app.ip.is.v6(sIP) ?
+                                        core.app.ip.is.v6(x) ?
                                         6 :
                                         0
                                 );
@@ -280,19 +494,44 @@
                                 );
 
                                 return {
-                                    v4: function (sIP) {
-                                        return reIPv4.test(sIP + "");
+                                    //#########
+                                    /** Determines if the passed value represents an IPv4.
+                                     * @function ish.io.net.ip:is:v4
+                                     * @param {variant} x Value to interrogate.
+                                     * @returns {boolean} Value representing if the passed value represents an IPv4.
+                                    */ //#####
+                                    v4: function (x) {
+                                        return reIPv4.test(x + "");
                                     }, //# core.app.ip.is.v4
 
-                                    v6: function (sIP) {
-                                        return reIPv6.test(sIP + "");
+                                    //#########
+                                    /** Determines if the passed value represents an IPv6.
+                                     * @function ish.io.net.ip:is:v6
+                                     * @param {variant} x Value to interrogate.
+                                     * @returns {boolean} Value representing if the passed value represents an IPv6.
+                                    */ //#####
+                                    v6: function (x) {
+                                        return reIPv6.test(x + "");
                                     } //# core.app.ip.is.v6
                                 };
                             }()
                         ) //# core.app.ip.is
                     }, //# core.app.ip
 
-                    //#
+                    //#########
+                    /** Provides an interface that retries up to the passed number of attempts before returning an unsuccessful result.
+                     * @function ish.io.net.retry
+                     * @param {object} [oOptions] Value representing the desired options:
+                     *      @param {integer} [oOptions.wait=500] Value representing the function to be called when the request returns; <code>vCallback.fn(bSuccess, oResponse, vArg, $xhr)</code>.
+                     *      @param {integer} [oOptions.maxAttempts=5] Value representing the maximum number of attempts before returning an unsuccessful result.
+                     * @returns {object} =interface Value representing the following properties:
+                     *      @returns {object} =interface.get {@link: ish.io.net.get}.
+                     *      @returns {object} =interface.put {@link: ish.io.net.put}.
+                     *      @returns {object} =interface.post {@link: ish.io.net.post}.
+                     *      @returns {object} =interface.delete {@link: ish.io.net.delete}.
+                     *      @returns {object} =interface.head {@link: ish.io.net.head}.
+                     *      @returns {object} =interface.crud {@link: ish.io.net.crud}.
+                     */ //#####
                     retry: function (oOptions) {
                         var fnRetry, iWait;
 
@@ -330,7 +569,18 @@
                         };
                     }, //# io.net.retry
 
-                    //# HTTP Status Codes
+
+                    //#########
+                    /** HTTP Status Codes
+                     * @function ish.io.net.status
+                     * @$asProperty
+                     * @returns {object} =status Value representing the following properties:
+                     *      @returns {object} =status.info Value representing 1xx HTTP status codes.
+                     *      @returns {object} =status.success Value representing 2xx HTTP status codes.
+                     *      @returns {object} =status.redirection Value representing 3xx HTTP status codes.
+                     *      @returns {object} =status.clientError Value representing 4xx HTTP status codes.
+                     *      @returns {object} =status.serverError Value representing 5xx HTTP status codes.
+                     */ //#####
                     status: {
                         info: {
                             continue: 100,
@@ -415,7 +665,7 @@
 
 
     //# If we are running server-side
-    //#     NOTE: Generally compliant with UMD, see: https://github.com/umdjs/umd/blob/master/templates/returnExports.js
+    //#     NOTE: Compliant with UMD, see: https://github.com/umdjs/umd/blob/master/templates/returnExports.js
     //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
     if (typeof module === 'object' && module.exports) { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
         module.exports = function (core) {

@@ -131,7 +131,16 @@
                  *      @param {integer} [oOptions.pageSize=10] Value representing the page size.
                  *      @param {integer} [oOptions.maxPagesToShow=10] Value representing the max pages to show.
                  *      @param {boolean} [oOptions.showPrevNext=false] Value representing if the previous/next controls will be shown.
-                 * @returns {function} Function that manages and returns the object representing the pagination values.
+                 * @returns {object} =interface Value representing the following properties:
+                 *      @returns {object[]} =interface.pages Value representing the pagination's page descriptions; <code>{ clickable: boolean, isCurrent: boolean, label: string, page: integer }</code>.
+                 *      @returns {variant[]} =interface.data Value representing the pagination's data.
+                 *      @returns {integer} =interface.current Value representing the pagination's current page.
+                 *      @returns {integer} =interface.pageSize Value representing the pagination's page size.
+                 *      @returns {integer} =interface.maxPagesToShow Value representing the pagination's max number of pages to show.
+                 *      @returns {integer} =interface.showPrevNext Value representing the pagination's max number of pages to show.
+                 *      @returns {function} =interface.slice Determines the current page's records; <code>slice()</code>.
+                 *      @returns {function} =interface.set Sets the current page; <code>set(iPage)</code>.
+                 *          <br/><code>iPage</code> <span class="param-type">integer</span> Value representing the page to set as current.
                  */ //#####
                 pagination: function (a_vData, oOptions) {
                     var fnReturnVal = function (a_vData, oOptions) {
@@ -141,68 +150,21 @@
                         //# Ensure the passed oOptions .is .obj then setup the local vars and their related .properties
                         oOptions = core.type.obj.mk(oOptions);
                         core.extend(fnReturnVal, {
-                            //#########
-                            /** Represents the pagination's page descriptions.
-                             * @function ish.type.arr.pagination:*:pages
-                             * @$asProperty
-                             * @returns {object[]} Value representing the pagination's page descriptions as <code>{ clickable: boolean, isCurrent: boolean, label: string, page: integer }</code>.
-                             */ //#####
                             pages: null,
-
-
-                            //#########
-                            /** Represents the pagination's data.
-                             * @function ish.type.arr.pagination:*:data
-                             * @$asProperty
-                             * @returns {variant[]} Value representing the pagination's data.
-                             */ //#####
                             data: a_vData,
-
-
-                            //#########
-                            /** Represents the pagination's current page.
-                             * @function ish.type.arr.pagination:*:current
-                             * @$asProperty
-                             * @returns {integer} Value representing the pagination's current page.
-                             */ //#####
                             current: core.type.int.mk(oOptions.current, 1),
-
-
-                            //#########
-                            /** Represents the pagination's page size.
-                             * @function ish.type.arr.pagination:*:pageSize
-                             * @$asProperty
-                             * @returns {integer} Value representing the pagination's page size.
-                             */ //#####
                             pageSize: core.type.int.mk(oOptions.pageSize, 10),
-
-
-                            //#########
-                            /** Represents the pagination's max number of pages to show.
-                             * @function ish.type.arr.pagination:*:maxPagesToShow
-                             * @$asProperty
-                             * @returns {integer} Value representing the pagination's max number of pages to show.
-                             */ //#####
                             maxPagesToShow: core.type.int.mk(oOptions.maxPagesToShow, 10),
-
-
-                            //#########
-                            /** Represents the pagination's max number of pages to show.
-                             * @function ish.type.arr.pagination:*:showPrevNext
-                             * @$asProperty
-                             * @returns {integer} Value representing the pagination's max number of pages to show.
-                             */ //#####
                             showPrevNext: core.type.bool.mk(oOptions.showPrevNext, false),
-
 
                             //showMiddlePages: core.type.bool.mk(oOptions.showMiddlePages, false),
                             //template: newPage,
-
 
                             //#########
                             /** Determines the current page's records.
                              * @function ish.type.arr.pagination:*:slice
                              * @returns {variant[]} Value representing the current page's records.
+                             * @ignore
                              */ //#####
                             slice: function () {
                                 var iIndex = ((fnReturnVal.current - 1) * fnReturnVal.pageSize);
@@ -216,6 +178,7 @@
                              * @function ish.type.arr.pagination:*:set
                              * @param {integer} iPage Value representing the page to set as current.
                              * @returns {integer} Value representing the current page.
+                             * @ignore
                              */ //#####
                             set: function (iPage) {
                                 return setCurrentPage(iPage, fnReturnVal);
@@ -239,7 +202,7 @@
 
 
     //# If we are running server-side
-    //#     NOTE: Generally compliant with UMD, see: https://github.com/umdjs/umd/blob/master/templates/returnExports.js
+    //#     NOTE: Compliant with UMD, see: https://github.com/umdjs/umd/blob/master/templates/returnExports.js
     //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
     if (typeof module === 'object' && module.exports) { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
         module.exports = init;

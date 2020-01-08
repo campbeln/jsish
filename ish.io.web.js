@@ -105,7 +105,7 @@
 
 
                         //#########
-                        /** Retrieves the passed value from the cookie data.
+                        /** Provides an interface to the cookie data of the passed value.
                          * @function ish.io.web.cookie
                          * @param {string} sName Value representing the cookie to retrieve.
                          * @param {object} [oDefault=undefined] Value representing if the default value of the cookie data if it hasn't been previously set.
@@ -113,64 +113,29 @@
                          *      @param {boolean} [vOptions.path="/"] Value representing if the Querystring's delimiter is to be semicolons (<code>;</code>) rather than ampersands (<code>&</code>).
                          *      @param {boolean} [vOptions.domain] Value representing the domain the cookie is related to.
                          *      @param {boolean} [vOptions.maxAge] Value representing max age in milliseconds the cookie is to be valid for.
-                         * @returns {object} Value representing the data for the passed value.
+                         * @returns {object} =interface Value representing the following properties:
+                         *      @returns {string} =interface.name Value representing the cookie's name.
+                         *      @returns {object} =interface.original Value representing the cookie's original data.
+                         *      @returns {object} =interface.data Value representing the cookie's data.
+                         *      @returns {boolean} =interface.isNew Value representing if the cookie wasn't previously present in the browser's collection.
+                         *      @returns {function} =interface.stringify Returns a value representing the cookie data as JSON; <code>stringify()</code>.
+                         *      @returns {function} =interface.set Sets the cookie into the browser's collection; <code>set()</code>.
+                         *      @returns {function} =interface.rm Removes the cookie from the browser's collection; <code>rm()</code>.
                          */ //#####
                         return function (sName, oDefault, oOptions) {
                             var oModel,
                                 fnCookies = fnIsomorphic(oOptions),
                                 $returnValue = {
                                     //options: oOptions,
-
-                                    //#########
-                                    /** Represents the cookie's name.
-                                     * @function ish.io.web.cookie:*:name
-                                     * @$asProperty
-                                     * @returns {string} Value representing the cookie's name.
-                                     */ //#####
                                     name: sName,
-
-
-                                    //#########
-                                    /** Represents the cookie's original data.
-                                     * @function ish.io.web.cookie:*:original
-                                     * @$asProperty
-                                     * @returns {object} Value representing the cookie's original data.
-                                     */ //#####
                                     original: _undefined,
-
-
-                                    //#########
-                                    /** Represents the cookie's data.
-                                     * @function ish.io.web.cookie:*:data
-                                     * @$asProperty
-                                     * @returns {object} Value representing the cookie's data.
-                                     */ //#####
                                     data: _undefined,
-
-
-                                    //#########
-                                    /** Indicates if the cookie wasn't previously present in the browser's collection.
-                                     * @function ish.io.web.cookie:*:isNew
-                                     * @$asProperty
-                                     * @returns {object} Value representing if the cookie wasn't previously present in the browser's collection.
-                                     */ //#####
                                     isNew: true,
 
-
-                                    //#########
-                                    /** Converts the cookie data into a JSON string.
-                                     * @function ish.io.web.cookie:*:stringify
-                                     * @returns {string} Value representing the cookie data.
-                                     */ //#####
                                     stringify: function () {
                                         return JSON.stringify($returnValue.data);
                                     }, //# stringify
 
-
-                                    //#########
-                                    /** Sets the cookie into the browser's collection.
-                                     * @function ish.io.web.cookie:*:set
-                                     */ //#####
                                     set: function () {
                                         var dExpires, sDomain, sPath, iMaxAge;
 
@@ -198,11 +163,6 @@
                                         $returnValue.isNew = false;
                                     }, //# set
 
-
-                                    //#########
-                                    /** Removes the cookie from the browser's collection.
-                                     * @function ish.io.web.cookie:*:rm
-                                     */ //#####
                                     rm: function () {
                                         //# Set the max-age and path and toss it into the .cookie collection
                                         //$returnValue.data = _undefined;
@@ -681,7 +641,7 @@
 
 
     //# If we are running server-side
-    //#     NOTE: Generally compliant with UMD, see: https://github.com/umdjs/umd/blob/master/templates/returnExports.js
+    //#     NOTE: Compliant with UMD, see: https://github.com/umdjs/umd/blob/master/templates/returnExports.js
     //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
     if (typeof module === 'object' && module.exports) { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
         module.exports = init;

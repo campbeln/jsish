@@ -440,7 +440,8 @@
                         bIsDate = !isNaN(d.valueOf());
                     }
                     //# Else if the passed d(ate) .is .str, try throwing it at new Date() and reset bIsDate
-                    else if (core.type.str.is(d)) {
+                    //#     NOTE: `new Date("32")` in Chrome return a 2032-based date while `new Date(32)` returns 1970-1-1 + 32ms, hence the exclusion of .is.numeric strings
+                    else if (core.type.str.is(d) && !core.type.is.numeric(d)) {
                         d = new Date(d);
                         bIsDate = !isNaN(d.valueOf());
                     }
@@ -1413,7 +1414,6 @@
                      * @returns {boolean} Value representing if the passed value is a valid time string.
                      */ //#####
                     is: function (x) {
-                        //# TODO tests
                         return /^([0-1][0-9]|2[0-3]):([0-5][0-9])(:([0-5][0-9]))?$/.test(x);
                     },
 
@@ -1426,7 +1426,6 @@
                     seconds: function (x) {
                         var iReturnVal = 0;
 
-                        //# TODO tests
                         //# If x wasn't passed, determine the .seconds for now
                         if (arguments.length === 0) {
                             iReturnVal = Math.floor(
@@ -1454,7 +1453,6 @@
                 yyyymmdd: function (x, vDefault, sDelimiter) {
                     var dDate = core.type.date.mk(x, (arguments.length > 1 ? vDefault : new Date()));
 
-                    //# TODO tests
                     sDelimiter = core.type.str.mk(sDelimiter, "/");
 
                     return (core.type.date.is(dDate) ?
@@ -2885,7 +2883,7 @@
         //##################################################################################################
         oPrivate.init = function () {
             //# If we are running server-side
-            //#     NOTE: Generally compliant with UMD, see: https://github.com/umdjs/umd/blob/master/templates/returnExports.js
+            //#     NOTE: Compliant with UMD, see: https://github.com/umdjs/umd/blob/master/templates/returnExports.js
             //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
             if (typeof module === 'object' && module.exports) {
                 module.exports = core;

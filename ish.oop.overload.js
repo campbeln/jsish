@@ -33,7 +33,14 @@
                     /** Initiates a wrapper function that marshals calls to the proper function overload based on argument signature.
                      * @function ish.oop.overload.!
                      * @param {function} [fnDefault] Value representing the default overload function to execute if the arguments cannot be matched to an available overload.
-                     * @returns {function} Value representing a wrapper function that marshals calls to the proper function overload based on argument signature, including interfaces to <code>add</code>, <code>default</code> and <code>list</code>.
+                     * @returns {object} =interface Value representing the following properties:
+                     *      @returns {function} =interface.add Adds another function to the available overloads; <code>add(fn, sAlias, a_vArgumentTests)</code>.
+                     *          <br/><code>fn</code> <span class="param-type">function</span> Value representing the function to add to the available overloads.
+                     *          <br/><code>sAlias</code> <span class="param-type">string</span> Value representing the unique alias for the passed function.
+                     *          <br/><code>a_vArgumentTests</code> <span class="param-type">function[]|string[]</span> Value representing the argument validators as functions or strings referencing <code>ish.types.*.is</code> functions (e.g. <code>str</code>, <code>int</code>, <code>obj</code>, etc).
+                     *      @returns {function} =interface.default Default function overload to execute if the arguments cannot be matched to an available overload; <code>default()</code>.
+                     *      @returns {function} =interface.list Lists the available overloaded functions; <code>list(iArgumentCount)</code>.
+                     *          <br/><code>iArgumentCount</code> <span class="param-type">integer</span> Value representing the desired argument count to limit the returned list to.
                      */ //#####
                     function (fnDefault) {
                         var oData = {
@@ -41,6 +48,7 @@
                                 /** Interface under the returned <code>ish.oop.overload</code> wrapper function that defines the default function overload to execute if the arguments cannot be matched to an available overload.
                                  * @function ish.oop.overload.*:default
                                  * @throws <code>Overload not found for arguments</code> unless defined at initiation.
+                                 * @ignore
                                  */ //#####
                                 default: (core.type.fn.is(fnDefault) ?
                                     fnDefault :
@@ -92,6 +100,7 @@
                                      * @param {function} fn Value representing the function to add to the available overloads.
                                      * @param {string} sAlias Value representing the unique alias for the passed function.
                                      * @param {function[]|string[]} [a_vArgumentTests] Value representing the argument validators as functions or strings referencing <code>ish.types.*.is</code> functions (e.g. <code>str</code>, <code>int</code>, <code>obj</code>, etc).
+                                     * @ignore
                                      */ //#####
                                     add: function (fn, sAlias, a_vArgumentTests) {
                                         var i,
@@ -138,6 +147,7 @@
                                      * @function ish.oop.overload.*:list
                                      * @param {integer} [iArgumentCount] Value representing the desired argument count to limit the returned list to.
                                      * @returns {object} Value representing the available overloaded functions categorized by argument count.
+                                     * @ignore
                                      */ //#####
                                     list: function (iArgumentCount) {
                                         return (arguments.length > 0 ? oData[iArgumentCount] || [] : oData);
@@ -173,7 +183,7 @@
 
 
     //# If we are running server-side
-    //#     NOTE: Generally compliant with UMD, see: https://github.com/umdjs/umd/blob/master/templates/returnExports.js
+    //#     NOTE: Compliant with UMD, see: https://github.com/umdjs/umd/blob/master/templates/returnExports.js
     //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
     if (typeof module === 'object' && module.exports) { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
         module.exports = init;

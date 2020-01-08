@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>ui - Documentation</title>
+    <title>ish.io.evaler - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -45,16 +45,14 @@
 
 <header>
     
-        <h1 class="page-title">ish.ui</h1><!-- neek added to line 27 -->
+        <h1 class="page-title">ish.io.evaler</h1><!-- neek added to line 27 -->
         
-            <h2 class="description">Collection of UI-based functionality.</h2>
+            <h2 class="description">Javascript Evaluation mixin for ish.js</h2>
         
 
         <!-- neek
         <h2>
-            <span class="ancestors"><a href="ish.html">ish</a>.</span>
-        
-        ui
+        ish.io.evaler
         </h2>
         
         neek -->
@@ -72,7 +70,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line3263">line 3263</a>
+        <a href="ish.io.evaler.js.html">ish.io.evaler.js</a>, <a href="ish.io.evaler.js.html#line2">line 2</a>
     </li></ul></dd>
     
 
@@ -93,9 +91,22 @@
     
 
     
-
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Nick Campbell</li>
+        </ul>
+    </dd>
     
 
+    
+    <dt class="tag-copyright">Copyright:</dt>
+    <dd class="tag-copyright"><ul class="dummy"><li>2014-2020, Nick Campbell</li></ul></dd>
+    
+
+    
+    <dt class="tag-license">License:</dt>
+    <dd class="tag-license"><ul class="dummy"><li>MIT</li></ul></dd>
     
 
     
@@ -111,7 +122,7 @@
 
 
             
-                <div class="description" style="display: none;">Collection of UI-based functionality.</div> <!-- neek added style="display: none;" -->
+                <div class="description" style="display: none;">Javascript Evaluation mixin for ish.js</div> <!-- neek added style="display: none;" -->
             
 
             
@@ -133,376 +144,6 @@
 
     
 
-    
-        <h3 class="subsection-title">Methods</h3>
-
-        
-            
-
-    
-
-    <h4 class="name" id=".clearSelection">
-      <!-- neek -->
-      <client>[client]</client>
-      <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.ui.clearSelection<span class="signature">()</span><span class="type-signature"></span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line3305">line 3305</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Clears any page selection(s) from the browser.
-</div>
-
-
-<!-- neek -->
-
-
-    <div class="description">
-        <b><client>Client-Side Only:</client></b> This functionality is only available under a browser (Firefox, Chrome, etc.).
-    </div>
-
-
-
-
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- <!-- neek -->
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".scrollTo">
-      <!-- neek -->
-      <client>[client]</client>
-      <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.ui.scrollTo<span class="signature">(vElement, bSetHash<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line3269">line 3269</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-    <dt class="tag-see">See:</dt>
-    <dd class="tag-see">
-        <ul>
-            <li><a href="https://stackoverflow.com/a/36929383/235704">Based on this example</a></li>
-        </ul>
-    </dd>
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Scrolls the browser's viewpoint to the passed DOM element.
-</div>
-
-
-<!-- neek -->
-
-
-    <div class="description">
-        <b><client>Client-Side Only:</client></b> This functionality is only available under a browser (Firefox, Chrome, etc.).
-    </div>
-
-
-
-
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-        <th>Attributes</th>
-        
-
-        
-        <th>Default</th>
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>vElement</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">element</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                </td>
-            
-
-            <td class="description last">Value to scroll the browser's viewpoint to.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>bSetHash</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-                <td class="attributes">
-                
-                    &lt;optional><br>
-                
-
-                
-
-                
-                </td>
-            
-
-            
-                <td class="default">
-                
-                    <code>false</code>
-                
-                </td>
-            
-
-            <td class="description last">Value representing if the <code>document.location.hash</code> is to be set.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Value representing if the passed value is a valid DOM element.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
- <!-- neek -->
- <!-- neek -->
-
-
-
-        
     
 
     
