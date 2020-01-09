@@ -1,7 +1,7 @@
 //################################################################################################
 /** @file Q: Are you using Vanilla Javascript?<br/>A: ...ish
  * <div style="font-size: 75%; margin-top: 20px;">
- *  Javascript code snippets organized in an isomorphic OOP structure, including:
+ *  Javascript code snippets organized in an OOP structure, including:
  *  <ul>
  *      <li>Type-safety and type-casting - assisting developers in overcoming issues related to loose typing via Vanilla Javascript (rather than syntactic sugar à la TypeScript)</li>
  *      <li>OOP features - partial class definitions with shared private members, dynamic polymorphism/function overloading, and multiple inheritance</li>
@@ -12,6 +12,7 @@
  *      <li>Large/small number support</li>
  *      <li>Support back to IE8, with most features supported back to IE6</li>
  *      <li>Growing unit test coverage with <code><a href="https://www.chaijs.com/api/assert/" target="_new">Chai.Assert</a></code></li>
+ *      <li>Isomorphic - client- and server-side code in one codebase.</li>
  *  </ul>
  *  with all non-UI features available both client-side (in-browser) and server-side (Node/etc.).
  *  <p style="margin-top: 20px;">
@@ -2379,7 +2380,10 @@
 
         //# Processes the variant version of vOptions into an object representation
         function processOptions(vOptions) {
-            return (core.type.fn.is(vOptions) ? { callback: vOptions } : core.extend({}, vOptions));
+            return core.extend(
+                core.config.require(),
+                (core.type.fn.is(vOptions) ? { callback: vOptions } : vOptions)
+            );
         } //# processOptions
 
 
@@ -2407,7 +2411,7 @@
 
                         //# Set the calculated bServerside sPath into our .baseUrl
                         //#     NOTE: __dirname, __filename along with require.main contain the specific information for this module bServerside
-                        core.config.ish().baseUrl = sPath;
+                        core.config.ish({ baseUrl: oOptions.baseUrl || sPath });
 
                         //# Traverse the a_sUrls, .require'ing (while passing in core) and .push'ing each .processUrlEntry into our a_oProcessedUrls as we go
                         for (i = 0; i < a_sUrls.length; i++) {
@@ -2521,7 +2525,7 @@
                         else {
                             _dom.onload = function () { oReturnVal.onLoad(); };
                             _dom.onerror = function () { oReturnVal.onError(); };
-                            iTimeout = setTimeout(function () { oReturnVal.onError(true); }, iWaitSeconds * 1000);
+                            iTimeout = setTimeout(function () { oReturnVal.onError(true); }, core.type.int.mk(iWaitSeconds, 7) * 1000);
                         }
 
                         return oReturnVal;
@@ -2554,15 +2558,15 @@
                     /** Includes functionality into the current context.
                      * @function ish.require.!
                      * @param {string|string[]} vUrls Value representing the URL(s) of the functionality to include.
-                     * @param {object} [oOptions] Value representing the following options:
-                     *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.
-                     *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing the function to be called when the DOM element is added; <code>oOptions.onAppend(_dom, sUrl)</code>.
-                     *      @param {boolean} [oOptions.onError=undefined] Value representing the function to be called when an error occurs; <code>oOptions.onError(_dom, sUrl)</code>.
-                     *      @param {boolean} [oOptions.waitSeconds=7] Value representing the maximum number of seconds to wait before an error is returned.
-                     *      @param {boolean} [oOptions.baseUrl=""] Value representing the base URL to prepend on the <code>src</code> attribute (must end with <code>/</code>).
-                     *      @param {boolean} [oOptions.urlArgs=""] Value representing the URL's querystring to append on the <code>src</code> attribute (must start with <code>?</code>).
+                     * @param {object} [vOptions] Value representing the function to be called on completion or the following options:
+                     *      @param {boolean} [vOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.
+                     *      @param {boolean} [vOptions.onAppend=setAttribute:importedBy] Value representing the function to be called when the DOM element is added; <code>oOptions.onAppend(_dom, sUrl)</code>.
+                     *      @param {boolean} [vOptions.onError=undefined] Value representing the function to be called when an error occurs; <code>oOptions.onError(_dom, sUrl)</code>.
+                     *      @param {boolean} [vOptions.waitSeconds=7] Value representing the maximum number of seconds to wait before an error is returned.
+                     *      @param {boolean} [vOptions.baseUrl=""] Value representing the base URL to prepend on the <code>src</code> attribute (must end with <code>/</code>).
+                     *      @param {boolean} [vOptions.urlArgs=""] Value representing the URL's querystring to append on the <code>src</code> attribute (must start with <code>?</code>).
                      */ //#####
-                    function (vUrls, oOptions) {
+                    function (vUrls, vOptions) {
                         var fnCallback, i,
                             a_oProcessedUrls = core.type.arr.mk(vUrls, [vUrls]),    //# Borrow the use of a_oProcessedUrls for the array-ified vUrls
                             bAllLoaded = true,
@@ -2572,8 +2576,8 @@
                         ;
 
                         //# processOptions then set the fnCallback
-                        oOptions = processOptions(oOptions);
-                        fnCallback = oOptions.callback;
+                        vOptions = processOptions(vOptions);
+                        fnCallback = vOptions.callback;
 
                         //# If we have vUrls (looking at the borrowed a_oProcessedUrls) to process
                         if (core.type.arr.is(a_oProcessedUrls, true)) {
@@ -2600,7 +2604,7 @@
 
                             //# Replace the .callback with our own processor
                             //#     NOTE: The original fnCallback is called after all of the vUrls are processed
-                            oOptions.callback = function (a_oEntryProcessedUrls, bEntryAllLoaded) {
+                            vOptions.callback = function (a_oEntryProcessedUrls, bEntryAllLoaded) {
                                 //# If the a_oEntryProcessedUrls have values, .concat them into our a_oProcessedUrls and recalculate bAllLoaded
                                 if (core.type.arr.is(a_oEntryProcessedUrls, true)) {
                                     a_oProcessedUrls = a_oProcessedUrls.concat(a_oEntryProcessedUrls);
@@ -2616,15 +2620,15 @@
                             //# If we have a_sScripts/a_sCSS/a_sLinks values, inc i (for tacking in the .callback defined above) and call the series
                             if (core.type.arr.is(a_sScripts, true)) {
                                 i++;
-                                core.require.scripts(a_sScripts, oOptions);
+                                core.require.scripts(a_sScripts, vOptions);
                             }
                             if (core.type.arr.is(a_sCSS, true)) {
                                 i++;
-                                core.require.css(a_sCSS, oOptions);
+                                core.require.css(a_sCSS, vOptions);
                             }
                             if (core.type.arr.is(a_sLinks, true)) {
                                 i++;
-                                core.require.links(a_sLinks, oOptions);
+                                core.require.links(a_sLinks, vOptions);
                             }
                         }
                         //# Else no vUrls were passed, so call the fnCallback (if any)
@@ -2638,13 +2642,13 @@
                         /** Includes Javascript-based functionality into the current context.
                          * @function ish.require.scripts
                          * @param {string|string[]} vUrls Value representing the URL(s) of the functionality to include.
-                         * @param {object} [oOptions] Value representing the following options:
-                         *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.
-                         *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing  the function to be called when the DOM element is added; <code>oOptions.onAppend(_dom, sUrl)</code>.
-                         *      @param {boolean} [oOptions.onError=undefined] Value representing the function to be called when an error occurs; <code>oOptions.onError(_dom, sUrl)</code>.
-                         *      @param {boolean} [oOptions.waitSeconds=7] Value representing the maximum number of seconds to wait before an error is returned.
-                         *      @param {boolean} [oOptions.baseUrl=""] Value representing the base URL to prepend on the <code>src</code> attribute (must end with <code>/</code>).
-                         *      @param {boolean} [oOptions.urlArgs=""] Value representing the URL's querystring to append on the <code>src</code> attribute (must start with <code>?</code>).
+                         * @param {object} [vOptions] Value representing the function to be called on completion or the following options:
+                         *      @param {boolean} [vOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.
+                         *      @param {boolean} [vOptions.onAppend=setAttribute:importedBy] Value representing  the function to be called when the DOM element is added; <code>oOptions.onAppend(_dom, sUrl)</code>.
+                         *      @param {boolean} [vOptions.onError=undefined] Value representing the function to be called when an error occurs; <code>oOptions.onError(_dom, sUrl)</code>.
+                         *      @param {boolean} [vOptions.waitSeconds=7] Value representing the maximum number of seconds to wait before an error is returned.
+                         *      @param {boolean} [vOptions.baseUrl=""] Value representing the base URL to prepend on the <code>src</code> attribute (must end with <code>/</code>).
+                         *      @param {boolean} [vOptions.urlArgs=""] Value representing the URL's querystring to append on the <code>src</code> attribute (must start with <code>?</code>).
                          */ //#####
                         scripts: function (vUrls, vOptions) {
                             //# <IE6thru9Support>
@@ -2703,13 +2707,13 @@
                          * @function ish.require.links
                          * @$clientsideonly
                          * @param {string|string[]} vUrls Value representing the URL(s) of the functionality to include.
-                         * @param {object} [oOptions] Value representing the following options:
-                         *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.
-                         *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing the function to be called when the DOM element is added; <code>oOptions.onAppend(_dom, sUrl)</code>.
-                         *      @param {boolean} [oOptions.onError=undefined] Value representing the function to be called when an error occurs; <code>oOptions.onError(_dom, sUrl)</code>.
-                         *      @param {boolean} [oOptions.waitSeconds=7] Value representing the maximum number of seconds to wait before an error is returned.
-                         *      @param {boolean} [oOptions.baseUrl=""] Value representing the base URL to prepend on the <code>src</code> attribute (must end with <code>/</code>).
-                         *      @param {boolean} [oOptions.urlArgs=""] Value representing the URL's querystring to append on the <code>src</code> attribute (must start with <code>?</code>).
+                         * @param {object} [vOptions] Value representing the function to be called on completion or the following options:
+                         *      @param {boolean} [vOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.
+                         *      @param {boolean} [vOptions.onAppend=setAttribute:importedBy] Value representing the function to be called when the DOM element is added; <code>oOptions.onAppend(_dom, sUrl)</code>.
+                         *      @param {boolean} [vOptions.onError=undefined] Value representing the function to be called when an error occurs; <code>oOptions.onError(_dom, sUrl)</code>.
+                         *      @param {boolean} [vOptions.waitSeconds=7] Value representing the maximum number of seconds to wait before an error is returned.
+                         *      @param {boolean} [vOptions.baseUrl=""] Value representing the base URL to prepend on the <code>src</code> attribute (must end with <code>/</code>).
+                         *      @param {boolean} [vOptions.urlArgs=""] Value representing the URL's querystring to append on the <code>src</code> attribute (must start with <code>?</code>).
                          */ //#####
                         links: function (vUrls, vOptions) {
                             //# Pass the call off to .processUrls, defaulting and .process(ing the v)Options as we go
@@ -2767,13 +2771,13 @@
                          * @function ish.require.css
                          * @$clientsideonly
                          * @param {string|string[]} vUrls Value representing the URL(s) of the functionality to include.
-                         * @param {object} [oOptions] Value representing the following options:
-                         *      @param {boolean} [oOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.
-                         *      @param {boolean} [oOptions.onAppend=setAttribute:importedBy] Value representing  the function to be called when the DOM element is added; <code>oOptions.onAppend(_dom, sUrl)</code>.
-                         *      @param {boolean} [oOptions.onError=undefined] Value representing the function to be called when an error occurs; <code>oOptions.onError(_dom, sUrl)</code>.
-                         *      @param {boolean} [oOptions.waitSeconds=7] Value representing the maximum number of seconds to wait before an error is returned.
-                         *      @param {boolean} [oOptions.baseUrl=""] Value representing the base URL to prepend on the <code>src</code> attribute (must end with <code>/</code>).
-                         *      @param {boolean} [oOptions.urlArgs=""] Value representing the URL's querystring to append on the <code>src</code> attribute (must start with <code>?</code>).
+                         * @param {object} [vOptions] Value representing the function to be called on completion or the following options:
+                         *      @param {boolean} [vOptions.callback=fire:ish.pluginsLoaded] Value representing the function to be called on completion; <code>oOptions.callback(a_oProcessedUrls, bAllLoaded)</code>.
+                         *      @param {boolean} [vOptions.onAppend=setAttribute:importedBy] Value representing  the function to be called when the DOM element is added; <code>oOptions.onAppend(_dom, sUrl)</code>.
+                         *      @param {boolean} [vOptions.onError=undefined] Value representing the function to be called when an error occurs; <code>oOptions.onError(_dom, sUrl)</code>.
+                         *      @param {boolean} [vOptions.waitSeconds=7] Value representing the maximum number of seconds to wait before an error is returned.
+                         *      @param {boolean} [vOptions.baseUrl=""] Value representing the base URL to prepend on the <code>src</code> attribute (must end with <code>/</code>).
+                         *      @param {boolean} [vOptions.urlArgs=""] Value representing the URL's querystring to append on the <code>src</code> attribute (must start with <code>?</code>).
                          */ //#####
                         css: function (vUrls, vOptions) {
                             //# Ensure the passed vOptions .obj.is, defaulting the values as we go

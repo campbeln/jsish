@@ -1,0 +1,166 @@
+<style>
+	#inputForm {
+		display: flex;
+		flex-direction: row;
+		width: 500px;
+	}
+	select {
+		-webkit-appearance: menulist !important;
+		-moz-appearance: menulist !important;
+	}
+	#table {
+		display: none;
+	}
+</style>
+
+<head>
+	<link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet" />
+	<link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet" />
+	<link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet" />
+</head>
+
+<div id="driverData">
+	<v-app>
+		<template>
+			<div id="inputForm">
+				<v-file-input label="File input" id="files" name="file" accept="text/csv"></v-file-input>
+				<v-btn color="blue-grey" class=" ma-2 white--text" @click="$ddi.app.data.readBlob()">
+					Upload
+					<v-icon right dark>mdi-cloud-upload</v-icon>
+				</v-btn>
+			</div>
+			<div id="table">
+				<v-simple-table fixed-header height="90vh">
+					<template v-slot:default>
+						<thead>
+							<tr>
+								<th v-for="(item, index) in $ddi.app.data.csv.selected" :key="index">
+									<select v-model="$ddi.app.data.csv.selected[index]" v-on:change="$ddi.app.selectedEnforce(index)">
+										<option v-for="option in $ddi.app.data.csv.selected" :value="option">{{option}}</option>
+									</select>
+								</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="row in $ddi.app.data.csv.data">
+								<td v-for="item in row">{{ item }}</td>
+							</tr>
+						</tbody>
+					</template>
+				</v-simple-table>
+			</div>
+		</template>
+	</v-app>
+</div>
+
+<script language="javascript" src="../ish.js" ish='{ "target": "$ddi" }'></script>
+<script language="javascript" src="../ish.io.csv.js"></script>
+<script language="javascript" src="../ish.io.net.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+
+<script>
+	// Parses CSV file
+	function readBlob() {
+		var files = document.getElementById("files").files;
+		if (!files.length) {
+			alert("Please select a file!");
+			return;
+		}
+		var file = files[0];
+		var reader = new FileReader();
+		// If we use onloadend, we need to check the readyState.
+		reader.onloadend = function (evt) {
+			var a_oData,
+				a_sHeaders,
+				sCurrent,
+				i,
+				a_sSelected = [];
+			if (evt.target.readyState == FileReader.DONE) {
+				// DONE == 2
+				a_oData = $ddi.io.csv.parse(evt.target.result, ",");
+				a_sHeaders = a_oData.shift();
+				for (i = 0; i < a_sHeaders.length; i++) {
+					sCurrent = $ddi.app.selectedOption(a_sHeaders[i]);
+					a_sSelected.push(a_sSelected.indexOf(sCurrent) < 0 ? sCurrent : "");
+                }
+                /*$ddi.extend($ddi.app.data, {
+                    csv:{
+                        headers: a_sHeaders,
+                        selected: a_sSelected,
+                        data: a_oData
+                    }
+                });*/
+                $ddi.app.data.csv = {
+                    headers: a_sHeaders,
+                    selected: a_sSelected,
+                    data: a_oData
+				};
+			}
+		};
+		reader.readAsText(file);
+		document.getElementById("table").style.display = "block";
+	}
+	// Gets the client fee data
+	$ddi.app.client = {
+		ui: {
+			driverfees: []
+		},
+		load: function () {
+			$ddi.io.net.get(
+				"https://paperwork.ddiwork.com/api/client/driverfees?cache=" +
+                    Date.now() +
+                    "&crefnum=11566"
+                ,
+				function (bSuccess, oResponse /*, vArg, $xhr*/) {
+					if (bSuccess) {
+						$ddi.app.client.ui.driverfees = oResponse.json.driverfees;
+					}
+				}
+			);
+		}
+	};
+    $ddi.app.client.load();
+    $ddi.app.data = {
+        csv: {},
+        readBlob: readBlob
+    };
+	$ddi.app.selectedEnforce = function (iIndex) {
+		var i,
+			a_sSelected = $ddi.app.data.csv.selected,
+			sSelected = a_sSelected[iIndex];
+		for (i = 0; i < a_sSelected.length; i++) {
+			if (i !== iIndex && a_sSelected[i] === sSelected) {
+				a_sSelected[i] = "";
+			}
+		}
+	};
+	$ddi.app.selectedOption = function (sHeading) {
+		for (let i = 0; i < $ddi.app.client.ui.driverfees.length; i++) {
+			if (sHeading === $ddi.app.client.ui.driverfees[i].Column_Short_Name) {
+				return $ddi.app.client.ui.driverfees[i].Column_Name
+			}
+		}
+	};
+	const vuetify = new Vuetify({
+		theme: {
+			themes: {
+				light: {
+					primary: "#3f51b5",
+					secondary: "#b0bec5",
+					accent: "#DAE4B8",
+					error: "#b71c1c"
+				}
+			}
+		}
+	});
+
+    Vue.config.devtools = true;
+	Vue.prototype.$ddi = $ddi;
+	$ddi.app.ui = new Vue({
+		el: "#driverData",
+		data: $ddi.app,
+		vuetify: vuetify
+	});
+</script>

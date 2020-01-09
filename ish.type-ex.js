@@ -228,7 +228,48 @@
                             }
 
                             return oReturnVal;
-                        } //# type.is.numeric.stats
+                        }, //# type.is.numeric.stats
+
+
+                        //#########
+                        /** Formats the passed value based on the passed format.
+                         * @function ish.type.is.numeric:format
+                         * @param {object} [vOptions] Value representing the number of decimal places or the following options:
+                         *      @param {boolean} [vOptions.decimalPlaces=2] Value representing the number of decimal places.
+                         *      @param {boolean} [vOptions.decimal='.'] Value representing the decimal place delimiter.
+                         *      @param {boolean} [vOptions.section=','] Value representing the thousands section delimiter.
+                         *      @param {boolean} [vOptions.sectionLength=3] Value representing the thousands section length.
+                         * @returns {string} Value representing the formatted number.
+                         * @see {@link https://stackoverflow.com/a/14428340/235704|StackOverflow.com}
+                         */ //#####
+                        format: function (x, vOptions) {
+                            var sRegExp;
+
+                            //# Ensure the passed vOptions .is .obj (while setting it's defaults), ensure the passed x is a .float and set sRegExp
+                            vOptions = core.extend(
+                                {
+                                    decimalPlaces: 2,
+                                    decimal: ".",
+                                    section: ",",
+                                    sectionLength: 3
+                                }, (core.type.int.is(vOptions) ?
+                                    { decimalPlaces: vOptions } :
+                                    vOptions
+                                )
+                            );
+                            x = core.type.float.mk(x);
+                            sRegExp = '\\d(?=(\\d{' + vOptions.sectionLength + '})+' + (vOptions.decimalPlaces > 0 ? '\\D' : '$') + ')';
+
+                            //# If we have .decimalPlaces to limit, do the rounding via .toFixed now
+                            if (vOptions.decimalPlaces > -1) {
+                                x = x.toFixed(vOptions.decimalPlaces);
+                            }
+
+                            return (vOptions.decimal ?
+                                x.replace('.', vOptions.decimal) :
+                                x
+                            ).replace(new RegExp(sRegExp, 'g'), '$&' + vOptions.section);
+                        } //# type.is.numeric.format
                     } //# type.is.numeric
                 }, //# core.type.is
 
@@ -691,7 +732,41 @@
                             dDate.getUTCFullYear(), dDate.getUTCMonth(), dDate.getUTCDate(),
                             dDate.getUTCHours(), dDate.getUTCMinutes(), dDate.getUTCSeconds()
                         );
-                    } //# date.utcToLocalOffset
+                    }, //# date.utcToLocalOffset
+
+
+                    //#########
+                    /** Determines the last day of the month for the passed values.
+                     * @function ish.type.date.utcToLocalOffset
+                     * @param {date|integer} [x=new Date().getMonth() + 1] Value representing the date to interrogate or the month as a 1-based number (e.g. January = <code>1</code>).
+                     * @param {integer} [iYear=new Date().getFullYear()] Value representing the year as a 4-digit number (e.g. <code>1970</code>).
+                     * @returns {integer} Value representing the last day of the month for the passed values.
+                     */ //#####
+                    lastDayOfMonth: function (x, iYear) {
+                        var dDate = core.type.date.mk(x),
+                            iMonth = core.type.int.mk(x, dDate.getMonth() + 1)
+                        ;
+
+                        //#
+                        iYear = core.type.int.mk(iYear, dDate.getFullYear());
+
+                        return new Date((new Date(iYear, iMonth, 1)) - 1);
+                    }, //# date.lastDayOfMonth
+
+
+                    //#########
+                    /** Determines if the year is a leap year.
+                     * @function ish.type.date.utcToLocalOffset
+                     * @param {date|integer} [x=new Date()] Value representing the date to interrogate or the year as a 4-digit number (e.g. <code>1970</code>).
+                     * @returns {integer} Value representing if the year is a leap year.
+                     */ //#####
+                    isLeapYear: function(x) {
+                        var dDate = core.type.date.mk(x)
+                            iYear = core.type.int.mk(x, dDate.getFullYear())
+                        ;
+
+                        return ((iYear % 4 == 0) && (iYear % 100 != 0)) || (iYear % 400 == 0);
+                    }
                 }, //# core.type.date
 
                 //# eq, cmp, lpad, rpad, begins, ends, contains, sub
