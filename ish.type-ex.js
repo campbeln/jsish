@@ -732,41 +732,7 @@
                             dDate.getUTCFullYear(), dDate.getUTCMonth(), dDate.getUTCDate(),
                             dDate.getUTCHours(), dDate.getUTCMinutes(), dDate.getUTCSeconds()
                         );
-                    }, //# date.utcToLocalOffset
-
-
-                    //#########
-                    /** Determines the last day of the month for the passed values.
-                     * @function ish.type.date.utcToLocalOffset
-                     * @param {date|integer} [x=new Date().getMonth() + 1] Value representing the date to interrogate or the month as a 1-based number (e.g. January = <code>1</code>).
-                     * @param {integer} [iYear=new Date().getFullYear()] Value representing the year as a 4-digit number (e.g. <code>1970</code>).
-                     * @returns {integer} Value representing the last day of the month for the passed values.
-                     */ //#####
-                    lastDayOfMonth: function (x, iYear) {
-                        var dDate = core.type.date.mk(x),
-                            iMonth = core.type.int.mk(x, dDate.getMonth() + 1)
-                        ;
-
-                        //#
-                        iYear = core.type.int.mk(iYear, dDate.getFullYear());
-
-                        return new Date((new Date(iYear, iMonth, 1)) - 1);
-                    }, //# date.lastDayOfMonth
-
-
-                    //#########
-                    /** Determines if the year is a leap year.
-                     * @function ish.type.date.utcToLocalOffset
-                     * @param {date|integer} [x=new Date()] Value representing the date to interrogate or the year as a 4-digit number (e.g. <code>1970</code>).
-                     * @returns {integer} Value representing if the year is a leap year.
-                     */ //#####
-                    isLeapYear: function(x) {
-                        var dDate = core.type.date.mk(x)
-                            iYear = core.type.int.mk(x, dDate.getFullYear())
-                        ;
-
-                        return ((iYear % 4 == 0) && (iYear % 100 != 0)) || (iYear % 400 == 0);
-                    }
+                    } //# date.utcToLocalOffset
                 }, //# core.type.date
 
                 //# eq, cmp, lpad, rpad, begins, ends, contains, sub
