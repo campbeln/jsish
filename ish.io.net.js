@@ -349,9 +349,9 @@
                      * @param {function} fnRetry Value representing the function to be called when the request is to be retried.
                      * @param {object} [oBody] Value representing the body of the request.
                      * @returns {object} =interface Value representing the following properties:
-                     *      @returns {function} =interface.send Sends the request; <code>send(vBody, fnHook)</code>.
-                     *          <br/><code>vBody</code> <span class="param-type">variant|object</span> Value representing the body of the call.
-                     *          <br/><code>fnHook</code> <span class="param-type">function</span> Value representing the function to be called before the request is sent via the underlying <code>XMLHttpRequest</code> management object; <code>fnHook($xhr)</code>.
+                     *      @returns {function} =interface.send Sends the request; <code>send(vBody, fnHook)</code>:
+                     *          <br/><code>vBody</code> <param-type>variant|object</param-type> Value representing the body of the call.
+                     *          <br/><code>fnHook</code> <param-type>function</param-type> Value representing the function to be called before the request is sent via the underlying <code>XMLHttpRequest</code> management object; <code>fnHook($xhr)</code>.
                      *      @returns {function} =interface.abort Aborts the request; <code>abort()</code>.
                      *      @returns {object} =interface.xhr Value representing the underlying <code>XMLHttpRequest</code> management object.
                      */ //#####
@@ -588,7 +588,7 @@
 
 
                     //#########
-                    /** HTTP Status Codes
+                    /** Enumeration of HTTP Status Codes.
                      * @function ish.io.net.status
                      * @$asProperty
                      * @returns {object} =status Value representing the following properties:

@@ -137,8 +137,9 @@
                 //#########
                 /** Enumerations for Days (<code>ish.type.date.enum.days</code>) and Week of Year (<code>ish.type.date.enum.weekOfYear</code>).
                  * @function ish.type.date.enums
+                 * @$asProperty
                  */ //#####
-                enums: {
+                enums: { //# TODO: @returns =days... see: pagination:
                     days: enumDays,
                     weekOfYear: {
                         absolute: -1,
@@ -415,7 +416,7 @@
                         iMonth = core.type.int.mk(x, dDate.getMonth() + 1)
                     ;
 
-                    //#
+                    //# Ensure the passed iYear .is .int, defaulting to dDate's if necessary
                     iYear = core.type.int.mk(iYear, dDate.getFullYear());
 
                     return new Date((new Date(iYear, iMonth, 1)) - 1);

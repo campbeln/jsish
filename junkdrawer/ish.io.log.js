@@ -55,6 +55,16 @@ StackTrace.generateArtificially().then(callback).catch(errback);
 //#     NOTE: callback is called with an Array[StackFrame] every time the wrapped interestingFn is called
 interestingFnWrapped = StackTrace.instrument(interestingFn, callback, errback)
 interestingFnUnwrapped = StackTrace.deinstrument(interestingFn);
+
+
+
+
+                                //#     See: https://stackoverflow.com/a/18597539/235704
+                                simulate: function () {
+                                    setTimeout(function() {
+                                        throw new Error();
+                                    }, 0);
+                                }, //# simulate
 */
 
             var oLog, oOptions,

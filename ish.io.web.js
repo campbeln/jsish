@@ -365,7 +365,7 @@
                                     //# If the sk(sub-key) is the reserved 'length', then .toUpperCase it and .warn the developer
                                     if (sk === 'length') {
                                         sk = sk.toUpperCase();
-                                        core.type.fn.call(core.resolve(core, "io.log.warn"), this, "'length' is a reserved name and cannot be used as a sub-key. Your sub-key has been changed to 'LENGTH'."); //# TODO: Refactor `this` to `this || _null`?
+                                        core.type.fn.call(core.resolve(core, "io.log.warn"), null, "'length' is a reserved name and cannot be used as a sub-key. Your sub-key has been changed to 'LENGTH'.");
                                     }
 
                                     //# If the k(ey) isn't already a pseudo-Array object

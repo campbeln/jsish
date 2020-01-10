@@ -102,6 +102,19 @@
                         return fnReturnVal;
                     }, //# io.evaler
                     {
+                        //#########
+                        /** Enumeration of Javascript evaluation environments.
+                         * @function ish.io.evaler:environments
+                         * @$asProperty
+                         * @returns {object} =environments Value representing the following properties:
+                         *      @returns {object} =environments.global Value representing Javascript evaluation in the global context.
+                         *      @returns {object} =environments.local Value representing Javascript evaluation in a local function-scoped context.
+                         *      @returns {object} =environments.masked Value representing Javascript evaluation in a local function-scoped context with all global variables masked.
+                         *      @returns {object} =environments.useStrict Value representing Javascript evaluation in a local function-scoped context with <code>'use strict';</code> applied.
+                         *      @returns {object} =environments.json Value representing Javascript evaluation via <code>JSON.parse()</code>.
+                         *      @returns {object} =environments.isolated Value representing Javascript evaluation in an iFrame's global context.<note><client>Client-side only.</client></note>
+                         *      @returns {object} =environments.sandbox Value representing Javascript evaluation in an iFrame's global context via <code>window.postMessage</code>.<note><client>Client-side only.</client></note>
+                         */ //#####
                         environments: eEnvironments
                     }
                 )

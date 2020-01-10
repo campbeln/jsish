@@ -520,6 +520,10 @@ thead tr, thead tr {
    padding-bottom: 0;
 }
 
+param-type { /* neek */
+  margin: 0 15px 0 15px;
+} /* /neek */
+param-type, /* neek */
 span.param-type, .params td .param-type, .param-type dd {
    color: #0c7550; /* neek #606 */
   font-family: Consolas, Monaco, 'Andale Mono', monospace

@@ -39,7 +39,8 @@
             },
             fnMouseoverFactory = function (oOptions, oContext) {
                 return function (oEvent) {
-                    var oPos = _tooltip.getBoundingClientRect(),
+                    var _template,
+                        oPos = _tooltip.getBoundingClientRect(),
                         oOffset = {
                             top: oPos.top + _body.scrollTop,
                             left: oPos.left + _body.scrollLeft
@@ -55,7 +56,7 @@
                         oOptions.position = core.type.str.mk(oOptions.position, "").trim().toLowerCase();
 
                         if (core.type.str.is(oOptions.templateUrl, true)) {
-                            var _template = core.type.dom.mk("<div>" + core.type.dom.mk("script[id='" + oOptions.templateUrl + "']").innerHTML + "</div>");
+                            _template = core.type.dom.mk("<div>" + core.type.dom.mk("script[id='" + oOptions.templateUrl + "']").innerHTML + "</div>");
 
                             _tooltip.innerHTML = "";
                             //_tooltip.appendChild(core.type.fn.call(oOptions.bindUI, [_template]) || _template);
@@ -64,7 +65,7 @@
                             _tooltip.appendChild(core.type.dom.mk("<div class='ng-tooltip-arrow'></div>"));
                         }
                         else if (core.type.str.is(oOptions.template, true)) {
-                            var _template = core.type.dom.mk("<div>" + oOptions.template + "</div>");
+                            _template = core.type.dom.mk("<div>" + oOptions.template + "</div>");
 
                             _tooltip.innerHTML = "";
                             //_tooltip.appendChild(core.type.fn.call(oOptions.bindUI, [_template]) || _template);

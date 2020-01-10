@@ -1703,7 +1703,7 @@
                 //# Processes the passed options into an Object for use in core.type.fn.*
                 function processOptions(oOptions, oDefaults, iWait) {
                     //#
-                    return core.extend(
+                    return core.extend(1,
                         { context: {} },
                         oDefaults,
                         oOptions,

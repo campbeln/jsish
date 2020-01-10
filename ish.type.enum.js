@@ -159,6 +159,7 @@
                                         return (vReturnVal.notFound !== true && vReturnVal.value !== undefined);
                                     }, //# type.enum.is.label
 
+
                                     //#########
                                     /** Determines if the passed value represents a <code>value</code> within the passed enumeration entry.
                                      * @function ish.type.enum.is:value
@@ -179,6 +180,7 @@
                                     }
                                 } //# type.enum.is.value
                             ), //# type.enum.is
+
 
                             //#########
                             /** Casts the passed value into an enumeration.
@@ -201,6 +203,7 @@
 
                                 return (vOptions.asEntry ? vReturnVal : vReturnVal.value);
                             },
+
 
                             //#########
                             /** Encodes the passed value as an enumeration.
@@ -225,6 +228,7 @@
                                 return (vOptions.asEntry ? oReturnVal : oReturnVal.value);
                             }, //# data.enum.encode
 
+
                             //#########
                             /** Decodes the passed value as an enumeration.
                              * @function ish.type.enum.decode
@@ -248,6 +252,7 @@
                                 return (vOptions.asEntry ? oReturnVal : oReturnVal.label);
                             }, //# data.enum.decode
 
+
                             //#########
                             /** Determines if the passed value represents an enumeration.
                              * @function ish.type.enum.exists
@@ -257,6 +262,7 @@
                             exists: function (sEnum) {
                                 return core.type.arr.is(core.resolve(g_oEnums, sEnum), true);
                             }, //# data.enum.exists
+
 
                             //#########
                             /** Loads the passed value as enumeration(s) into the existing collection.
@@ -294,6 +300,7 @@
 
                                 return bReturnVal;
                             }, //# data.enum.load
+
 
                             //#########
                             /** Returns a new instance of the base interface for an enumeration.

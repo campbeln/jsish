@@ -6,7 +6,7 @@
  * @copyright 2014-2020, Nick Campbell
  * @ignore
  */ //############################################################################################
-/*global module, define, global */                              //# Enable Node globals for JSHint
+/*global module, define, global, WeakMap */                     //# Enable Node globals for JSHint
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
 (function () {
     'use strict';
@@ -1022,13 +1022,12 @@
                 }(), //# core.type.str
 
                 //# cp
-                /*
                 fn: {
                     //eq:
                     //cmp:
                     //#
                     //#     SEE: https://stackoverflow.com/a/22534864/235704
-                    cp: function (fn) {
+                    /*cp: function (fn) {
                         var sKey;
 
                         //#
@@ -1067,9 +1066,62 @@
                             }
                         }
                         return fnReturnVal;
-                    } //# type.fn.cp
+                    }*/ //# type.fn.cp
+
+                    //#########
+                    /** Creates a proxy function that forwards calls to all registered functions.
+                     * @function ish.type.fn.proxy
+                     * @returns {function} Value representing the proxy function that forwards calls to all registered functions.
+                     */ //#####
+                    proxy: function (bPreventDefault) {
+                        var a_fns = [];
+
+                        return core.extend(
+                            function proxy(/*arguments*/) {
+                                //#
+                                for (var i = 0; i < a_fns.length; i++) {
+                                    core.type.fn.run(a_fns[i], { args: arguments, context: this });
+                                }
+                                return (bPreventDefault === true);
+                            }, {
+                                //#########
+                                /** Registers the passed function to the parent proxy function.
+                                 * @function ish.type.fn.proxy:add
+                                 * @param {function} fn Value representing the function to register.
+                                 * @returns {boolean} Value representing if the passed function has been successfully registered.
+                                 */ //#####
+                                add: function (fn) {
+                                    var bReturnVal = core.type.fn.is(fn);
+
+                                    if (bReturnVal) {
+                                        a_fns.push(fn);
+                                    }
+
+                                    return bReturnVal;
+                                }, //# type.fn.proxy.add
+
+                                //#########
+                                /** Unregisters the passed function from the parent proxy function.
+                                 * @function ish.type.fn.proxy:rm
+                                 * @param {function} fn Value representing the function to unregister.
+                                 * @returns {boolean} Value representing if the passed function has been successfully unregistered.
+                                 */ //#####
+                                rm: function (fn) {
+                                    var iIndex = a_fns.indexOf(fn),
+                                        bReturnVal = (iIndex > -1)
+                                    ;
+
+                                    if (bReturnVal) {
+                                        a_fns.splice(iIndex, 1);
+                                    }
+
+                                    return bReturnVal;
+                                } //# type.fn.proxy.rm
+                            }
+                        );
+                    } //# type.fn.proxy
                 }, //# core.type.fn
-                //*/
+
 
                 //# cmp, cp, unique, matches, randomize, of, countOf, sort
                 arr: {
@@ -1515,7 +1567,7 @@
 
                                         //# If we are to bReturnReport, .push the  current level's/call's items onto our stacks
                                         if (bReturnReport) {
-                                            if (sKey) { a_sKeys.push(sKey) };
+                                            if (sKey) { a_sKeys.push(sKey); }
                                             a_oStack.push(oTarget);
                                         }
 
@@ -1540,7 +1592,7 @@
 
                                         //# If we are to bReturnReport, .pop the current level's/call's items off our stacks
                                         if (bReturnReport) {
-                                            if (sKey) { a_sKeys.pop() };
+                                            if (sKey) { a_sKeys.pop(); }
                                             a_oStack.pop();
                                         }
                                     }
