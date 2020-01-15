@@ -19,7 +19,7 @@
  *      All features are organized in individually includable mixins organized by namespace/major features with only the core <code>ish.js</code> functionality required to bootstrap.
  *  </p>
  * </div>
- * @version 0.12.2020-01-02
+ * @version 0.12.2020-01-14
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2020, Nick Campbell
@@ -38,11 +38,10 @@
         _undefined /*= undefined*/,                                                 //# code-golf
         _null = null,                                                               //# code-golf
         _Object_prototype_toString = Object.prototype.toString,                     //# code-golf
-        _Date_now = Date.now,                                                       //# code-golf
         oPrivate = {},
         oTypeIsIsh = { //# Set the .ver and .target under .type.is.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             config: {
-                ver: '0.12.2020-01-02',
+                ver: '0.12.2020-01-14',
                 onServer: bServerside,
                 debug: true,
                 //script: _undefined,
@@ -1263,10 +1262,24 @@
             return iReturnVal;
         } //# processObj
 
+        //# Processes the passed options into an Object for use in core.type.fn.*
+        function processFnOptions(oOptions, oDefaults, iWait) {
+            //#
+            return core.extend(1,
+                { context: {} },
+                oDefaults,
+                oOptions,
+                (iWait !== _undefined && core.type.obj.is(oOptions) ? {
+                    wait: core.type.int.mk(oOptions.wait, iWait)
+                } : _null)
+            );
+        } //# processFnOptions
 
-        //# Add .processObj into the oProtected interfaces for core.type
+
+        //# Add .processObj and .processFnOptions into the oProtected interfaces for core.type
         //#     NOTE: `this.processObj = processObj` also works
         oProtected.processObj = processObj;
+        oProtected.processFnOptions = processFnOptions;
 
         //# Add type.is.ish.import into oTypeIsIsh
         //#     NOTE: Since `import` is a reserved(ish) word, we have to use []-notation
@@ -1475,7 +1488,7 @@
 
                     return _window_performance && _window_performance.now && _window_performance_timing && _window_performance_timing.navigationStart ?
                             _window_performance.now() + _window_performance_timing.navigationStart :
-                            _Date_now()
+                            Date.now()
                     ;
                 } //# timestamp
             }, //# core.type.date
@@ -1500,11 +1513,18 @@
             }, //# core.type.str
 
             arr: {
+                //#########
+                /** Clones the passed value into a new array.
+                 * @function ish.type.arr.clone
+                 * @param {variant[]} a_vArray Value to interrogate.
+                 * @returns {variant[]} Value representing a shallow copy clone of the passed value.
+                 */ //#####
                 clone: function (a_vArray) {
                     if (core.type.arr.is(a_vArray)) {
                         return a_vArray.slice(0);
                     }
                 }, //# type.arr.clone
+
 
                 //#########
                 /** Removes the passed target(s) from the passed array (optionally replacing them with updated values).
@@ -1700,19 +1720,6 @@
                     );
                 } //# convert
 
-                //# Processes the passed options into an Object for use in core.type.fn.*
-                function processOptions(oOptions, oDefaults, iWait) {
-                    //#
-                    return core.extend(1,
-                        { context: {} },
-                        oDefaults,
-                        oOptions,
-                        (iWait !== _undefined && core.type.obj.is(oOptions) ? {
-                            wait: core.type.int.mk(oOptions.wait, iWait)
-                        } : _null)
-                    );
-                } //# processOptions
-
 
                 return {
                     is: {
@@ -1799,7 +1806,7 @@
                                     _undefined
                                 )
                             ),
-                            oOptions = processOptions(a_vArguments ? {} : vOptions, {
+                            oOptions = processFnOptions(a_vArguments ? {} : vOptions, {
                                 //context: {},
                                 args: a_vArguments,
                                 default: _undefined
@@ -1835,7 +1842,7 @@
                         var vReturnVal /*= _undefined*/;
 
                         //#
-                        oOptions = processOptions(oOptions, {
+                        oOptions = processFnOptions(oOptions, {
                             rereturn: true
                         } /*, _undefined*/);
                         oOptions.call = 0;
@@ -1868,7 +1875,7 @@
                         var oReturnVal;
 
                         //#
-                        oOptions = processOptions(oOptions, {
+                        oOptions = processFnOptions(oOptions, {
                             //default: _undefined,
                             returnObj: false
                         } /*, _undefined*/);
@@ -1892,116 +1899,6 @@
                             return (oOptions.returnObj ? oReturnVal : oReturnVal.result);
                         };
                     }, //# fn.tryCatch
-
-
-                    //#########
-                    /** Wraps the passed function, ensuring it is executed as much as possible without ever executing more than once per wait duration.
-                     *   <br/>The passed function is executed via <code>function.apply()</code>.
-                     * @function ish.type.fn.throttle
-                     * @param {function} fn Value representing the function to execute.
-                     * @param {object} [oOptions] Value representing the desired options:
-                     *      @param {variant} [oOptions.context=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
-                     *      @param {integer} [oOptions.wait=500] Value representing the minimum number of milliseconds (1/1000ths of a second) between each call.
-                     *      @param {boolean} [oOptions.leading=true] Value representing if the passed function is to be executed immediently on the first call.
-                     *      @param {boolean} [oOptions.trailing=false] Value representing if the passed function is to be executed at the conclusion of the last wait time.
-                     * @returns {function} Function that returns a value representing the passed function's return value from the most recent call.
-                     * @see {@link http://underscorejs.org/docs/underscore.html|UnderscoreJS.org}
-                     */ //#####
-                    throttle: function (fn, oOptions) {
-                        var context, args, result,
-                            timeout = _null,
-                            previous = 0,
-                            later = function () {
-                                previous = oOptions.leading === false ? 0 : _Date_now();
-                                timeout = _null;
-                                result = fn.apply(context, args);
-                                if (!timeout) context = args = _null;
-                            }
-                        ;
-
-                        //#
-                        oOptions = processOptions(oOptions, {
-                            leading: true,
-                            trailing: false
-                        }, 500);
-
-                        return function (/*arguments*/) {
-                            var remaining,
-                                now = _Date_now()
-                            ;
-                            if (!previous && oOptions.leading === false) previous = now;
-                            remaining = oOptions.wait - (now - previous);
-                            context = oOptions.context;
-                            args = convert(arguments);
-                            if (remaining <= 0 || remaining > oOptions.wait) {
-                                if (timeout) {
-                                    clearTimeout(timeout);
-                                    timeout = _null;
-                                }
-                                previous = now;
-                                result = fn.apply(context, args);
-                                if (!timeout) context = args = _null;
-                            } else if (!timeout && oOptions.trailing !== false) {
-                                timeout = setTimeout(later, remaining);
-                            }
-                            return result;
-                        };
-                    }, //# fn.throttle
-
-
-                    //#########
-                    /** Wraps the passed function, ensuring it cannot be executed until the wait duration has passed without a call being made.
-                     *   <br/>The passed function is executed via <code>function.apply()</code>.
-                     * @function ish.type.fn.debounce
-                     * @param {function} fn Value representing the function to execute.
-                     * @param {object} [oOptions] Value representing the desired options:
-                     *      @param {variant} [oOptions.context=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
-                     *      @param {integer} [oOptions.wait=500] Value representing the minimum number of milliseconds (1/1000ths of a second) between each call.
-                     *      @param {boolean} [oOptions.leading=false] Value representing if the passed function is to be executed immediently on the first call.
-                     * @returns {function} Function that returns a value representing the passed function's return value from the most recent call.
-                     * @example
-                     *    var myEfficientFn = ish.type.fn.debounce(function () {
-                     *      // All the taxing stuff you do
-                     *    }, 250);
-                     *    window.addEventListener('resize', myEfficientFn);
-                     */ //#####
-                    debounce: function (fn, oOptions) {
-                        var timeout, args, context, timestamp, result,
-                            later = function () {
-                                var last = _Date_now() - timestamp;
-
-                                if (last < oOptions.wait && last >= 0) {
-                                    timeout = setTimeout(later, oOptions.wait - last);
-                                } else {
-                                    timeout = _null;
-                                    if (!oOptions.leading) {
-                                        result = fn.apply(context, args);
-                                        if (!timeout) context = args = _null;
-                                    }
-                                }
-                            }
-                        ;
-
-                        //#
-                        oOptions = processOptions(oOptions, {
-                            //context: _undefined,
-                            leading: false
-                        }, 500);
-
-                        return function (/*arguments*/) {
-                            var callNow = oOptions.leading && !timeout;
-                            context = oOptions.context;
-                            args = convert(arguments);
-                            timestamp = _Date_now();
-                            if (!timeout) timeout = setTimeout(later, oOptions.wait);
-                            if (callNow) {
-                                result = fn.apply(context, args);
-                                context = args = _null;
-                            }
-
-                            return result;
-                        };
-                    }, //# fn.debounce
 
 
                     //#########
@@ -2079,7 +1976,154 @@
                         }; //# fn.poll.expBackoff
 
                         return poll;
-                    }() //# fn.poll
+                    }(), //# fn.poll
+
+
+                    //#########
+                    /** Determines the metadata about the passed function.
+                     * @function ish.type.fn.metadata
+                     * @param {function} fn Value representing the function to execute.
+                     * @returns {object} =metadata Value representing the following properties:
+                     *      @returns {boolean} =metadata.is Value indicating if the passed function is a valid function.
+                     *      @returns {boolean} =metadata.isArrow Value indicating if the passed function is an arrow function expression.
+                     *      @returns {boolean} =metadata.hasParens Value indicating if the passed function has parenthesis in its definition.
+                     *          <br/><note>Arrow function expressions allow for single parameter definitions to exclude parenthesis, e.g. <code>x => { console.log(x); }</code>.</note>
+                     *      @returns {string} =metadata.name Value indicating the name of the passed function or <code>[anonymous]</code> if one is not specified.
+                     *      @returns {string[]} =metadata.parameters Value indicating the names of the passed function's parameters.
+                     */ //#####
+                    metadata: function (fn) {
+                        var a_sParsedSignature, sArgs,
+                            oReturnVal = {
+                                //isArrow: false,
+                                //hasParens: true,
+                                //name: "",
+                                //parameters: [],
+                                is: false
+                            }
+                        ;
+
+                        //# If the passed fn .is a .fn
+                        if (core.type.fn.is(fn)) {
+                            //# .toString the passed fn into a_sParsedSignature
+                            //#     NOTE: [1] full match, [1] function+name, [2] name, [3] (parameters, [4] parameters, [5] SingleArrowParameter, [6] fat arrow
+                            a_sParsedSignature = fn.toString().match(
+                                /(function[\s]*?([a-zA-Z_$][^\(]*)?\s*?)?(\(([^\)]*)|([^,])?(\s*?=>))/m
+                            ); //# Non-Fat Arrow - .match(/function[\s]*?([a-zA-Z_$][^\(]*)?\s*?\(([^\)]*)/m);
+
+                            //# If we could pull the a_sParsedSignature
+                            if (core.type.arr.is(a_sParsedSignature, true)) {
+                                //# Determine if it .isArrow and if it .hasParens
+                                //#     NOTE: Due to the RegExp above, non-paren'd argument version of a fat arrow function is in [5] rather than [4]
+                                oReturnVal.isArrow = (a_sParsedSignature[0].indexOf("function") === 0);
+                                oReturnVal.hasParens = !a_sParsedSignature[5];
+
+                                //# Determine the function .name, where the sArgs are then .split them into our .parameters and finally set .is to true
+                                oReturnVal.name = core.type.str.mk(a_sParsedSignature[2]).trim() || "[anonymous]";
+                                sArgs = (a_sParsedSignature[4] || a_sParsedSignature[5]);
+                                oReturnVal.parameters = (sArgs ?
+                                    sArgs.replace(/\s/g, "").split(",") :
+                                    []
+                                );
+                                oReturnVal.is = true;
+                            }
+                        }
+
+                        return oReturnVal;
+                    }, //# fn.metadata
+
+
+                    //#########
+                    /** Allows for the definition and validation of the passed function's signature.
+                     * @function ish.type.fn.signature
+                     * @param {function} fn Value representing the function to define a signature for.
+                     * @returns {object} =chainedInterface Value representing a chained interface with the following properties:
+                     *      @returns {function} =chainedInterface.parameter Defines the next parameter for the function; <code>parameter(vTest, sErrorMessage)</code>.
+                     *          <br/><code>vTest</code> <param-type>function|string</param-type> Value representing the argument validator as a function or string referencing a <code>ish.types.*.is</code> function (e.g. <code>str</code>, <code>int</code>, <code>obj</code>, etc).
+                     *          <br/><code>sErrorMessage</code> <param-type>string</param-type> Value representing the custom error message to display when an argument fails the <code>vTest</code>.
+                     *          <br/><note>The order of calls to <code>parameter<code> must match the order of the parameters in the passed function.<note>
+                     *      @returns {function} =chainedInterface.validate Determines if the passed arguments conform to the defined parameter tests; <code>validate(_arguments, bRaiseError)</code>.
+                     *          <br/><code>_arguments</code> <param-type>arguments|variant[]</param-type> Value representing the arguments.
+                     *          <br/><code>bRaiseError</code> <param-type>boolean</param-type> Value representing if an error is to be <code>throw</code>n if an error occurs.
+                     *      @returns {string} =chainedInterface.name Value indicating the name of the passed function or <code>[anonymous]</code> if one is not specified.
+                     *      @returns {string[]} =chainedInterface.parameters Value indicating the names of the passed function's parameters.
+                     *      @returns {boolean} =chainedInterface.valid Value indicating if the passed arguments conform to the function's signature.
+                     */ //#####
+                    signature: function (fn) {
+                        var oMetadata = core.type.fn.metadata(fn),
+                            a_oData = [],
+                            oChained = {
+                                parameter: function (vTest, sErrorMessage) {
+                                    var iIndex,
+                                        fnTest = (core.type.fn.is(vTest) ? vTest : core.resolve(core.type, [vTest, "is"]))
+                                    ;
+
+                                    //# If we could resolve fnTest, calculate the related iIndex in a_sArguments and .push the metadata into a_oData
+                                    if (core.type.fn.is(fnTest)) {
+                                        iIndex = a_oData.length;
+                                        a_oData.push({
+                                            test: fnTest,
+                                            message: core.type.str.mk(sErrorMessage),
+                                            parameter: oChained.parameters[iIndex]
+                                        });
+                                    }
+                                    //# Else the passed vTest could not be resolved to a .fn, so throw the notFnError
+                                    else {
+                                        notFnError();
+                                    }
+
+                                    return oChained;
+                                }, //# type.fn.signature.parameter
+
+                                validate: function (_arguments, bRaiseError) {
+                                    var i,
+                                        sError = "",
+                                        a_vArgs = core.type.fn.convert(_arguments),
+                                        bValid = (a_vArgs.length === a_oData.length)
+                                    ;
+
+                                    //#
+                                    if (bValid) {
+                                        for (i = 0; i < a_oData.length; i++) {
+                                            //#
+                                            if (!a_oData[i].test(a_vArgs[i])) {
+                                                a_oData[i].error = true;
+                                                bValid = false;
+                                                sError += a_oData[i].parameter + (a_oData[i].message ? ": " + a_oData[i].message : "") + "; ";
+                                            }
+                                        }
+                                    }
+                                    oChained.valid = bValid;
+
+                                    //#
+                                    if (bRaiseError && !bValid) {
+                                        throw oChained.name + ": Parameter(s) do not match signature - " + sError.substr(0, sError.length - 2);
+                                    }
+
+                                    return oChained;
+                                } //# type.fn.signature.validate
+                            }
+                        ;
+
+                        //# Throws a .is not .fn-based error
+                        function notFnError(bInitCall) {
+                            var sVar = (bInitCall ? "fn" : "vTest");
+                            throw "ish.type.fn.signature" + (sVar === "fn" ? "" : ".parameter") + ": `" + sVar + "` could not be resolved to a function.";
+                        } //# notFnError
+
+
+                        //# If the passed fn .is a .fn, set the oChained properties
+                        if (oMetadata.is) {
+                            oChained.name = oMetadata.name;
+                            oChained.parameters = oMetadata.parameters;
+                            oChained.valid = _undefined;
+                        }
+                        //# Else the passed fn was invalid, so throw the notFnError
+                        else {
+                            notFnError(true);
+                        }
+
+                        return oChained;
+                    } //# type.fn.signature
                 };
             }() //# core.type.fn.*
         };
