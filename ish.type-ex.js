@@ -15,7 +15,8 @@
         var bServerside = core.config.ish().onServer,                                   //# code-golf
             _root = (bServerside ? global : window),                                    //# code-golf
             _undefined /*= undefined*/,                                                 //# code-golf
-            _null = null                                                                //# code-golf
+            _null = null,                                                               //# code-golf
+            _Date_now = Date.now                                                        //# code-golf
         ;
 
         //################################################################################################
@@ -1068,6 +1069,165 @@
                         return fnReturnVal;
                     }*/ //# type.fn.cp
 
+
+                    //#########
+                    /** Injects dependencies into the passed function from the passed value.
+                     * @function ish.type.fn.inject
+                     * @param {function} fn Value representing the function to execute.
+                     * @param {object} oDependencies Value representing the dependencies to inject.
+                     * @param {boolean} [bNoCallWhenMissing=false] Value representing if the passed function is to be called if dependencies are missing.
+                     * @returns {object} =interface Value representing the following properties:
+                     *      @returns {boolean} =interface.success Value indicating if the passed function was executed.
+                     *      @returns {string[]} =interface.missing Value indicating the missing dependencies.
+                     */ //#####
+                    inject: function (fn, oDependencies, bNoCallWhenMissing) {
+                        var i,
+                            oMetadata = core.type.fn.metadata(fn),
+                            a_sKeys = core.type.obj.ownKeys(oDependencies),
+                            oReturnVal = {
+                                success: (oMetadata.is && core.type.arr.is(a_sKeys, true)),
+                                missing: []
+                            }
+                        ;
+
+                        //# If we have a fn and oDependencies to .inject, traverse the .parameters
+                        if (oReturnVal.success) {
+                            for (i = 0; i < oMetadata.parameters.length; i++) {
+                                //# If the oDependencies don't have the current .parameter
+                                if (a_sKeys.indexOf(oMetadata.parameters[i]) === -1) {
+                                    oReturnVal.missing.push(oMetadata.parameters[i]);
+                                }
+
+                                //# Reset the current .parameters with the related oDependencies
+                                //#     NOTE: Unknown a_sKeys will set as undefined
+                                oMetadata.parameters[i] = oDependencies[oMetadata.parameters[i]];
+                            }
+
+                            //# Redetermine our .success based on bNoCallWhenMissing or .missing.length
+                            oReturnVal.success = (!bNoCallWhenMissing || oReturnVal.missing.length === 0);
+
+                            //# If we're not to bNoCallWhenMissing, asynchronously .run the fn with the above replaced .parameters
+                            if (oReturnVal.success) {
+                                setTimeout(function () {
+                                    core.type.fn.run(fn, { args: oMetadata.parameters });
+                                });
+                            }
+                        }
+
+                        return oReturnVal;
+                    }, //# fn.inject
+
+
+                    //#########
+                    /** Wraps the passed function, ensuring it is executed as much as possible without ever executing more than once per wait duration.
+                     *   <br/>The passed function is executed via <code>function.apply()</code>.
+                     * @function ish.type.fn.throttle
+                     * @param {function} fn Value representing the function to execute.
+                     * @param {object} [oOptions] Value representing the desired options:
+                     *      @param {variant} [oOptions.context=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
+                     *      @param {integer} [oOptions.wait=500] Value representing the minimum number of milliseconds (1/1000ths of a second) between each call.
+                     *      @param {boolean} [oOptions.leading=true] Value representing if the passed function is to be executed immediently on the first call.
+                     *      @param {boolean} [oOptions.trailing=false] Value representing if the passed function is to be executed at the conclusion of the last wait time.
+                     * @returns {function} Function that returns a value representing the passed function's return value from the most recent call.
+                     * @see {@link http://underscorejs.org/docs/underscore.html|UnderscoreJS.org}
+                     */ //#####
+                    throttle: function (fn, oOptions) {
+                        var context, args, result,
+                            timeout = _null,
+                            previous = 0,
+                            later = function () {
+                                previous = oOptions.leading === false ? 0 : _Date_now();
+                                timeout = _null;
+                                result = fn.apply(context, args);
+                                if (!timeout) context = args = _null;
+                            }
+                        ;
+
+                        //#
+                        oOptions = oProtected.processFnOptions(oOptions, {
+                            leading: true,
+                            trailing: false
+                        }, 500);
+
+                        return function (/*arguments*/) {
+                            var remaining,
+                                now = _Date_now()
+                            ;
+                            if (!previous && oOptions.leading === false) previous = now;
+                            remaining = oOptions.wait - (now - previous);
+                            context = oOptions.context;
+                            args = core.type.fn.convert(arguments);
+                            if (remaining <= 0 || remaining > oOptions.wait) {
+                                if (timeout) {
+                                    clearTimeout(timeout);
+                                    timeout = _null;
+                                }
+                                previous = now;
+                                result = fn.apply(context, args);
+                                if (!timeout) context = args = _null;
+                            } else if (!timeout && oOptions.trailing !== false) {
+                                timeout = setTimeout(later, remaining);
+                            }
+                            return result;
+                        };
+                    }, //# fn.throttle
+
+
+                    //#########
+                    /** Wraps the passed function, ensuring it cannot be executed until the wait duration has passed without a call being made.
+                     *   <br/>The passed function is executed via <code>function.apply()</code>.
+                     * @function ish.type.fn.debounce
+                     * @param {function} fn Value representing the function to execute.
+                     * @param {object} [oOptions] Value representing the desired options:
+                     *      @param {variant} [oOptions.context=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
+                     *      @param {integer} [oOptions.wait=500] Value representing the minimum number of milliseconds (1/1000ths of a second) between each call.
+                     *      @param {boolean} [oOptions.leading=false] Value representing if the passed function is to be executed immediently on the first call.
+                     * @returns {function} Function that returns a value representing the passed function's return value from the most recent call.
+                     * @example
+                     *    var myEfficientFn = ish.type.fn.debounce(function () {
+                     *      // All the taxing stuff you do
+                     *    }, 250);
+                     *    window.addEventListener('resize', myEfficientFn);
+                     */ //#####
+                    debounce: function (fn, oOptions) {
+                        var timeout, args, context, timestamp, result,
+                            later = function () {
+                                var last = _Date_now() - timestamp;
+
+                                if (last < oOptions.wait && last >= 0) {
+                                    timeout = setTimeout(later, oOptions.wait - last);
+                                } else {
+                                    timeout = _null;
+                                    if (!oOptions.leading) {
+                                        result = fn.apply(context, args);
+                                        if (!timeout) context = args = _null;
+                                    }
+                                }
+                            }
+                        ;
+
+                        //#
+                        oOptions = oProtected.processFnOptions(oOptions, {
+                            //context: _undefined,
+                            leading: false
+                        }, 500);
+
+                        return function (/*arguments*/) {
+                            var callNow = oOptions.leading && !timeout;
+                            context = oOptions.context;
+                            args = core.type.fn.convert(arguments);
+                            timestamp = _Date_now();
+                            if (!timeout) timeout = setTimeout(later, oOptions.wait);
+                            if (callNow) {
+                                result = fn.apply(context, args);
+                                context = args = _null;
+                            }
+
+                            return result;
+                        };
+                    }, //# fn.debounce
+
+
                     //#########
                     /** Creates a proxy function that forwards calls to all registered functions.
                      * @function ish.type.fn.proxy
@@ -1076,11 +1236,19 @@
                     proxy: function (bPreventDefault) {
                         var a_fns = [];
 
+                        //#
+                        function callProxy(fn, _arguments, _this) {
+                            setTimeout(function () {
+                                core.type.fn.run(fn, { args: _arguments, context: _this });
+                            }, 0);
+                        } //# callProxy
+
+
                         return core.extend(
                             function proxy(/*arguments*/) {
                                 //#
                                 for (var i = 0; i < a_fns.length; i++) {
-                                    core.type.fn.run(a_fns[i], { args: arguments, context: this });
+                                    callProxy(a_fns[i], arguments, this);
                                 }
                                 return (bPreventDefault === true);
                             }, {
@@ -1090,7 +1258,7 @@
                                  * @param {function} fn Value representing the function to register.
                                  * @returns {boolean} Value representing if the passed function has been successfully registered.
                                  */ //#####
-                                add: function (fn) {
+                                add: function (fn) { //# TODO: Move under proxy return
                                     var bReturnVal = core.type.fn.is(fn);
 
                                     if (bReturnVal) {
@@ -1106,7 +1274,7 @@
                                  * @param {function} fn Value representing the function to unregister.
                                  * @returns {boolean} Value representing if the passed function has been successfully unregistered.
                                  */ //#####
-                                rm: function (fn) {
+                                rm: function (fn) { //# TODO: Move under proxy return
                                     var iIndex = a_fns.indexOf(fn),
                                         bReturnVal = (iIndex > -1)
                                     ;
