@@ -1231,7 +1231,17 @@
                     //#########
                     /** Creates a proxy function that forwards calls to all registered functions.
                      * @function ish.type.fn.proxy
-                     * @returns {function} Value representing the proxy function that forwards calls to all registered functions.
+                     * @returns {function} =proxy Value representing the proxy function that forwards calls to all registered functions along with an interface with the following properties:
+                     *      @returns {function} =proxy.add Registers the passed function to the parent proxy function; <code>add(fn)</code>:
+                     *          <table class="params">
+                     *              <tr><td class="name"><code>fn</code><td><td class="type param-type">function<td><td class="description last">Value representing the function to register.</td></tr>
+                     *              <tr><td class="name">Returns:<td><td class="type param-type">boolean<td><td class="description last">Value representing if the passed function has been successfully registered.</td></tr>
+                     *          </table>
+                     *      @returns {function} =proxy.rm Unregisters the passed function from the parent proxy function; <code>rm(fn)</code>:
+                     *          <table class="params">
+                     *              <tr><td class="name"><code>fn</code><td><td class="type param-type">function<td><td class="description last">Value representing the function to unregister.</td></tr>
+                     *              <tr><td class="name">Returns:<td><td class="type param-type">boolean<td><td class="description last">Value representing if the passed function has been successfully unregistered.</td></tr>
+                     *          </table>
                      */ //#####
                     proxy: function (bPreventDefault) {
                         var a_fns = [];
@@ -1257,8 +1267,9 @@
                                  * @function ish.type.fn.proxy:add
                                  * @param {function} fn Value representing the function to register.
                                  * @returns {boolean} Value representing if the passed function has been successfully registered.
+                                 * @ignore
                                  */ //#####
-                                add: function (fn) { //# TODO: Move under proxy return
+                                add: function (fn) {
                                     var bReturnVal = core.type.fn.is(fn);
 
                                     if (bReturnVal) {
@@ -1273,8 +1284,9 @@
                                  * @function ish.type.fn.proxy:rm
                                  * @param {function} fn Value representing the function to unregister.
                                  * @returns {boolean} Value representing if the passed function has been successfully unregistered.
+                                 * @ignore
                                  */ //#####
-                                rm: function (fn) { //# TODO: Move under proxy return
+                                rm: function (fn) {
                                     var iIndex = a_fns.indexOf(fn),
                                         bReturnVal = (iIndex > -1)
                                     ;

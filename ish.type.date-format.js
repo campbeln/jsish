@@ -3,7 +3,7 @@
  * @mixin ish.type.date
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2020, Nick Campbell
+ * @copyright 2003-2020, Nick Campbell
  * @ignore
  */ //############################################################################################
 /*global module, define */                                      //# Enable Node globals for JSHint
@@ -429,7 +429,7 @@
                  * @param {date|integer} [x=new Date()] Value representing the date to interrogate or the year as a 4-digit number (e.g. <code>1970</code>).
                  * @returns {integer} Value representing if the year is a leap year.
                  */ //#####
-                leapYear: function(x) {
+                leapYear: function (x) {
                     var dDate = core.type.date.mk(x),
                         iYear = core.type.int.mk(x, dDate.getFullYear())
                     ;

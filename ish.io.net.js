@@ -350,8 +350,10 @@
                      * @param {object} [oBody] Value representing the body of the request.
                      * @returns {object} =interface Value representing the following properties:
                      *      @returns {function} =interface.send Sends the request; <code>send(vBody, fnHook)</code>:
-                     *          <br/><code>vBody</code> <param-type>variant|object</param-type> Value representing the body of the call.
-                     *          <br/><code>fnHook</code> <param-type>function</param-type> Value representing the function to be called before the request is sent via the underlying <code>XMLHttpRequest</code> management object; <code>fnHook($xhr)</code>.
+                     *          <table class="params">
+                     *              <tr><td class="name"><code>vBody</code><td><td class="type param-type">variant | object<td><td class="description last">Value representing the body of the call.</td></tr>
+                     *              <tr><td class="name"><code>fnHook</code><td><td class="type param-type">function<td><td class="description last">Value representing the function to be called before the request is sent via the underlying <code>XMLHttpRequest</code> management object; <code>fnHook($xhr)</code>.</td></tr>
+                     *          </table>
                      *      @returns {function} =interface.abort Aborts the request; <code>abort()</code>.
                      *      @returns {object} =interface.xhr Value representing the underlying <code>XMLHttpRequest</code> management object.
                      */ //#####
@@ -579,7 +581,7 @@
                             /** Calculates the exponential back-off based on the passed base interval and attempt count.
                              * @function ish.io.net.retry:expBackoff
                              * @$aka ish.type.fn.poll:expBackoff
-                             * @param {integer} [iBaseInterval=100] Value representing the number of milliseconds (1/1000ths of a second) to base the exponential interval on.<br/>E.g. <code>100</code> results in intervals of <code>100</code>, <code>200</code>, <code>400</code>, <code>800</code>, <code>1600</code>, etc.
+                             * @param {integer} [iBaseInterval=100] Value representing the number of milliseconds (1/1000ths of a second) to base the exponential interval on, e.g. <code>100</code> results in intervals of <code>100</code>, <code>200</code>, <code>400</code>, <code>800</code>, <code>1600</code>, etc.
                              * @returns {function} Function that returns a value representing the number of milliseconds for the current polling attempt.
                              */ //#####
                             expBackoff: core.type.fn.poll.expBackoff

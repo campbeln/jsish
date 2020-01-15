@@ -140,7 +140,9 @@
                  *      @returns {integer} =interface.showPrevNext Value representing the pagination's max number of pages to show.
                  *      @returns {function} =interface.slice Determines the current page's records; <code>slice()</code>.
                  *      @returns {function} =interface.set Sets the current page; <code>set(iPage)</code>:
-                 *          <br/><code>iPage</code> <param-type>integer</param-type> Value representing the page to set as current.
+                 *          <table class="params">
+                 *              <tr><td class="name"><code>iPage</code><td><td class="type param-type">integer<td><td class="description last">Value representing the page to set as current.</td></tr>
+                 *          </table>
                  */ //#####
                 pagination: function (a_vData, oOptions) {
                     var fnReturnVal = function (a_vData, oOptions) {

@@ -35,12 +35,16 @@
                      * @param {function} [fnDefault] Value representing the default overload function to execute if the arguments cannot be matched to an available overload.
                      * @returns {object} =interface Value representing the following properties:
                      *      @returns {function} =interface.add Adds another function to the available overloads; <code>add(fn, sAlias, a_vArgumentTests)</code>:
-                     *          <br/><code>fn</code> <param-type>function</param-type> Value representing the function to add to the available overloads.
-                     *          <br/><code>sAlias</code> <param-type>string</param-type> Value representing the unique alias for the passed function.
-                     *          <br/><code>a_vArgumentTests</code> <param-type>function[]|string[]</param-type> Value representing the argument validators as functions or strings referencing <code>ish.types.*.is</code> functions (e.g. <code>str</code>, <code>int</code>, <code>obj</code>, etc).
+                     *          <table class="params">
+                     *              <tr><td class="name"><code>fn</code><td><td class="type param-type">function<td><td class="description last">Value representing the function to add to the available overloads.</td></tr>
+                     *              <tr><td class="name"><code>sAlias</code><td><td class="type param-type">string<td><td class="description last">Value representing the unique alias for the passed function.</td></tr>
+                     *              <tr><td class="name"><code>a_vArgumentTests</code><td><td class="type param-type">function[] | string[]<td><td class="description last">Value representing the argument validators as functions or strings referencing <code>ish.types.*.is</code> functions (e.g. <code>str</code>, <code>int</code>, <code>obj</code>, etc).</td></tr>
+                     *          </table>
                      *      @returns {function} =interface.default Default function overload to execute if the arguments cannot be matched to an available overload; <code>default()</code>.
                      *      @returns {function} =interface.list Lists the available overloaded functions; <code>list(iArgumentCount)</code>:
-                     *          <br/><code>iArgumentCount</code> <param-type>integer</param-type> Value representing the desired argument count to limit the returned list to.
+                     *          <table class="params">
+                     *              <tr><td class="name"><code>iArgumentCount</code><td><td class="type param-type">integer<td><td class="description last">Value representing the desired argument count to limit the returned list to.</td></tr>
+                     *          </table>
                      */ //#####
                     function (fnDefault) {
                         var oData = {

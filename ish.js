@@ -1963,7 +1963,7 @@
                         //#########
                         /** Calculates the exponential back-off based on the passed base interval and attempt count.
                          * @function ish.type.fn.poll:expBackoff
-                         * @param {integer} [iBaseInterval=100] Value representing the number of milliseconds (1/1000ths of a second) to base the exponential interval on.<br/>E.g. <code>100</code> results in intervals of <code>100</code>, <code>200</code>, <code>400</code>, <code>800</code>, <code>1600</code>, etc.
+                         * @param {integer} [iBaseInterval=100] Value representing the number of milliseconds (1/1000ths of a second) to base the exponential interval on, e.g. <code>100</code> results in intervals of <code>100</code>, <code>200</code>, <code>400</code>, <code>800</code>, <code>1600</code>, etc.
                          * @returns {function} Function that returns a value representing the number of milliseconds for the current polling attempt.
                          */ //#####
                         poll.expBackoff = function (iBaseInterval) {
@@ -2037,13 +2037,16 @@
                      * @function ish.type.fn.signature
                      * @param {function} fn Value representing the function to define a signature for.
                      * @returns {object} =chainedInterface Value representing a chained interface with the following properties:
-                     *      @returns {function} =chainedInterface.parameter Defines the next parameter for the function; <code>parameter(vTest, sErrorMessage)</code>.
-                     *          <br/><code>vTest</code> <param-type>function|string</param-type> Value representing the argument validator as a function or string referencing a <code>ish.types.*.is</code> function (e.g. <code>str</code>, <code>int</code>, <code>obj</code>, etc).
-                     *          <br/><code>sErrorMessage</code> <param-type>string</param-type> Value representing the custom error message to display when an argument fails the <code>vTest</code>.
-                     *          <br/><note>The order of calls to <code>parameter<code> must match the order of the parameters in the passed function.<note>
-                     *      @returns {function} =chainedInterface.validate Determines if the passed arguments conform to the defined parameter tests; <code>validate(_arguments, bRaiseError)</code>.
-                     *          <br/><code>_arguments</code> <param-type>arguments|variant[]</param-type> Value representing the arguments.
-                     *          <br/><code>bRaiseError</code> <param-type>boolean</param-type> Value representing if an error is to be <code>throw</code>n if an error occurs.
+                     *      @returns {function} =chainedInterface.parameter Defines the next parameter for the function; <code>parameter(vTest, sErrorMessage)</code>:
+                     *          <table class="params">
+                     *              <tr><td class="name"><code>vTest</code><td><td class="type param-type">function | string<td><td class="description last">Value representing the argument validator as a function or string referencing a <code>ish.types.*.is</code> function (e.g. <code>str</code>, <code>int</code>, <code>obj</code>, etc).</td></tr>
+                     *              <tr><td class="name"><code>sErrorMessage</code><td><td class="type param-type">string<td><td class="description last">Value representing the custom error message to display when an argument fails the <code>vTest</code>.<br/><note>The order of calls to <code>parameter<code> must match the order of the parameters in the passed function.<note></td></tr>
+                     *          </table>
+                     *      @returns {function} =chainedInterface.validate Determines if the passed arguments conform to the defined parameter tests; <code>validate(_arguments, bRaiseError)</code>:
+                     *          <table class="params">
+                     *              <tr><td class="name"><code>_arguments</code><td><td class="type param-type">arguments | variant[]<td><td class="description last">Value representing the arguments.<br/><b>Note:</b> This value is passed through <code>ish.type.fn.convert</code> to ensure an array.</td></tr>
+                     *              <tr><td class="name"><code>bRaiseError</code><td><td class="type param-type">boolean<td><td class="description last">Value representing if an error is to be <code>throw</code>n if an error occurs.</td></tr>
+                     *          </table>
                      *      @returns {string} =chainedInterface.name Value indicating the name of the passed function or <code>[anonymous]</code> if one is not specified.
                      *      @returns {string[]} =chainedInterface.parameters Value indicating the names of the passed function's parameters.
                      *      @returns {boolean} =chainedInterface.valid Value indicating if the passed arguments conform to the function's signature.
@@ -2068,7 +2071,7 @@
                                     }
                                     //# Else the passed vTest could not be resolved to a .fn, so throw the notFnError
                                     else {
-                                        notFnError();
+                                        notFnError(true);
                                     }
 
                                     return oChained;
@@ -2105,9 +2108,9 @@
                         ;
 
                         //# Throws a .is not .fn-based error
-                        function notFnError(bInitCall) {
-                            var sVar = (bInitCall ? "fn" : "vTest");
-                            throw "ish.type.fn.signature" + (sVar === "fn" ? "" : ".parameter") + ": `" + sVar + "` could not be resolved to a function.";
+                        function notFnError(bFromParameter) {
+                            var sVar = (bFromParameter ? "vTest" : "fn");
+                            throw "ish.type.fn.signature" + (bFromParameter ? ".parameter" : "") + ": `" + sVar + "` could not be resolved to a function.";
                         } //# notFnError
 
 
@@ -2119,7 +2122,7 @@
                         }
                         //# Else the passed fn was invalid, so throw the notFnError
                         else {
-                            notFnError(true);
+                            notFnError();
                         }
 
                         return oChained;
