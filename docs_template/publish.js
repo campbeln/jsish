@@ -195,7 +195,8 @@ function addSignatureReturns(f) {
         returnTypes = addNonParamAttributes(source);
     }
     if (returnTypes.length) {
-        returnTypesString = util.format( ' &rarr; %s{%s}', attribsString, returnTypes.join('|') );
+        returnTypesString = util.format( ' &rarr; %s{%s}', attribsString, returnTypes.join('|') ); //# neek
+        //returnTypesString = util.format( ' &rarr; %s{%s}', attribsString, returnTypes.join(', ') ).replace(", ", ": "); //# neek
     }
 
     f.signature = '<span class="signature">' + (f.signature || '') + '</span>' +

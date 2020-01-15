@@ -736,6 +736,42 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                             $.assert(core.type.fn.run([], { default: null }) === null, "default");
                         },
 
+                        tryCatch: function ($) {
+                            var fnTest,
+                                fn = function () {
+                                    var i = 0;
+
+                                    return function (a) {
+                                        if (++i % 2 === 0) {
+                                            throw "i is even!";
+                                        }
+
+                                        return (
+                                            (arguments.length > 0 ? a : 0) ||
+                                            (this && this.arg ? this.arg : 0) ||
+                                            i
+                                        );
+                                    }
+                                }()
+                            ;
+
+                            $.expect(9);
+                            $.assert(fn() === 1, "preflight 1");
+                            fnTest = core.type.fn.tryCatch(fn, { returnObj: true });
+                            $.assert.deepEqual(fnTest(), { result: undefined, error: "i is even!" }, "catch even error");
+                            $.assert(fnTest().result === 3, "3");
+                            $.assert.deepEqual(fnTest(), { result: undefined, error: "i is even!" }, "catch even error2");
+                            $.assert(fnTest().result === 5, "5");
+
+                            fnTest = core.type.fn.tryCatch(fn, { context: { arg: "from context" } });
+                            $.assert(fnTest() === undefined, "catch even error3");
+                            $.assert(fnTest() === "from context", "from context");
+
+                            fnTest = core.type.fn.tryCatch(fn, { context: { arg: "also from context" }, returnObj: true, default: "not from fnTest" });
+                            $.assert(fnTest().result === "not from fnTest", "not from fnTest");
+                            $.assert(fnTest().result === "also from context", "also from context");
+                        },
+
                         once: function ($) {
                             var fnTest,
                                 fn = function () {
@@ -777,174 +813,6 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                             $.assert(fnTest(-3) === -3, "once -3");
                         },
 
-                        tryCatch: function ($) {
-                            var fnTest,
-                                fn = function () {
-                                    var i = 0;
-
-                                    return function (a) {
-                                        if (++i % 2 === 0) {
-                                            throw "i is even!";
-                                        }
-
-                                        return (
-                                            (arguments.length > 0 ? a : 0) ||
-                                            (this && this.arg ? this.arg : 0) ||
-                                            i
-                                        );
-                                    }
-                                }()
-                            ;
-
-                            $.expect(9);
-                            $.assert(fn() === 1, "preflight 1");
-                            fnTest = core.type.fn.tryCatch(fn, { returnObj: true });
-                            $.assert.deepEqual(fnTest(), { result: undefined, error: "i is even!" }, "catch even error");
-                            $.assert(fnTest().result === 3, "3");
-                            $.assert.deepEqual(fnTest(), { result: undefined, error: "i is even!" }, "catch even error2");
-                            $.assert(fnTest().result === 5, "5");
-
-                            fnTest = core.type.fn.tryCatch(fn, { context: { arg: "from context" } });
-                            $.assert(fnTest() === undefined, "catch even error3");
-                            $.assert(fnTest() === "from context", "from context");
-
-                            fnTest = core.type.fn.tryCatch(fn, { context: { arg: "also from context" }, returnObj: true, default: "not from fnTest" });
-                            $.assert(fnTest().result === "not from fnTest", "not from fnTest");
-                            $.assert(fnTest().result === "also from context", "also from context");
-                        },
-
-                        throttle: function ($) {
-                            var oResults = {},
-                                fnTestFactory = function (sKey) {
-                                    var i = 0;
-                                    return function () {
-                                        oResults[sKey].i = ++i;
-                                        oResults[sKey].neek = (this ? this.neek === true : false);
-                                    };
-                                }
-                            ;
-
-                            $.expect(8, 4);
-
-                            oResults.t1 = { count: 0 };
-                            oResults.t1.fn = core.type.fn.throttle(fnTestFactory("t1"), { wait: 50, context: { neek: true } });
-                            oResults.t1.id = setInterval(function () {
-                                oResults.t1.fn();
-                                if (++oResults.t1.count > 49) {
-                                    clearInterval(oResults.t1.id);
-                                    setTimeout(function () {
-                                        $.asyncTests(function () {
-                                            $.assert(oResults.t1.i === 10, "wait 50");
-                                            $.assert(oResults.t1.neek === true, "context");
-                                        });
-                                    }, 20);
-                                }
-                            }, 10);
-
-                            oResults.t2 = { count: 0 };
-                            oResults.t2.fn = core.type.fn.throttle(fnTestFactory("t2"), { wait: 25, trailing: true });
-                            oResults.t2.id = setInterval(function () {
-                                oResults.t2.fn();
-                                if (++oResults.t2.count > 49) {
-                                    clearInterval(oResults.t2.id);
-                                    setTimeout(function () {
-                                        $.asyncTests(function () {
-                                            $.assert(oResults.t2.i === 21, "wait 25");
-                                            $.assert(oResults.t2.neek === false, "context 2");
-                                        });
-                                    }, 20);
-                                }
-                            }, 10);
-
-                            oResults.t3 = { count: 0 };
-                            oResults.t3.fn = core.type.fn.throttle(fnTestFactory("t3"), { wait: 100, leading: false, trailing: true });
-                            oResults.t3.id = setInterval(function () {
-                                oResults.t3.fn();
-                                if (++oResults.t3.count > 19) {
-                                    clearInterval(oResults.t3.id);
-                                    setTimeout(function () {
-                                        $.asyncTests(function () {
-                                            $.assert(oResults.t3.i === 4, "wait 100");
-                                            $.assert(oResults.t3.neek === false, "context 3");
-                                        });
-                                    }, 20);
-                                }
-                            }, 20);
-
-                            oResults.t4 = { count: 0 };
-                            oResults.t4.fn = core.type.fn.throttle(fnTestFactory("t4"), { wait: 150, leading: false, trailing: true });
-                            oResults.t4.id = setInterval(function () {
-                                oResults.t4.fn();
-                                if (++oResults.t4.count > 54) {
-                                    clearInterval(oResults.t4.id);
-                                    setTimeout(function () {
-                                        $.asyncTests(function () {
-                                            $.assert(oResults.t4.i === 3, "wait 150");
-                                            $.assert(oResults.t4.neek === false, "context 4");
-                                        });
-                                    }, 20);
-                                }
-                            }, 10);
-                        },
-
-                        debounce: function ($) {
-                            var oResults = {},
-                                fnTestFactory = function (sKey) {
-                                    var i = 0;
-                                    return function () {
-                                        oResults[sKey].i = ++i;
-                                        oResults[sKey].neek = (this ? this.neek === true : false);
-                                    };
-                                }
-                            ;
-
-                            $.expect(6, 3);
-
-                            oResults.t1 = { count: 0 };
-                            oResults.t1.fn = core.type.fn.debounce(fnTestFactory("t1"), { wait: 50, immediate: false, context: { neek: true } });
-                            oResults.t1.id = setInterval(function () {
-                                oResults.t1.fn();
-                                if (++oResults.t1.count > 49) {
-                                    clearInterval(oResults.t1.id);
-                                    setTimeout(function () {
-                                        $.asyncTests(function () {
-                                            $.assert(oResults.t1.i === 1, "wait 50");
-                                            $.assert(oResults.t1.neek === true, "context");
-                                        });
-                                    }, 75);
-                                }
-                            }, 10);
-
-                            oResults.t2 = { count: 0 };
-                            oResults.t2.fn = core.type.fn.debounce(fnTestFactory("t2"), { wait: 25, immediate: true });
-                            oResults.t2.id = setInterval(function () {
-                                oResults.t2.fn();
-                                if (++oResults.t2.count > 49) {
-                                    clearInterval(oResults.t2.id);
-                                    setTimeout(function () {
-                                        $.asyncTests(function () {
-                                            $.assert(oResults.t2.i === 1, "wait 25");
-                                            $.assert(oResults.t2.neek === false, "context 2");
-                                        });
-                                    }, 50);
-                                }
-                            }, 10);
-
-                            oResults.t3 = { count: 0 };
-                            oResults.t3.fn = core.type.fn.debounce(fnTestFactory("t3"), { wait: 100, immediate: true });
-                            oResults.t3.id = setInterval(function () {
-                                oResults.t3.fn();
-                                if (++oResults.t3.count > 4) {
-                                    clearInterval(oResults.t3.id);
-                                    setTimeout(function () {
-                                        $.asyncTests(function () {
-                                            $.assert(oResults.t3.i === 5, "wait 100");
-                                            $.assert(oResults.t3.neek === false, "context 3");
-                                        });
-                                    }, 20);
-                                }
-                            }, 120);
-                        },
 
                         /*
                         oOptions.context - variant representing the Javascript context (e.g. `this`) in which to call the function.

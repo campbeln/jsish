@@ -110,6 +110,8 @@
 
                                         //sAlias = 'fn_'+arguments.length+Array.from(arguments).map((arg)=>typeof arg).join('_')
 
+                                        //# TODO: use ish.type.fn.signature?
+
                                         //#
                                         if (bValid) {
                                             //# Traverse the a_vArgumentTests, processing each to ensure they are functions (or references to )

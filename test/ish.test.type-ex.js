@@ -124,7 +124,144 @@
 
                     a_oResult = core.type.query(a_oData, { c: function (vTestValue /*, oSource, oOptions*/) { return vTestValue.length > 3; } });
                     $.assert(a_oResult.length === 2 && a_oResult[0].c[3] === 4 && a_oResult[1].c[0] === 9, "to,two");
-                } //# query
+                }, //# query
+
+                type: {
+                    fn: {
+                        throttle: function ($) {
+                            var oResults = {},
+                                fnTestFactory = function (sKey) {
+                                    var i = 0;
+                                    return function () {
+                                        oResults[sKey].i = ++i;
+                                        oResults[sKey].neek = (this ? this.neek === true : false);
+                                    };
+                                }
+                            ;
+
+                            $.expect(8, 4);
+
+                            oResults.t1 = { count: 0 };
+                            oResults.t1.fn = core.type.fn.throttle(fnTestFactory("t1"), { wait: 50, context: { neek: true } });
+                            oResults.t1.id = setInterval(function () {
+                                oResults.t1.fn();
+                                if (++oResults.t1.count > 49) {
+                                    clearInterval(oResults.t1.id);
+                                    setTimeout(function () {
+                                        $.asyncTests(function () {
+                                            $.assert(oResults.t1.i === 10, "wait 50");
+                                            $.assert(oResults.t1.neek === true, "context");
+                                        });
+                                    }, 20);
+                                }
+                            }, 10);
+
+                            oResults.t2 = { count: 0 };
+                            oResults.t2.fn = core.type.fn.throttle(fnTestFactory("t2"), { wait: 25, trailing: true });
+                            oResults.t2.id = setInterval(function () {
+                                oResults.t2.fn();
+                                if (++oResults.t2.count > 49) {
+                                    clearInterval(oResults.t2.id);
+                                    setTimeout(function () {
+                                        $.asyncTests(function () {
+                                            $.assert(oResults.t2.i === 21, "wait 25");
+                                            $.assert(oResults.t2.neek === false, "context 2");
+                                        });
+                                    }, 20);
+                                }
+                            }, 10);
+
+                            oResults.t3 = { count: 0 };
+                            oResults.t3.fn = core.type.fn.throttle(fnTestFactory("t3"), { wait: 100, leading: false, trailing: true });
+                            oResults.t3.id = setInterval(function () {
+                                oResults.t3.fn();
+                                if (++oResults.t3.count > 19) {
+                                    clearInterval(oResults.t3.id);
+                                    setTimeout(function () {
+                                        $.asyncTests(function () {
+                                            $.assert(oResults.t3.i === 4, "wait 100");
+                                            $.assert(oResults.t3.neek === false, "context 3");
+                                        });
+                                    }, 20);
+                                }
+                            }, 20);
+
+                            oResults.t4 = { count: 0 };
+                            oResults.t4.fn = core.type.fn.throttle(fnTestFactory("t4"), { wait: 150, leading: false, trailing: true });
+                            oResults.t4.id = setInterval(function () {
+                                oResults.t4.fn();
+                                if (++oResults.t4.count > 54) {
+                                    clearInterval(oResults.t4.id);
+                                    setTimeout(function () {
+                                        $.asyncTests(function () {
+                                            $.assert(oResults.t4.i === 3, "wait 150");
+                                            $.assert(oResults.t4.neek === false, "context 4");
+                                        });
+                                    }, 20);
+                                }
+                            }, 10);
+                        },
+
+                        debounce: function ($) {
+                            var oResults = {},
+                                fnTestFactory = function (sKey) {
+                                    var i = 0;
+                                    return function () {
+                                        oResults[sKey].i = ++i;
+                                        oResults[sKey].neek = (this ? this.neek === true : false);
+                                    };
+                                }
+                            ;
+
+                            $.expect(6, 3);
+
+                            oResults.t1 = { count: 0 };
+                            oResults.t1.fn = core.type.fn.debounce(fnTestFactory("t1"), { wait: 50, immediate: false, context: { neek: true } });
+                            oResults.t1.id = setInterval(function () {
+                                oResults.t1.fn();
+                                if (++oResults.t1.count > 49) {
+                                    clearInterval(oResults.t1.id);
+                                    setTimeout(function () {
+                                        $.asyncTests(function () {
+                                            $.assert(oResults.t1.i === 1, "wait 50");
+                                            $.assert(oResults.t1.neek === true, "context");
+                                        });
+                                    }, 75);
+                                }
+                            }, 10);
+
+                            oResults.t2 = { count: 0 };
+                            oResults.t2.fn = core.type.fn.debounce(fnTestFactory("t2"), { wait: 25, immediate: true });
+                            oResults.t2.id = setInterval(function () {
+                                oResults.t2.fn();
+                                if (++oResults.t2.count > 49) {
+                                    clearInterval(oResults.t2.id);
+                                    setTimeout(function () {
+                                        $.asyncTests(function () {
+                                            $.assert(oResults.t2.i === 1, "wait 25");
+                                            $.assert(oResults.t2.neek === false, "context 2");
+                                        });
+                                    }, 50);
+                                }
+                            }, 10);
+
+                            oResults.t3 = { count: 0 };
+                            oResults.t3.fn = core.type.fn.debounce(fnTestFactory("t3"), { wait: 100, immediate: true });
+                            oResults.t3.id = setInterval(function () {
+                                oResults.t3.fn();
+                                if (++oResults.t3.count > 4) {
+                                    clearInterval(oResults.t3.id);
+                                    setTimeout(function () {
+                                        $.asyncTests(function () {
+                                            $.assert(oResults.t3.i === 5, "wait 100");
+                                            $.assert(oResults.t3.neek === false, "context 3");
+                                        });
+                                    }, 20);
+                                }
+                            }, 120);
+                        }
+                    }
+                }
             };
         }); //# core.test.*
 
