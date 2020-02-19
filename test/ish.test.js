@@ -572,12 +572,109 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                         },
 
                         time: {
-                            is: function ($) { //# TODO
-                                $.expect(1);
+                            is: function ($) {
+                                $.expect(9);
+                                $.assert(core.type.date.time.is("1:00"), "1:00");
+                                $.assert(core.type.date.time.is("1:00 pm"), "1:00 pm");
+                                $.assert(core.type.date.time.is("1:00a"), "1:00a");
+                                $.assert(core.type.date.time.is("1:00P"), "1:00P");
+                                $.assert(core.type.date.time.is("1:00am"), "1:00am");
+                                $.assert(core.type.date.time.is("13:00:13"), "13:00:13");
+                                $.assert(core.type.date.time.is("13:00:13pm"), "13:00:13pm");
+
+                                $.assert(!core.type.date.time.is("31:00"), "!31:00");
+                                $.assert(!core.type.date.time.is("19:66"), "!19:66");
                             },
 
-                            seconds: function ($) { //# TODO
-                                $.expect(1);
+                            mk: function ($) {
+                                $.expect(68);
+                                $.assert(core.type.date.time.mk("1:00 pm") === "13:00:00.0", "1:00 pm");
+                                $.assert(core.type.date.time.mk("1:00 P.M.") === "13:00:00.0", "1:00 P.M.");
+                                $.assert(core.type.date.time.mk("1:00 p") === "13:00:00.0", "1:00 p");
+                                $.assert(core.type.date.time.mk("1:00pm") === "13:00:00.0", "1:00pm");
+                                $.assert(core.type.date.time.mk("1:00p.m.") === "13:00:00.0", "1:00p.m.");
+                                $.assert(core.type.date.time.mk("1:00p") === "13:00:00.0", "1:00p");
+                                $.assert(core.type.date.time.mk("1 pm") === "13:00:00.0", "1 pm");
+                                $.assert(core.type.date.time.mk("1 p.m.") === "13:00:00.0", "1 p.m.");
+                                $.assert(core.type.date.time.mk("1 p") === "13:00:00.0", "1 p");
+                                $.assert(core.type.date.time.mk("1pm") === "13:00:00.0", "1pm");
+                                $.assert(core.type.date.time.mk("1p.m.") === "13:00:00.0", "1p.m.");
+                                $.assert(core.type.date.time.mk("1p") === "13:00:00.0", "1p");
+                                $.assert(core.type.date.time.mk("13:00") === "13:00:00.0", "13:00");
+                                $.assert(core.type.date.time.mk("13") === "13:00:00.0", "13");
+                                $.assert(core.type.date.time.mk("1:00:00PM") === "13:00:00.0", "1:00:00PM");
+                                $.assert(core.type.date.time.mk("1300") === "13:00:00.0", "1300");
+                                $.assert(core.type.date.time.mk("1300.0") === "13:00:00.0", "1300.0");
+                                $.assert(core.type.date.time.mk("1:00:00.0 PM") === "13:00:00.0", "1:00:00.0 PM");
+
+                                $.assert(core.type.date.time.mk("11:00am") === "11:00:00.0", "11:00am");
+                                $.assert(core.type.date.time.mk("11:00 AM") === "11:00:00.0", "11:00 AM");
+                                $.assert(core.type.date.time.mk("11:00") === "11:00:00.0", "11:00");
+                                $.assert(core.type.date.time.mk("11:00:00") === "11:00:00.0", "11:00:00");
+                                $.assert(core.type.date.time.mk("1100") === "11:00:00.0", "1100");
+
+                                $.assert(core.type.date.time.mk("1:59 PM") === "13:59:00.0", "1:59 PM");
+                                $.assert(core.type.date.time.mk("13:59") === "13:59:00.0", "13:59");
+                                $.assert(core.type.date.time.mk("13:59:00") === "13:59:00.0", "13:59:00");
+                                $.assert(core.type.date.time.mk("1359") === "13:59:00.0", "1359");
+                                $.assert(core.type.date.time.mk("13:59:00") === "13:59:00.0", "13:59:00");
+                                $.assert(core.type.date.time.mk("1359:00") === "13:59:00.0", "1359:00");
+                                $.assert(core.type.date.time.mk("0159pm") === "13:59:00.0", "0159pm");
+                                $.assert(core.type.date.time.mk("1359.0") === "13:59:00.0", "1359.0");
+
+                                $.assert(core.type.date.time.mk("1:00am") === "01:00:00.0", "1:00am");
+                                $.assert(core.type.date.time.mk("1:00 am") === "01:00:00.0", "1:00 am");
+                                $.assert(core.type.date.time.mk("0100") === "01:00:00.0", "0100");
+                                $.assert(core.type.date.time.mk("1") === "01:00:00.0", "1");
+                                $.assert(core.type.date.time.mk("1 am") === "01:00:00.0", "1 am");
+                                $.assert(core.type.date.time.mk("1.0") === "01:00:00.0", "1.0");
+
+                                $.assert(core.type.date.time.mk("00:00") === "00:00:00.0", "00:00");
+                                $.assert(core.type.date.time.mk("0") === "00:00:00.0", "0");
+                                $.assert(core.type.date.time.mk("12:00am") === "00:00:00.0", "12:00am");
+                                $.assert(core.type.date.time.mk("12am") === "00:00:00.0", "12am");
+                                $.assert(core.type.date.time.mk("12:00:00 AM") === "00:00:00.0", "12:00:00 AM");
+                                $.assert(core.type.date.time.mk("0000") === "00:00:00.0", "0000");
+                                $.assert(core.type.date.time.mk("1200 AM") === "00:00:00.0", "1200 AM");
+
+                                $.assert(core.type.date.time.mk("0:30") === "00:30:00.0", "0:30");
+                                $.assert(core.type.date.time.mk("00:30") === "00:30:00.0", "00:30");
+                                $.assert(core.type.date.time.mk("00:30:00") === "00:30:00.0", "00:30:00");
+                                $.assert(core.type.date.time.mk("12:30:00 am") === "00:30:00.0", "12:30:00 am");
+                                $.assert(core.type.date.time.mk("0030") === "00:30:00.0", "0030");
+                                $.assert(core.type.date.time.mk("1230am") === "00:30:00.0", "1230am");
+
+                                $.assert(core.type.date.time.mk("2:35 PM") === "14:35:00.0", "2:35 PM");
+                                $.assert(core.type.date.time.mk("14:35:00.0") === "14:35:00.0", "14:35:00.0");
+                                $.assert(core.type.date.time.mk("1435") === "14:35:00.0", "1435");
+
+                                $.assert(core.type.date.time.mk("7:15:30") === "07:15:30.0", "7:15:30");
+                                $.assert(core.type.date.time.mk("7:15:30am") === "07:15:30.0", "7:15:30am");
+
+                                $.assert(core.type.date.time.mk("109") === "01:09:00.0", "109");
+
+                                $.assert(core.type.date.time.mk("12:60", "") === "", "12:60");
+                                $.assert(core.type.date.time.mk("11:59:99", "") === "", "11:59:99");
+                                $.assert(core.type.date.time.mk("-12:00", "") === "", "-12:00");
+                                $.assert(core.type.date.time.mk("foo", "") === "", "foo");
+                                $.assert(core.type.date.time.mk("0660", "") === "", "0660");
+                                $.assert(core.type.date.time.mk("12345", "") === "", "12345");
+                                $.assert(core.type.date.time.mk("25:00") === "00:00:00.0", "25:00");
+                                $.assert(core.type.date.time.mk("24:00", "") === "", "24:00");
+                                $.assert(core.type.date.time.mk("24:30", "") === "", "24:30");
+
+
+                                $.assert(core.type.date.time.mk("1:00:35.1234") === "01:00:35.1234", "1:00:35.1234");
+                                $.assert(core.type.date.time.mk("25:00", "Invalid") === "Invalid", "Invalid");
+                                $.assert(core.type.date.time.mk("25:00", "01:01:01.01") === "01:01:01.01", "01:01:01.01");
+                            },
+
+                            seconds: function ($) {
+                                $.expect(4);
+                                $.assert(core.type.date.time.seconds("00:00:01") === 1, "00:00:01");
+                                $.assert(core.type.date.time.seconds("1:00") === (60 * 60), "1:00");
+                                $.assert(core.type.date.time.seconds("1:00pm") === (60 * 60 * 13), "1:00pm");
+                                $.assert(core.type.date.time.seconds("7:45:15pm") === ((60 * 60 * 19) + (45 * 60) + 15), "7:45:15pm");
                             }
                         },
 

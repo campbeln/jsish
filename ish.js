@@ -4,7 +4,9 @@
  *  Javascript code snippets organized in an OOP structure, including:
  *  <ul>
  *      <li>Type-safety and type-casting - assisting developers in overcoming issues related to loose typing via Vanilla Javascript (rather than syntactic sugar à la TypeScript)</li>
- *      <li>OOP features - partial class definitions with shared private members, dynamic polymorphism/function overloading, and multiple inheritance</li>
+ *      <li>OOP features - partial class definitions with shared private members and multiple inheritance</li>
+ *      <li>Strong typing of function signatures along with support for dynamic polymorphism/function overloading</li>
+ *      <li>Dependency injection</li>
  *      <li>Object traversal, extension and querying features</li>
  *      <li>Custom events</li>
  *      <li>Data interpolation - CSV, XML, Punycode and POJO parsing</li>
@@ -19,7 +21,7 @@
  *      All features are organized in individually includable mixins organized by namespace/major features with only the core <code>ish.js</code> functionality required to bootstrap.
  *  </p>
  * </div>
- * @version 0.12.2020-01-14
+ * @version 0.12.2020-02-18
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2020, Nick Campbell
@@ -41,7 +43,7 @@
         oPrivate = {},
         oTypeIsIsh = { //# Set the .ver and .target under .type.is.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             config: {
-                ver: '0.12.2020-01-14',
+                ver: '0.12.2020-02-18',
                 onServer: bServerside,
                 debug: true,
                 //script: _undefined,
@@ -428,14 +430,17 @@
          */ //#####
         type.date = function () {
             //#
-            function mkDate(d, bAllowNumeric) {
+            function mkDate(d, vOptions) {
                 var bIsDate = _Object_prototype_toString.call(d) === "[object Date]";
 
-                //# If the passed d(ate) isn't an [object Date]
-                if (!bIsDate) {
+                //# Ensure the passed vOptions is an .obj
+                vOptions = core.type.obj.mk(vOptions, { allowNumeric: vOptions === true });
+
+                //# If the passed d(ate) isn't an [object Date] and we've not been told to be .strict
+                if (!bIsDate && !vOptions.strict) {
                     //# If the passed d(ate) .is.numeric, parse it as a float (to allow for the widest values) and reset bIsDate
                     //#     NOTE: We have to do this before .is .str as "0" will resolve to a string
-                    if (bAllowNumeric && core.type.is.numeric(d)) {
+                    if (vOptions.allowNumeric && core.type.is.numeric(d)) {
                         d = new Date(parseFloat(d));
                         bIsDate = !isNaN(d.valueOf());
                     }
@@ -459,10 +464,13 @@
                 /** Determines if the passed value represents a date.
                  * @function ish.type.date.is
                  * @param {variant} x Value to interrogate.
+                 * @param {boolean|object} [vOptions] Value representing if numeric values are to be ignored or the following options:
+                 *      @param {boolean} [vOptions.allowNumeric=false] Value representing if numeric values are to be ignored.
+                 *      @param {boolean} [vOptions.strict=false] Value representing if only <code>[object Date]</code> are to be allowed.
                  * @returns {boolean} Value representing if the passed value represents a date.
                  */ //#####
-                is: function isDate(x, bAllowNumeric) {
-                    return mkDate(x, bAllowNumeric).b;
+                is: function isDate(x, vOptions) {
+                    return mkDate(x, vOptions).b;
                 }, //# date.is
 
                 //#########
@@ -1009,8 +1017,8 @@
                         else if (!bOverMaxDepth && iExtendDepth !== 1 && core.type.obj.is(oSource[sKey])) {
                             oTarget[sKey] = core.extend(iExtendDepth - 1, oTarget[sKey], oSource[sKey]);
                         }
-                        //#
-                        else if (core.type.date.is(oSource[sKey])) {
+                        //# Else if the sKey .is a .date (.strict'ly speaking)
+                        else if (core.type.date.is(oSource[sKey], { strict: true })) {
                             oTarget[sKey] = new Date(oSource[sKey]);
                         }
                         //# Else treat the oSource[sKey] as a value, setting it into oTarget[sKey]
@@ -1420,40 +1428,82 @@
             }, //# core.type.bool
 
             date: {
-                time: {
-                    //#########
-                    /** Determines if the passed value is a valid time string.
-                     * @function ish.type.date.time:is
-                     * @param {variant} x Value to interrogate.
-                     * @returns {boolean} Value representing if the passed value is a valid time string.
-                     */ //#####
-                    is: function (x) {
-                        return /^([0-1][0-9]|2[0-3]):([0-5][0-9])(:([0-5][0-9]))?$/.test(x);
-                    },
+                time: function () {
+                    var sMidnight = "00:00:00.0",
+                        //reTimeString = /^\s*(\d\d?)(?::?(\d\d))?(?::(\d\d))?(?!\d)(\.\d+)?\s*(pm?|am?)?/i    //# NOTE: ?: means non-capturing group and ?! is zero-width negative lookahead
+                        reTimeString = /^\s*([0-1]?[0-9]|2[0-3]?)(?::?(\d\d))?(?::(\d\d))?(?!\d)(\.\d+)?\s*(pm?|am?)?/i    //# NOTE: ?: means non-capturing group and ?! is zero-width negative lookahead
+                    ;
 
-                    //#########
-                    /** Determines the number of seconds from midnight the time string represents.
-                     * @function ish.type.date.time:is
-                     * @param {variant} [x=new Date()] Value to interrogate.
-                     * @returns {boolean} Value representing the number of seconds from midnight the time string represents.
-                     */ //#####
-                    seconds: function (x) {
-                        var iReturnVal = 0;
+                    return {
+                        //#########
+                        /** Determines if the passed value is a time string.
+                         * @function ish.type.date.time:is
+                         * @param {variant} x Value to interrogate.
+                         * @returns {boolean} Value representing if the passed value is a time string.
+                         */ //#####
+                        is: function (x) {
+                            //return /^([0-1]?[0-9]|2[0-3]):([0-5][0-9])(:([0-5][0-9]))?(\W?[ap]m?)?$/i.test(x);
+                            return !!core.type.date.time.mk(x, false);
+                        },
 
-                        //# If x wasn't passed, determine the .seconds for now
-                        if (arguments.length === 0) {
-                            iReturnVal = Math.floor(
-                                Math.abs(new Date() - new Date(core.type.date.yyyymmdd() + ' 00:00')) / 1000
-                            );
+                        //#########
+                        /** Casts the passed value into a time string.
+                         * @function ish.type.date.time:mk
+                         * @param {variant} x Value to interrogate.
+                         * @param {variant} [vDefaultVal='00:00:00.0'] Value representing the default return value if casting fails.
+                         * @returns {string} Value representing the passed value as a time string.
+                         * @see {@link https://stackoverflow.com/a/50769298/235704|StackOverflow.com}
+                         */ //#####
+                        mk: function (x, vDefaultTime) {
+                            var sMiderian, iHour, iMin, iSec, iMS,
+                                sReturnVal = (arguments.length > 1 ? vDefaultTime : sMidnight),
+                                a_sTime = core.type.str.mk(x).match(reTimeString)
+                            ;
+
+                            //# If the passed x .is a .time string, parse out it's iHour, iMin, iSec, iMS and sMiderian
+                            if (a_sTime) {
+                                iHour = core.type.int.mk(a_sTime[1]),
+                                iMin = core.type.int.mk(a_sTime[2]);
+                                iSec = core.type.int.mk(a_sTime[3]);
+                                iMS = core.type.int.mk(core.type.str.mk(a_sTime[4]).substr(1));
+                                sMiderian = core.type.str.mk(a_sTime[5]).substr(0, 1).toLowerCase();
+
+                                //# If the parsed data is valid, fix iHour (if necessary) and set our sReturnVal
+                                if (iHour < 24 && iMin < 60 && iSec < 60) {
+                                    if (sMiderian === 'a' && iHour === 12) iHour = 0;
+                                    if (sMiderian === 'p' && iHour !== 12) iHour += 12;
+                                    if (iHour === 24) iHour = 0;
+                                    sReturnVal = core.type.str.lpad(iHour, "0", 2) + ":" + core.type.str.lpad(iMin, "0", 2) + ":" + core.type.str.lpad(iSec, "0", 2) + "." + iMS;
+                                }
+                            }
+
+                            return sReturnVal;
+                        },
+
+                        //#########
+                        /** Determines the number of seconds from midnight the time string represents.
+                         * @function ish.type.date.time:seconds
+                         * @param {variant} [x=new Date()] Value to interrogate.
+                         * @returns {boolean} Value representing the number of seconds from midnight the time string represents.
+                         */ //#####
+                        seconds: function (x) {
+                            var iReturnVal = 0;
+
+                            //# If x wasn't passed, determine the .seconds for now
+                            if (arguments.length === 0) {
+                                iReturnVal = Math.floor(
+                                    Math.abs(new Date() - new Date(core.type.date.yyyymmdd() + ' ' + sMidnight)) / 1000
+                                );
+                            }
+                            //# Else if the passed x .is .time, determine the .seconds from it
+                            else if (core.type.date.time.is(x)) {
+                                iReturnVal = (Math.abs(new Date('1970-01-01 ' + core.type.date.time.mk(x)) - new Date('1970-01-01 ' + sMidnight)) / 1000);
+                            }
+
+                            return iReturnVal;
                         }
-                        //# Else if the passed x .is .time, determine the .seconds from it
-                        else if (core.type.date.time.is(x)) {
-                            iReturnVal = (Math.abs(new Date('1970-01-01 ' + x) - new Date('1970-01-01 00:00')) / 1000);
-                        }
-
-                        return iReturnVal;
-                    }
-                },
+                    };
+                }(),
 
                 //#########
                 /** Determines the date of the passed value formatted as <code>YYYY/MM/DD</code>.

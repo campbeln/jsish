@@ -1126,7 +1126,7 @@
                      * @param {object} [oOptions] Value representing the desired options:
                      *      @param {variant} [oOptions.context=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
                      *      @param {integer} [oOptions.wait=500] Value representing the minimum number of milliseconds (1/1000ths of a second) between each call.
-                     *      @param {boolean} [oOptions.leading=true] Value representing if the passed function is to be executed immediently on the first call.
+                     *      @param {boolean} [oOptions.leading=true] Value representing if the passed function is to be executed immediately on the first call.
                      *      @param {boolean} [oOptions.trailing=false] Value representing if the passed function is to be executed at the conclusion of the last wait time.
                      * @returns {function} Function that returns a value representing the passed function's return value from the most recent call.
                      * @see {@link http://underscorejs.org/docs/underscore.html|UnderscoreJS.org}

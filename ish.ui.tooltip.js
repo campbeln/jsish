@@ -48,40 +48,38 @@
                     ;
 
                     //#
-                    if (core.type.str.is(oOptions.text, true) || core.type.str.is(oOptions.template, true) || core.type.str.is(oOptions.templateUrl, true)) {
-                        //#
-                        clearTimeout(iTimeout);
+                    clearTimeout(iTimeout);
 
-                        //#
-                        oOptions.position = core.type.str.mk(oOptions.position, "").trim().toLowerCase();
+                    //#
+                    oOptions.position = core.type.str.mk(oOptions.position, "").trim().toLowerCase();
+                    _tooltip.innerHTML = "";
 
-                        if (core.type.str.is(oOptions.templateUrl, true)) {
-                            _template = core.type.dom.mk("<div>" + core.type.dom.mk("script[id='" + oOptions.templateUrl + "']").innerHTML + "</div>");
+                    if (core.type.str.is(oOptions.templateUrl, true)) {
+                        _template = core.type.dom.mk("<div>" + core.type.dom.mk("script[id='" + oOptions.templateUrl + "']").innerHTML + "</div>");
 
-                            _tooltip.innerHTML = "";
-                            //_tooltip.appendChild(core.type.fn.call(oOptions.bindUI, [_template]) || _template);
-                            core.lib.ui.bind(_template, oContext);
-                            _tooltip.appendChild(_template);
-                            _tooltip.appendChild(core.type.dom.mk("<div class='ng-tooltip-arrow'></div>"));
-                        }
-                        else if (core.type.str.is(oOptions.template, true)) {
-                            _template = core.type.dom.mk("<div>" + oOptions.template + "</div>");
+                        //_tooltip.appendChild(core.type.fn.call(oOptions.bindUI, [_template]) || _template);
+                        core.lib.ui.bind(_template, oContext);
+                        _tooltip.appendChild(_template);
+                        _tooltip.appendChild(core.type.dom.mk("<div class='ng-tooltip-arrow'></div>"));
+                    }
+                    else if (core.type.str.is(oOptions.template, true)) {
+                        _template = core.type.dom.mk("<div>" + oOptions.template + "</div>");
 
-                            _tooltip.innerHTML = "";
-                            //_tooltip.appendChild(core.type.fn.call(oOptions.bindUI, [_template]) || _template);
-                            core.lib.ui.bind(_template, oContext);
-                            _tooltip.appendChild(_template);
-                            _tooltip.appendChild(core.type.dom.mk("<div class='ng-tooltip-arrow'></div>"));
-                        }
-                        else if (core.type.fn.is(oOptions.text)) {
-                            _tooltip.innerHTML = "";
-                            _tooltip.appendChild(core.type.dom.mk(oOptions.argument));
-                            _tooltip.appendChild(core.type.dom.mk("<div class='ng-tooltip-arrow'></div>"));
-                        }
-                        else {
-                            _tooltip.innerHTML = oOptions.text + "<div class='ng-tooltip-arrow'></div>";
-                        }
+                        //_tooltip.appendChild(core.type.fn.call(oOptions.bindUI, [_template]) || _template);
+                        core.lib.ui.bind(_template, oContext);
+                        _tooltip.appendChild(_template);
+                        _tooltip.appendChild(core.type.dom.mk("<div class='ng-tooltip-arrow'></div>"));
+                    }
+                    else if (core.type.fn.is(oOptions.text)) {
+                        _tooltip.appendChild(core.type.dom.mk(oOptions.argument));
+                        _tooltip.appendChild(core.type.dom.mk("<div class='ng-tooltip-arrow'></div>"));
+                    }
+                    else if (oOptions.text) {
+                        _tooltip.innerHTML = oOptions.text + "<div class='ng-tooltip-arrow'></div>";
+                    }
 
+                    //#
+                    if (_tooltip.innerHTML) {
                         oPos = oEvent.target.getBoundingClientRect();
                         oPos = {
                             pos: oPos,
