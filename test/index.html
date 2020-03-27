@@ -86,7 +86,7 @@
 
         ish.type.enum.load({
             clients: {
-                walmart: {
+                clientCo: {
                     status: [
                         { val: undefined, desc: "Undefined" },
                         { val: 1, desc: "Pending" },
@@ -94,7 +94,6 @@
                         { val: 3, desc: "Paid" },
                         { val: 4, desc: "Failed" },
 
-                        //# Non-Walmart
                         { val: 12, desc: "InLimbo" },
                         { val: 13, desc: "VerifyPaid" },
                         { val: 90, desc: "UnpaidNonDDI" }
@@ -110,9 +109,9 @@
                         { val: 6, desc: "CurrencyNotSupported" },
                         { val: 7, desc: "PaperworkNotFound" },
                         { val: 8, desc: "TransactionAlreadyExists" },
-                        { val: 9, desc: "WalmartApiNotAccessible" },
+                        { val: 9, desc: "ApiNotAccessible" },
                         { val: 10, desc: "InternalServerError" },
-                        { val: 11, desc: "WalmartValidationFailed" },
+                        { val: 11, desc: "ValidationFailed" },
                         { val: 12, desc: "DifferentCurrency" },
                         { val: 13, desc: "PayoutClosed" },
                         { val: 14, desc: "AddPayoutError" },

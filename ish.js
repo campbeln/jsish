@@ -21,7 +21,7 @@
  *      All features are organized in individually includable mixins organized by namespace/major features with only the core <code>ish.js</code> functionality required to bootstrap.
  *  </p>
  * </div>
- * @version 0.12.2020-02-18
+ * @version 0.12.2020-03-09
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2020, Nick Campbell
@@ -43,7 +43,7 @@
         oPrivate = {},
         oTypeIsIsh = { //# Set the .ver and .target under .type.is.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             config: {
-                ver: '0.12.2020-02-18',
+                ver: '0.12.2020-03-09',
                 onServer: bServerside,
                 debug: true,
                 //script: _undefined,
