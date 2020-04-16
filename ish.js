@@ -1529,17 +1529,20 @@
                 //#########
                 /** Provides the current <code>window.performance</code>-based timestamp.
                  * @function ish.type.date.timestamp
+                 * @param {boolean} [bWholeSeconds=false] Value representing if the return value is to include fractional seconds.
                  * @returns {float} Value representing the current <code>window.performance</code>-based timestamp.
                  */ //#####
-                timestamp: function () {
+                timestamp: function (bWholeSeconds) {
                     var _window_performance = _root.performance,
                         _window_performance_timing = core.resolve(_window_performance, "timing")
-                    ;
-
-                    return _window_performance && _window_performance.now && _window_performance_timing && _window_performance_timing.navigationStart ?
+                        fReturnVal = (
+                            _window_performance && _window_performance.now && _window_performance_timing && _window_performance_timing.navigationStart ?
                             _window_performance.now() + _window_performance_timing.navigationStart :
                             Date.now()
+                        )
                     ;
+
+                    return (bWholeSeconds === true ? Math.round(fReturnVal) : fReturnVal);
                 } //# timestamp
             }, //# core.type.date
 

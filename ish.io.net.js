@@ -321,6 +321,28 @@
                     }, //# io.net.crud
 
                     //#########
+                    /** Calls the passed GraphQL Service URL via the <code>POST</code> HTTP Verb.
+                     * @function ish.io.net.post
+                     * @param {string} sURL Value representing the URL to interrogate.
+                     * @param {string} sQuery Value representing the GraphQL query.
+                     * @param {fnIshIoNetCallback|object} [vCallback] Value representing the function to be called when the request returns or the desired options:
+                     *      @param {fnIshIoNetCallback} [vCallback.fn] Value representing the function to be called when the request returns; <code>vCallback.fn(bSuccess, oResponse, vArg, $xhr)</code>.
+                     *      @param {variant} [vCallback.arg] Value representing the argument that will be passed to the callback function.
+                     *      @param {object} [vCallback.headers] Value representing the HTTP headers of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).
+                     *      @param {string} [vCallback.mimeType] Value representing the MIME Type of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/overrideMimeType|Mozilla.org}).
+                     *      @param {string} [vCallback.contentType] Value representing the Content Type HTTP Header of the request (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/setRequestHeader|Mozilla.org}).<note>When <code>vCallback.contentType</code> is set, its value will override any value set in <code>vCallback.headers['content-type']</code>.</note>
+                     *      @param {string} [vCallback.responseType='text'] Value representing the type of data contained in the response (see: {@link: https://developer.mozilla.org/en-US/docs/Web/API/XMLHttpRequest/responseType|Mozilla.org}).
+                     *      @param {boolean} [vCallback.cache=false] Value representing if the response is to be cached.
+                     *      @param {boolean} [vCallback.useCache=false] Value representing if the response is to be sourced from the cache if it's available.<note>When <code>!vCallback.useCache</code>, the HTTP Header <code>Cache-Control</code> is set to <code>no-cache, max-age=0</code>.</note>
+                     */ //#####
+                    gql: function (sUrl, sQuery, vCallback) {
+                        var oReturnVal = xhr("POST", oXHROptions.async, sUrl, vCallback, fnRetry, oBody);
+                        oReturnVal.send(sQuery);
+                        return oReturnVal;
+
+                    }, //# io.net.gql
+
+                    //#########
                     /** Provides access to the request cache.
                      * @function ish.io.net.cache
                      * @param {object} oImportCache Value representing the cached entries to import into the current cache as <code>verb.url.data</code>.

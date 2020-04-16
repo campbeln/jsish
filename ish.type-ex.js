@@ -1607,14 +1607,18 @@
                                         bReverse = (oOptions.reverse === true),
                                         fnCompare = core.type.fn.mk(oOptions.compare, function (a, b) {
                                             var vA = core.resolve(a, sPath),
-                                                vB = core.resolve(b, sPath)
+                                                vB = core.resolve(b, sPath),
+                                                iReturn = 0
                                             ;
 
-                                            return (
-                                                vA < vB ?
-                                                    (bReverse ? false : true) :
-                                                    true
-                                            );
+                                            //#
+                                            if (vA < vB) {
+                                                iReturn = 1;
+                                            }
+                                            else if (vA > vB) {
+                                                iReturn = -1;
+                                            }
+                                            return (iReturn * (bReverse ? 1 : -1));
                                         })
                                     ;
 
@@ -1662,7 +1666,7 @@
                             oOptions.caseInsensitive ? (
                                 oOptions.trim ?
                                 function (vSource, vCompare) { return core.type.str.is(vSource) && core.type.str.cmp(vSource, vCompare); } :
-                                function (vSource, vCompare) { return core.type.str.is(vSource) && core.type.str.ep(vSource, vCompare, true); }
+                                function (vSource, vCompare) { return core.type.str.is(vSource) && core.type.str.eq(vSource, vCompare, true); }
                             ) : (
                                 oOptions.trim ?
                                 function (vSource, vCompare) { return core.type.str.is(vSource) && core.type.str.mk(vSource).trim() === core.type.str.mk(vCompare).trim(); } :
@@ -2120,7 +2124,7 @@
                          *      @param {boolean} [oOptions.includeMissingKeys=false] Value representing if keys present in <code>y</code> but missing from <code>x</code> are to be included in the reported differences.
                          *      @param {boolean} [oOptions.caseInsensitiveKeys=false] Value representing if keys are to be treated as case insensitive.
                          *      @param {boolean} [oOptions.pruneUndefinedValues=false] Value representing if if keys with <code>undefined</code> as their value are to be removed from the return value.
-                         * @returns {boolean} Value representing if the passed values are equal.
+                         * @returns {object} Value representing the differences between the passed values.
                          */ //#####
                         diff: function (x, y, oOptions) {
                             var fnCompare, i,
