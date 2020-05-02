@@ -10463,9 +10463,9 @@ module.exports = {
 
 },{}],38:[function(require,module,exports){
 (function (global, factory) {
-	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-	typeof define === 'function' && define.amd ? define(factory) :
-	(global.typeDetect = factory());
+    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+    typeof define === 'function' && define.amd ? define(factory) :
+    (global.typeDetect = factory());
 }(this, (function () { 'use strict';
 
 /* !

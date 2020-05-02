@@ -45,7 +45,7 @@
                 ;
 
                 //# If we were passed more than just oOptions, we need to process the vFirstArg
-                //#     NOTE: The [attributes] set on or by the passed vFirstArg take presidence over values set in oOptions
+                //#     NOTE: The [attributes] set on or by the passed vFirstArg take president over values set in oOptions
                 if (_a.length > 1) {
                     oOptions = _a[1];
                     _replace = core.type.dom.mk(vFirstArg, _undefined);
@@ -74,7 +74,7 @@
                     }
                 }
 
-                //# Ensure the passed oOptions is a new object then default .async to true unless it's specificially set to false and set the above resolved .url (in vTemp)
+                //# Ensure the passed oOptions is a new object then default .async to true unless it's specifically set to false and set the above resolved .url (in vTemp)
                 oOptions = core.extend({}, oOptions); //, oDOM.options(_replace)
                 oOptions.async = (oOptions.async !== false);
                 oOptions.src = vTemp;

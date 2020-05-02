@@ -281,5 +281,5 @@
     //# Else we are running in the browser, so we need to setup the _document-based features
     else {
         init(document.querySelector("SCRIPT[ish]").ish);
-	}
+    }
 }();
