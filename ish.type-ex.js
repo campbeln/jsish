@@ -1711,11 +1711,57 @@
                     return {
                         is: {
                             //#########
+                            /** Determines if the passed value conforms to the passed interface.
+                             * @function ish.type.obj.is:interface
+                             * @param {object|function} x Value to interrogate.
+                             * @param {object} oInterface Value representing the interface, where each value represents a string representing a type under <code>ish.type</code> or a value representing the function that implements the test, accepting 1 argument (<code>x</code>) and returning truthy if the value is of a valid type.
+                             * @param {boolean} [bStrict=false] Value indicating if the passed value is not allowed to have any additional keys outside of the those in the passed interface.
+                             * @returns {boolean} Value representing if the passed value conforms to the passed interface.
+                             */ //#####
+                            interface: function (x, oInterface, bStrict) {
+                                var a_sKeys, sKey, i,
+                                    bReturnVal = (core.type.obj.is(x, { allowFn: true }) && core.type.obj.is(oInterface, true))
+                                ;
+
+                                //# If the caller passed in valid values, pull the a_sKeys from the oInterface
+                                if (bReturnVal) {
+                                    a_sKeys = core.type.obj.ownKeys(oInterface);
+
+                                    //# Traverse the a_sKeys, pulling each sKey as we go
+                                    for (i = 0; i < a_sKeys.length; i++) {
+                                        sKey = a_sKeys[i];
+
+                                        //# If the current sKey .is a .str, try to .resolve it to core.type[sKey].is
+                                        if (core.type.str.is(oInterface[sKey])) {
+                                            oInterface[sKey] = core.resolve(core.type, [oInterface[sKey], "is"]);
+                                        }
+
+                                        //# If x doesn't .hasOwnProperty, or the current sKey .is(n't) a .fn or the oInterface's test returns falsy, flip our bReturnVal and fall from the loop
+                                        if (!x.hasOwnProperty(sKey) ||
+                                            !core.type.fn.is(oInterface[sKey]) ||
+                                            !oInterface[sKey](x[sKey])
+                                        ) {
+                                            bReturnVal = false;
+                                            break;
+                                        }
+                                    }
+
+                                    //# If x passed all tests above and we are supposed to be bStrict, ensure x has no other a_sKeys
+                                    //#     NOTE: As we tested all of the oInterface's a_sKeys above, so long as x's .ownKeys are the same .length we know there are no additional keys in x
+                                    if (bReturnVal && bStrict === true) {
+                                        bReturnVal = (core.type.obj.ownKeys(x).length === a_sKeys.length);
+                                    }
+                                }
+
+                                return bReturnVal;
+                            }, //# type.obj.is.interface
+
+                            //#########
                             /** Determines if the passed value has any circular references.
                              * @function ish.type.obj.is:cyclic
                              * @param {object|function} x Value to interrogate.
                              * @param {boolean} bReturnReport Value indicating if an array of circular references is to be returned.
-                             * @returns {boolean} Value representing if the passed values are equal.
+                             * @returns {boolean} Value representing if the passed value has any circular references.
                              */ //#####
                             cyclic: function cr(x, bReturnReport) {
                                 var a_sKeys = [],

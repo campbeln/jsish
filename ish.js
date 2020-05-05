@@ -647,7 +647,7 @@
             return {
                 //#########
                 /** Determines if the passed value represents an object.
-                 * @function ish.type.object.is
+                 * @function ish.type.obj.is
                  * @param {variant} x Value to interrogate.
                  * @param {boolean|object} [vOptions] Value representing if empty objects are to be ignored or the following options:
                  *      @param {boolean} [vOptions.nonEmpty=false] Value representing if empty objects are to be ignored.
