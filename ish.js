@@ -1409,6 +1409,24 @@
             bool: {
                 is: {
                     //#########
+                    /** Determines if the passed value represents a tristate boolean (e.g. <code>true</code>, <code>false</code> or 'unknown' as represented by <code>null</code> or <code>undefined</code>).
+                     * @function ish.type.bool.is:tristate
+                     * @param {variant} x Value to interrogate.
+                     * @param {boolean} [bAllowString=false] Value representing if strings are to be considered valid.
+                     * @returns {boolean} Value representing if the passed value represents a tristate boolean.
+                     * @see {@link https://moi.vonos.net/2016/01/sql-null-tristate/|SQL Null Tristate}
+                     * @see {@link https://en.wikipedia.org/wiki/Three-valued_logic#SQL|Wikipedia.org}
+                     */ //#####
+                    tristate: function (x, bAllowString) {
+                        return (
+                            core.type.bool.is(x, bAllowString) || (
+                                !core.type.is.value(x) ||
+                                (bAllowString && (x === "null" || x === "undefined"))
+                            )
+                        );
+                    },
+
+                    //#########
                     /** Determines if the passed value represents true.
                      * @$note Values interpreted as <code>true</code> are: <code>true</code>, <code>"true"</code> (case-insensitive and trimmed) and non-<code>0</code> integers.
                      * @function ish.type.bool.is:true

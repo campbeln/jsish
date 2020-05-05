@@ -736,6 +736,7 @@
                     } //# date.utcToLocalOffset
                 }, //# core.type.date
 
+
                 //# eq, cmp, lpad, rpad, begins, ends, contains, sub
                 str: function () {
                     //#
@@ -1021,6 +1022,7 @@
                         }() //# type.str.replace
                     };
                 }(), //# core.type.str
+
 
                 //# cp
                 fn: {
@@ -1718,7 +1720,7 @@
                              * @param {boolean} [bStrict=false] Value indicating if the passed value is not allowed to have any additional keys outside of the those in the passed interface.
                              * @returns {boolean} Value representing if the passed value conforms to the passed interface.
                              */ //#####
-                            interface: function (x, oInterface, bStrict) {
+                            interface: function (x, oInterface, bStrict) { //# TODO: Add tests!!
                                 var a_sKeys, sKey, i,
                                     bReturnVal = (core.type.obj.is(x, { allowFn: true }) && core.type.obj.is(oInterface, true))
                                 ;
