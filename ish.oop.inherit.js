@@ -43,7 +43,7 @@
                         //#########
                         /** Inherits the passed hierarchy into the passed value.
                          * @function ish.oop.inherit.!
-                         * @param {object[]} a_oHierarchy Value representing the following options
+                         * @param {object[]} a_oHierarchy Value representing the following options: TODO
                          * @param {object|function} vTarget Value representing the object to inherit into.
                          */ //#####
                         function (a_oHierarchy, vTarget) {
