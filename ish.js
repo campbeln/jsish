@@ -1552,7 +1552,7 @@
                  */ //#####
                 timestamp: function (bWholeSeconds) {
                     var _window_performance = _root.performance,
-                        _window_performance_timing = core.resolve(_window_performance, "timing")
+                        _window_performance_timing = core.resolve(_window_performance, "timing"),
                         fReturnVal = (
                             _window_performance && _window_performance.now && _window_performance_timing && _window_performance_timing.navigationStart ?
                             _window_performance.now() + _window_performance_timing.navigationStart :

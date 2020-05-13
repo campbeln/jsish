@@ -887,6 +887,42 @@
                         //cp:
 
                         //#########
+                        /** Determines if the passed value is within the passed set of value(s).
+                         * @$note The passed values are implicitly casted per <code>{@link ish.type.str.mk}</code>.
+                         * @function ish.type.str.in
+                         * @param {variant} x Value to interrogate.
+                         * @param {variant|variant[]} vSet Value(s) to interrogate.
+                         * @param {boolean} [bCaseInsensitive=true] Value representing if the keys are to be searched for in a case-insensitive manor.
+                         * @returns {boolean} Value representing if the passed value is within the passed set of value(s).
+                         */ //#####
+                        in: function (x, vSet, bCaseInsensitive) {
+                            var sCurrentVal, i,
+                                bReturnVal = false,
+                                a_sSet = core.type.arr.mk(vSet, [vSet])
+                            ;
+
+                            //# Ensure the passed value .is a .str
+                            x = core.type.str.mk(x);
+
+                            //# Traverse the passed a_sSet, collecting the sCurrentVal as we go
+                            for (i = 0; i < a_sSet.length; i++) {
+                                sCurrentVal = core.type.str.mk(vSet[i]);
+
+                                //# Unless specifically told not to, compare the passed string as bCaseInsensitive, resetting our bReturnVal and falling from the loop if the current a_sSet is found
+                                if (bCaseInsensitive !== false ?
+                                    (x.toLowerCase() === sCurrentVal.toLowerCase()) :
+                                    (x === sCurrentVal)
+                                ) {
+                                    bReturnVal = true;
+                                    break;
+                                }
+                            }
+
+                            return bReturnVal;
+                        }, //# type.str.in
+
+
+                        //#########
                         /** Prepends the passed character onto the passed value to a minimum length.
                          * @$note The passed values are implicitly casted per <code>{@link ish.type.str.mk}</code>.
                          * @function ish.type.str.lpad
@@ -945,12 +981,12 @@
 
 
                         //#########
-                        /** Compares the passed value to the reference value, determining if it ends with, ends with when case-insensitive and trimmed or does not end with the reference value.
+                        /** Compares the passed value to the reference value, determining if it is contained within, contained within when case-insensitive and trimmed or is not contained within with the reference value.
                          * @$note The passed values are implicitly casted per <code>{@link ish.type.str.mk}</code>.
                          * @function ish.type.str.contains
                          * @param {variant} x Value representing the string to compare.
                          * @param {variant|variant[]} vReference Value representing the reference string(s) to compare to.
-                         * @returns {boolean|integer} Value representing if the passed value ends with (<code>true</code>), ends with when case-insensitive and trimmed (<code>1</code>) or does not end with (<code>false</code>) to the passed reference value.
+                         * @returns {boolean|integer} Value representing if the passed value is contained within (<code>true</code>), contained within when case-insensitive and trimmed (<code>1</code>) or is not contained within (<code>false</code>) to the passed reference value.
                          */ //#####
                         contains: function (x, vReference) {
                             return doSearch(x, core.type.arr.mk(vReference, [vReference]), function (iIndexOf /*, iX, iReference*/) {
@@ -1462,7 +1498,7 @@
                     /** Determines the matching entries within the passed values.
                      * @function ish.type.arr.matches
                      * @param {variant[]} x Value representing the array to compare.
-                     * @param {variant[]} [y] Value representing the reference array.
+                     * @param {variant[]} y Value representing the reference array.
                      * @returns {variant[]} Value representing the passed values' matching entries.
                      */ //#####
                     matches: function (x, y) {
@@ -1501,6 +1537,7 @@
                     /** Extracts the passed paths from the within the passed value.
                      * @function ish.type.arr.extract
                      * @param {variant[]} x Value to interrogate.
+                     * @param {string|Array<string>} a_vPath Value representing the path to the requested property as a period-delimited string (e.g. "parent.child.array.0.key") or an array of strings.
                      * @returns {variant[]} Value representing the extracted entries from the passed value.
                      */ //#####
                     extract: function (x, vPath) {
@@ -1511,7 +1548,7 @@
                         //#
                         if (core.type.arr.is(x)) {
                             for (i = 0; i < x.length; i++) {
-                                o_vReturnVal.push(core.resolve(x, vPath));
+                                o_vReturnVal.push(core.resolve(x[i], vPath));
                             }
                         }
 
