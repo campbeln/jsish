@@ -1480,7 +1480,7 @@
 
                             //# If the passed x .is a .time string, parse out it's iHour, iMin, iSec, iMS and sMiderian
                             if (a_sTime) {
-                                iHour = core.type.int.mk(a_sTime[1]),
+                                iHour = core.type.int.mk(a_sTime[1]);
                                 iMin = core.type.int.mk(a_sTime[2]);
                                 iSec = core.type.int.mk(a_sTime[3]);
                                 iMS = core.type.int.mk(core.type.str.mk(a_sTime[4]).substr(1));
@@ -3203,7 +3203,7 @@
                             }
                         }
 
-                        return (
+                        return !!(
                             x &&
                             core.type.str.is(x.tagName, true) &&
                             //core.type.fn.is(x.cloneNode) &&

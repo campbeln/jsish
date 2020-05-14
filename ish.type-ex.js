@@ -838,7 +838,7 @@
                          * @function ish.type.str.cmp
                          * @param {variant} x Value representing the string to compare.
                          * @param {variant|variant[]} vReference Value representing the reference string(s) to compare to.
-                         * @returns {boolean|integer} Value representing if the passed value is equal (<code>true</code>), equal when case-insensitive and trimmed (<code>1</code>) or not equal (<code>false</code>) to the passed relative value.
+                         * @returns {boolean|integer} Value representing if the passed value is equal (<code>true</code>), equal when case-insensitive and trimmed (<code>1</code>) or not equal (<code>false</code>) to the passed reference string(s).
                          */ //#####
                         cmp: function () {
                             //# .compare's two strings, returning truthy or false based on their relationship
@@ -885,42 +885,6 @@
                         }(), //# type.str.cmp.*
 
                         //cp:
-
-                        //#########
-                        /** Determines if the passed value is within the passed set of value(s).
-                         * @$note The passed values are implicitly casted per <code>{@link ish.type.str.mk}</code>.
-                         * @function ish.type.str.in
-                         * @param {variant} x Value to interrogate.
-                         * @param {variant|variant[]} vSet Value(s) to interrogate.
-                         * @param {boolean} [bCaseInsensitive=true] Value representing if the keys are to be searched for in a case-insensitive manor.
-                         * @returns {boolean} Value representing if the passed value is within the passed set of value(s).
-                         */ //#####
-                        in: function (x, vSet, bCaseInsensitive) {
-                            var sCurrentVal, i,
-                                bReturnVal = false,
-                                a_sSet = core.type.arr.mk(vSet, [vSet])
-                            ;
-
-                            //# Ensure the passed value .is a .str
-                            x = core.type.str.mk(x);
-
-                            //# Traverse the passed a_sSet, collecting the sCurrentVal as we go
-                            for (i = 0; i < a_sSet.length; i++) {
-                                sCurrentVal = core.type.str.mk(vSet[i]);
-
-                                //# Unless specifically told not to, compare the passed string as bCaseInsensitive, resetting our bReturnVal and falling from the loop if the current a_sSet is found
-                                if (bCaseInsensitive !== false ?
-                                    (x.toLowerCase() === sCurrentVal.toLowerCase()) :
-                                    (x === sCurrentVal)
-                                ) {
-                                    bReturnVal = true;
-                                    break;
-                                }
-                            }
-
-                            return bReturnVal;
-                        }, //# type.str.in
-
 
                         //#########
                         /** Prepends the passed character onto the passed value to a minimum length.
