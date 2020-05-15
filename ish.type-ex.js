@@ -2265,10 +2265,11 @@
 
 
                         //#########
-                        /** Provides an object structure as a string in Javascript object notation.
+                        /** Provides an object structure as a string in Javascript's Object Literal Notation.
+                         * @note <code>JSON.stringify</code> returns <code>Object</code>s in JSON (e.g. with quoted keys <code>{ "key": "value" }</code>) while <code>ish.type.obj.stringify</code> returns <code>Object</code>s in Javascript's Object Literal notation (e.g. <code>{ key: "value" }</code>).
                          * @function ish.type.obj.stringify
                          * @param {object} oObject Value to interrogate.
-                         * @returns {variant} Value representing the passed object as a string in Javascript object notation.
+                         * @returns {variant} Value representing the passed object as a string in Javascript's Object Literal Notation.
                          * @see {@link https://stackoverflow.com/a/11233515/235704|StackOverflow.com}
                          */ //#####
                         stringify: function n(oObject) {
