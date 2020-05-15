@@ -2265,6 +2265,43 @@
 
 
                         //#########
+                        /** Provides an object structure as a string in Javascript object notation.
+                         * @function ish.type.obj.stringify
+                         * @param {object} oObject Value to interrogate.
+                         * @returns {variant} Value representing the passed object as a string in Javascript object notation.
+                         * @see {@link https://stackoverflow.com/a/11233515/235704|StackOverflow.com}
+                         */ //#####
+                        stringify: function n(oObject) {
+                            var a_sKeys, i,
+                                sReturnVal = ""
+                            ;
+
+                            //# If the passed oObject .is and .obj
+                            if (core.type.obj.is(oObject)) {
+                                a_sKeys = Object.keys(oObject); //core.type.obj.ownKeys(oObject);
+
+                                //#
+                                for (i = 0; i < a_sKeys.length; i++) {
+                                    a_sKeys[i] = a_sKeys[i] + ":" + core.type.obj.stringify(oObject[a_sKeys[i]]);
+                                }
+                                sReturnVal = "{" + a_sKeys.join(",") + "}";
+
+                                /*return Object
+                                    .keys(oObject)
+                                    .map(key => `${key}:${core.type.obj.stringify(oObject[key])}`)
+                                    .join(",")
+                                ;*/
+                            }
+                            //# Else the passed oObject .is not an .obj, so stringify using the native JSON.stringify
+                            else {
+                                sReturnVal = JSON.stringify(oObject);
+                            }
+
+                            return sReturnVal;
+                        }, //# type.obj.stringify
+
+
+                        //#########
                         /** Creates an empty object.
                          * @$note Creating an object via <code>{}</code> results in an object that includes <code>__proto__</code> and <code>hasOwnProperty</code>. This method returns an object with no properties.
                          * @function ish.type.obj.empty
