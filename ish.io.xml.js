@@ -630,7 +630,7 @@
                     result += serializeEndTag(element, elementName);
                 } else {
                     var childElementCount = getDataElementCount(element);
-                    if (childElementCount > 0 || typeof (element.__text) === 'number' || typeof (element.__text) === 'boolean' || element.__text || element.__cdata) {
+                    if (childElementCount > 0 || (element && (typeof (element.__text) === 'number' || typeof (element.__text) === 'boolean' || element.__text || element.__cdata))) {
                         result += serializeStartTag(element, elementName, attributes, false);
                         result += serializeJavaScriptObjectChildren(element);
                         result += serializeEndTag(element, elementName);
