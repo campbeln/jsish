@@ -168,7 +168,7 @@
 
         //# Traverse the .js, processing each entry as we go
         //#     NOTE: We use a getto-version of a for loop below to keep JSHint happy and to limit the exposed local variables to `arguments` only
-        //#     NOTE: .call the New Function with `use strict` inline to avoid automatic access to the Global object, see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call and https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply and fixes issues in setTimeout, see: https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setTimeout
+        //#     TODO: .call the New Function with `use strict` inline to avoid automatic access to the Global object, see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call and https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply and fixes issues in setTimeout, see: https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setTimeout
         while (arguments[1] < arguments[0].js.length) {
             try {
                 //eval(arguments[0].js[arguments[1]]);

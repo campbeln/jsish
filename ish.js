@@ -1223,25 +1223,27 @@
                 bRemap = true;
             }
 
-            //# Traverse the a_sKeys
-            for (i = 0; i < a_sKeys.length; i++) {
-                sKey = a_sKeys[i];
+            //# Traverse the a_sKeys (if they were set above)
+            if (a_sKeys) {
+                for (i = 0; i < a_sKeys.length; i++) {
+                    sKey = a_sKeys[i];
 
-                //# If the current sKey exists in our oSource, inc our iReturnVal
-                if (oSource.hasOwnProperty(sKey)) {
-                    iReturnVal++;
+                    //# If the current sKey exists in our oSource, inc our iReturnVal
+                    if (oSource.hasOwnProperty(sKey)) {
+                        iReturnVal++;
 
-                    //# If we're supposed to bRemap, do so now
-                    if (bRemap) {
-                        oSource[vKeys[sKey]] = oSource[sKey];
-                    }
+                        //# If we're supposed to bRemap, do so now
+                        if (bRemap) {
+                            oSource[vKeys[sKey]] = oSource[sKey];
+                        }
 
-                    //# Either bSetToUndefined or delete the current sKey
-                    if (bSetToUndefined) {
-                        oSource[sKey] = _undefined;
-                    }
-                    else {
-                        delete oSource[sKey];
+                        //# Either bSetToUndefined or delete the current sKey
+                        if (bSetToUndefined) {
+                            oSource[sKey] = _undefined;
+                        }
+                        else {
+                            delete oSource[sKey];
+                        }
                     }
                 }
             }
@@ -3103,7 +3105,7 @@
                             /*
                             core.io.net.get(sTemp, function (bSuccess, oResponse /*, vArg, $xhr* /) {
                                 core.extend(oOptions, bSuccess ? oResponse.data : _null);
-                                process(_script, bSuccess);
+                                process(bSuccess);
                             });*/
                         }
                     }
@@ -3123,7 +3125,7 @@
 
                 //# Ensure there is a reference to core available on our _script tag so that other scripts can auto-resolve it then .process
                 _script[sTarget] = core;
-                process(_script, bProcessAttribute);
+                process(bProcessAttribute);
             }; //# oPrivates.init
 
 

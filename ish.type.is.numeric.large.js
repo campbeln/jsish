@@ -60,7 +60,7 @@
 
                         //#### If the passed sNumber or sRelativeTo were non-numeric, set our iReturn value to 0
                     if (iNumberNumericPrecision === -1 || iRangeNumericPrecision === -1) {
-                        iReturn = undefined;
+                        //iReturn = undefined;
                     }
                         //#### Else if the signs of the passed sNumber and sRelativeTo do not match
                     else if (bNumberIsPositive != bRangeIsPositive) {

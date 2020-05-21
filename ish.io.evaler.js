@@ -509,7 +509,7 @@
 
             //# Traverse the .js, processing each entry as we go
             //#     NOTE: We use a getto-version of a for loop below to keep JSHint happy and to limit the exposed local variables to `arguments` only
-            //#     NOTE: .call the New Function with `use strict` inline to avoid automatic access to the Global object, see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call and https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply and fixes issues in setTimeout, see: https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setTimeout
+            //#     TODO: .call the New Function with `use strict` inline to avoid automatic access to the Global object, see: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/call and https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Function/apply and fixes issues in setTimeout, see: https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/setTimeout
             while (arguments[1] < arguments[0].js.length) {
                 try {
                     //eval(arguments[0].js[arguments[1]]);
@@ -572,7 +572,7 @@
         function /*fnSandboxEvalerFactory*/(_window, $services, $factories) {
             "use strict";
 
-            var a_fnPromises = [],
+            var oPromiseFns = {},
                 bSendingString = false,
                 bInit = false,
                 iID = 0
@@ -604,10 +604,10 @@
 
                             //# If the .origin is null and we have the .id within our .promises
                             //#     NOTE: Non-"allow-same-origin" sandboxed IFRAMEs return "null" rather than a valid .origin so we need to check the .source before accepting any .postMessage's
-                            if (oMessage.origin === "null" && a_fnPromises[oData.id]) {
+                            if (oMessage.origin === "null" && oPromiseFns[oData.id]) {
                                 //# Fire the fnCallback stored in .promises (and protected by validating the .source), passing back the .r(esult) and the .arg(ument) then delete it from .promises
                                 //#     NOTE: Filtering based on .source/$targetWin is done within the .promises functions
-                                a_fnPromises[oData.id](
+                                oPromiseFns[oData.id](
                                     oMessage.source,
                                     {
                                         results: oData.r,
@@ -616,7 +616,7 @@
                                     },
                                     oData.arg
                                 );
-                                delete a_fnPromises[oData.id];
+                                delete oPromiseFns[oData.id];
                             }
                         },
                         false
@@ -646,7 +646,7 @@
                             };
 
                             //# Set our fnCallback within .promises, filtering by $sandboxWin to ensure we trust the $source
-                            a_fnPromises[iID] = function ($source, oResults, sArg) {
+                            oPromiseFns[iID] = function ($source, oResults, sArg) {
                                 if ($source === $sandboxWin) {
                                     //# If we are supposed to bReturnObject return our oReturnVal, else only return the .results (either bAsArray or just the first index)
                                     fnCallback(
