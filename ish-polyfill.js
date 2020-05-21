@@ -83,7 +83,7 @@ ish.type.str.cmp.starts => ish.type.str.begins
 
 
 //# Polyfills
-!function () {
+(function () {
     'use strict';
 
 
@@ -107,7 +107,7 @@ ish.type.str.cmp.starts => ish.type.str.begins
 
     //# Refactored from: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/assign
     if (typeof Object.assign != 'function') {
-        !function (){
+        (function (){
             function isNullOrUndefined(q) {
                 //return q === null || q === undefined;
                 return q == null;
@@ -147,7 +147,7 @@ ish.type.str.cmp.starts => ish.type.str.begins
                 //enumerable: false,
                 configurable: true
             });
-        }();
+        }());
     } //# Object.assign
 
 
@@ -189,4 +189,4 @@ ish.type.str.cmp.starts => ish.type.str.begins
             return (elements.length) ? elements[0] : null;
         };
     }
-}();
+}());

@@ -4,7 +4,7 @@
  * @license MIT
  * @copyright 2014-2020, Nick Campbell
 ################################################################################################# */
-!function () {
+(function () {
     'use strict';
 
     function init(core) {
@@ -26,4 +26,4 @@
     else {
         init(document.querySelector("SCRIPT[ish]").ish);
     }
-}();
+}());

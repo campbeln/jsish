@@ -779,9 +779,9 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                             $.expect(3);
                             $.assert.deepEqual(core.type.fn.convert(arguments), [$], "arguments");
                             $.assert.deepEqual(core.type.fn.convert(undefined), [], "undefined");
-                            !function (a, b, c) {
+                            (function (a, b, c) {
                                 $.assert.deepEqual(core.type.fn.convert(arguments), [a, b, c], "arguments");
-                            }(1, "two", { three: 3 });
+                            }(1, "two", { three: 3 }));
                         },
 
                         noop: function ($) {

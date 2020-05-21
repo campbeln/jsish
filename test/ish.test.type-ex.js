@@ -6,7 +6,7 @@
  * @copyright 2014-2020, Nick Campbell
  * @ignore
  */ //############################################################################################
-!function () {
+(function () {
     'use strict';
 
 
@@ -282,4 +282,4 @@
     else {
         init(document.querySelector("SCRIPT[ish]").ish);
     }
-}();
+}());
