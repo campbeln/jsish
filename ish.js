@@ -40,6 +40,7 @@
         _undefined /*= undefined*/,                                                 //# code-golf
         _null = null,                                                               //# code-golf
         _Object_prototype_toString = Object.prototype.toString,                     //# code-golf
+        _asyncFnConstructor = async function(){}.constructor,
         oPrivate = {},
         oTypeIsIsh = { //# Set the .ver and .target under .type.is.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             config: {
@@ -541,7 +542,10 @@
              * @returns {boolean} Value representing if the passed value represents a function.
              */ //#####
             is: function isFn(x) {
-                return (_Object_prototype_toString.call(x) === '[object Function]');
+                return (
+                    _Object_prototype_toString.call(x) === '[object Function]' ||
+                    x instanceof _asyncFnConstructor === true
+                );
             }, //# fn.is
 
             //#########
@@ -1804,7 +1808,21 @@
                          */ //#####
                         args: function (x) {
                             return (Object.prototype.toString.call(x) === "[object Arguments]");
-                        } //# fn.is.args
+                        }, //# fn.is.args
+
+
+                        //#########
+                        /** Determines if the passed value represents an asynchronous function.
+                         * @function ish.type.fn.is:async
+                         * @param {variant} x Value to interrogate.
+                         * @returns {boolean} Value representing if the passed value represents an asynchronous function.
+                         */ //#####
+                        "async": function (x) {
+                            return (
+                                //_Object_prototype_toString.call(x) === '[object Function]' &&
+                                x instanceof _asyncFnConstructor === true
+                            );
+                        }, //# fn.is
                     },
 
                     //#########
