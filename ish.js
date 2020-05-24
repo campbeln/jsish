@@ -21,7 +21,7 @@
  *      All features are organized in individually includable mixins organized by namespace/major features with only the core <code>ish.js</code> functionality required to bootstrap.
  *  </p>
  * </div>
- * @version 0.12.2020-03-09
+ * @version 0.12.2020-05-23
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2020, Nick Campbell
@@ -34,12 +34,12 @@
 (function (/*global, module, require, process, __dirname*/) {
     'use strict';
 
-    var bServerside = (typeof window === 'undefined'), // this.window !== this      //# Are we running under nodeJS (or possibly have been required as a CommonJS module), SEE: https://stackoverflow.com/questions/4224606/how-to-check-whether-a-script-is-running-under-node-js
-        _root = (bServerside ? global : window),                                    //# code-golf
-        _document = (bServerside ? {} : document),                                  //# code-golf
-        _undefined /*= undefined*/,                                                 //# code-golf
-        _null = null,                                                               //# code-golf
-        _Object_prototype_toString = Object.prototype.toString,                     //# code-golf
+    var _Object_prototype_toString = Object.prototype.toString,                                     //# code-golf
+        bServerside = (process && _Object_prototype_toString.call(process) === '[object process]'), //# Are we running under nodeJS (or possibly have been required as a CommonJS module), SEE: https://stackoverflow.com/questions/4224606/how-to-check-whether-a-script-is-running-under-node-js
+        _root = (bServerside ? global : window),                                                    //# code-golf
+        _document = (bServerside ? {} : document),                                                  //# code-golf
+        _undefined /*= undefined*/,                                                                 //# code-golf
+        _null = null,                                                                               //# code-golf
         _asyncFnConstructor = async function(){}.constructor,
         oPrivate = {},
         oTypeIsIsh = { //# Set the .ver and .target under .type.is.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
@@ -544,7 +544,7 @@
             is: function isFn(x) {
                 return (
                     _Object_prototype_toString.call(x) === '[object Function]' ||
-                    x instanceof _asyncFnConstructor === true
+                    x instanceof _asyncFnConstructor === true //myFunction.constructor.name === "AsyncFunction" // https://davidwalsh.name/javascript-detect-async-function
                 );
             }, //# fn.is
 
