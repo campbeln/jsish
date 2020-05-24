@@ -40,7 +40,7 @@
         _document = (bServerside ? {} : document),                                                  //# code-golf
         _undefined /*= undefined*/,                                                                 //# code-golf
         _null = null,                                                                               //# code-golf
-        _asyncFnConstructor = async function(){}.constructor,
+        _asyncFnConstructor, // = async function(){}.constructor,
         oPrivate = {},
         oTypeIsIsh = { //# Set the .ver and .target under .type.is.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             config: {
@@ -91,6 +91,13 @@
             //lib: oInterfaces.pub() //# + sync
         }
     ;
+
+    //# Safely assign _asyncFnConstructor, defaulting to a (unique) empty object to force a failing comparison
+    try {
+        _asyncFnConstructor = async function(){}.constructor;
+    } catch (e) {
+        _asyncFnConstructor = {};
+    }
 
     //# Null function used as a placeholder when a valid function reference is required
     function noop() {} //# noop
