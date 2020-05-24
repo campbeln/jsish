@@ -21,7 +21,7 @@
  *      All features are organized in individually includable mixins organized by namespace/major features with only the core <code>ish.js</code> functionality required to bootstrap.
  *  </p>
  * </div>
- * @version 0.12.2020-05-23b
+ * @version 0.12.2020-05-24
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2020, Nick Campbell
@@ -43,7 +43,7 @@
         oPrivate = {},
         oTypeIsIsh = { //# Set the .ver and .target under .type.is.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             config: {
-                ver: '0.12.2020-03-09',
+                ver: '0.12.2020-05-24',
                 onServer: bServerside,
                 debug: true,
                 //script: _undefined,
@@ -196,29 +196,29 @@
                     false
                 ;
             };
-        }(); //# ishtype.is.native
-        /*native: function () {
-            var toString = Object.prototype.toString,       // Used to resolve the internal `[[Class]]` of x
-                fnToString = Function.prototype.toString,   // Used to resolve the decompiled source of functions
-                reHostCtor = /^\[object .+?Constructor\]$/, // Used to detect host constructors (Safari > 4; really typed array specific)
-                reNative = RegExp('^' +                     // Compile a regexp using a common native method as a template. We chose `Object#toString` because there's a good chance it is not being mucked with.
-                    String(toString)                                // Coerce `Object#toString` to a string
-                        .replace(/[.*+?^${}()|[\]\/\\]/g, '\\$&')   // Escape any special regexp characters
-                                                                    // Replace mentions of `toString` with `.*?` to keep the template generic.
-                                                                    // Replace thing like `for ...` to support environments like Rhino which add extra info such as method arity.
-                        .replace(/toString|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') +
-                    '$'
-                )
-            ;
-            return function (x) {
-                var type = typeof x;
-                return x == 'function' ?
-                    reNative.test(fnToString.call(x)) :     // Use `Function#toString` to bypass the x's own `toString` method and avoid being faked out.
-                                                            // Fallback to a host object check because some environments will represent things like typed arrays as DOM methods which may not conform to the normal native pattern.
-                    (x && type == 'object' && reHostCtor.test(toString.call(x))) || false
+            /*native: function () {
+                var toString = Object.prototype.toString,       // Used to resolve the internal `[[Class]]` of x
+                    fnToString = Function.prototype.toString,   // Used to resolve the decompiled source of functions
+                    reHostCtor = /^\[object .+?Constructor\]$/, // Used to detect host constructors (Safari > 4; really typed array specific)
+                    reNative = RegExp('^' +                     // Compile a regexp using a common native method as a template. We chose `Object#toString` because there's a good chance it is not being mucked with.
+                        String(toString)                                // Coerce `Object#toString` to a string
+                            .replace(/[.*+?^${}()|[\]\/\\]/g, '\\$&')   // Escape any special regexp characters
+                                                                        // Replace mentions of `toString` with `.*?` to keep the template generic.
+                                                                        // Replace thing like `for ...` to support environments like Rhino which add extra info such as method arity.
+                            .replace(/toString|(function).*?(?=\\\()| for .+?(?=\\\])/g, '$1.*?') +
+                        '$'
+                    )
                 ;
-            }
-        }(), //# ish.type.is.native*/
+                return function (x) {
+                    var type = typeof x;
+                    return x == 'function' ?
+                        reNative.test(fnToString.call(x)) :     // Use `Function#toString` to bypass the x's own `toString` method and avoid being faked out.
+                                                                // Fallback to a host object check because some environments will represent things like typed arrays as DOM methods which may not conform to the normal native pattern.
+                        (x && type == 'object' && reHostCtor.test(toString.call(x))) || false
+                    ;
+                }
+            }(), //# ish.type.is.native*/
+        }(); //# ishtype.is.native
 
         //#########
         /** Determines if the passed value is a list type (e.g. HTMLCollection|HTMLFormControlsCollection|HTMLOptionsCollection|NodeList|NamedNodeMap|Arguments + Object to support &lt;IE9).
