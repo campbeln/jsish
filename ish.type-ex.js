@@ -25,7 +25,7 @@
          * @ignore
          */ //############################################################################################
         core.oop.partial(core.type, function (oProtected) {
-            var oReturnVal = {
+            var oCoreType = {
                 //#
                 is: {
                     //#########
@@ -2319,7 +2319,7 @@
             //#
             if (!bServerside) {
                 //# cp
-                oReturnVal.dom = function () {
+                oCoreType.dom = function () {
                     function pender(vDomParent, vDomToAdd, bPrepend) {
                         var i,
                             _parent = core.type.dom.mk(vDomParent, null),
@@ -2438,7 +2438,7 @@
                 }(); //# core.type.dom
             }
 
-            return oReturnVal;
+            return oCoreType;
         }); //# core.type
 
         //# .fire the plugin's loaded event

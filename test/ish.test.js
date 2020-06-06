@@ -750,10 +750,24 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
 
                     fn: {
                         is: function ($) {
-                            $.expect(8);
+                            $.expect(9);
                             $.assert(core.type.fn.is(function() {}), "fn");
+                            $.assert(core.type.fn.is(async function() {}), "async fn");
                             $.assert(core.type.fn.is(new Function()), "new Function()");
                             $.assert(core.type.fn.is(document.querySelector), "document.querySelector");
+
+                            $.assert(!core.type.fn.is({}), "!obj");
+                            $.assert(!core.type.fn.is(null), "!null");
+                            $.assert(!core.type.fn.is(undefined), "!undefined");
+                            $.assert(!core.type.fn.is(1), "!1");
+                            $.assert(!core.type.fn.is([]), "![]");
+                        },
+                        "is.async": function ($) {
+                            $.expect(9);
+                            $.assert(!core.type.fn.is(function() {}), "fn");
+                            $.assert(core.type.fn.is(async function() {}), "async fn");
+                            $.assert(!core.type.fn.is(new Function()), "new Function()");
+                            $.assert(!core.type.fn.is(document.querySelector), "document.querySelector");
 
                             $.assert(!core.type.fn.is({}), "!obj");
                             $.assert(!core.type.fn.is(null), "!null");

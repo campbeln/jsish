@@ -156,7 +156,7 @@
         function /*fnEvalerFactory*/(_root, _document, $services, fnLocalEvaler, fnMaskedEvaler, fnUseStrictEvaler, fnSandboxEvalerFactory) {
             "use strict";
 
-            var fnJSONParse, oReturnVal,
+            var fnJSONParse, oEvalerFactory,
                 sVersion = "v0.10a",
                 fnGlobalEvaler = null
             ;
@@ -396,7 +396,7 @@
             }
 
             //# Configure and return our return value
-            oReturnVal = {
+            oEvalerFactory = {
                 ver: sVersion,
                 global: function (bFallback, $root) {
                     return evalerFactory("g", $root || _root, { f: bFallback });
@@ -411,29 +411,29 @@
                 //sandbox: undefined
             };
             if (fnLocalEvaler) {
-                oReturnVal.local = function (oContext) {
+                oEvalerFactory.local = function (oContext) {
                     return evalerFactory("l", oContext /*, {}*/);
                 };
             }
             if (fnMaskedEvaler) {
-                oReturnVal.masked = function (oContext) {
+                oEvalerFactory.masked = function (oContext) {
                     return evalerFactory("m", oContext /*, {}*/);
                 };
             }
             if (fnUseStrictEvaler) {
-                oReturnVal.useStrict = function (oContext) {
+                oEvalerFactory.useStrict = function (oContext) {
                     return evalerFactory("u", oContext /*, {}*/);
                 };
             }
             if (fnJSONParse) {
-                oReturnVal.json = function () {
+                oEvalerFactory.json = function () {
                     return evalerFactory("j" /*, undefined, {}*/);
                 };
             }
             if (!$services.serverside && fnSandboxEvalerFactory) {
-                oReturnVal.sandbox = fnSandboxEvalerFactory(_root, $services, { looper: looperFactory, iframe: iframeFactory });
+                oEvalerFactory.sandbox = fnSandboxEvalerFactory(_root, $services, { looper: looperFactory, iframe: iframeFactory });
             }
-            return oReturnVal;
+            return oEvalerFactory;
         },
 
         //#
@@ -648,7 +648,7 @@
                             //# Set our fnCallback within .promises, filtering by $sandboxWin to ensure we trust the $source
                             oPromiseFns[iID] = function ($source, oResults, sArg) {
                                 if ($source === $sandboxWin) {
-                                    //# If we are supposed to bReturnObject return our oReturnVal, else only return the .results (either bAsArray or just the first index)
+                                    //# If we are supposed to bReturnObject return our oResults, else only return the .results (either bAsArray or just the first index)
                                     fnCallback(
                                         (bReturnObject ? oResults : (bAsArray ? oResults.results : oResults.results[0])),
                                         sArg

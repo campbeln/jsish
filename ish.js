@@ -34,12 +34,15 @@
 (function (/*global, module, require, process, __dirname*/) {
     'use strict';
 
-    var _Object_prototype_toString = Object.prototype.toString,                                     //# code-golf
-        bServerside = (process && _Object_prototype_toString.call(process) === '[object process]'), //# Are we running under nodeJS (or possibly have been required as a CommonJS module), SEE: https://stackoverflow.com/questions/4224606/how-to-check-whether-a-script-is-running-under-node-js
-        _root = (bServerside ? global : window),                                                    //# code-golf
-        _document = (bServerside ? {} : document),                                                  //# code-golf
-        _undefined /*= undefined*/,                                                                 //# code-golf
-        _null = null,                                                                               //# code-golf
+    var _Object_prototype_toString = Object.prototype.toString,     //# code-golf
+        bServerside = (function () {                                //# Are we running under nodeJS (or possibly have been required as a CommonJS module), SEE: https://stackoverflow.com/questions/4224606/how-to-check-whether-a-script-is-running-under-node-js
+            try       { return (process && _Object_prototype_toString.call(process) === '[object process]'); }
+            catch (e) { return false; }
+        })(),
+        _root = (bServerside ? global : window),                    //# code-golf
+        _document = (bServerside ? {} : document),                  //# code-golf
+        _undefined /*= undefined*/,                                 //# code-golf
+        _null = null,                                               //# code-golf
         oPrivate = {},
         oTypeIsIsh = { //# Set the .ver and .target under .type.is.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             config: {
@@ -189,10 +192,10 @@
             ;
 
             return function isNative(x) {
-                var type = typeof x;
-                return type == 'function' ?
+                var _type = typeof x;
+                return _type == 'function' ?
                     reNative.test(fnToString.call(x)) : // Use `Function#toString` to bypass x's own `toString` method and avoid being faked out.
-                    (x && type == 'object' && reHostCtor.test(toString.call(x))) || // Fallback to a host object check because some environments will represent things like typed arrays as DOM methods which may not conform to the normal native pattern.
+                    (x && _type == 'object' && reHostCtor.test(toString.call(x))) || // Fallback to a host object check because some environments will represent things like typed arrays as DOM methods which may not conform to the normal native pattern.
                     false
                 ;
             };
@@ -557,7 +560,7 @@
              */ //#####
             mk: function (x, vDefaultVal) {
                 var vResolved,
-                    fnResolve = core.resolve || function (_root, sKey) { return _root[sKey]; },
+                    fnResolve = core.resolve || function (_passedRoot, sKey) { return _passedRoot[sKey]; },
                     fnReturnVal = (arguments.length > 1 ? vDefaultVal : noop)
                 ;
 
@@ -939,8 +942,8 @@
         var a_sKeys, oTarget, oSource, sKey, iExtendDepth, i, j, k, bOverMaxDepth,
             a = arguments,
             //fnIsDom = core.type.fn.mk(core.resolve(core, "type.dom.is")),
-            fnHasOwnProp = function (oSource, sKey) {
-                return Object.prototype.hasOwnProperty.call(oSource, sKey);
+            fnHasOwnProp = function (oPassedSource, sPassedKey) {
+                return Object.prototype.hasOwnProperty.call(oPassedSource, sPassedKey);
             }
         ;
 
@@ -1884,6 +1887,7 @@
                      * @param {arguments|variant[]|object} [vOptions] Value representing an arguments instance, an array of arguments or an object representing the desired options:
                      *      @param {variant} [vOptions.context=undefined] Value representing the context (e.g. <code>this</code>) the passed function is executed under.
                      *      @param {variant} [vOptions.default=undefined] Value representing the default value to return if the passed function is invalid.
+*      @param {function} [vOptions.asyncCallback=undefined] Value representing the default value to return if the passed function is invalid.
                      *      @param {arguments|variant[]} [vOptions.args] Value representing the arguments to pass into the passed function.<br/><b>Note:</b> This value is passed through <code>ish.type.fn.convert</code> to ensure an array.
                      * @returns {variant} Value representing the passed function's return value or the default value if the passed function is invalid.
                      */ //#####
@@ -1909,7 +1913,14 @@
 
                         //# If the passed fn .is a .fn, .apply the .context and .args
                         if (core.type.fn.is(fn)) {
-                            vReturnVal = fn.apply(oOptions.context, oOptions.args);
+                            //#
+                            if (core.type.fn.is.async(fn) && core.type.fn.is(oOptions.asyncCallback)) {
+                                //# TODO
+                            }
+                            //# Else treat it as a normal fn (which will return a Promise if it .is.async so it'll be up to the caller to properly handle it)
+                            else {
+                                vReturnVal = fn.apply(oOptions.context, oOptions.args);
+                            }
                         }
 
                         return vReturnVal;
@@ -3059,7 +3070,7 @@
                     _script = _document.currentScript || _document_querySelector("SCRIPT[" + sTarget + "]"),
                     oOptions = core.config.ish(),
                     sTarget = oOptions.target,
-                    bProcessAttribute = false
+                    bProcessAttributeInit = false
                 ;
 
                 //#
@@ -3110,16 +3121,16 @@
                         //# If the _script[ish] .getAttribute .is.json, .extend it into our oOptions
                         if (core.type.str.is.json(sTemp)) {
                             core.extend(oOptions, core.type.obj.mk(sTemp));
-                            bProcessAttribute = true;
+                            bProcessAttributeInit = true;
                         }
                         //# Else if the value of _script[ish] is under our _root, .extend it into our oOptions
                         else if (core.type.obj.is(core.resolve(_root, sTemp))) {
                             core.extend(oOptions, core.resolve(_root, sTemp));
-                            bProcessAttribute = true;
+                            bProcessAttributeInit = true;
                         }
-                        //# Else attempt to load the value of _script[ish] as a JSON file, flag bProcessAttribute to skip the .process below and .extend it into our oOptions on bSuccess
+                        //# Else attempt to load the value of _script[ish] as a JSON file, flag bProcessAttributeInit to skip the .process below and .extend it into our oOptions on bSuccess
                         else {
-                            bProcessAttribute = _null;
+                            bProcessAttributeInit = _null;
                             /*
                             core.io.net.get(sTemp, function (bSuccess, oResponse /*, vArg, $xhr* /) {
                                 core.extend(oOptions, bSuccess ? oResponse.data : _null);
@@ -3143,7 +3154,7 @@
 
                 //# Ensure there is a reference to core available on our _script tag so that other scripts can auto-resolve it then .process
                 _script[sTarget] = core;
-                process(bProcessAttribute);
+                process(bProcessAttributeInit);
             }; //# oPrivates.init
 
 
