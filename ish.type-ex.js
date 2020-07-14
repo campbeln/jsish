@@ -102,6 +102,22 @@
 
 
                         //#########
+                        /** Extracts the passed value's numeric characters.
+                         * @function ish.type.is.numeric:extract
+                         * @param {variant} x Value to interrogate.
+                         * @returns {integer} Value representing the passed value's numeric characters.
+                         */ //##### TODO: Tests
+                        extract: function (x) {
+                            var a_sReturnVal;
+
+                            //# Force the passed x into a string for the .match below, .join'ing the results in our a_sReturnVal
+                            x = $ddi.type.str.mk(x);
+                            a_sReturnVal = x.match(/\d/g);
+                            return $ddi.type.int.mk(a_sReturnVal.join(""));
+                        }, //# type.is.numeric.extract
+
+
+                        //#########
                         /** Sums the referenced numbers in the passed value.
                          * @function ish.type.is.numeric:sum
                          * @param {Array<integer>|object[]|object} vCollection Value representing the numbers to sum.
@@ -608,6 +624,60 @@
 
                 //####
                 //####
+
+                bool: {
+                    mk: {
+                        //#########
+                        /** Casts the passed value into a boolean based on language.
+                         * @function ish.type.bool.mk:fuzzy
+                         * @param {variant} x Value to interrogate.
+                         * @param {variant} [vDefaultVal=undefined] Value representing the default return value if casting fails.
+                         * @param {string[]} [a_sTruthy=['1','true','yes','on']] Value representing the lowercase strings to interpret as `true` values.
+                         * @param {string[]} [a_sFalsy=['0','false','no','off']] Value representing the lowercase strings to interpret as `false` values.
+                         * @returns {boolean} Value representing the passed value as a boolean type.
+                         * @see {@link https://developer.mozilla.org/en-US/docs/Glossary/Falsy|Mozilla.org}
+                         */ //##### TODO: Tests
+                        fuzzy: function () {
+                            //# Setup the logic to be returned
+                            function fuzzy(x, vDefaultVal, a_sTruthy, a_sFalsy) {
+                                var bReturnVal = core.type.bool.mk(x, _undefined);
+
+                                //# If our call to .bool.mk fails, we've got work to do
+                                if (bReturnVal === _undefined) {
+                                    //# Ensure the passed arguments are in the expected format
+                                    x = core.type.str.mk(x).trim().toLowerCase();
+                                    vDefaultVal = (arguments.length > 1 ? vDefaultVal : _undefined);
+
+                                    //# Ensure the passed a_sTruthy and a_sFalsy .is an .arr, defaulting if nothing was passed
+                                    //#     NOTE: 'true'/'false' are handled within core.type.bool.mk above.
+                                    a_sTruthy = core.type.arr.mk(a_sTruthy, fuzzy.truthy);
+                                    a_sFalsy = core.type.arr.mk(a_sFalsy, fuzzy.falsy);
+
+                                    //# If x is within our a_sTruthy, set our bReturnVal accordingly
+                                    if (a_sTruthy.indexOf(x) > -1) {
+                                        bReturnVal = true;
+                                    }
+                                    //# Else if x is within our a_sFalsy, set our bReturnVal accordingly
+                                    else if (a_sFalsy.indexOf(x) > -1) {
+                                        bReturnVal = false;
+                                    }
+                                    //# Else set our bReturnVal to the vDefaultVal as all other attempts to resolve the boolean value of x have failed
+                                    else {
+                                        bReturnVal = vDefaultVal;
+                                    }
+                                }
+
+                                return bReturnVal;
+                            } //# fuzzy
+
+                            //# Attach the default .truthy and .falsy arrays then return
+                            fuzzy.truthy = [/*'1', 'true',*/ 'yes' ,'on'];
+                            fuzzy.falsy = [/*'0', 'false',*/ 'no' ,'off'];
+                            return fuzzy;
+                        }()
+                    }
+                }, //# core.type.bool
+
 
                 //# eq, cmp, cp, age, yyyymmdd, only
                 date: {
