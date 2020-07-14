@@ -328,6 +328,10 @@
                     bReturnVal = x;
                 }
                 //#
+                else if (x == 0 || x == 1) {
+                    bReturnVal = !!core.type.int.mk(x);
+                }
+                //#
                 else if (core.type.str.is(x, true)) {
                     x = x.trim().toLowerCase();
                     bReturnVal = (x === 'true' || (
@@ -773,7 +777,7 @@
             mk: function (x, vDefaultVal) {
                 return (core.type.symbol.is(x) ?
                     x :
-                    (arguments.length === 1 ?
+                    (arguments.length <= 1 ?
                         //# If .symbol.exists, create a new Symbol(), optionally using the passed x if it .is .str, else use a new blank object if !.symbol.exists
                         (core.type.symbol.exists() ? _root.Symbol(core.type.str.is(x) ? x : _undefined) : {}) :
                         vDefaultVal
@@ -1380,7 +1384,7 @@
                         core.type.str.is(x /*, false*/) ||
                         core.type.symbol.is(x)
                     );
-                } //# type.is.primitive
+                }, //# type.is.primitive
 
                 //numeric: {
                 //    /*
@@ -1827,6 +1831,42 @@
                             );
                         }, //# fn.is
                     },
+
+
+                    //#########
+                    /** Determines if asynchronous functions are supported in the current environment.
+                     * @function ish.type.fn.asyncSupport
+                     * @returns {symbol} Value representing if asynchronous functions are supported in the current environment.
+                     */ //##### TODO: Tests
+                    asyncSupport: function () {
+                        var bReturnVal = false;
+
+                        try {
+                            //# If we are on the bServerside or we don't have access to _document.createElement, use a new Function to determine if async is supported
+                            if (bServerside || !core.type.fn.is(_document.createElement)) {
+                                new Function('async () => {}')();
+                                bReturnVal = true;
+                            }
+                            //# Else use _document.createElement to determine async is supported
+                            //#     NOTE: We use an inline single pixel clear gif in the IMG tag and leverage the onload to functionally eval the test
+                            //#     NOTE: _root == window in non-bServerside environments
+                            //#     NOTE: There is a gap here as we could bServerside and not have , but we try/catch to avoid this error
+                            else {
+                                _document.createElement("div").innerHTML = '<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==" onload="async () => {}; window.isAsyncAvailable = true;">';
+
+                                //# As the call above is done (ironically) asynchronously, we need to setTimeout in order to test .isAsyncAvailable
+                                setTimeout(function () {
+                                    bReturnVal = !!_root.isAsyncAvailable;
+                                    delete _root.isAsyncAvailable;
+                                }, 0);
+                            }
+                        } catch (e) {}
+
+                        return function () {
+                            return bReturnVal;
+                        };
+                    }(), //# fn.asyncSupport
+
 
                     //#########
                     /** Casts the passed arguments instance, array or single value into an array fit to pass to <code>function.apply()</code>.
