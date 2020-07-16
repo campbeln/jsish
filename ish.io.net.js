@@ -86,7 +86,7 @@
 
                 return (oOptions.hasOwnProperty("fn") ?         //# If this is an xhr request
                     (core.type.fn.is(oOptions.fn) ?             //# If this is a sync xhr request
-                        doXhr(sVerb, sUrl, oBody, core.extend({}, oXHROptions, oOptions)).send() :
+                        doXhr(sVerb, sUrl, oBody, core.extend({}, oXHROptions, oOptions)).send(oBody) :
                         doXhrPromise(sVerb, sUrl, oBody, core.extend({}, oXHROptions, oOptions))
                     ) :                                         //# Else this is a fetch request
                     doFetch(sVerb, sUrl, oBody, oOptions)
@@ -354,6 +354,8 @@
                 //#     SEE: https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch#Parameters
                 //#     SEE: https://javascript.info/fetch-api
                 /*var oInit = {
+                    //# fetch init options
+
                     method: "GET",              //# GET, POST, PUT, PATCH, DELETE, HEAD + TRACE, CONNECT, OPTIONS - https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
                     body: undefined,            //# String, FormData, Blob, BufferSource, URLSearchParams - NOTE: Not allowed on GET and HEAD
 
@@ -369,9 +371,14 @@
                     signal: undefined,          //# AbortSignal
                     //window: window,           //# Non-standard?
 
+                    //# ish.io.net additional oOptions
+
                     returnType: "json",         //# "arrayBuffer", "blob", "formData", "json", "text"
-                    //retry: 500,                  //# integer, function
-                    //attempts: 5,                //# integer
+
+                    retry: 500,                 //# integer, function
+                    maxAttempts: 5,             //# integer
+
+                    //# xhr-specific oOptions
 
                     async: false,               //# false/true
                     useCache: false,            //# false/true
@@ -385,7 +392,8 @@
                 };*/
 
 
-                var oInit,
+                var oInit, iMS,
+                    syRetrying = core.type.symbol.get(),
                     oData = {
                         ok: false,
                         //status: undefined,
@@ -395,7 +403,8 @@
                         //aborted: bAbort,
                         //response: undefined,
                         text: null,
-                        json: null
+                        json: null,
+                        retries: 0
                     }
                 ;
 
@@ -421,52 +430,70 @@
                     attempts: _undefined
                 });
 
-                //# .fetch the sURL
-                return fetch(sUrl, oInit)
-                    .then(function /*fetchPromise*/(oResponse) {
-                        //# Set the oData based on the oResponse
-                        oData.ok = oResponse.ok; // ((oResponse.status >= 200 && oResponse.status <= 299) || (oResponse.status === 0 && sUrl.substr(0, 7) === "file://"));
-                        oData.status = oResponse.status;
-                        oData.response = oResponse;
+                //#
+                return new Promise(function callFetch(fnResolve /*, fnReject*/) {
+                    //# .fetch the sURL
+                    fetch(sUrl, oInit)
+                        .then(function /*fetchPromise*/(oResponse) {
+                            var vReturnVal;
 
-                        /*
-                        //# If the oData was not .ok and we have a oOptions.retry, recurse via setTimeout to run another $xhr instance (calculating the iMS as we go)
-                        if (
-                            !oData.ok &&
-                            core.type.fn.is(oOptions.retry) &&
-                            core.type.int.is(iMS = oOptions.retry(oOptions.attempts++))
-                        ) {
-                            setTimeout(function () {
-                                $xhr = setupXhr(fnPromiseResolve, fnPromiseReject);
-                            }, iMS);
-                        }
-                        */
+                            //# Set the oData based on the oResponse
+                            oData.ok = oResponse.ok; // ((oResponse.status >= 200 && oResponse.status <= 299) || (oResponse.status === 0 && sUrl.substr(0, 7) === "file://"));
+                            oData.status = oResponse.status;
+                            oData.response = oResponse;
 
-                        //# Based on .ok, return the chainedResponsePromise
-                        //#     SEE: https://developer.mozilla.org/en-US/docs/Web/API/Response
-                        return (oData.ok ?
-                            oResponse[oOptions.returnType]() :
-                            Promise.reject(oResponse) //# Reject the fetchPromise so it's .catch'ed in the chainedResponsePromise
-                        );
-                    })
-                    .then(function /*chainedResponsePromise*/(vResponseData) {
-                        oData.data = vResponseData;
+                            //# If the oData was not .ok and we have an oOptions.retry (calling it to calculate the iMS as we go)
+                            if (
+                                !oData.ok &&
+                                core.type.fn.is(oOptions.retry) &&
+                                core.type.int.is(iMS = oOptions.retry(oOptions.attempts))
+                            ) {
+                                //# Recurse via setTimeout to run .callFetch again, passing in our fnResolve (ignoring fnReject as we never use it)
+                                setTimeout(function () {
+                                    oData.retries = oOptions.attempts++;
+                                    callFetch(fnResolve /*, fnReject*/);
+                                }, iMS);
 
-                        //# If the vResponseData .is .obj or .arr, also set it into our .json
-                        if (core.type.obj.is(vResponseData) || core.type.arr.is(vResponseData)) {
-                            oData.json = vResponseData;
-                        }
-                        //# Else if the vResponseData .is .str, also set it into our .text
-                        else if (core.type.str.is(vResponseData)) {
-                            oData.text = vResponseData;
-                        }
-                    })
-                    .catch(function (oError) {
-                        //# Set the oError into the .response and .reject the Promise
-                        oData.response = oError;
-                        return oData;
-                    })
-                ;
+                                //# Set our vReturnVal to .reject the fetchPromise so it's .catch'ed by chainedResponsePromise, passing syRetrying to signal it to be ignored
+                                vReturnVal = Promise.reject(syRetrying);
+                            }
+                            //#
+                            else {
+                                //# Based on .ok, return the chainedResponsePromise
+                                //#     SEE: https://developer.mozilla.org/en-US/docs/Web/API/Response
+                                vReturnVal = (oData.ok ?
+                                    oResponse[oOptions.returnType]() :
+                                    Promise.reject(oResponse) //# Set our vReturnVal to .reject the fetchPromise so it's .catch'ed by chainedResponsePromise
+                                );
+                            }
+
+                            return vReturnVal;
+                        })
+                        .then(function /*chainedResponsePromise*/(vResponseData) {
+                            oData.data = vResponseData;
+
+                            //# If the vResponseData .is .obj or .arr, also set it into our .json
+                            if (core.type.obj.is(vResponseData) || core.type.arr.is(vResponseData)) {
+                                oData.json = vResponseData;
+                            }
+                            //# Else if the vResponseData .is .str, also set it into our .text
+                            else if (core.type.str.is(vResponseData)) {
+                                oData.text = vResponseData;
+                            }
+
+                            //#
+                            fnResolve(oData);
+                        })
+                        .catch(function (oError) {
+                            //#
+                            if (oError !== syRetrying) {
+                                //# Set the oError into the .response and .reject the Promise
+                                oData.response = oError;
+                                fnResolve(oData);
+                            }
+                        })
+                    ;
+                });
             } //# doFetch
 
 

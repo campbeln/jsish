@@ -21,7 +21,7 @@
  *      All features are organized in individually includable mixins organized by namespace/major features with only the core <code>ish.js</code> functionality required to bootstrap.
  *  </p>
  * </div>
- * @version 0.12.2020-05-24
+ * @version 0.12.2020-07-16
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2020, Nick Campbell
@@ -46,7 +46,7 @@
         oPrivate = {},
         oTypeIsIsh = { //# Set the .ver and .target under .type.is.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             config: {
-                ver: '0.12.2020-05-24',
+                ver: '0.12.2020-07-14',
                 onServer: bServerside,
                 debug: true,
                 //script: _undefined,
@@ -784,6 +784,15 @@
                     )
                 );
             }, //# symbol.mk
+
+            //#########
+            /** Safely returns a unique symbol, returning a unique object if <code>symbol</code> is not supported.
+             * @function ish.type.symbol.get
+             * @returns {symbol} Value representing a unique symbol or object.
+             */ //##### TODO: Tests
+            get: function () {
+                return core.type.symbol.mk();
+            } //# symbol.get
         }; //# ish.type.symbol
 
 
