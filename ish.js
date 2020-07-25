@@ -21,7 +21,7 @@
  *      All features are organized in individually includable mixins organized by namespace/major features with only the core <code>ish.js</code> functionality required to bootstrap.
  *  </p>
  * </div>
- * @version 0.12.2020-07-16
+ * @version 0.12.2020-07-25
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2020, Nick Campbell
@@ -46,7 +46,7 @@
         oPrivate = {},
         oTypeIsIsh = { //# Set the .ver and .target under .type.is.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             config: {
-                ver: '0.12.2020-07-14',
+                ver: '0.12.2020-07-25',
                 onServer: bServerside,
                 debug: true,
                 //script: _undefined,
@@ -1103,15 +1103,14 @@
                  *     Functions receive a single argument and their <code>this</code> context set to the target object's protected interfaces; e.g. <code>vPartial(oProtectedMembers)</code>.
                  */ //#####
                 partial: function (vTarget, vPartial) {
-                    var iIndex =  oOopData.i.indexOf(vTarget),
-                        oProtected = (iIndex === -1 ? {} : oOopData.p[iIndex]),
+                    var oProtected,
                         oIsObjOrFn = { allowFn: true }
                     ;
 
                     //# If the passed vTarget and vPartial are valid
                     if (core.type.obj.is(vTarget, oIsObjOrFn) && core.type.obj.is(vPartial, oIsObjOrFn)) {
-                        //# Set the results into the oOopData
-                        setOopEntry(vTarget, oProtected /*, {}*/);
+                        //# Setup the entry in the oOopData, collecting the oProtected interfaces as we go
+                        oProtected = setOopEntry(vTarget /*, oProtected, {}*/);
 
                         //# .extend the vPartial result into our vTarget, passing in the oProtected interfaces as both the first argument and as `this` to vPartial
                         core.extend(vTarget,
@@ -1131,11 +1130,12 @@
                  * @function ish.oop.protected
                  * @param {object|function} vTarget Target object to receive protected member properties.
                  * @param {object} oProtected Source object whose properties will be copied into the target's protected members.
+                 * @returns {object} Object representing the target's protected members.
                  */ //#####
                 protected: function (vTarget, oProtected) {
                     //# Pass the call off to .setOopEntry
                     //#     NOTE: We don't simply expose setOopEntry as core.opp.protected because we want to gate the oAddedDateTypes feature
-                    setOopEntry(vTarget, oProtected /*, {}*/);
+                    return setOopEntry(vTarget, oProtected /*, {}*/);
                 } //# core.oop.protected
             }
         ;
@@ -1146,24 +1146,26 @@
                 iIndex = oOopData.i.indexOf(vTarget)
             ;
 
-            //# Ensure the passed oProtected and oAddedDateTypes .is an .obj
-            oProtected = core.type.obj.mk(oProtected);
+            //# Ensure the passed oAddedDateTypes .is an .obj
             oAddedDateTypes = core.type.obj.mk(oAddedDateTypes);
 
             //# If the vTarget is new
             if (iIndex === -1) {
-                //# .push the vTarget and oProtected entries into our oOopData
-                oOopData.i.push(vTarget);           //# i(ndex)
-                oOopData.p.push(oProtected);        //# p(rotected)
+                //# Ensure the passed oProtected .is an .obj
+                oProtected = core.type.obj.mk(oProtected);
+
+                //# .push the vTarget and oProtected entries into our oOopData, ensuring the passed oProtected .is an .obj
+                oOopData.i.push(vTarget);       //# i(ndex)
+                oOopData.p.push(oProtected);    //# p(rotected)
 
                 //# Setup fnSetDataType to .push the new sNames in
                 fnSetDataType = function (sName) {
                     oOopData[sName].push(oAddedDateTypes[sName] || oAddedDataTypes.d[sName]);
                 };
             }
-            //# Else the vTarget is already registered, so update its iIndex
+            //# Else the vTarget is already registered, so .extend and collect the oProtected entry
             else {
-                oOopData.p[iIndex] = oProtected;    //# p(rotected)
+                oProtected = core.extend(oOopData.p[iIndex], oProtected);
 
                 //# Setup fnSetDataType to update the iIndex for only those sNames passed in oAddedDateTypes
                 fnSetDataType = function (sName) {
@@ -1180,6 +1182,8 @@
 
             //# .fire our .event now that the oOopData is completely setup
             //core.io.event.fire("ish.oop._setOopEntry", [vTarget, oProtected]);
+
+            return oProtected;
         } //# setOopEntry
 
         //# Properly adds a data type to be tracked as part of oOopData
