@@ -20,4 +20,4 @@ with all non-UI features available both client-side (in-browser) and server-side
 All features are organized in individually includable mixins organized by namespace/major features with only the core ish.js functionality required to bootstrap.
 
 
-Documentation available at https://campbeln.github.io/core
+Documentation available at https://campbeln.github.io/jsish
