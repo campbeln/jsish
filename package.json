@@ -1,0 +1,14 @@
+{
+    "name": "jsish",
+    "version": "0.13.2020-08-04",
+    "description": "Zero-dependency Javascript code snippets organized in an OOP structure",
+    "license": "MIT",
+    "repository": "campbeln/jsish",
+    "main": "ish.js",
+    "keywords": [
+        "ishJS",
+        "oop",
+        "type safety",
+        "campbeln"
+    ]
+}

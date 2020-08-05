@@ -1,19 +1,19 @@
 //################################################################################################
 /** @file Q: Are you using Vanilla Javascript?<br/>A: ...ish
  * <div style="font-size: 75%; margin-top: 20px;">
- *  Javascript code snippets organized in an OOP structure, including:
+ *  Zero-dependency Javascript code snippets organized in an OOP structure, including:
  *  <ul>
- *      <li>Type-safety and type-casting - assisting developers in overcoming issues related to loose typing via Vanilla Javascript (rather than syntactic sugar à la TypeScript)</li>
- *      <li>OOP features - partial class definitions with shared private members and multiple inheritance</li>
- *      <li>Strong typing of function signatures along with support for dynamic polymorphism/function overloading</li>
- *      <li>Dependency injection</li>
- *      <li>Object traversal, extension and querying features</li>
- *      <li>Custom events</li>
- *      <li>Data interpolation - CSV, XML, Punycode and POJO parsing</li>
- *      <li>Additional Types - Enumerations, GUID</li>
- *      <li>Large/small number support</li>
- *      <li>Support back to IE8, with most features supported back to IE6</li>
- *      <li>Growing unit test coverage with <code><a href="https://www.chaijs.com/api/assert/" target="_new">Chai.Assert</a></code></li>
+ *      <li>Type-safety and type-casting - assisting developers in overcoming issues related to loose typing via Vanilla Javascript (rather than syntactic sugar à la TypeScript);</li>
+ *      <li>OOP features - partial class definitions with shared private members and multiple inheritance;</li>
+ *      <li>Strong typing of function signatures along with support for dynamic polymorphism/function overloading;</li>
+ *      <li>Dependency injection;</li>
+ *      <li>Object traversal, extension and querying features;</li>
+ *      <li>Custom events;</li>
+ *      <li>Data interpolation - CSV, XML, Punycode and POJO parsing;</li>
+ *      <li>Additional Types - Enumerations, UUID;</li>
+ *      <li>Large/small number support;</li>
+ *      <li>Support back to IE8, with most features supported back to IE6;</li>
+ *      <li>Growing unit test coverage with <code><a href="https://www.chaijs.com/api/assert/" target="_new">Chai.Assert</a></code>;</li>
  *      <li>Isomorphic - client- and server-side code in one codebase.</li>
  *  </ul>
  *  with all non-UI features available both client-side (in-browser) and server-side (Node/etc.).
@@ -21,7 +21,7 @@
  *      All features are organized in individually includable mixins organized by namespace/major features with only the core <code>ish.js</code> functionality required to bootstrap.
  *  </p>
  * </div>
- * @version 0.12.2020-07-25
+ * @version 0.13.2020-08-04
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2020, Nick Campbell
@@ -46,7 +46,7 @@
         oPrivate = {},
         oTypeIsIsh = { //# Set the .ver and .target under .type.is.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             config: {
-                ver: '0.12.2020-07-25',
+                ver: '0.13.2020-08-04',
                 onServer: bServerside,
                 debug: true,
                 //script: _undefined,
@@ -626,7 +626,7 @@
         /** Object-based type functionality.
          * @namespace ish.type.obj
          */ //#####
-        type.obj =function () {
+        type.obj = function () {
             //#
             function mkJSON(v) {
                 try {
@@ -745,55 +745,60 @@
         /** Symbol-based type functionality.
          * @namespace ish.type.symbol
          */ //#####
-        type.symbol = {
-            //#########
-            /** Determines if the Symbol type is present in the current environment.
-             * @function ish.type.symbol.exists
-             * @returns {symbol} Value representing if the Symbol type is present in the current environment.
-             */ //#####
-            exists: function () {
-                return core.type.fn.is(_root.Symbol);
-            }, //# symbol.exists
-
-            //#########
-            /** Determines if the passed value represents a symbol.
-             * @function ish.type.symbol.is
-             * @param {variant} x Value to interrogate.
-             * @returns {symbol} Value representing if the passed value represents a symbol.
-             */ //#####
-            is: function (x) {
-                //#     NOTE: Since the typeof call is gated by .symbol.exists below, we need to selectively enable esnext for this function in JSHint below (besides, it's not a real error, just ES6 safety from JSHint)
-                /* jshint esnext: true */
-                return (core.type.symbol.exists() && typeof x === 'symbol');
-            }, //# symbol.is
-
-            //#########
-            /** Casts the passed value into a symbol.
-             * @function ish.type.symbol.mk
-             * @param {variant} x Value to interrogate.
-             * @param {variant} [vDefaultVal=Symbol()] Value representing the default return value if casting fails.
-             * @returns {symbol} Value representing the passed value as a symbol type.
-             */ //#####
-            mk: function (x, vDefaultVal) {
-                return (core.type.symbol.is(x) ?
-                    x :
-                    (arguments.length <= 1 ?
-                        //# If .symbol.exists, create a new Symbol(), optionally using the passed x if it .is .str, else use a new blank object if !.symbol.exists
-                        (core.type.symbol.exists() ? _root.Symbol(core.type.str.is(x) ? x : _undefined) : {}) :
-                        vDefaultVal
-                    )
-                );
-            }, //# symbol.mk
-
+        type.symbol = core.extend(
             //#########
             /** Safely returns a unique symbol, returning a unique object if <code>symbol</code> is not supported.
-             * @function ish.type.symbol.get
+             * @function ish.type.symbol.!
+             * @$aka ish.type.symbol.get
              * @returns {symbol} Value representing a unique symbol or object.
-             */ //##### TODO: Tests
-            get: function () {
+             */ //#####
+            function () {
                 return core.type.symbol.mk();
-            } //# symbol.get
-        }; //# ish.type.symbol
+            }, {
+                get: function () {
+                    return core.type.symbol.mk();
+                }, //# symbol.get
+
+                //#########
+                /** Determines if the Symbol type is present in the current environment.
+                 * @function ish.type.symbol.exists
+                 * @returns {symbol} Value representing if the Symbol type is present in the current environment.
+                 */ //#####
+                exists: function () {
+                    return core.type.fn.is(_root.Symbol);
+                }, //# symbol.exists
+
+                //#########
+                /** Determines if the passed value represents a symbol.
+                 * @function ish.type.symbol.is
+                 * @param {variant} x Value to interrogate.
+                 * @returns {symbol} Value representing if the passed value represents a symbol.
+                 */ //#####
+                is: function (x) {
+                    //#     NOTE: Since the typeof call is gated by .symbol.exists below, we need to selectively enable esnext for this function in JSHint below (besides, it's not a real error, just ES6 safety from JSHint)
+                    /* jshint esnext: true */
+                    return (core.type.symbol.exists() && typeof x === 'symbol');
+                }, //# symbol.is
+
+                //#########
+                /** Casts the passed value into a symbol.
+                 * @function ish.type.symbol.mk
+                 * @param {variant} x Value to interrogate.
+                 * @param {variant} [vDefaultVal=Symbol()] Value representing the default return value if casting fails.
+                 * @returns {symbol} Value representing the passed value as a symbol type.
+                 */ //#####
+                mk: function (x, vDefaultVal) {
+                    return (core.type.symbol.is(x) ?
+                        x :
+                        (arguments.length <= 1 ?
+                            //# If .symbol.exists, create a new Symbol(), optionally using the passed x if it .is .str, else use a new blank object if !.symbol.exists
+                            (core.type.symbol.exists() ? _root.Symbol(core.type.str.is(x) ? x : _undefined) : {}) :
+                            vDefaultVal
+                        )
+                    );
+                } //# symbol.mk
+            }
+        ); //# ish.type.symbol
 
 
         return type;
@@ -934,7 +939,7 @@
      * @returns Value representing if metadata is to be returned by <code>ish.resolve</code>.
      * @ignore
      */ //#####
-    core.resolve.returnMetadata = core.type.symbol.mk();
+    core.resolve.returnMetadata = core.type.symbol();
 
 
     //################################################################################################
@@ -1850,7 +1855,7 @@
                     /** Determines if asynchronous functions are supported in the current environment.
                      * @function ish.type.fn.asyncSupport
                      * @returns {symbol} Value representing if asynchronous functions are supported in the current environment.
-                     */ //##### TODO: Tests
+                     */ //#####
                     asyncSupport: function () {
                         var bReturnVal = false;
 
@@ -2140,6 +2145,7 @@
                      * @param {function} fn Value representing the function to execute.
                      * @returns {object} =metadata Value representing the following properties:
                      *      @returns {boolean} =metadata.is Value indicating if the passed function is a valid function.
+                     *      @returns {boolean} =metadata.async Value indicating if the passed function is an async function.
                      *      @returns {boolean} =metadata.isArrow Value indicating if the passed function is an arrow function expression.
                      *      @returns {boolean} =metadata.hasParens Value indicating if the passed function has parenthesis in its definition.
                      *          <br/><note>Arrow function expressions allow for single parameter definitions to exclude parenthesis, e.g. <code>x => { console.log(x); }</code>.</note>
@@ -2180,6 +2186,7 @@
                                     []
                                 );
                                 oReturnVal.is = true;
+                                oReturnVal.async = core.type.fn.ic.async(fn);
                             }
                         }
 
@@ -3522,7 +3529,7 @@
                 //#    NOTE: This function really only needs to run correctly under those browsers that have Z-Index issues with certain elements, so true cross-platform compatibility is not really required for this function
                 //############################################################
                 //# Last Updated: April 19, 2006
-                this.Overlap = function(oElement1, oElement2) {
+                overlapping: function(oElement1, oElement2) {
                     var bReturn = false;
                     var iX1, iX2, iA1, iA2, iY1, iY2, iB1, iB2;
                         //#### Set the Y (vertical) coords
@@ -3544,7 +3551,7 @@
                     }
                         //#### Return the above determined bReturn to the caller
                     return bReturn;
-                };*/
+                }*/
             }; //# core.ui
         }());
     }

@@ -5,7 +5,7 @@
  * @license MIT
  * @copyright 2014-2020, Nick Campbell
  */ //############################################################################################
-/*global module, define, require, XMLHttpRequest, ActiveXObject */  //# Enable Node globals for JSHint
+/*global module, define, require, Promise */                        //# Enable Node globals for JSHint
 /*jshint maxcomplexity:9 */                                         //# Enable max complexity warnings for JSHint
 (function () {
     'use strict';
@@ -40,7 +40,7 @@
          * @ignore
          */ //############################################################################################
         core.oop.partial(core.io.net, function (oProtected) {
-            var _undefined = undefined,
+            var _undefined /*= undefined*/,
                 oCache = {}
             ;
 
@@ -222,7 +222,7 @@
                         oProtected.verbs.head(vBaseOptions)(sUrl); //, vCallback || function (/* bSuccess, oData, vArg, $xhr */) {});
                     }
                 };
-            } //# fnNetInterfaceFactory
+            }; //# fnNetInterfaceFactory
 
 
             //# .extend our oProtected interfaces
@@ -649,7 +649,6 @@
     }
     //# Else we are running in the browser, so we need to setup the _document-based features
     else {
-        /*global ActiveXObject: false */ //# JSHint "ActiveXObject variable undefined" error suppressor
         init(document.querySelector("SCRIPT[ish]").ish, window.fetch);
     }
 }());

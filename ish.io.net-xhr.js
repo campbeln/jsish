@@ -1,12 +1,13 @@
 //################################################################################################
-/** @file Networking mixin for ish.js
+/** @file XHR Networking mixin for ish.js
  * @mixin ish.io.net
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2020, Nick Campbell
+ * @ignore
  */ //############################################################################################
-/*global module, define, require, XMLHttpRequest, ActiveXObject */  //# Enable Node globals for JSHint
-/*jshint maxcomplexity:9 */                                         //# Enable max complexity warnings for JSHint
+/*global module, define, require, XMLHttpRequest, ActiveXObject, Promise */ //# Enable Node globals for JSHint
+/*jshint maxcomplexity:9 */                                                 //# Enable max complexity warnings for JSHint
 (function () {
     'use strict';
 
@@ -17,7 +18,7 @@
          * @ignore
          */ //############################################################################################
         core.oop.partial(core.io.net, function (oProtected) {
-            var _undefined = undefined,
+            var _undefined /*= undefined*/,
                 //fnBaseVerbs = oProtected.verbs,
                 oXHROptions = {
                     async: true,

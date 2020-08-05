@@ -260,6 +260,12 @@
                                 }
                             }, 120);
                         }
+                    },
+
+                    obj: {
+                        "is.interface": function ($) {
+                            //todo
+                        },
                     }
                 }
             };

@@ -285,24 +285,22 @@
                             */
                         },
 
-                        numeric: {
-                            _: function ($) {
-                                $.expect(12);
-                                $.assert(core.type.is.numeric(1), "is 1");
-                                $.assert(core.type.is.numeric(0), "is 0");
-                                $.assert(core.type.is.numeric(1.1), "is 1.1");
-                                $.assert(!core.type.is.numeric([]), "!is []");
-                                $.assert(!core.type.is.numeric(null), "!is null");
-                                $.assert(!core.type.is.numeric(undefined), "!is undefined");
+                        numeric: function ($) {
+                            $.expect(12);
+                            $.assert(core.type.is.numeric(1), "is 1");
+                            $.assert(core.type.is.numeric(0), "is 0");
+                            $.assert(core.type.is.numeric(1.1), "is 1.1");
+                            $.assert(!core.type.is.numeric([]), "!is []");
+                            $.assert(!core.type.is.numeric(null), "!is null");
+                            $.assert(!core.type.is.numeric(undefined), "!is undefined");
 
-                                $.assert(core.type.is.numeric("1"), "is str 1");
-                                $.assert(core.type.is.numeric("0"), "is str 0");
-                                $.assert(core.type.is.numeric("1.1"), "is str 1.1");
-                                //$.assert(core.type.is.numeric("1,1", true), "is str 1,1");
-                                $.assert(!core.type.is.numeric("1,1"), "!is str 1,1");
-                                $.assert(!core.type.is.numeric("0.0.0"), "!is str 0.0.0");
-                                $.assert(!core.type.is.numeric("1,100.5"), "!is str 1,100.5");
-                            }
+                            $.assert(core.type.is.numeric("1"), "is str 1");
+                            $.assert(core.type.is.numeric("0"), "is str 0");
+                            $.assert(core.type.is.numeric("1.1"), "is str 1.1");
+                            //$.assert(core.type.is.numeric("1,1", true), "is str 1,1");
+                            $.assert(!core.type.is.numeric("1,1"), "!is str 1,1");
+                            $.assert(!core.type.is.numeric("0.0.0"), "!is str 0.0.0");
+                            $.assert(!core.type.is.numeric("1,100.5"), "!is str 1,100.5");
                         },
 
                         ish: core.extend(
@@ -314,7 +312,7 @@
                                     $.assert(!core.type.is.ish({}), "!{}");
                                 }
                             },
-                            (core.config.ish().serverside ? null : {
+                            (core.config.ish().onServer ? null : {
                                 import: {
                                     _: function ($) {
                                         $.expect(4, 2);
@@ -345,7 +343,7 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                             })
                         ), //# ish
 
-                        val: function ($) {
+                        value: function ($) {
                             $.expect(9);
                             $.assert(!core.type.is.value(null), "!null");
                             $.assert(!core.type.is.value(undefined), "!undefined");
@@ -423,6 +421,44 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                             $.assert(!core.type.bool.is(null), "!null");
                             $.assert(!core.type.bool.is(0), "!0");
                             $.assert(!core.type.bool.is(1), "!1");
+                        },
+
+                        "is.tristate": function ($) {
+                            $.expect(20);
+                            $.assert(core.type.bool.is.tristate(true), "is true");
+                            $.assert(core.type.bool.is.tristate(false), "is false");
+                            $.assert(core.type.bool.is.tristate(undefined), "is undefined");
+                            $.assert(core.type.bool.is.tristate(null), "is null");
+                            $.assert(!core.type.bool.is.tristate("true"), "!is str true");
+                            $.assert(!core.type.bool.is.tristate("false"), "!is str false");
+                            $.assert(!core.type.bool.is.tristate("null"), "!is str null");
+                            $.assert(!core.type.bool.is.tristate("undefined"), "!is str undefined");
+                            $.assert(core.type.bool.is.tristate("true", true), "is str allowed true");
+                            $.assert(core.type.bool.is.tristate("false", true), "is str allowed false");
+                            $.assert(!core.type.bool.is.tristate("null", true), "is str allowed null");
+                            $.assert(!core.type.bool.is.tristate("undefined", true), "is str allowed undefined");
+                            $.assert(core.type.bool.is.tristate("True", true), "is str allowed True");
+                            $.assert(core.type.bool.is.tristate("FalSe", true), "is str allowed FalSe");
+                            $.assert(core.type.bool.is.tristate("NULL", true), "is str allowed NULL");
+                            $.assert(core.type.bool.is.tristate("Undefined", true), "is str allowed Undefined");
+
+                            $.assert(!core.type.bool.is.tristate(""), "!null-str");
+                            $.assert(!core.type.bool.is.tristate(NaN), "!NaN");
+                            $.assert(!core.type.bool.is.tristate(0), "!0");
+                            $.assert(!core.type.bool.is.tristate(1), "!1");
+                        },
+
+                        "is.true": function ($) {
+                            $.expect(8);
+                            $.assert(core.type.bool.is.true(true), "is true");
+                            $.assert(core.type.bool.is.true("true"), "is 'true'");
+                            $.assert(core.type.bool.is.true("tRue "), "is 'tRue '");
+                            $.assert(core.type.bool.is.true(1), "is 1");
+                            $.assert(core.type.bool.is.true(-1), "is -1");
+
+                            $.assert(!core.type.bool.is.true(false), "!false");
+                            $.assert(!core.type.bool.is.true("false"), "!'false'");
+                            $.assert(!core.type.bool.is.true(0), "!0");
                         },
 
                         mk: function ($) {
@@ -725,7 +761,7 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                         },
 
                         "is.selector": function ($) {
-                            if (!core.config.ish().serverside) {
+                            if (!core.config.ish().onServer) {
                                 $.expect(7);
                                 $.assert(!core.type.str.is.selector(function() {}), "!fn");
                                 $.assert(!core.type.str.is.selector("<monkeys> like bananas"), "!monkeys1");
@@ -775,6 +811,16 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                             $.assert(!core.type.fn.is(1), "!1");
                             $.assert(!core.type.fn.is([]), "![]");
                         },
+                        "is.args": function ($) {
+                            $.expect(6);
+                            $.assert(core.type.fn.is.args(arguments), "arguments");
+
+                            $.assert(!core.type.fn.is.args({}), "!obj");
+                            $.assert(!core.type.fn.is.args(null), "!null");
+                            $.assert(!core.type.fn.is.args(undefined), "!undefined");
+                            $.assert(!core.type.fn.is.args(1), "!1");
+                            $.assert(!core.type.fn.is.args([]), "![]");
+                        },
 
                         mk: function ($) {
                             var fn = function(){};
@@ -787,6 +833,11 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                             $.assert(core.type.fn.mk("not a fn") === core.type.fn.noop, "!str");
                             $.assert(core.type.fn.mk({}, fn) === fn, "!{}");
                             $.assert(core.type.fn.mk([], fn) === fn, "![]");
+                        },
+
+                        asyncSupport: function ($) {
+                            $.expect(1);
+                            $.assert(core.type.fn.asyncSupport(), "asyncSupport()");
                         },
 
                         convert: function ($) {
@@ -924,7 +975,6 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                             $.assert(fnTest(-3) === -3, "once -3");
                         },
 
-
                         /*
                         oOptions.context - variant representing the Javascript context (e.g. `this`) in which to call the function.
                         oOptions.wait - Function or Integer defining the minimum number of milliseconds between each poll attempt (default: 500).
@@ -989,7 +1039,17 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                                     }, 20);
                                 }
                             }, 120);
-                        */} // TODO
+                        */}, // TODO
+
+                        metadata: function ($) {
+                            $.expect(1);
+                            //TODO
+                        },
+
+                        signature: function ($) {
+                            $.expect(1);
+                            //TODO
+                        }
                     },
 
                     arr: {
@@ -1014,6 +1074,11 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                             $.assert(core.type.arr.mk(arr) === arr, "arr");
                             $.assert(core.type.arr.mk(new Array(), arr) !== arr, "new Array()");
                             $.assert(core.type.arr.mk("not a traditional arr", arr) === arr, "!str");
+                        },
+
+                        clone: function ($) {
+                            $.expect(1);
+                            //# todo
                         },
 
                         rm: function ($) {
@@ -1184,6 +1249,15 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                     },
 
                     symbol: {
+                        _: function($) {
+                            $.expect(1);
+                            $.assertcore.type.symbol.is((core.type.symbol.get()), "get()");
+                        },
+                        get: function($) {
+                            $.expect(1);
+                            $.assertcore.type.symbol.is((core.type.symbol.get()), "get()");
+                        },
+
                         exists: function ($) {
                             $.expect(1);
                             $.assert(core.type.symbol.exists() === (window.Symbol ? true : false), "Symbol");
@@ -1211,7 +1285,7 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                         }
                     },
 
-                    dom: (core.config.ish().serverside ? null : {
+                    dom: (core.config.ish().onServer ? null : {
                         is: function ($) {
                             var _dom = document.createElement("br");
 
@@ -1368,6 +1442,10 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                     $.assert(core.resolve(core.resolve.returnMetadata, true, o, ["camp", "bell", "elle", "bean"], "yep").created === true, "metadata.created = true");
                     $.assert(core.resolve(core.resolve.returnMetadata, o, ["camp", "bell", "elle", "bean"]).value === "yep", "metadata.value");
                 }, //# resolve
+                "resolve.returnMetadata": function ($) {
+                    $.expect(1);
+                    $.assert(core.type.symbol.is(core.resolve.returnMetadata), ".returnMetadata");
+                },
 
                 extend: function ($) {
                     var oTest,
@@ -1441,39 +1519,6 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                     $.assert(fnConfig().bell === "str", "str");
                 },
 
-                require: function () {
-                    var bRequireSuccessful = false;
-
-                    return core.extend(
-                        {
-                            __completeTest: function (bSuccess) {
-                                bRequireSuccessful = bSuccess;
-                            },
-                            _: function ($) {
-                                $.expect(6, 1);
-
-                                //# .require the necessary ish plugins
-                                //#     NOTE: core.require includes the required scripts/CSS then runs the provided function
-                                core.require(["../ish.test.require.js"], function (a_sUrls, bAllLoaded) {
-                                    $.asyncTests(function () {
-                                        $.assert(bAllLoaded === true, "bAllLoaded");
-                                        $.assert(bRequireSuccessful === true, "bRequireSuccessful");
-                                        $.assert(a_sUrls.length === 1, "a_sUrls");
-                                        $.assert(a_sUrls[0].url === "ish.test.require.js", ".url");
-                                        $.assert(a_sUrls[0].loaded === true, ".loaded");
-                                        $.assert(a_sUrls[0].timedout === false, ".timedout");
-                                    });
-                                });
-                            },
-                            modules: {} // TODO
-                        }, (core.config.ish().serverside ? null : {
-                            scripts: {},  // TODO
-                            links: {},
-                            css: {}
-                        })
-                    );
-                }(),
-
                 oop: {
                     partial: function ($) {
                         var oOOP = {
@@ -1512,7 +1557,7 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                         $.assert(oOOP.four() === 4, "fn4.2");
                         $.assert(oOOP.six() === 6, "fn6");
                         $.assert(oOOP.seven === 7, "prop7");
-                        },
+                    },
                     protected: function ($) {
                         var oOOP = {
                             one: function () { return -1; },
@@ -1536,7 +1581,7 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                         $.assert(oOOP.three() === -3, "fn-3");
                         $.assert(oOOP.four() === -4, "fn-4");
                         $.assert(oOOP.five === -5, "fn-5");
-                        }
+                    }
                 },
 
                 io: {
@@ -1572,6 +1617,11 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                     },
 
                     event: {
+                        _: function ($) {
+                            $.expect(1);
+                            $.assert(ish.io.event === ish.io.event.fire, "ish.io.event === ish.io.event.fire");
+                        },
+
                         fire: function ($) {
                             var i = 0,
                                 oArg = {}
@@ -1685,13 +1735,51 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                             $.assert(i === 2, "watch 2.2");
 
                             core.io.event.unregister("ish.test.io.event.watch");
+                        },
+                        "docready": function ($) {
+                            //oEvent.watch("docready");
+                            //# todo
                         }
                     }
                 },
 
-                /*ui: (core.config.ish().serverside ? null : { // TODO?
+                require: function () {
+                    var bRequireSuccessful = false;
+
+                    return core.extend(
+                        {
+                            __completeTest: function (bSuccess) {
+                                bRequireSuccessful = bSuccess;
+                            },
+                            _: function ($) {
+                                $.expect(6, 1);
+
+                                //# .require the necessary ish plugins
+                                //#     NOTE: core.require includes the required scripts/CSS then runs the provided function
+                                core.require(["../ish.test.require.js"], function (a_sUrls, bAllLoaded) {
+                                    $.asyncTests(function () {
+                                        $.assert(bAllLoaded === true, "bAllLoaded");
+                                        $.assert(bRequireSuccessful === true, "bRequireSuccessful");
+                                        $.assert(a_sUrls.length === 1, "a_sUrls");
+                                        $.assert(a_sUrls[0].url === "ish.test.require.js", ".url");
+                                        $.assert(a_sUrls[0].loaded === true, ".loaded");
+                                        $.assert(a_sUrls[0].timedout === false, ".timedout");
+                                    });
+                                });
+                            },
+                            modules: {} // TODO
+                        }, (core.config.ish().onServer ? null : {
+                            scripts: {},  // TODO
+                            links: {},
+                            css: {}
+                        })
+                    );
+                }(),
+
+                /*ui: (core.config.ish().onServer ? null : { // TODO?
                     scrollTo: function ($) {},
-                    clearSelection: function ($) {}
+                    clearSelection: function ($) {},
+                    overlapping: function ($) {}
                 }),*/
 
                 lib: function ($) {
