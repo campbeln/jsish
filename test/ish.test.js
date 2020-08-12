@@ -435,8 +435,8 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                             $.assert(!core.type.bool.is.tristate("undefined"), "!is str undefined");
                             $.assert(core.type.bool.is.tristate("true", true), "is str allowed true");
                             $.assert(core.type.bool.is.tristate("false", true), "is str allowed false");
-                            $.assert(!core.type.bool.is.tristate("null", true), "is str allowed null");
-                            $.assert(!core.type.bool.is.tristate("undefined", true), "is str allowed undefined");
+                            $.assert(core.type.bool.is.tristate("null", true), "is str allowed null");
+                            $.assert(core.type.bool.is.tristate("undefined", true), "is str allowed undefined");
                             $.assert(core.type.bool.is.tristate("True", true), "is str allowed True");
                             $.assert(core.type.bool.is.tristate("FalSe", true), "is str allowed FalSe");
                             $.assert(core.type.bool.is.tristate("NULL", true), "is str allowed NULL");
@@ -714,8 +714,12 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                             }
                         },
 
-                        yyyymmdd: function ($) { //# TODO
-                            $.expect(1);
+                        yyyymmdd: function ($) {
+                            $.expect(4);
+                            $.assert(core.type.date.yyyymmdd("2020-01-02T00:00:00-08:00") === "2020/01/02", "2020/01/02");
+                            $.assert(core.type.date.yyyymmdd(1596864555023) === "2020/08/07", "2020/08/07");
+                            $.assert(core.type.date.yyyymmdd("not a date", 1596864555023) === "2020/08/07", "not/a/date");
+                            $.assert(core.type.date.yyyymmdd("not a date", 1596864555023, "-") === "2020-08-07", "not-a-date");
                         }
                     },
 
@@ -800,16 +804,16 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                         },
                         "is.async": function ($) {
                             $.expect(9);
-                            $.assert(!core.type.fn.is(function() {}), "fn");
-                            $.assert(core.type.fn.is(async function() {}), "async fn");
-                            $.assert(!core.type.fn.is(new Function()), "new Function()");
-                            $.assert(!core.type.fn.is(document.querySelector), "document.querySelector");
+                            $.assert(!core.type.fn.is.async(function() {}), "fn");
+                            $.assert(core.type.fn.is.async(async function() {}), "async fn");
+                            $.assert(!core.type.fn.is.async(new Function()), "new Function()");
+                            $.assert(!core.type.fn.is.async(document.querySelector), "document.querySelector");
 
-                            $.assert(!core.type.fn.is({}), "!obj");
-                            $.assert(!core.type.fn.is(null), "!null");
-                            $.assert(!core.type.fn.is(undefined), "!undefined");
-                            $.assert(!core.type.fn.is(1), "!1");
-                            $.assert(!core.type.fn.is([]), "![]");
+                            $.assert(!core.type.fn.is.async({}), "!obj");
+                            $.assert(!core.type.fn.is.async(null), "!null");
+                            $.assert(!core.type.fn.is.async(undefined), "!undefined");
+                            $.assert(!core.type.fn.is.async(1), "!1");
+                            $.assert(!core.type.fn.is.async([]), "![]");
                         },
                         "is.args": function ($) {
                             $.expect(6);
@@ -981,7 +985,7 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                         oOptions.maxAttempts - Integer defining the maximum number of polling attempts (default: 4).
                         oOptions.callback - Function to call on completion, with bSuccess as the first argument.
                         //oOptions.timeout - Maximum number of milliseconds to do the polling (default: 2000).
-                        */
+                        */ // TODO
                         poll: function ($) {/*
                             var oResults = {},
                                 fnTestFactory = function (sKey) {
@@ -1039,15 +1043,81 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                                     }, 20);
                                 }
                             }, 120);
-                        */}, // TODO
+                        */},
 
                         metadata: function ($) {
-                            $.expect(1);
-                            //TODO
+                            $.expect(6);
+                            $.assert.deepEqual(core.type.fn.metadata(function (neek, camp, bell) {}), {
+                                async: false,
+                                hasParens: true,
+                                isFn: true,
+                                isArrow: false,
+                                name: "[anonymous]",
+                                parameters: ["neek", "camp", "bell"]
+                            }, "function (neek, camp, bell) {}");
+                            $.assert.deepEqual(core.type.fn.metadata(function n(neek, camp) {}), {
+                                async: false,
+                                hasParens: true,
+                                isFn: true,
+                                isArrow: false,
+                                name: "n",
+                                parameters: ["neek", "camp"]
+                            }, "function n(neek, camp) {}");
+                            $.assert.deepEqual(core.type.fn.metadata((neeker) => {}), {
+                                async: false,
+                                hasParens: true,
+                                isFn: true,
+                                isArrow: true,
+                                name: "[anonymous]",
+                                parameters: ["neeker"]
+                            }, "(neeker) => {}");
+                            $.assert.deepEqual(core.type.fn.metadata(neeker2 => {}), {
+                                async: false,
+                                hasParens: false,
+                                isFn: true,
+                                isArrow: true,
+                                name: "[anonymous]",
+                                parameters: ["neeker2"]
+                            }, "neeker2 => {}");
+                            $.assert.deepEqual(core.type.fn.metadata(() => {}), {
+                                async: false,
+                                hasParens: true,
+                                isFn: true,
+                                isArrow: true,
+                                name: "[anonymous]",
+                                parameters: []
+                            }, "() => {}");
+                            $.assert.deepEqual(core.type.fn.metadata(async (n4) => {}), {
+                                async: true,
+                                hasParens: true,
+                                isFn: true,
+                                isArrow: true,
+                                name: "[anonymous]",
+                                parameters: ["n4"]
+                            }, "(n4) => {}");
                         },
 
                         signature: function ($) {
-                            $.expect(1);
+                            var fn = core.type.fn.signature(
+                                function (a, b, c) {
+                                    console.log(fn.signature.validate(arguments));
+                                    if (b) {
+                                        $.assert(fn.signature.validate(arguments).valid, "fn.args.valid");
+                                    }
+                                    else {
+                                        $.assert(!fn.signature.validate(arguments).valid, "!fn.args.valid");
+                                    }
+                                }, true)
+                                .parameter("int", "!int")
+                                .parameter("bool", "!bool")
+                                .parameter(function (x) { return core.type.arr.is(x, true); }, "!arr")
+                                .fn
+                            ;
+                            $.expect(4);
+                            fn(1, true, [1]);
+                            fn(1, true, ["one", "two"]);
+                            fn("1", false, ["one"]);
+                            fn(1, false, []);
                             //TODO
                         }
                     },
@@ -1077,8 +1147,21 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                         },
 
                         clone: function ($) {
-                            $.expect(1);
-                            //# todo
+                            var aResult,
+                                arr = [1,2,3]
+                            ;
+
+                            $.expect(6);
+                            aResult = core.type.arr.clone(arr);
+                            $.assert(aResult !== arr, "arr");
+                            $.assert.deepEqual(aResult, [1,2,3], "arr deepEqual");
+                            $.assert(core.type.arr.clone(null) === undefined, "undefined");
+                            $.assert(core.type.arr.clone("string") === undefined, "string");
+
+                            arr = [{ one: 1}, { two: 2 }, { three: 3 }];
+                            aResult = core.type.arr.clone(arr);
+                            $.assert(aResult !== arr, "arr2");
+                            $.assert.deepEqual(aResult, [{ one: 1}, { two: 2 }, { three: 3 }], "arr2 deepEqual");
                         },
 
                         rm: function ($) {
@@ -1251,11 +1334,11 @@ console.log(sUrl); // TODO: Why is this called for both import and require?
                     symbol: {
                         _: function($) {
                             $.expect(1);
-                            $.assertcore.type.symbol.is((core.type.symbol.get()), "get()");
+                            $.assert(core.type.symbol.is((core.type.symbol.get()), "get()"));
                         },
                         get: function($) {
                             $.expect(1);
-                            $.assertcore.type.symbol.is((core.type.symbol.get()), "get()");
+                            $.assert(core.type.symbol.is((core.type.symbol.get()), "get()"));
                         },
 
                         exists: function ($) {

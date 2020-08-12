@@ -745,60 +745,65 @@
         /** Symbol-based type functionality.
          * @namespace ish.type.symbol
          */ //#####
-        type.symbol = core.extend(
+        //#     NOTE: This base interface is more complicated than the others above due to the requirement of .exists and the use of .get and it's base function.
+        type.symbol = function () {
+            var fnReturnVal = function () {
+                return core.type.symbol.mk();
+            };
+
             //#########
             /** Safely returns a unique symbol, returning a unique object if <code>symbol</code> is not supported.
-             * @function ish.type.symbol.!
-             * @$aka ish.type.symbol.get
+             * @function ish.type.symbol.get
+             * @$aka ish.type.symbol
              * @returns {symbol} Value representing a unique symbol or object.
              */ //#####
-            function () {
+            //#     NOTE: fnReturnVal and .get have the same definition below but separate definitions to avoid ish.type.symbol.get having a recursive structure.
+            fnReturnVal.get = function () {
                 return core.type.symbol.mk();
-            }, {
-                get: function () {
-                    return core.type.symbol.mk();
-                }, //# symbol.get
+            };
 
-                //#########
-                /** Determines if the Symbol type is present in the current environment.
-                 * @function ish.type.symbol.exists
-                 * @returns {symbol} Value representing if the Symbol type is present in the current environment.
-                 */ //#####
-                exists: function () {
-                    return core.type.fn.is(_root.Symbol);
-                }, //# symbol.exists
 
-                //#########
-                /** Determines if the passed value represents a symbol.
-                 * @function ish.type.symbol.is
-                 * @param {variant} x Value to interrogate.
-                 * @returns {symbol} Value representing if the passed value represents a symbol.
-                 */ //#####
-                is: function (x) {
-                    //#     NOTE: Since the typeof call is gated by .symbol.exists below, we need to selectively enable esnext for this function in JSHint below (besides, it's not a real error, just ES6 safety from JSHint)
-                    /* jshint esnext: true */
-                    return (core.type.symbol.exists() && typeof x === 'symbol');
-                }, //# symbol.is
+            //#########
+            /** Determines if the Symbol type is present in the current environment.
+             * @function ish.type.symbol.exists
+             * @returns {symbol} Value representing if the Symbol type is present in the current environment.
+             */ //#####
+            fnReturnVal.exists = function () {
+                return (core.type.fn.is(_root.Symbol) && typeof _root.Symbol() === 'symbol');
+            }; //# symbol.exists
 
-                //#########
-                /** Casts the passed value into a symbol.
-                 * @function ish.type.symbol.mk
-                 * @param {variant} x Value to interrogate.
-                 * @param {variant} [vDefaultVal=Symbol()] Value representing the default return value if casting fails.
-                 * @returns {symbol} Value representing the passed value as a symbol type.
-                 */ //#####
-                mk: function (x, vDefaultVal) {
-                    return (core.type.symbol.is(x) ?
-                        x :
-                        (arguments.length <= 1 ?
-                            //# If .symbol.exists, create a new Symbol(), optionally using the passed x if it .is .str, else use a new blank object if !.symbol.exists
-                            (core.type.symbol.exists() ? _root.Symbol(core.type.str.is(x) ? x : _undefined) : {}) :
-                            vDefaultVal
-                        )
-                    );
-                } //# symbol.mk
-            }
-        ); //# ish.type.symbol
+            //#########
+            /** Determines if the passed value represents a symbol.
+             * @function ish.type.symbol.is
+             * @param {variant} x Value to interrogate.
+             * @returns {symbol} Value representing if the passed value represents a symbol.
+             */ //#####
+            fnReturnVal.is = function isSymbol(x) {
+                //#     NOTE: Since the typeof call is gated by .symbol.exists below, we need to selectively enable esnext for this function in JSHint below (besides, it's not a real error, just ES6 safety from JSHint)
+                /* jshint esnext: true */
+                return (core.type.symbol.exists() && typeof x === 'symbol');
+            }; //# symbol.is
+
+            //#########
+            /** Casts the passed value into a symbol.
+             * @function ish.type.symbol.mk
+             * @param {variant} x Value to interrogate.
+             * @param {variant} [vDefaultVal=Symbol()] Value representing the default return value if casting fails.
+             * @returns {symbol} Value representing the passed value as a symbol type.
+             */ //#####
+            fnReturnVal.mk = function (x, vDefaultVal) {
+                return (core.type.symbol.is(x) ?
+                    x :
+                    (arguments.length <= 1 ?
+                        //# If .symbol.exists, create a new Symbol(), optionally using the passed x if it .is .str, else use a new blank object if !.symbol.exists
+                        (core.type.symbol.exists() ? _root.Symbol(core.type.str.is(x) ? x : _undefined) : {}) :
+                        vDefaultVal
+                    )
+                );
+            }; //# symbol.mk
+
+            return fnReturnVal;
+        }(); //# ish.type.symbol
 
 
         return type;
@@ -1449,10 +1454,12 @@
                      * @see {@link https://en.wikipedia.org/wiki/Three-valued_logic#SQL|Wikipedia.org}
                      */ //#####
                     tristate: function (x, bAllowString) {
+                        var sX = core.type.str.mk(x).trim().toLowerCase();
+
                         return (
                             core.type.bool.is(x, bAllowString) || (
                                 !core.type.is.value(x) ||
-                                (bAllowString && (x === "null" || x === "undefined"))
+                                (bAllowString && (sX === "null" || sX === "undefined"))
                             )
                         );
                     },
@@ -1564,7 +1571,7 @@
                  * @returns {integer} Value representing the passed value formatted as <code>YYYY/MM/DD</code>.
                  */ //#####
                 yyyymmdd: function (x, vDefault, sDelimiter) {
-                    var dDate = core.type.date.mk(x, (arguments.length > 1 ? vDefault : new Date()));
+                    var dDate = core.type.date.mk(x, (arguments.length > 1 ? core.type.date.mk(vDefault) : new Date()));
 
                     sDelimiter = core.type.str.mk(sDelimiter, "/");
 
@@ -2159,7 +2166,7 @@
                                 //hasParens: true,
                                 //name: "",
                                 //parameters: [],
-                                is: false
+                                isFn: false
                             }
                         ;
 
@@ -2168,25 +2175,25 @@
                             //# .toString the passed fn into a_sParsedSignature
                             //#     NOTE: [1] full match, [1] function+name, [2] name, [3] (parameters, [4] parameters, [5] SingleArrowParameter, [6] fat arrow
                             a_sParsedSignature = fn.toString().match(
-                                /(function[\s]*?([a-zA-Z_$][^\(]*)?\s*?)?(\(([^\)]*)|([^,])?(\s*?=>))/m
+                                /(function[\s]*?([a-zA-Z_$][^\(]*)?\s*?)?(\(([^\)]*)|(([a-zA-Z_$][a-zA-Z0-9_$]*)?\s*?=>))/m
                             ); //# Non-Fat Arrow - .match(/function[\s]*?([a-zA-Z_$][^\(]*)?\s*?\(([^\)]*)/m);
 
                             //# If we could pull the a_sParsedSignature
                             if (core.type.arr.is(a_sParsedSignature, true)) {
                                 //# Determine if it .isArrow and if it .hasParens
                                 //#     NOTE: Due to the RegExp above, non-paren'd argument version of a fat arrow function is in [5] rather than [4]
-                                oReturnVal.isArrow = (a_sParsedSignature[0].indexOf("function") === 0);
+                                oReturnVal.isArrow = (a_sParsedSignature[0].indexOf("function") === -1);
                                 oReturnVal.hasParens = !a_sParsedSignature[5];
 
                                 //# Determine the function .name, where the sArgs are then .split them into our .parameters and finally set .is to true
                                 oReturnVal.name = core.type.str.mk(a_sParsedSignature[2]).trim() || "[anonymous]";
-                                sArgs = (a_sParsedSignature[4] || a_sParsedSignature[5]);
+                                sArgs = (a_sParsedSignature[4] || a_sParsedSignature[6]);
                                 oReturnVal.parameters = (sArgs ?
                                     sArgs.replace(/\s/g, "").split(",") :
                                     []
                                 );
-                                oReturnVal.is = true;
-                                oReturnVal.async = core.type.fn.ic.async(fn);
+                                oReturnVal.isFn = true;
+                                oReturnVal.async = core.type.fn.is.async(fn);
                             }
                         }
 
@@ -2198,6 +2205,7 @@
                     /** Allows for the definition and validation of the passed function's signature.
                      * @function ish.type.fn.signature
                      * @param {function} fn Value representing the function to define a signature for.
+                     * @param {boolean|string} [vAttachToProperty='signature'] Value representing the property name to attach the return value to under the passed <code>fn</code>.
                      * @returns {object} =chainedInterface Value representing a chained interface with the following properties:
                      *      @returns {function} =chainedInterface.parameter Defines the next parameter for the function; <code>parameter(vTest, sErrorMessage)</code>:
                      *          <table class="params">
@@ -2212,9 +2220,15 @@
                      *      @returns {string} =chainedInterface.name Value indicating the name of the passed function or <code>[anonymous]</code> if one is not specified.
                      *      @returns {string[]} =chainedInterface.parameters Value indicating the names of the passed function's parameters.
                      *      @returns {boolean} =chainedInterface.valid Value indicating if the passed arguments conform to the function's signature.
+                     *      @returns {boolean} =chainedInterface.fn Value representing the function to define a signature for.
                      */ //#####
-                    signature: function (fn) {
+                    signature: function (fn, vAttachToProperty) {
                         var oMetadata = core.type.fn.metadata(fn),
+                            sAttachToProperty = (
+                                vAttachToProperty ? (
+                                    core.type.str.is(vAttachToProperty) ? vAttachToProperty : "signature"
+                                ) : ""
+                            ),
                             a_oData = [],
                             oChained = {
                                 parameter: function (vTest, sErrorMessage) {
@@ -2276,15 +2290,21 @@
                         } //# notFnError
 
 
-                        //# If the passed fn .is a .fn, set the oChained properties
-                        if (oMetadata.is) {
+                        //# If the passed fn .isFn, set the oChained properties
+                        if (oMetadata.isFn) {
                             oChained.name = oMetadata.name;
                             oChained.parameters = oMetadata.parameters;
                             oChained.valid = _undefined;
+                            oChained.fn = fn;
                         }
                         //# Else the passed fn was invalid, so throw the notFnError
                         else {
                             notFnError();
+                        }
+
+                        //#
+                        if (sAttachToProperty) {
+                            fn[sAttachToProperty] = oChained;
                         }
 
                         return oChained;

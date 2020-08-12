@@ -448,8 +448,77 @@
                     };
                 }(), //# core.type.query
 
+
+                //#########
+                /** Registers a new type interface under <code>ish.type</code>.
+                 * @function ish.type.register
+                 * @param {string} sTypeName Value representing the type name to register.
+                 *      <br/><note>This must be unique (e.g. not currently in use under <code>ish.type</code>).</note>
+                 * @param {function|RegExp} vTest Value representing the test that verifies the type as a <code>RegExp<code> expression or a function that implements the test, accepting 1 argument (<code>x</code>) and returning truthy if the value is of a valid type.
+                 * @param {variant} [vMkDefaultVal] Value representing the default value returned by the <code>mk</code> interface if a <code>vDefaultVal</code> is not provided in the call.
+                 *      <br/><note>If this argument is omitted, a <code>mk</code> is not created.</note>
+                 * @returns {boolean} Value representing if the new type interface was successfully registered under <code>ish.type</code>.
+                 *      <br/><note>The <code>ish.type[sTypeName]</code> type interface is created with an <code>is</code> and optional <code>mk</code> functions. <code>is</code> accepts at least 1 argument which defines the variable to test. <code>mk</code> accepts 2 arguments (<code>vValToTest</code>, <code>vDefraultVal</code>) while calling the <code>is</code> interface, passing in <code>vValToTest</code> to determine if it is a valid type.</note>
+                 */ //#####
+                register: function (sTypeName, vTest, vMkDefaultVal) {
+                    /*
+                    Example: https://www.geeksforgeeks.org/how-to-validate-ssn-social-security-number-using-regular-expression/
+                    ish.type.register("ssn", /^(?!666|000|9\d{2})\d{3}-(?!00)\d{2}-(?!0{4})\d{4}$/, "000-00-0000");
+
+                    ^ represents the starting of the string.
+                    (?!666|000|9\\d{2})\\d{3} represents the first 3 digits should not starts with 000, 666, or between 900 and 999.
+                    – represents the string followed by a hyphen (-).
+                    (?!00)\\d{2} represents the next 2 digits should not starts with 00 and it should be any from 01-99.
+                    – represents the string followed by a hyphen (-).
+                    (?!0{4})\\d{4} represents the next 4 digits can’t 0000 and it should be any from 0001-9999.
+                    $ represents the ending of the string.
+                    */
+                    var oInterface = {
+                            is: (core.type.fn.is(vTest) ? vTest : (
+                                    core.type.regexp.is(vTest) ?
+                                    function (x) {
+                                        return vTest.test(x + "");
+                                    } :
+                                    _undefined
+                                )
+                            )
+                        },
+                        bReturnVal = (
+                            core.type.str.is(sTypeName, true) &&
+                            core.type[sTypeName] === undefined &&
+                            oInterface.is
+                        )
+                    ;
+
+                    //# If the caller passed in a valid sTypeName and vTest
+                    if (bReturnVal) {
+                        //# If the caller passed in a vMkDefaultVal, setup the .mk oInterface
+                        if (arguments.length > 2) {
+                            oInterface.mk = function (x, vDefaultVal) {
+                                return (fnTest(x) ?
+                                    x : (
+                                        arguments.length > 1 ? vDefaultVal : vMkDefaultVal
+                                    )
+                                );
+                            };
+                        }
+
+                        //# Set the oInterface under the unique sTypeName
+                        core.type[sTypeName] = oInterface;
+                    }
+
+                    return bReturnVal;
+                },
+
                 //####
                 //####
+
+                //# TODO tests, docs
+                regexp = {
+                    is: function (x) {
+                        return x instanceof RegExp;
+                    }
+                },
 
                 //#########
                 /** Universally Unique Identifier (UUID)-based type functionality.
@@ -520,8 +589,8 @@
                     return core.extend(
                         //#########
                         /** Generates a Universally Unique Identifier (UUID).
-                         * @function ish.type.uuid.!
-                         * @$aka ish.type.uuid.get
+                         * @function ish.type.uuid.get
+                         * @$aka ish.type.uuid
                          * @param {integer} [iVersion=4] Value representing the UUID version to create, with valid values ranging between <code>1</code>-<code>5</code>.
                          * @returns {boolean} Value representing UUID.
                          * @see {@link https://stackoverflow.com/a/2117523/235704|StackOverflow.com}
