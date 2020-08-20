@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>ish.io.daemon.js - Documentation</title>
+    <title>uuid - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -40,278 +40,1246 @@
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>//################################################################################################
-/** @file Daemon mixin for ish.js
- * @mixin ish.io.daemon
- * @author Nick Campbell
- * @license MIT
- * @copyright 2014-2020, Nick Campbell
- */ //############################################################################################
-/*global module, define */                                      //# Enable Node globals for JSHint
-/*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
-(function () {
-    'use strict';
+        <h1 class="page-title">ish.type.uuid</h1><!-- neek added to line 27 -->
+        
+            <h2 class="description">Universally Unique Identifier (UUID)-based type functionality.</h2>
+        
 
-    function init(core) {
-        //################################################################################################
-        /** Collection of Daemon-based functionality.
-         * @namespace ish.io.daemon
-         * @ignore
-         */ //############################################################################################
-        core.oop.partial(core.io, function (/*oProtected*/) {
-            var oDaemons = {
-                intervals: {
-                    //m60000: undefined
-                },
-                ids: [],
-                data: [],
-                counter: 0
-            };
+        <!-- neek
+        <h2>
+            <span class="ancestors"><a href="ish.html">ish</a><a href="ish.type.html">.type</a>.</span>
+        
+        uuid
+        </h2>
+        
+        neek -->
+    
+</header>
 
-            //# Factory function called by setInterval to execute the .register'ed .ids's
-            function daemon(iInterval) {
-                var sKey = "m" + iInterval;
+<article>
+    
+        <div class="container-overview">
+        
+            
 
-                return function () {
-                    var fn, oData, i,
-                        iCount = 0
-                    ;
+<dl class="details">
 
-                    //# Traverse our .register'ed .ids's, pulling the oData and fn for each loop and resetting out iCount
-                    for (i = 0; i &lt; oDaemons.ids.length; i++) {
-                        oData = oDaemons.data[i];
-                        fn = oData.fn;
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.type-ex.js.html">ish.type-ex.js</a>, <a href="ish.type-ex.js.html#line524">line 524</a>
+    </li></ul></dd>
+    
 
-                        //# If the current oData's .target equals our iInterval, inc our iCount
-                        if (oData.target === iInterval) {
-                            iCount++;
+    
 
-                            //# If we have to look at oData's .delayXIntervals
-                            if (oData.interval !== iInterval || core.type.date.time.is(oData.at)) {
-                                //# If the current .delayXIntervals is due to be called (pre-decrementing as we go), reset the .delayXIntervals and call the fn while pre-inc'ing .callCount
-                                if (--oData.delayXIntervals &lt;= 0) {
-                                    //# Calculate our .delayXIntervals
-                                    //#     NOTE: We subtract 1 to count this interval
-                                    oData.delayXIntervals = (core.type.date.time.is(oData.at) ?
-                                        core.io.daemon.units.day :
-                                        (oData.interval / oData.target)
-                                    ) - 1;
-                                    setTimeout(fn(++oData.callCount, core.extend({}, oData)), 0);
-                                    oData.lastCall = new Date();
-                                }
-                            }
-                            //# Else we call the fn on every loop, so do so now while pre-inc'ing .callCount
-                            else {
-                                setTimeout(fn(++oData.callCount, core.extend({}, oData)), 0);
-                                oData.lastCall = new Date();
-                            }
+    
 
-                            //# If we've reached our .maxIntervals, .unregister the fn
-                            /*if (oData.maxIntervals === oData.callCount) {
-                                core.io.daemon.unregister(fn);
-                            }*/
-                        }
-                    }
+    
 
-                    //# If there are no longer any .registered .ids's, .clearInterval and reset its ID so it can be respawned in .register
-                    if (iCount === 0) {
-                        clearInterval(oDaemons.intervals[sKey]);
-                        oDaemons.intervals[sKey] = 0;
-                    }
-                };
-            } //# daemon
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
 
 
-            return {
-                daemon: {
-                    //#########
-                    /** Registers the passed function as a daemon executed at the passed interval.
-                     * @function ish.io.daemon.register
-                     * @param {function} fn Value representing the function to execute.
-                     * @param {integer|string} [vInterval=ish.io.daemon.units.minute] Value representing the number of milliseconds between invocations or the &lt;code>hh:mm&lt;/code> to execute as a time string (in 24-hour format).
-                     * @returns {integer} Value representing the ID of the registered daemon function or &lt;code>0&lt;/code> if the call was unsuccessful.
-                     */ //#####
-                    register: function (fn, vInterval) {
-                        var oSeconds, sKey,
-                            iID = 0,
-                            oData = {
-                                interval: vInterval
-                            }
-                        ;
-
-                        //# If the passed fn is valid, populate our oData
-                        if (core.type.fn.is(fn)) {
-                            oData.registered = true;
-                            oData.callCount = 0;
-                            oData.fn = fn;
-                            oData.started = new Date();
-                            //oData.lastCall = undefined;
-                            //oData.maxIntervals = core.type.int.mk(oData.maxIntervals, -1);
-                            //oData.maxIntervals = (oData.maxIntervals &lt; 1 ? -1 : oData.maxIntervals);
-
-                            //# If we are to call daily at a specific time, determine the oSeconds
-                            if (core.type.date.time.is(oData.interval)) {
-                                oSeconds = {
-                                    at: core.type.date.time.seconds(oData.interval),
-                                    now: core.type.date.time.seconds()
-                                };
-
-                                //# Set our .interval, .target and .delayXIntervals to fire at the next .at
-                                //#     NOTE: If we haven't passed .at yet we can subtract .now from .at, else we need to determine the remaining seconds in today plus the .at into tomorrow
-                                oData.at = oData.interval;
-                                oData.interval = 60000;
-                                oData.target = 60000;
-                                oData.delayXIntervals = (oSeconds.at > oSeconds.now ?
-                                    oSeconds.at - oSeconds.now :
-                                    core.io.daemon.units.day - oSeconds.now + oSeconds.at
-                                );
-                            }
-                            //#
-                            /*else if (core.type.arr.is(oData.at, true)) {
-                                for (oData.i = 0; oData.i &lt; oData.at.length; oData.i++) {
-                                    core.io.daemon.register(fn, core.extend({}, oData, { at: oData[oData.i] }));
-                                }
-                            }*/
-                            //# Else we are to call on the .interval, so determine it, the .target and it's related .delayXIntervals
-                            else {
-                                //oData.at = undefined;
-                                oData.interval = core.type.int.mk(oData.interval, 60000);
-                                oData.target = (oData.interval % 60000 === 0 ? 60000 : oData.interval);
-                                oData.delayXIntervals = (oData.interval / oData.target);
-                            }
-
-                            //# Determine the iID for this daemon then set the .id and .push the above transformed oData into our arrays and determine the sKey name
-                            iID = ++oDaemons.counter;
-                            oData.id = iID;
-                            oDaemons.ids.push(iID);
-                            oDaemons.data.push(oData);
-                            sKey = "m" + oData.target;
-
-                            //# If we don't have an active .setInterval for the .target, kick it off now
-                            if (!oDaemons.intervals[sKey]) {
-                                oDaemons.intervals[sKey] = setInterval(daemon(oData.target), oData.target);
-                            }
-                        }
-
-                        return iID;
-                    }, //# io.daemon.register
 
 
-                    //#########
-                    /** Unregisters the referenced daemon function.
-                     * @function ish.io.daemon.unregister
-                     * @param {integer} iDaemonID Value representing the ID of the registered daemon function.
-                     * @returns {object} Value representing the status of the referenced daemon function.
-                     */ //#####
-                    unregister: function (iDaemonID) {
-                        var oStatus,
-                            iIndex = oDaemons.ids.indexOf(iDaemonID),
-                            bReturnVal = (iIndex > -1)
-                        ;
+            
+                <div class="description" style="display: none;">Universally Unique Identifier (UUID)-based type functionality.</div> <!-- neek added style="display: none;" -->
+            
 
-                        //# If we were able to locate the iIndex, .splice the entries from .ids and .data
-                        if (bReturnVal) {
-                            oDaemons.ids.splice(iIndex, 1);
-                            oStatus = oDaemons.data.splice(iIndex, 1);
-                        }
+            
+        
+        </div>
+    
 
-                        return (bReturnVal ? oStatus : { registered: false });
-                    }, //# io.daemon.unregister
+    
 
+    
 
-                    //#########
-                    /** Determines the status of the referenced daemon function.
-                     * @function ish.io.daemon.status
-                     * @$note If &lt;code>iDaemonID&lt;/code> isn't numeric, then all the status of all registered daemon functions are returned.
-                     * @param {integer} [iDaemonID] Value representing the ID of the registered daemon function.
-                     * @returns {object|object[]} Value representing the status of the referenced daemon function(s).
-                     */ //#####
-                    status: function (iDaemonID) {
-                        var vReturnVal, i;
+    
+    
+    
 
-                        //# If the passed iDaemonID .is .int, determine it's .indexOf and reset our vReturnVal accordingly
-                        if (core.type.int.is(iDaemonID)) {
-                            i = oDaemons.ids.indexOf(iDaemonID);
-                            vReturnVal = (i > -1 ? core.extend({}, oDaemons.data[i]) : { registered: false });
-                        }
-                        //# Else we need to return the .status of all registered daemons, so reset our vReturnVal to an array and .push a copy of each .data entry in
-                        else {
-                            vReturnVal = [];
-                            for (i = 0; i &lt; oDaemons.data.length; i++) {
-                                vReturnVal.push(core.extend({}, oDaemons.data[i]));
-                            }
-                        }
+     
 
-                        return vReturnVal;
-                    }, //# io.daemon.status
+    
+
+    
+
+    
+        <h3 class="subsection-title">Methods</h3>
+
+        
+            
+
+    
+
+    <h4 class="name" id=".format">
+      <!-- neek -->
+      <mixin>[mixin]</mixin>
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.uuid.format<span class="signature">(x, bUppercase<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
+
+    
 
 
-                    //#########
-                    /** Halts all registered daemon functions.
-                     * @function ish.io.daemon.halt
-                     * @note &lt;code>bConfirm&lt;/code> is used as a safety measure to help ensure that &lt;code>ish.io.daemon.halt&lt;/code> is not called accidentally.
-                     * @param {boolean} bConfirm Value representing if all registered daemon functions are to be halted. &lt;code>true&lt;/code> unregisters all functions; all other values leave the registered daemon functions unchanged.
-                     * @returns {object[]} Value representing the final status of all daemon functions that were successfully unregistered.
-                     */ //#####
-                    halt: function (bConfirm) {
-                        var i,
-                            a_oReturnVal = []
-                        ;
-
-                        //# If the caller bConfirm'd that they REALLY want to .halt all .registered .ids's, traverse them and .unregister them one by one while .push'ing each .status result into our a_oReturnVal
-                        if (bConfirm === true) {
-                            for (i = 0; i &lt; oDaemons.ids.length; i++) {
-                                a_oReturnVal.push(core.io.daemon.unregister(oDaemons.ids[i]));
-                            }
-                        }
-
-                        return a_oReturnVal;
-                    }, //# io.daemon.halt
 
 
-                    //#########
-                    /** Represents units of time as milliseconds.
-                     * @$note &lt;code>second&lt;/code>, &lt;code>minute&lt;/code>, &lt;code>hour&lt;/code>, &lt;code>day&lt;/code> and &lt;code>week&lt;/code> are provided in the returned &lt;code>object&lt;/code>.
-                     * @function ish.io.daemon.units
-                     * @$asProperty
-                     * @returns {object} Value representing units of time as milliseconds.
-                     */ //#####
-                    units: {
-                        second: 1000,
-                        minute: 60000,
-                        hour: (60000 * 60),
-                        day: (60000 * 60 * 24),
-                        week: (60000 * 60 * 24 * 7)
-                    } //# io.daemon.units
-                } //# io.daemon
-            };
-        }); //# core.io.daemon
+<dl class="details">
 
-        //# .fire the plugin's loaded event
-        core.io.event.fire("ish.io.daemon");
-    } //# init
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.type-ex.js.html">ish.type-ex.js</a>, <a href="ish.type-ex.js.html#line670">line 670</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
 
 
-    //# If we are running server-side
-    //#     NOTE: Generally compliant with UMB, see: https://github.com/umdjs/umd/blob/master/templates/returnExports.js
-    //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
-    if (typeof module === 'object' &amp;&amp; module.exports) { //if (typeof module !== 'undefined' &amp;&amp; this.module !== module &amp;&amp; module.exports) {
-        module.exports = init;
-    }
-    //# Else if we are running in an .amd environment, register as an anonymous module
-    else if (typeof define === 'function' &amp;&amp; define.amd) {
-        define([], init);
-    }
-    //# Else we are running in the browser, so we need to setup the _document-based features
-    else {
-        init(document.querySelector("SCRIPT[ish]").ish);
-    }
-}());</code></pre>
-        </article>
-    </section>
+
+
+
+<div class="description">
+    Removes any non-canonical brackets (e.g. <code>{}</code>) from the passed value.
+</div>
+
+
+<!-- neek -->
+
+    <div class="description">
+        <b><mixin>From Mixin:</mixin></b> <code>ish.type-ex.js</code> must be included for <code>ishJS</code> to access this functionality.
+    </div>
+
+
+
+
+
+
+
+<!-- neek -->
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Value to interrogate.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>bUppercase</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>false</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing if the UUID should be represented in uppercase letters.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Value representing the passed value as a formatted UUID.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+ <!-- neek -->
+ <!-- neek -->
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".get">
+      <!-- neek -->
+      <mixin>[mixin]</mixin>
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.uuid.get<span class="signature">(iVersion<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.type-ex.js.html">ish.type-ex.js</a>, <a href="ish.type-ex.js.html#line591">line 591</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://stackoverflow.com/a/2117523/235704">StackOverflow.com</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Generates a Universally Unique Identifier (UUID).
+</div>
+
+
+<!-- neek -->
+
+    <div class="description">
+        <b><mixin>From Mixin:</mixin></b> <code>ish.type-ex.js</code> must be included for <code>ishJS</code> to access this functionality.
+    </div>
+
+
+
+
+
+    <div class="description">
+        <b>AKA:</b> <code>ish.type.uuid</code>
+    </div>
+
+
+
+<!-- neek -->
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>iVersion</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">integer</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>4</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing the UUID version to create, with valid values ranging between <code>1</code>-<code>5</code>.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Value representing UUID.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+ <!-- neek -->
+ <!-- neek -->
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".is">
+      <!-- neek -->
+      <mixin>[mixin]</mixin>
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.uuid.is<span class="signature">(x, vOptions<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.type-ex.js.html">ish.type-ex.js</a>, <a href="ish.type-ex.js.html#line604">line 604</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-see">See:</dt>
+    <dd class="tag-see">
+        <ul>
+            <li><a href="https://tools.ietf.org/html/rfc4122#section-4.1.7">ietf.org</a></li>
+        </ul>
+    </dd>
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Determines if the passed value represents a UUID.
+</div>
+
+
+<!-- neek -->
+
+    <div class="description">
+        <b><mixin>From Mixin:</mixin></b> <code>ish.type-ex.js</code> must be included for <code>ishJS</code> to access this functionality.
+    </div>
+
+
+
+
+
+
+
+<!-- neek -->
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Value to interrogate.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vOptions</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+|
+
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+
+            <td class="description last">Value representing if Nil UUIDs are to be ignored or the following options:
+                <h6>Properties</h6>
+                
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>excludeNilUUID</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>false</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing if Nil UUIDs are to be ignored.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>allowBrackets</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>false</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing if enclosing brackets (<code>{}</code>) are to be allowed.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>version</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">integer</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Value representing the required UUID version, with valid values ranging between <code>1</code>-<code>5</code>.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+            </td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">boolean</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Value representing if the passed value represents a UUID.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+ <!-- neek -->
+ <!-- neek -->
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".mk">
+      <!-- neek -->
+      <mixin>[mixin]</mixin>
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.type.uuid.mk<span class="signature">(x, vDefaultVal<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {object}</span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.type-ex.js.html">ish.type-ex.js</a>, <a href="ish.type-ex.js.html#line643">line 643</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Casts the passed value into a UUID.
+</div>
+
+
+<!-- neek -->
+
+    <div class="description">
+        <b><mixin>From Mixin:</mixin></b> <code>ish.type-ex.js</code> must be included for <code>ishJS</code> to access this functionality.
+    </div>
+
+
+
+
+
+
+
+<!-- neek -->
+
+
+
+
+
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>x</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Value to interrogate.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>vDefaultVal</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">variant</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>ish.type.uuid()</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing the default return value if casting fails.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<h5>Returns:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+
+        <th>Type</th>
+
+        
+
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">object</span>
+
+
+            
+            </td>
+
+            
+
+            
+
+            <td class="description last">Value representing the passed value as a UUID.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+ <!-- neek -->
+ <!-- neek -->
+
+
+
+        
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 
