@@ -105,15 +105,16 @@
                         /** Extracts the passed value's numeric characters.
                          * @function ish.type.is.numeric:extract
                          * @param {variant} x Value to interrogate.
+                         * @param {variant} [vDefaultVal=0] Value representing the default return value if casting fails.
                          * @returns {integer} Value representing the passed value's numeric characters.
                          */ //#####
-                        extract: function (x) {
+                        extract: function (x, vDefaultVal) {
                             var a_sReturnVal;
 
                             //# Force the passed x into a string for the .match below, .join'ing the results in our a_sReturnVal
                             x = core.type.str.mk(x);
-                            a_sReturnVal = x.match(/\d/g);
-                            return core.type.int.mk(a_sReturnVal.join(""));
+                            a_sReturnVal = x.match(/\d/g) || [];
+                            return core.type.int.mk(a_sReturnVal.join(""), (arguments.length > 1 ? vDefaultVal : 0));
                         }, //# type.is.numeric.extract
 
 

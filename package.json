@@ -1,6 +1,6 @@
 {
     "name": "jsish",
-    "version": "0.13.2020-08-04",
+    "version": "0.13.2020-09-02",
     "description": "Zero-dependency Javascript code snippets organized in an OOP structure",
     "license": "MIT",
     "repository": "campbeln/jsish",
