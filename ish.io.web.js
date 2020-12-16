@@ -137,10 +137,11 @@
                                     }, //# stringify
 
                                     set: function () {
-                                        var dExpires, sDomain, sPath, iMaxAge;
+                                        var dExpires, sDomain, sPath, sSameSite, iMaxAge;
 
                                         //# Ensure the .path and .maxAge are valid or defaulted to root and .seconds7Days respectively
                                         sPath = oOptions.path = core.type.str.mk(oOptions.path, "/");
+                                        sSameSite = oOptions.sameSite = core.type.str.mk(oOptions.sameSite, "Lax");
                                         sDomain = oOptions.domain = core.type.str.mk(oOptions.domain);
                                         iMaxAge = oOptions.maxAge = core.type.int.mk(oOptions.maxAge, (1000 * 60 * 60 * 24 * 7));
 
@@ -157,6 +158,7 @@
                                             (iMaxAge > 0 ? "; max-age=" + iMaxAge : "") +
                                             (dExpires ? "; expires=" + dExpires.toUTCString() : "") +
                                             (sDomain ? '; domain=.' + sDomain : "") +
+                                            (sSameSite ? '; SameSite=' + sSameSite : "") +
                                         "; ");
 
                                         //# Flip .isNew to false (as its now present on the browser)

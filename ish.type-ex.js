@@ -845,12 +845,69 @@
                         //# If the passed dob is a valid date
                         if (core.type.date.is(dDOB)) {
                             //# Set dAgeSpan based on the milliseconds from epoch
-                            dAgeSpan = new Date(Date.now() - core.type.date.mk(dDOB, _null));
+                            dAgeSpan = new Date(Date.now() - dDOB);
                             iReturnVal = Math.abs(dAgeSpan.getUTCFullYear() - 1970);
                         }
 
                         return iReturnVal;
                     }, //# date.age
+
+
+                    //#########
+                    /** Determines the difference between two dates.
+                     * @$note The passed values are implicitly casted per <code>{@link ish.type.date.mk}</code>.
+                     * @function ish.type.date.diff
+                     * @param {variant} x Value representing the first date to compare.
+                     * @param {variant} [y=new Date()] Value representing the second date to compare.
+                     * @param {string} [eUnitOfTime="d"] Value representing the unit of time to return; <code>s</code> seconds, <code>m</code> minutes, <code>h</code> hours, <code>d</code> days, <code>w</code> weeks, <code>M</code> months, <code>Y</code> years.
+                     * @returns {integer} Value representing the difference between two dates.
+                     */ //#####
+                    diff: function (x, y, eUnitOfTime) {
+                        var iMS,
+                            dX = core.type.date.mk(x),
+                            dY = core.type.date.mk(y),
+                            dReturnVal = null
+                        ;
+
+                        //# Determine the eUnitOfTime, setting iMS accordingly (or dReturnVal)
+                        switch (core.type.str.mk(eUnitOfTime, "d")) {
+                            case "s": {
+                                iMS = 1000;
+                                break;
+                            }
+                            case "m": {
+                                iMS = 1000 * 60;
+                                break;
+                            }
+                            case "h": {
+                                iMS = 1000 * 60 * 60;
+                                break;
+                            }
+                            case "d": {
+                                iMS = 1000 * 60 * 60 * 24;
+                                break;
+                            }
+                            case "w": {
+                                iMS = 1000 * 60 * 60 * 24 * 7;
+                                break;
+                            }
+                            case "M": { //# month
+                                dReturnVal = (dY.getMonth() - dX.getMonth() + (12 * (dY.getFullYear() - dX.getFullYear())));
+                                break;
+                            }
+                            case "Y": {
+                                dReturnVal = (dY.getFullYear() - dX.getFullYear());
+                                break;
+                            }
+                        }
+
+                        //#
+                        if (dReturnVal === null) {
+                            dReturnVal = ((dY - dX) / iMS);
+                        }
+
+                        return dReturnVal;
+                    }, //# date.diff
 
 
                     //#########

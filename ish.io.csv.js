@@ -125,6 +125,10 @@
                                         vCurrent = JSON.stringify(vCurrent);
                                     }
                                     //#
+                                    else if (oOptions.quotes) {
+                                        vCurrent = '"' + vCurrent + '"';
+                                    }
+                                    //#
                                     else if (!core.type.is.numeric(vCurrent)) {
                                         vCurrent = core.type.str.mk(vCurrent);
 
