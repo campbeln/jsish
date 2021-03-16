@@ -1861,7 +1861,7 @@
                     //#########
                     /** Determines if asynchronous functions are supported in the current environment.
                      * @function ish.type.fn.asyncSupport
-                     * @returns {symbol} Value representing if asynchronous functions are supported in the current environment.
+                     * @returns {boolean} Value representing if asynchronous functions are supported in the current environment.
                      */ //#####
                     asyncSupport: function () {
                         var bReturnVal = false;

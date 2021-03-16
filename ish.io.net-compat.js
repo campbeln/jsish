@@ -778,9 +778,9 @@
                             is: core.extend(
                                 function (x) {
                                     return (
-                                        core.app.ip.is.v4(x) ?
+                                        core.io.net.ip.is.v4(x) ?
                                         4 :
-                                            core.app.ip.is.v6(x) ?
+                                            core.io.net.ip.is.v6(x) ?
                                             6 :
                                             0
                                     );
@@ -810,7 +810,7 @@
                                         */ //#####
                                         v4: function (x) {
                                             return reIPv4.test(x + "");
-                                        }, //# core.app.ip.is.v4
+                                        }, //# core.io.net.ip.is.v4
 
                                         //#########
                                         /** Determines if the passed value represents an IPv6.
@@ -820,11 +820,11 @@
                                         */ //#####
                                         v6: function (x) {
                                             return reIPv6.test(x + "");
-                                        } //# core.app.ip.is.v6
+                                        } //# core.io.net.ip.is.v6
                                     };
                                 }()
-                            ) //# core.app.ip.is
-                        }, //# core.app.ip
+                            ) //# core.io.net.ip.is
+                        }, //# core.io.net.ip
 
 
                         //#########

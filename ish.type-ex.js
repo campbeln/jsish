@@ -11,7 +11,7 @@
 (function () {
     'use strict';
 
-    function init(core) {
+    function init(core, atob, btoa) {
         var bServerside = core.config.ish().onServer,                                   //# code-golf
             _root = (bServerside ? global : window),                                    //# code-golf
             _undefined /*= undefined*/,                                                 //# code-golf
@@ -287,7 +287,90 @@
                                 x.replace('.', vOptions.decimal) :
                                 x
                             ).replace(new RegExp(sRegExp, 'g'), '$&' + vOptions.section);
-                        } //# type.is.numeric.format
+                        }, //# type.is.numeric.format
+
+
+                        hex: {
+                            is: function (vValue) {
+                                var bReturnVal = false;
+
+                                try {
+                                    vValue = parseInt(vValue, 16);
+                                    bReturnVal = true;
+                                } catch (e) {}
+
+                                return bReturnVal;
+                            }, //# type.is.numeric.hex.is
+
+                            mk: function (vValue, vDefault) {
+                                var sReturnVal = (arguments.length === 2 ? vDefault : 0);
+
+                                //#
+                                if (core.type.int.is(vValue)) {
+                                    sReturnVal = core.type.float.mk(vValue).toString(16);
+                                }
+                                //#
+                                else if (core.type.is.numeric.hex.is(vValue)) {
+                                    sReturnVal = vValue;
+                                }
+
+                                return sReturnVal;
+                            }, //# type.is.numeric.hex.mk
+
+                            parse: function (vValue, vDefault) {
+                                var iReturnVal = (arguments.length === 2 ? vDefault : 0);
+
+                                try {
+                                    iReturnVal = parseInt(vValue, 16);
+                                } catch (e) {}
+
+                                return iReturnVal;
+                            } //# type.is.numeric.hex.parse
+                        },
+
+
+                        base64: function () {
+                            //# FROM: https://gist.github.com/GeorgioWan/16a7ad2a255e8d5c7ed1aca3ab4aacec
+                            function hexToBase64(str) {
+                                return btoa(String.fromCharCode.apply(null,
+                                str.replace(/\r|\n/g, "").replace(/([\da-fA-F]{2}) ?/g, "0x$1 ").replace(/ +$/, "").split(" "))
+                                );
+                            } //# hexToBase64
+                            function base64ToHex(str) {
+                                for (var i = 0, bin = atob(str.replace(/[ \r\n]+$/, "")), hex = []; i < bin.length; ++i) {
+                                    var tmp = bin.charCodeAt(i).toString(16);
+                                    if (tmp.length === 1) tmp = "0" + tmp;
+                                    hex[hex.length] = tmp;
+                                }
+                                return hex.join("");
+                            } //# base64ToHex
+
+                            return {
+                                encode: function (vValue, bPaddingCharacters) {
+                                    var sHex = core.type.is.numeric.hex.mk(vValue, null),
+                                        sReturnVal = ""
+                                    ;
+
+                                    //# If we got a sHex vValue, convert it .hexToBase64 while optionally stripping the bPaddingCharacters
+                                    if (sHex /* !== null*/) {
+                                        sReturnVal = hexToBase64(sHex);
+                                        sReturnVal = (bPaddingCharacters ? sReturnVal : sReturnVal.replace(/=/g, ""));
+                                    }
+
+                                    return sReturnVal;
+                                }, //# type.is.numeric.base64.encode
+
+                                decode: function (sBase64) {
+                                    var sHex = "";
+
+                                    try {
+                                        sHex = base64ToHex(sBase64);
+                                    } catch (e) {}
+
+                                    return sHex;
+                                } //# type.is.numeric.base64.decode
+                            };
+                        }()
                     } //# type.is.numeric
                 }, //# core.type.is
 
@@ -551,7 +634,7 @@
                             );
 
                             /*jslint bitwise: true */           //# Enable bitwise operators for JSHint
-                            return 'xxxxxxxx-xxxx-' + fixVersion(iVersion) + 'xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
+                            return ('xxxxxxxx-xxxx-' + fixVersion(iVersion) + 'xxx-yxxx-xxxxxxxxxxxx').replace(/[xy]/g, function (c) {
                                 var r = (d + Math.random() * 16) % 16 | 0;
                                 d = Math.floor(d / 16);
                                 return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
@@ -694,6 +777,32 @@
                                         x :
                                         ""
                                 );
+                            },
+
+                            //#########
+                            /** Encodes and decodes Universally Unique Identifiers (UUID) in Base64.
+                             * @function ish.type.uuid.base64
+                             * @note UUIDs encoded in Base64 rather than hexadecimal (Base16) produce up to 39% shorter string lengths. UUIDs are 128bit numbers encoded in hexadecimal resulting in 36 character strings (32 plus 4 dashes). Encoding the 128bit number in Base64 reduces the string length to 24 characters (22 plus 2 optional padding characters).
+                             * @param {variant} [vValue=ish.type.uuid()] Value representing a standard UUID to be returned as a Base64 encoded UUID or a Base64 encoded UUID to be returned as a standard UUID.
+                             * @returns {string} Value representing a new Base64 encoded UUID, the passed UUID in Base64, the passed Base64 encoded UUID as a standard UUID or a <code>null-string</code> if the passed UUID was not recognized.
+                             */ //#####
+                            base64: function (vValue) {
+                                var sReturnVal;
+
+                                //# If no vValue was passed (implying a UUID creation) or it .is a .uuid, .base64.encode it
+                                if (arguments.length === 0 || core.type.uuid.is(vValue)) {
+                                    sReturnVal = core.type.is.numeric.base64.encode(
+                                        (arguments.length === 0 ? core.type.uuid() : core.type.uuid.format(vValue)).replace(/-/g, "")
+                                    );
+                                }
+                                //# Else a vValue was passed, so .decode it as a .base64 vValue
+                                else {
+                                    sReturnVal = core.type.uuid.format(
+                                        core.type.is.numeric.base64.decode(vValue)
+                                    );
+                                }
+
+                                return sReturnVal;
                             }
                         }
                     );
@@ -1143,7 +1252,7 @@
                          */ //#####
                         ends: function (x, vReference) {
                             return doSearch(x, core.type.arr.mk(vReference, [vReference]), function (iIndexOf, iX, iReference) {
-                                return (iIndexOf === (iX - iReference));
+                                return (iIndexOf != -1 && iIndexOf === (iX - iReference));
                             });
                         }, //# type.str.ends
 
@@ -2667,14 +2776,22 @@
     //#     NOTE: Compliant with UMD, see: https://github.com/umdjs/umd/blob/master/templates/returnExports.js
     //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
     if (typeof module === 'object' && module.exports) { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
-        module.exports = init;
+        module.exports = function (core) {
+            init(
+                core,
+                x => Buffer.from(x, 'base64').toString(),
+                x => Buffer.from(x).toString('base64')
+            );
+        };
     }
     //# Else if we are running in an .amd environment, register as an anonymous module
     else if (typeof define === 'function' && define.amd) {
-        define([], init);
+        define([], function (core) {
+            init(core, window.atob, window.btoa);
+        });
     }
     //# Else we are running in the browser, so we need to setup the _document-based features
     else {
-        init(document.querySelector("SCRIPT[ish]").ish);
+        init(document.querySelector("SCRIPT[ish]").ish, window.atob, window.btoa);
     }
 }());

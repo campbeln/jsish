@@ -290,7 +290,7 @@
                 }, //# processOptions
 
                 //# Wrapper for a Fetch call
-                doFetch: function (sVerb, sUrl, oBody, oOptions) {
+                doFetch: async function (sVerb, sUrl, oBody, oOptions) {
                     //# init
                     //#     SEE: https://developer.mozilla.org/en-US/docs/Web/API/WindowOrWorkerGlobalScope/fetch#Parameters
                     //#     SEE: https://javascript.info/fetch-api
@@ -314,7 +314,7 @@
 
                         //# ish.io.net additional oOptions
 
-                        returnType: "json",         //# "arrayBuffer", "blob", "formData", "json", "text"
+                        returnType: "text",         //# "arrayBuffer", "blob", "formData", "json", "text"
 
                         retry: 500,                 //# integer, function
                         maxAttempts: 5,             //# integer
@@ -337,14 +337,14 @@
                         syRetrying = core.type.symbol.get(),
                         oData = {
                             ok: false,
-                            //status: undefined,
+                            //status: _undefined,
                             url: sUrl,
                             verb: sVerb,
                             //async: bAsync,
                             //aborted: bAbort,
-                            //response: undefined,
-                            text: null,
-                            json: null,
+                            //response: _undefined,
+                            text: _undefined,
+                            json: _undefined,
                             retries: 0
                         }
                     ;
@@ -352,7 +352,7 @@
                     //# Ensure the passed oOptions is an .obj and validate it's .returnType
                     oOptions = core.type.obj.mk(oOptions);
                     oOptions.returnType = (["arrayBuffer", "blob", "formData", "json", "text"].indexOf(oOptions.returnType) === -1 ?
-                        "json" :
+                        "text" :
                         oOptions.returnType
                     );
 
@@ -366,24 +366,34 @@
                     //# Set the required .method and .body elements while removing the ish-specific .returnType, .retry and .attempts into .fetch's oInit
                     oInit = core.extend(oOptions, {
                         method: sVerb,
-                        body: (core.type.is.value(oBody) && sVerb !== "GET" && sVerb !== "HEAD" ? oBody : _undefined),
+                        body: (
+                            core.type.is.value(oBody) && sVerb !== "GET" && sVerb !== "HEAD" ?
+                                (core.type.obj.is(oBody) ? JSON.stringify(oBody) : oBody) :
+                                _undefined
+                        ),
                         //mode: "cors",
-                        returnType: _undefined,
+                        //returnType: _undefined,
                         retry: _undefined,
                         attempts: _undefined
                     });
 
                     //#
-                    return new Promise(function callFetch(fnResolve /*, fnReject*/) {
+                    return new Promise(async function callFetch(fnResolve /*, fnReject*/) {
                         //# .fetch the sURL
                         fetch(sUrl, oInit)
-                            .then(function /*fetchPromise*/(oResponse) {
+                            .then(async function /*fetchPromise*/(oResponse) {
                                 var vReturnVal;
 
                                 //# Set the oData based on the oResponse
                                 oData.ok = oResponse.ok; // ((oResponse.status >= 200 && oResponse.status <= 299) || (oResponse.status === 0 && sUrl.substr(0, 7) === "file://"));
                                 oData.status = oResponse.status;
+                                oData.url = sUrl;
+                                //oData.verb = sVerb;
+                                //oData.async = true;
+                                //oData.aborted = false;
                                 oData.response = oResponse;
+                                //oData.json = await oResponse.json();
+                                //oData.text = await oResponse.text();
 
                                 //# If the oData was not .ok and we have an oOptions.retry (calling it to calculate the iMS as we go)
                                 if (
@@ -405,14 +415,14 @@
                                     //# Based on .ok, return the chainedResponsePromise
                                     //#     SEE: https://developer.mozilla.org/en-US/docs/Web/API/Response
                                     vReturnVal = (oData.ok ?
-                                        oResponse[oOptions.returnType]() :
+                                        await oResponse[oOptions.returnType]() :
                                         Promise.reject(oResponse) //# Set our vReturnVal to .reject the fetchPromise so it's .catch'ed by chainedResponsePromise
                                     );
                                 }
 
                                 return vReturnVal;
                             })
-                            .then(function /*chainedResponsePromise*/(vResponseData) {
+                            .then(/*async*/ function /*chainedResponsePromise*/(vResponseData) {
                                 oData.data = vResponseData;
 
                                 //# If the vResponseData .is .obj or .arr, also set it into our .json
@@ -427,11 +437,12 @@
                                 //# .fnResolve our oData
                                 fnResolve(oData);
                             })
-                            .catch(function (oError) {
+                            .catch(async function (oError) {
                                 //# As long as oError isn't our syRetrying symbol (meaning that we're... syRetrying)
                                 if (oError !== syRetrying) {
                                     //# Set the oError into the .response and .fnResolve the Promise
                                     oData.response = oError;
+                                    oData.data = await oError[oOptions.returnType]();
                                     fnResolve(oData);
                                 }
                             })
