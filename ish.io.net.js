@@ -8,7 +8,7 @@
 /*global module, define, require, Promise */                        //# Enable Node globals for JSHint
 /*jshint maxcomplexity:9 */                                         //# Enable max complexity warnings for JSHint
 (function () {
-    'use strict';
+    'use strict'; //<MIXIN>
 
     function init(core, fetch) {
         var fnNetInterfaceFactory;
@@ -314,7 +314,7 @@
 
                         //# ish.io.net additional oOptions
 
-                        returnType: "text",         //# "arrayBuffer", "blob", "formData", "json", "text"
+                        returnType: "jsonOrText",   //# "arrayBuffer", "blob", "formData", "json", "text", "jsonOrText"
 
                         retry: 500,                 //# integer, function
                         maxAttempts: 5,             //# integer
@@ -334,6 +334,7 @@
 
 
                     var oInit, iMS,
+                        bJsonOrText = false,
                         syRetrying = core.type.symbol.get(),
                         oData = {
                             ok: false,
@@ -351,10 +352,14 @@
 
                     //# Ensure the passed oOptions is an .obj and validate it's .returnType
                     oOptions = core.type.obj.mk(oOptions);
-                    oOptions.returnType = (["arrayBuffer", "blob", "formData", "json", "text"].indexOf(oOptions.returnType) === -1 ?
-                        "text" :
+                    oOptions.returnType = (["arrayBuffer", "blob", "formData", "json", "text", "jsonOrText"].indexOf(oOptions.returnType) === -1 ?
+                        "jsonOrText" :
                         oOptions.returnType
                     );
+                    if (oOptions.returnType === "jsonOrText") {
+                        oOptions.returnType = "text";
+                        bJsonOrText = true;
+                    }
 
                     //#
                     sVerb = core.type.str.mk(sVerb).toUpperCase();
@@ -418,6 +423,11 @@
                                         await oResponse[oOptions.returnType]() :
                                         Promise.reject(oResponse) //# Set our vReturnVal to .reject the fetchPromise so it's .catch'ed by chainedResponsePromise
                                     );
+
+                                    //#
+                                    if (bJsonOrText && core.type.str.is.json(vReturnVal)) {
+                                        vReturnVal = JSON.parse(vReturnVal);
+                                    }
                                 }
 
                                 return vReturnVal;
@@ -442,7 +452,9 @@
                                 if (oError !== syRetrying) {
                                     //# Set the oError into the .response and .fnResolve the Promise
                                     oData.response = oError;
-                                    oData.data = await oError[oOptions.returnType]();
+                                    try {
+                                        oData.data = await oError[oOptions.returnType]();
+                                    } catch (e) {};
                                     fnResolve(oData);
                                 }
                             })
@@ -662,4 +674,6 @@
     else {
         init(document.querySelector("SCRIPT[ish]").ish, window.fetch);
     }
+
+    //</MIXIN>
 }());

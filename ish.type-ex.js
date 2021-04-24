@@ -9,7 +9,7 @@
 /*global module, define, global, WeakMap */                     //# Enable Node globals for JSHint
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
 (function () {
-    'use strict';
+    'use strict'; //<MIXIN>
 
     function init(core, atob, btoa) {
         var bServerside = core.config.ish().onServer,                                   //# code-golf
@@ -2794,4 +2794,6 @@
     else {
         init(document.querySelector("SCRIPT[ish]").ish, window.atob, window.btoa);
     }
+
+    //</MIXIN>
 }());

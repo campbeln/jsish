@@ -7,6 +7,7 @@
  */ //############################################################################################
 /*global module, define, global */                              //# Enable Node globals for JSHint
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
+//<MIXIN>
 (function (fnMaskedEvaler) {
     'use strict';
 
@@ -186,3 +187,4 @@
         //return arguments[0];
     } //# fnMaskedEvaler
 ));
+//</MIXIN>

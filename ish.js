@@ -21,7 +21,7 @@
  *      All features are organized in individually includable mixins organized by namespace/major features with only the core <code>ish.js</code> functionality required to bootstrap.
  *  </p>
  * </div>
- * @version 0.13.2020-12-16
+ * @version 0.14.2021-04-24
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2020, Nick Campbell
@@ -3576,10 +3576,16 @@
         }());
     }
 
-
+    //########
+    //# Procedural code
     //########
 
-
-    //# Procedural code
     oPrivate.init();
+
+    //########
+    //# ish mixins target for programatic insertion of code
+    //########
+
+    //<MIXINS/>
+
 }(/*global, module, require, process, __dirname*/)); //# NodeJS-specific features that will be undefined in the browser; see: https://nodejs.org/docs/latest/api/globals.html + https://nodejs.org/docs/latest/api/modules.html#modules_dirname

@@ -7,6 +7,7 @@
  */ //############################################################################################
 /*global module, define, global */                              //# Enable Node globals for JSHint
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
+//<MIXIN>
 (function (fnEvalerMetaFactory) {
     'use strict';
 
@@ -777,3 +778,4 @@
         //# </EvalerJS>
     ) //# fnEvalerMetaFactory
 ));
+//</MIXIN>

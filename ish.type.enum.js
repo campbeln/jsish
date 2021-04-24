@@ -8,10 +8,9 @@
 /*global module, define */                                      //# Enable Node globals for JSHint
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
 (function () {
-    'use strict';
+    'use strict'; //<MIXIN>
 
     function init(core) {
-
         //# .require the necessary ish plugins
         //#     NOTE: core.require includes the required scripts/CSS then runs the provided function
         core.require(["ish.io.net.js", "ish.type-ex.js"], function (/*a_sUrls, bAllLoaded*/) {
@@ -447,4 +446,6 @@
     else {
         init(document.querySelector("SCRIPT[ish]").ish);
     }
+
+    //</MIXIN>
 }());

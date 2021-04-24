@@ -9,7 +9,7 @@
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
 /*jslint bitwise: true */                                       //# Enable bitwise operators for JSHint
 (function () {
-    'use strict';
+    'use strict'; //<MIXIN>
 
     function init(core) {
         //Javascript Punycode converter derived from example in RFC3492.
@@ -409,4 +409,6 @@
     else {
         init(document.querySelector("SCRIPT[ish]").ish);
     }
+
+    //</MIXIN>
 }());

@@ -8,7 +8,7 @@
 /*global module, define, require, XMLHttpRequest, ActiveXObject */  //# Enable Node globals for JSHint
 /*jshint maxcomplexity:9 */                                         //# Enable max complexity warnings for JSHint
 (function () {
-    'use strict';
+    'use strict'; //<MIXIN>
 
     function init(core, fetch, XHRConstructor) {
         //################################################################################################
@@ -941,4 +941,6 @@
         /*global ActiveXObject: false */ //# JSHint "ActiveXObject variable undefined" error suppressor
         init(document.querySelector("SCRIPT[ish]").ish, window.fetch, XMLHttpRequest || ActiveXObject);
     }
+
+    //</MIXIN>
 }());

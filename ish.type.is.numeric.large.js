@@ -8,7 +8,7 @@
 /*global module, define */                                      //# Enable Node globals for JSHint
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
 (function () {
-    'use strict';
+    'use strict'; //<MIXIN>
 
     function init(core) {
         //################################################################################################
@@ -243,4 +243,6 @@
     else {
         init(document.querySelector("SCRIPT[ish]").ish);
     }
+
+    //</MIXIN>
 }());

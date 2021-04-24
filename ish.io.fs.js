@@ -6,6 +6,7 @@
  * @copyright 2014-2020, Nick Campbell
  */ //############################################################################################
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
+//<MIXIN>
 (function (core) {
     'use strict';
 
@@ -120,3 +121,4 @@
     core.io.event.fire("ish.io.fs");
 
 }(document.querySelector("SCRIPT[ish]").ish)); //# Web-only
+//</MIXIN>

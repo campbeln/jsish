@@ -7,6 +7,7 @@
  */ //############################################################################################
 /*global module, define */                                      //# Enable Node globals for JSHint
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
+//<MIXIN>
 (function (X2JS) {
     "use strict";
 
@@ -797,3 +798,4 @@
         };
     }
 ));
+//</MIXIN>

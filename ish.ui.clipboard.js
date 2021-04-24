@@ -6,6 +6,7 @@
  * @copyright 2014-2020, Nick Campbell
  * @ignore
  */ //############################################################################################
+//<MIXIN>
 (function (core) {
     "use strict";
 
@@ -71,3 +72,4 @@
     core.io.event.fire("ish.ui.clipboard");
 
 }(document.querySelector("SCRIPT[ish]").ish)); //# Web-only
+//</MIXIN>

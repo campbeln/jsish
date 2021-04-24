@@ -7,6 +7,7 @@
  * @ignore
  */ //############################################################################################
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
+//<MIXIN>
 (function (core) {
     'use strict';
 
@@ -949,3 +950,4 @@
     core.io.event.fire("ish.ui.dom");
 
 }(document.querySelector("SCRIPT[ish]").ish)); //# Web-only
+//</MIXIN>

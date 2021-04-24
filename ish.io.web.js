@@ -8,7 +8,7 @@
 /*global module, define, global, require */                     //# Enable Node globals for JSHint
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
 (function () {
-    'use strict';
+    'use strict'; //<MIXIN>
 
     function init(core) {
         var bServerside = core.config.ish().onServer,                                   //# code-golf
@@ -656,4 +656,6 @@
     else {
         init(document.querySelector("SCRIPT[ish]").ish);
     }
+
+    //</MIXIN>
 }());
