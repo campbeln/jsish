@@ -24,7 +24,7 @@
  * @version 0.14.2021-04-24
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2020, Nick Campbell
+ * @copyright 2014-2021, Nick Campbell
  */ /**
  * ish.js's (renameable) global object.
  * @namespace ish

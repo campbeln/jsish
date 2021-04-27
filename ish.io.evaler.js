@@ -3,7 +3,7 @@
  * @mixin ish.io.evaler
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2020, Nick Campbell
+ * @copyright 2014-2021, Nick Campbell
  */ //############################################################################################
 /*global module, define, global */                              //# Enable Node globals for JSHint
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint

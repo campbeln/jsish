@@ -3,7 +3,7 @@
  * @mixin ish.ui.clipboard
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2020, Nick Campbell
+ * @copyright 2014-2021, Nick Campbell
  * @ignore
  */ //############################################################################################
 //<MIXIN>

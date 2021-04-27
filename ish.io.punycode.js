@@ -3,7 +3,7 @@
  * @mixin ish.io.punycode
  * @author Nick Campbell (wrapper); https://stackoverflow.com/users/36866/some
  * @license Public Domain
- * @copyright 2014-2020, Nick Campbell (wrapper)
+ * @copyright 2014-2021, Nick Campbell (wrapper)
  */ //############################################################################################
 /*global module, define */                                      //# Enable Node globals for JSHint
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint

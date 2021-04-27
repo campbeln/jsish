@@ -3,7 +3,7 @@
  * @mixin ish.io.net
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2020, Nick Campbell
+ * @copyright 2014-2021, Nick Campbell
  * @ignore
  */ //############################################################################################
 /*global module, define, require, XMLHttpRequest, ActiveXObject, Promise */ //# Enable Node globals for JSHint

@@ -2,7 +2,7 @@
  * Support file for the Framework Unit Testing plugin
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2020, Nick Campbell
+ * @copyright 2014-2021, Nick Campbell
 ################################################################################################# */
 (function () {
     'use strict';
