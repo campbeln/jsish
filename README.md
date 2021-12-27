@@ -21,3 +21,7 @@ All features are organized in individually includable mixins organized by namesp
 
 
 Documentation available at https://campbeln.github.io/jsish
+
+License: MIT
+
+Copyright: (c) 2014-2021 Nicholas Campbell
