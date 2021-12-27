@@ -116,7 +116,7 @@
 
                                     //#
                                     if (vCurrent === undefined) {
-                                        if (!core.type.obj.has(a_oData[i], a_sKeys[j])) {
+                                        if (!core.type.obj.has(a_oData[i], a_sKeys[j], false)) {
                                             vCurrent = "";
                                         }
                                     }

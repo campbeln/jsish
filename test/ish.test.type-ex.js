@@ -266,10 +266,24 @@
                         "is.interface": function ($) {
                             //todo
                         },
+
+                        unique: function ($) {
+                            var a_oResult,
+                                a_oData = [
+                                    { one: 1, two: 2, three: 3, four: 4 },
+                                    { one: 11, two: 2, three: 3, four: 44 },
+                                    { one: "1", two: 22, three: 3, four: 444 },
+                                    { one: 1, two: 2, three: 33, four: 4444 }
+                                ]
+                            ;
+
+                            ish.type.query(n, { four: function (v, i) { return v > 44; } });
+                            ish.type.query(n, { one: function (v, i) { return v > 1; } });
+                        }
                     }
                 }
             };
-        }); //# core.test.*
+        }); //# core.test.
 
     } //# init
 

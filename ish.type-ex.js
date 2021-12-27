@@ -419,40 +419,99 @@
                  *      @param {boolean} [oOptions.firstEntryOnly=false] Value representing if only the first result is to be returned.
                  *      @param {boolean} [oOptions.caseInsensitive=false] Value representing if the keys are to be searched for in a case-insensitive manor.
                  *      @param {boolean} [oOptions.useCoercion=false] Value representing if coercion is to be used during comparisons.
+                 *      @param {boolean} [oOptions.useKeyValue=false] Value representing if the query is specified as a key/value.
                  * @returns {variant[]|variant} Value representing the passed values that matched the query.
                  */ //#####
                 query: function () {
+                    var yNoValue = core.type.symbol();
+
                     //#
-                    function doQuery(sKey, vQueryValue, oSource, oOptions) {
-                        var vTestValue = (oOptions.caseInsensitive ? core.type.obj.get(oSource, sKey) : core.resolve(oSource, sKey)),
-                            bReturnVal = false
+                    function doQuery(vKey, vQueryValue, oSource, oOptions) {
+                        var a_sKeys, i,
+                            bMatched = false,
+                            oReturnVal = {
+                                match: false,
+                                matches: [],
+                                items: []
+                            }
                         ;
 
-                        //# Else if the vQueryValue .is .fn, call it with fn(vTestValue, oOptions)
-                        if (core.type.fn.is(vQueryValue)) {
-                            bReturnVal = vQueryValue(vTestValue, oSource, oOptions);
+                        function queryTestValue(vTestValue, sKey) {
+                            //# If the vQueryValue .is .fn, call it with fn(vTestValue, oOptions)
+                            if (core.type.fn.is(vQueryValue)) {
+                                bMatched = vQueryValue(vTestValue, oSource, oOptions, sKey);
+                            }
+                            //#
+                            else if (vQueryValue instanceof RegExp) {
+                                bMatched = !!(core.type.str.mk(vTestValue).match(vQueryValue));
+                            }
+                            //# Else we'll consider the vCurrent oQuery value as singular
+                            else {
+                                bMatched = (core.type.obj.is(oSource) &&
+                                    (oOptions.useCoercion && vTestValue == vQueryValue) ||
+                                    (vTestValue === vQueryValue)
+                                );
+                            }
+
+                            //#
+                            if (bMatched) {
+                                oReturnVal.match = true;
+                                oReturnVal.matches.push({
+                                    //path: _undefined,
+                                    key: sKey,
+                                    value: vTestValue
+                                });
+                                oReturnVal.items.push(oSource);
+                            }
+                        } //# queryTestValue
+
+                        //# If the vKey .is a .regexp
+                        if (core.type.regexp.is(vKey)) {
+                            //# Pull the a_sKeys for the oSource
+                            a_sKeys = core.type.obj.ownKeys(oSource);
+                            for (i = 0; i < a_sKeys.length; i++) {
+                                //# If the current a_sKeys is a .match
+                                if (a_sKeys[i].match(vKey)) {
+                                    //# If we are looking for yNoValue in particular, .push the current a_sKeys into our .matches
+                                    if (vQueryValue === yNoValue) {
+                                        oReturnVal.matches.push({
+                                            //path: _undefined,
+                                            key: a_sKeys[i],
+                                            value: oSource[a_sKeys[i]]
+                                        });
+
+                                        //# Make sure .match is true
+                                        oReturnVal.match = true;
+                                    }
+                                    //# Else call queryTestValue with the current a_sKeys
+                                    else {
+                                        queryTestValue(
+                                            oOptions.caseInsensitive ? core.type.obj.get(oSource, a_sKeys[i]) : core.resolve(oSource, a_sKeys[i]),
+                                            a_sKeys[i]
+                                        );
+                                    }
+                                }
+                            }
+                            console.log(oReturnVal);
                         }
-                        //#
-                        else if (vQueryValue instanceof RegExp) {
-                            bReturnVal = !!(core.type.str.mk(vTestValue).match(vQueryValue));
-                        }
-                        //# Else we'll consider the vCurrent oQuery value as singular
+                        //# Else call queryTestValue with the vKey
                         else {
-                            bReturnVal = (core.type.obj.is(oSource) &&
-                                (oOptions.useCoercion && vTestValue == vQueryValue) ||
-                                (vTestValue === vQueryValue)
+                            queryTestValue(
+                                oOptions.caseInsensitive ? core.type.obj.get(oSource, vKey) : core.resolve(oSource, vKey),
+                                vKey
                             );
                         }
 
-                        return bReturnVal;
+                        return oReturnVal;
                     } //# doQuery
 
                     //#
                     //# ["val1", "val2"] = core.type.query([{}, {}], ["path.to.val"])
                     //# [{}, {}] = core.type.query([{}, {}], { key: "val", key2: ["val1", "val2"], "path.to.key3": function(vTestValue, oSourceIndex, oOptions) { return true || false; } })
                     return function (vCollection, vQuery, oOptions) {
-                        var a_oCollection, a_sKeys, vCurrent, bIsMatch, h, i, j, k,
-                            a_oReturnVal = []
+                        var a_oCollection, a_sKeys, vCurrent, oResults, h, i, j, k,
+                            a_oReturnVal = [],
+                            a_oReturnValQuery = []
                         ;
 
                         //# Ensure the passed vQuery is an array
@@ -462,7 +521,8 @@
                         oOptions = core.extend({
                             firstEntryOnly: false,
                             caseInsensitive: false,
-                            useCoercion: false
+                            useCoercion: false,
+                            useKeyValue: false
                         }, oOptions);
 
                         //# Calculate our a_oCollection based on the passed vCollection
@@ -477,45 +537,59 @@
                         if (core.type.arr.is(a_oCollection, true)) {
                             //# Traverse the passed vQuery(ies)
                             for (h = 0; h < vQuery.length; h++) {
-                                //# Pull the a_sKeys for the current vQuery
-                                a_sKeys = (core.type.obj.is(vQuery[h]) ?
-                                    Object.keys(vQuery[h]) :
-                                    _undefined
-                                );
+                                //# If we are to .useKeyValue, set the a_sKeys to the passed .key
+                                if (oOptions.useKeyValue) {
+                                    a_sKeys = [ vQuery[h].key ];
+                                }
+                                //# Else pull the a_sKeys for the current vQuery
+                                else {
+                                    a_sKeys = (core.type.obj.is(vQuery[h], { allowFn: true }) ?
+                                        Object.keys(vQuery[h]) :
+                                        _undefined
+                                    );
+                                }
 
                                 //# If the current vQuery has a_sKeys
                                 if (core.type.arr.is(a_sKeys, true)) {
                                     //# Traverse our a_oCollection
                                     for (i = 0; i < a_oCollection.length; i++) {
-                                        //# Traverse our vQuery's a_sKeys, resetting bIsMatch and vCurrent for each loop
+                                        //# Traverse our vQuery's a_sKeys
                                         for (j = 0; j < a_sKeys.length; j++) {
-                                            bIsMatch = false;
-                                            vCurrent = vQuery[h][a_sKeys[j]];
+                                            //# If we are to .useKeyValue, set the vCurrent .value (defaulting if there's yNoValue)
+                                            if (oOptions.useKeyValue) {
+                                                vCurrent = (core.type.is.value(vQuery[h]) && vQuery[h].hasOwnProperty("value") ? vQuery[h].value : yNoValue);
+                                            }
+                                            //# Else we are not to .useKeyValue, so pull from the vCurrent value directly from the vQuery
+                                            else {
+                                                vCurrent = vQuery[h][a_sKeys[j]];
+                                            }
 
                                             //# If we have an .is .arr of vQuery values to traverse, do so now
                                             if (core.type.arr.is(vCurrent)) {
                                                 for (k = 0; k < vCurrent.length; k++) {
-                                                    //# If the vCurrent value matches our current a_oCollection item, flip bIsMatch and fall from the inner loop
-                                                    if (doQuery(a_sKeys[j], vCurrent[k], a_oCollection[i], oOptions)) {
-                                                        bIsMatch = true;
+                                                    //# If the vCurrent value .matches our current a_oCollection item, fall from the inner loop
+                                                    oResults = doQuery(a_sKeys[j], vCurrent[k], a_oCollection[i], oOptions);
+                                                    if (oResults.match) {
                                                         break;
                                                     }
                                                 }
                                             }
-                                            //# Else we'll consider the vCurrent vQuery value as singular, so reset bIsMatch based on doQuery
+                                            //# Else we'll consider the vCurrent vQuery value as singular, so collect the oResults from doQuery
                                             else {
-                                                bIsMatch = doQuery(a_sKeys[j], vCurrent, a_oCollection[i], oOptions);
+                                                oResults = doQuery(a_sKeys[j], vCurrent, a_oCollection[i], oOptions);
                                             }
 
-                                            //# If this is an AND-based vQuery and the vCurrent vQuery isn't an bIsMatch or this is an OR-based vQuery and we've already found our bIsMatch, fall from the middle loop
-                                            if ((!oOptions.or && !bIsMatch) || (oOptions.or && bIsMatch)) {
+                                            //# If this is an AND-based vQuery and the vCurrent vQuery isn't an .match or this is an OR-based vQuery and we've already found our .match, fall from the middle loop
+                                            if ((!oOptions.or && !oResults.match) || (oOptions.or && oResults.match)) {
                                                 break;
                                             }
                                         }
 
-                                        //# If the current a_oCollection record passed each vQuery value, .push it into our a_oReturnVal
-                                        if (bIsMatch) {
-                                            a_oReturnVal.push(a_oCollection[i]);
+                                        //# If the current a_oCollection record passed each vQuery value, .push the oResults.matches into our a_oReturnVal
+                                        if (oResults.match) {
+                                            a_oReturnVal = a_oReturnVal.concat(oResults.items); //a_oCollection[i]
+                                            a_oReturnValQuery = a_oReturnValQuery.concat(oResults.matches);
+                                            a_oReturnVal.$query = a_oReturnValQuery;
 
                                             //# If we are looking for the .firstEntryOnly, reset h to fall from the outer loop then fall from the middle loop
                                             if (oOptions.firstEntryOnly) {
@@ -1740,31 +1814,23 @@
                     /** Determines the unique entries within the passed value.
                      * @function ish.type.arr.unique
                      * @param {variant[]} x Value representing the array to compare.
-                     * @param {variant[]} [y] Value representing the reference array.
                      * @param {boolean} [bCaseInsensitive=false] Value representing if the passed value is to be compared in a case-insensitive manor.
                      * @returns {variant[]} Value representing the passed values' unique entries.
                      */ //#####
-                    unique: function (x, y, bCaseInsensitive) {
+                    unique: function (x, bCaseInsensitive) {
                         var a_vReturnVal = [];
 
                         //#
-                        bCaseInsensitive = (bCaseInsensitive === true || y === true);
+                        bCaseInsensitive = (bCaseInsensitive === true);
 
                         //#
                         if (core.type.arr.is(x)) {
-                            if (core.type.arr.is(y)) {
-                                a_vReturnVal = x.filter(function (v) {
-                                    return (y.indexOf(v) === -1 && (!bCaseInsensitive || y.indexOf((v + "").toLowerCase()) === -1));
-                                });
-                            }
-                            else {
-                                a_vReturnVal = x.reduce(function (acc, v) {
-                                    if (acc.indexOf(v) === -1 && (!bCaseInsensitive || acc.indexOf((v + "").toLowerCase()) === -1)) {
-                                        acc.push(v);
-                                    }
-                                    return acc;
-                                }, []);
-                            }
+                            a_vReturnVal = x.reduce(function (acc, v) {
+                                if (acc.indexOf(v) === -1 && (!bCaseInsensitive || acc.indexOf((v + "").toLowerCase()) === -1)) {
+                                    acc.push(v);
+                                }
+                                return acc;
+                            }, []);
                         }
 
                         return a_vReturnVal;
@@ -2200,6 +2266,82 @@
                             return bReturnVal;
                         }, //# type.obj.eq
 
+
+                        //#########
+                        /** Determines the unique entries within the passed value.
+                         * @function ish.type.obj.unique
+                         * @param {object[]|function[]} x Value representing the array to compare.
+                         * @param {string|string[]} vPaths Value representing the values to interrogate.
+                         * @param {object} [oOptions] Value representing the following options:
+                         *      @param {function} [oOptions.compare=undefined] Value representing the function that implements the compare, accepting 2 arguments (<code>a</code>, <code>b</code>) and returning truthy if <code>a > b</code>.
+                         *      @param {boolean} [oOptions.useCoercion=true] Value representing if coercion is to be used during comparisons.
+                         *      @param {boolean} [oOptions.caseInsensitive=false] Value representing if the values are to be compared in a case-insensitive manor.
+                         *      @param {boolean} [oOptions.trimWhitespace=false] Value representing if leading and trailing whitespace is to be trimmed prior to comparison.
+                         *      @param {boolean|integer} [oOptions.maxDepth=0] Value representing if a deep comparison is to occur. <code>false</code>/<code>0</code> performs a shallow comparison, a positive integer indicates the max depth to perform a deep comparison to, <code>true</code> and all other integer values perform a deep comparison to an unlimited depth.
+                         * @returns {variant[]} Value representing the passed values' unique entries.
+                         */ //#####
+                        unique: function (x, vPaths, oOptions) {
+                            var fnCompare, vCurrentVal, i, j, k, bFound,
+                                a_sPaths = core.type.arr.mk(vPaths, [vPaths]),
+                                a_vReturnVal = []
+                            ;
+
+                            //# Set the defaults for the passed oOptions (forcing it into an .is .obj as we go) then calculate our fnCompare
+                            oOptions = core.extend({
+                                //compare: core.type.fn.noop,
+                                useCoercion: true,
+                                caseInsensitive: false,
+                                trimWhitespace: false,
+                                maxDepth: 0
+                            }, oOptions);
+                            oOptions.maxDepth = (
+                                oOptions.maxDepth === false ?
+                                0 :
+                                    oOptions.maxDepth === true ?
+                                    -1 :
+                                        core.type.int.mk(oOptions.maxDepth)
+                            );
+                            fnCompare = objCompare(oOptions);
+
+                            //# If the passed x value .is and .arr
+                            if (core.type.arr.is(x, true)) {
+                                //# Traverse our a_sPaths
+                                for (i = 0; i < a_sPaths.length; i++) {
+                                    //# Traverse the passed x value, flipping bFound to false on each loop
+                                    for (j = 0; j < x.length; j++) {
+                                        bFound = false;
+
+                                        //# If the current x index .hasOwnProperty, set the vCurrentVal and look at it further
+                                        if (x[j] && x[j].hasOwnProperty(a_sPaths[i])) {
+                                            vCurrentVal = x[j];
+
+                                            //# Traverse our a_vReturnVal, fnCompare'ing each entry with the vCurrentVal and falling from the loop if it's bFound
+                                            for (k = 0; k < a_vReturnVal.length; k++) {
+                                                if (fnCompare(core.resolve(a_vReturnVal[k], a_sPaths[i]), core.resolve(vCurrentVal, a_sPaths[i]))) {
+                                                    bFound = true;
+                                                    break;
+                                                }
+                                            }
+                                        }
+
+                                        //# If the vCurrentVal wasn't bFound in our a_vReturnVal, .push the vCurrentVal in
+                                        if (!bFound) {
+                                            a_vReturnVal.push(vCurrentVal);
+                                        }
+                                    }
+
+                                    //#
+                                    x = a_vReturnVal;
+                                    a_vReturnVal = [];
+                                }
+
+                                //#
+                                a_vReturnVal = x;
+                            }
+
+                            return a_vReturnVal;
+                        }, //# type.obj.unique
+
                         //cmp:
 
                         //#########
@@ -2407,7 +2549,7 @@
                          * @function ish.type.obj.has
                          * @param {object|function} x Value representing the object to interrogate.
                          * @param {string|string[]} vKeys Value representing the key(s) to interrogate.
-                         * @param {boolean} [bKeysArePaths=false] Value representing if the passed keys represent dot-delimited paths (e.g. <code>grandparent.parent.array.1.property</code>, see: {@link: ish.resolve}).
+                         * @param {boolean} [bKeysArePaths=true] Value representing if the passed keys represent dot-delimited paths (e.g. <code>grandparent.parent.array.1.property</code>, see: {@link: ish.resolve}).
                          * @returns {boolean} Value representing if the referenced keys are present in the passed value.
                          */ //#####
                         has: function (x, vKeys, bKeysArePaths) {
@@ -2419,7 +2561,7 @@
                             //# If x is valid
                             if (bReturnVal) {
                                 //# If the bKeysArePaths traverse the a_sKeys accordingly
-                                if (bKeysArePaths) {
+                                if (bKeysArePaths !== false) {
                                     for (i = 0; i < a_sKeys.length; i++) {
                                         //# If the current a_sKeys doesn't .existed in x, unflip our bReturnVal and fall from the loop
                                         if (!core.resolve(core.resolve.returnMetadata, x, a_sKeys[i]).existed) {

@@ -454,7 +454,9 @@
                                     oData.response = oError;
                                     try {
                                         oData.data = await oError[oOptions.returnType]();
-                                    } catch (e) {};
+                                    } catch (e) {
+                                        oData.data = oError;
+                                    };
                                     fnResolve(oData);
                                 }
                             })
