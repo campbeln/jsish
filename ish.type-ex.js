@@ -2518,7 +2518,13 @@
                                                     }
                                                     //# Else make a copy of the a_sCurrentKeys into vTemp, attach vTarget's .originalValue then set vTemp into vTarget
                                                     else {
-                                                        vTemp = [].concat(vCurrentSource[a_sCurrentKeys[j]]);
+                                                        //#
+                                                        if (bConcatNonArrays) {
+                                                            vTemp = [vTarget[a_sCurrentKeys[j]]].concat(vCurrentSource[a_sCurrentKeys[j]]);
+                                                        }
+                                                        else {
+                                                            vTemp = [vTarget[a_sCurrentKeys[j]]];
+                                                        }
                                                         vTemp.originalValue = vTarget[a_sCurrentKeys[j]];
                                                         vTarget[a_sCurrentKeys[j]] = vTemp;
                                                     }
@@ -2533,11 +2539,25 @@
                                                 //# If our vTarget already .has the a_sCurrentKeys
                                                 if (core.type.obj.has(vTarget, a_sCurrentKeys[j])) {
                                                     //#
-                                                    if (bConcatNonArrays) {
-                                                        vTarget[a_sCurrentKeys[j]] = [
-                                                            vTarget[a_sCurrentKeys[j]],
-                                                            vCurrentSource[a_sCurrentKeys[j]]
-                                                        ];
+                                                    if (bConcatNonArrays) { //# If the vTarget's a_sCurrentKeys .is .arr
+                                                        if (core.type.arr.is(vTarget[a_sCurrentKeys[j]])) {
+                                                            //# As long as the arrays are not the same, .concat the vCurrentSource's onto our vTarget
+                                                            if (vTarget[a_sCurrentKeys[j]] !== vCurrentSource[a_sCurrentKeys[j]]) {
+                                                                vTarget[a_sCurrentKeys[j]] = vTarget[a_sCurrentKeys[j]].concat(vCurrentSource[a_sCurrentKeys[j]]);
+                                                            }
+                                                        }
+                                                        //# Else make a copy of the a_sCurrentKeys into vTemp, attach vTarget's .originalValue then set vTemp into vTarget
+                                                        else {
+                                                            //#
+                                                            if (bConcatNonArrays) {
+                                                                vTemp = [vTarget[a_sCurrentKeys[j]]].concat(vCurrentSource[a_sCurrentKeys[j]]);
+                                                            }
+                                                            else {
+                                                                vTemp = [vTarget[a_sCurrentKeys[j]]];
+                                                            }
+                                                            //vTemp.originalValue = vTarget[a_sCurrentKeys[j]];
+                                                            vTarget[a_sCurrentKeys[j]] = vTemp;
+                                                        }
                                                     }
                                                     //#
                                                     else {
@@ -2546,7 +2566,9 @@
                                                             vCurrentSource[a_sCurrentKeys[j]] :
                                                             {}
                                                         );
-                                                        vTemp.originalValue = vTarget[a_sCurrentKeys[j]];
+                                                        try {
+                                                            vTemp.originalValue = vTarget[a_sCurrentKeys[j]];
+                                                        } catch (e) {}
                                                         vTarget[a_sCurrentKeys[j]] = vTemp;
                                                     }
                                                 }
