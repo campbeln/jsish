@@ -2142,8 +2142,8 @@
                             /** Determines if the passed value has any circular references.
                              * @function ish.type.obj.is:cyclic
                              * @param {object|function} x Value to interrogate.
-                             * @param {boolean} bReturnReport Value indicating if an array of circular references is to be returned.
-                             * @returns {boolean} Value representing if the passed value has any circular references.
+                             * @param {boolean} [bReturnReport=false] Value indicating if an array of circular references is to be returned.
+                             * @returns {boolean|object[]} Value representing if the passed value has any circular references or an array of objects describing any circular references.
                              */ //#####
                             cyclic: function cr(x, bReturnReport) {
                                 var a_sKeys = [],
@@ -2154,6 +2154,9 @@
                                         report: []
                                     }
                                 ;
+
+                                //# Ensure the passed bReturnReport .is .bool, defaulted to false
+                                bReturnReport = core.type.bool.mk(bReturnReport, false);
 
                                 //# Setup the recursive logic to locate any circular references while kicking off the initial call
                                 (function doIsCyclic(oTarget, sKey) {
@@ -2481,6 +2484,86 @@
 
 
                         //#########
+                        /** Concat's arrays and copies properties into an object.
+                         * @function ish.type.obj.concat
+                         * @param {object|function} vTarget Value representing the target object to receive properties.
+                         * @param {object|function|object[]|function[]} vSource(s) representing the source object(s) whose arrays will be concat'ed and properties will be copied into the target.
+                         * @returns {object|function} Value representing the passed target object.
+                         */ //#####
+                        concat: function (vTarget, vSource, bConcatNonArrays) {
+                            var vCurrentSource, vTemp, a_sCurrentKeys, i, j,
+                                a_vSources = (core.type.arr.is(vSource) ? vSource : [vSource])
+                            ;
+
+                            //# If the passed vTarget is a valid vTarget
+                            if (core.type.obj.is(vTarget, { allowFn: true })) {
+                                //# Traverse the passed a_vSources, pulling the vCurrentSource and a_sCurrentKeys as we go
+                                for (i = 0; i < a_vSources.length; i++) {
+                                    vCurrentSource = a_vSources[i];
+                                    a_sCurrentKeys = core.type.obj.ownKeys(vCurrentSource);
+
+                                    //# If we were able to pull a_sCurrentKeys for the vCurrentSource, traverse them
+                                    if (core.type.arr.is(a_sCurrentKeys, true)) {
+                                        for (j = 0; j < a_sCurrentKeys.length; j++) {
+                                            //# If the a_sCurrentKeys .is .arr
+                                            if (core.type.arr.is(vCurrentSource[a_sCurrentKeys[j]], true)) {
+                                                //# If our vTarget already .has the a_sCurrentKeys
+                                                if (core.type.obj.has(vTarget, a_sCurrentKeys[j])) {
+                                                    //# If the vTarget's a_sCurrentKeys .is .arr
+                                                    if (core.type.arr.is(vTarget[a_sCurrentKeys[j]])) {
+                                                        //# As long as the arrays are not the same, .concat the vCurrentSource's onto our vTarget
+                                                        if (vTarget[a_sCurrentKeys[j]] !== vCurrentSource[a_sCurrentKeys[j]]) {
+                                                            vTarget[a_sCurrentKeys[j]] = vTarget[a_sCurrentKeys[j]].concat(vCurrentSource[a_sCurrentKeys[j]]);
+                                                        }
+                                                    }
+                                                    //# Else make a copy of the a_sCurrentKeys into vTemp, attach vTarget's .originalValue then set vTemp into vTarget
+                                                    else {
+                                                        vTemp = [].concat(vCurrentSource[a_sCurrentKeys[j]]);
+                                                        vTemp.originalValue = vTarget[a_sCurrentKeys[j]];
+                                                        vTarget[a_sCurrentKeys[j]] = vTemp;
+                                                    }
+                                                }
+                                                //# Else set the a_sCurrentKeys onto our vTarget
+                                                else {
+                                                    vTarget[a_sCurrentKeys[j]] = vCurrentSource[a_sCurrentKeys[j]];
+                                                }
+                                            }
+                                            //#
+                                            else {
+                                                //# If our vTarget already .has the a_sCurrentKeys
+                                                if (core.type.obj.has(vTarget, a_sCurrentKeys[j])) {
+                                                    //#
+                                                    if (bConcatNonArrays) {
+                                                        vTarget[a_sCurrentKeys[j]] = [
+                                                            vTarget[a_sCurrentKeys[j]],
+                                                            vCurrentSource[a_sCurrentKeys[j]]
+                                                        ];
+                                                    }
+                                                    //#
+                                                    else {
+                                                        vTemp = (
+                                                            core.type.is.value(vCurrentSource[a_sCurrentKeys[j]]) ?
+                                                            vCurrentSource[a_sCurrentKeys[j]] :
+                                                            {}
+                                                        );
+                                                        vTemp.originalValue = vTarget[a_sCurrentKeys[j]];
+                                                        vTarget[a_sCurrentKeys[j]] = vTemp;
+                                                    }
+                                                }
+                                                //# Else set the a_sCurrentKeys onto our vTarget
+                                                else {
+                                                    vTarget[a_sCurrentKeys[j]] = vCurrentSource[a_sCurrentKeys[j]];
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+
+                            return vTarget;
+                        },
+
+                        //#########
                         /** Joins the passed value into a string.
                          * @function ish.type.obj.join
                          * @param {object|function} x Value representing the object to join.
@@ -2555,7 +2638,7 @@
                         has: function (x, vKeys, bKeysArePaths) {
                             var i,
                                 a_sKeys = (core.type.arr.is(vKeys) ? vKeys : [vKeys]),
-                                bReturnVal = core.type.fn.is(x, { allowFn: true })
+                                bReturnVal = core.type.obj.is(x, { allowFn: true })
                             ;
 
                             //# If x is valid

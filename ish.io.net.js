@@ -362,6 +362,12 @@
                     }
 
                     //#
+                    if (core.type.str.is(oOptions.contentType, true)) {
+                        oOptions.headers = core.type.obj.mk(oOptions.headers);
+                        oOptions.headers = ["Content-Type"] = oOptions.contentType;
+                    }
+
+                    //#
                     sVerb = core.type.str.mk(sVerb).toUpperCase();
                     sVerb = (["GET", "POST", "PUT", "PATCH", "DELETE", "HEAD"].indexOf(sVerb) === -1 ?
                         "GET" :
@@ -663,7 +669,7 @@
     //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
     if (typeof module === 'object' && module.exports) { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
         module.exports = function (core) {
-            init(core, require('node-fetch'));
+            init(core, require('node-fetch-commonjs'));
         };
     }
     //# Else if we are running in an .amd environment, register as an anonymous module
