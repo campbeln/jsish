@@ -109,17 +109,17 @@
             driverfees: []
         },
         load: function () {
-            $ddi.io.net.get(
+            /*$ddi.io.net.get(
                 "https://paperwork.ddiwork.com/api/client/driverfees?cache=" +
                     Date.now() +
                     "&crefnum=11566"
                 ,
-                function (bSuccess, oResponse /*, vArg, $xhr*/) {
+                function (bSuccess, oResponse /*, vArg, $xhr* /) {
                     if (bSuccess) {
                         $ddi.app.client.ui.driverfees = oResponse.json.driverfees;
                     }
                 }
-            );
+            );*/
         }
     };
     $ddi.app.client.load();

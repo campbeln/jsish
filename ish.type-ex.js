@@ -2491,11 +2491,11 @@
                          * @returns {object|function} Value representing the passed target object.
                          */ //#####
                         concat: function (vTarget, vSource, bConcatNonArrays) {
-                            var vCurrentSource, vTemp, a_sCurrentKeys, i, j,
-                                a_vSources = (core.type.arr.is(vSource) ? vSource : [vSource])
+                            var vCurrentSource, a_sCurrentKeys, i, j,
+                                a_vSources = core.type.arr.mk(vSource, [vSource])
                             ;
 
-                            //# If the passed vTarget is a valid vTarget
+                            //# If the passed vTarget is valid
                             if (core.type.obj.is(vTarget, { allowFn: true })) {
                                 //# Traverse the passed a_vSources, pulling the vCurrentSource and a_sCurrentKeys as we go
                                 for (i = 0; i < a_vSources.length; i++) {
@@ -2505,77 +2505,39 @@
                                     //# If we were able to pull a_sCurrentKeys for the vCurrentSource, traverse them
                                     if (core.type.arr.is(a_sCurrentKeys, true)) {
                                         for (j = 0; j < a_sCurrentKeys.length; j++) {
-                                            //# If the a_sCurrentKeys .is .arr
-                                            if (core.type.arr.is(vCurrentSource[a_sCurrentKeys[j]], true)) {
-                                                //# If our vTarget already .has the a_sCurrentKeys
-                                                if (core.type.obj.has(vTarget, a_sCurrentKeys[j])) {
-                                                    //# If the vTarget's a_sCurrentKeys .is .arr
+                                            //# If our vTarget already .has the a_sCurrentKeys
+                                            if (core.type.obj.has(vTarget, a_sCurrentKeys[j])) {
+                                                //# If vCurrentSource's a_sCurrentKeys .is .arr
+                                                if (core.type.arr.is(vCurrentSource[a_sCurrentKeys[j]], true)) {
+                                                    //# If the vTarget's a_sCurrentKeys .is .arr and it's not the same array as in vCurrentSource, concat the values
                                                     if (core.type.arr.is(vTarget[a_sCurrentKeys[j]])) {
-                                                        //# As long as the arrays are not the same, .concat the vCurrentSource's onto our vTarget
                                                         if (vTarget[a_sCurrentKeys[j]] !== vCurrentSource[a_sCurrentKeys[j]]) {
                                                             vTarget[a_sCurrentKeys[j]] = vTarget[a_sCurrentKeys[j]].concat(vCurrentSource[a_sCurrentKeys[j]]);
                                                         }
                                                     }
-                                                    //# Else make a copy of the a_sCurrentKeys into vTemp, attach vTarget's .originalValue then set vTemp into vTarget
-                                                    else {
-                                                        //#
-                                                        if (bConcatNonArrays) {
-                                                            vTemp = [vTarget[a_sCurrentKeys[j]]].concat(vCurrentSource[a_sCurrentKeys[j]]);
-                                                        }
-                                                        else {
-                                                            vTemp = [vTarget[a_sCurrentKeys[j]]];
-                                                        }
-                                                        vTemp.originalValue = vTarget[a_sCurrentKeys[j]];
-                                                        vTarget[a_sCurrentKeys[j]] = vTemp;
+                                                    //# Else if we are bConcatNonArrays, transform the vTarget's a_sCurrentKeys into an array including the vCurrentSource's value
+                                                    else if (bConcatNonArrays) {
+                                                        vTarget[a_sCurrentKeys[j]] = [vTarget[a_sCurrentKeys[j]]].concat(vCurrentSource[a_sCurrentKeys[j]]);
                                                     }
                                                 }
-                                                //# Else set the a_sCurrentKeys onto our vTarget
-                                                else {
-                                                    vTarget[a_sCurrentKeys[j]] = vCurrentSource[a_sCurrentKeys[j]];
+                                                //# Else if we are bConcatNonArrays
+                                                else if (bConcatNonArrays) {
+                                                    //# If the vTarget's a_sCurrentKeys .is .arr, push the vCurrentSource's value in
+                                                    if (core.type.arr.is(vTarget[a_sCurrentKeys[j]])) {
+                                                        vTarget[a_sCurrentKeys[j]].push(vCurrentSource[a_sCurrentKeys[j]]);
+                                                    }
+                                                    //# Else transform the vTarget's a_sCurrentKeys into an array including the vCurrentSource's value
+                                                    else {
+                                                        vTarget[a_sCurrentKeys[j]] = [
+                                                            vTarget[a_sCurrentKeys[j]],
+                                                            vCurrentSource[a_sCurrentKeys[j]]
+                                                        ];
+                                                    }
                                                 }
                                             }
-                                            //#
+                                            //# Else this a_sCurrentKeys is new for our vTarget, so set it from the vCurrentSource
                                             else {
-                                                //# If our vTarget already .has the a_sCurrentKeys
-                                                if (core.type.obj.has(vTarget, a_sCurrentKeys[j])) {
-                                                    //#
-                                                    if (bConcatNonArrays) { //# If the vTarget's a_sCurrentKeys .is .arr
-                                                        if (core.type.arr.is(vTarget[a_sCurrentKeys[j]])) {
-                                                            //# As long as the arrays are not the same, .concat the vCurrentSource's onto our vTarget
-                                                            if (vTarget[a_sCurrentKeys[j]] !== vCurrentSource[a_sCurrentKeys[j]]) {
-                                                                vTarget[a_sCurrentKeys[j]] = vTarget[a_sCurrentKeys[j]].concat(vCurrentSource[a_sCurrentKeys[j]]);
-                                                            }
-                                                        }
-                                                        //# Else make a copy of the a_sCurrentKeys into vTemp, attach vTarget's .originalValue then set vTemp into vTarget
-                                                        else {
-                                                            //#
-                                                            if (bConcatNonArrays) {
-                                                                vTemp = [vTarget[a_sCurrentKeys[j]]].concat(vCurrentSource[a_sCurrentKeys[j]]);
-                                                            }
-                                                            else {
-                                                                vTemp = [vTarget[a_sCurrentKeys[j]]];
-                                                            }
-                                                            //vTemp.originalValue = vTarget[a_sCurrentKeys[j]];
-                                                            vTarget[a_sCurrentKeys[j]] = vTemp;
-                                                        }
-                                                    }
-                                                    //#
-                                                    else {
-                                                        vTemp = (
-                                                            core.type.is.value(vCurrentSource[a_sCurrentKeys[j]]) ?
-                                                            vCurrentSource[a_sCurrentKeys[j]] :
-                                                            {}
-                                                        );
-                                                        try {
-                                                            vTemp.originalValue = vTarget[a_sCurrentKeys[j]];
-                                                        } catch (e) {}
-                                                        vTarget[a_sCurrentKeys[j]] = vTemp;
-                                                    }
-                                                }
-                                                //# Else set the a_sCurrentKeys onto our vTarget
-                                                else {
-                                                    vTarget[a_sCurrentKeys[j]] = vCurrentSource[a_sCurrentKeys[j]];
-                                                }
+                                                vTarget[a_sCurrentKeys] = vCurrentSource[a_sCurrentKeys];
                                             }
                                         }
                                     }
