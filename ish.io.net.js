@@ -364,7 +364,7 @@
                     //#
                     if (core.type.str.is(oOptions.contentType, true)) {
                         oOptions.headers = core.type.obj.mk(oOptions.headers);
-                        oOptions.headers = ["Content-Type"] = oOptions.contentType;
+                        oOptions.headers["Content-Type"] = oOptions.contentType;
                     }
 
                     //#
