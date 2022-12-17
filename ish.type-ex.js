@@ -1814,23 +1814,57 @@
                     /** Determines the unique entries within the passed value.
                      * @function ish.type.arr.unique
                      * @param {variant[]} x Value representing the array to compare.
-                     * @param {boolean} [bCaseInsensitive=false] Value representing if the passed value is to be compared in a case-insensitive manor.
+                     * @param {object|boolean} [vOptions=false] Value representing if the passed value is to be compared in a case-insensitive manor.
+                     *      @param {boolean} [vOptions.caseInsensitive=false] Value representing if the keys are to be searched for in a case-insensitive manor.
+                     *      @param {string} [vOptions.path=""] Value representing the path to the requested property as a period-delimited string (e.g. "parent.child.array.0.key") or an array of strings.
                      * @returns {variant[]} Value representing the passed values' unique entries.
                      */ //#####
-                    unique: function (x, bCaseInsensitive) {
-                        var a_vReturnVal = [];
+                    unique: function (x, vOptions) {
+                        var s_vValues, vCurrentValue, iCurrentIndex, i, j,
+                            a_vReturnVal = [],
+                            oOptions = core.type.obj.mk(vOptions, { caseInsensitive: vOptions === true })
+                        ;
 
-                        //#
-                        bCaseInsensitive = (bCaseInsensitive === true);
-
-                        //#
+                        //# If the caller passed in a valid .arr
                         if (core.type.arr.is(x)) {
-                            a_vReturnVal = x.reduce(function (acc, v) {
-                                if (acc.indexOf(v) === -1 && (!bCaseInsensitive || acc.indexOf((v + "").toLowerCase()) === -1)) {
-                                    acc.push(v);
+                            //# If the caller passed in a .path to .resolve, setup our s_vValues
+                            if (oOptions.path) {
+                                s_vValues = [];
+
+                                //# Traverse the passed .arr, determine the vCurrentValue and iCurrentIndex as we gp
+                                for (i = 0; i < x.length; i++) {
+                                    vCurrentValue = core.resolve(x[i], oOptions.path);
+                                    iCurrentIndex = s_vValues.indexOf(vCurrentValue);
+
+                                    //# If the vCurrentValue was not found
+                                    if (iCurrentIndex === -1) {
+                                        //# If we are looking for .caseInsensitive s_vValues, traverse them resetting iCurrentIndex if a .cmp match is found
+                                        if (oOptions.caseInsensitive) { //} && core.type.str.is(vCurrentValue)) {
+                                            for (j = 0; j < s_vValues.length; j++) {
+                                                if (core.type.str.cmp(s_vValues[j], vCurrentValue)) {
+                                                    iCurrentIndex = j;
+                                                    break;
+                                                }
+                                            }
+                                        }
+
+                                        //# If the vCurrentValue was (still) not found, .push the vCurrentValue into the arrays
+                                        if (iCurrentIndex === -1) {
+                                            s_vValues.push(vCurrentValue);
+                                            a_vReturnVal.push(x[i]);
+                                        }
+                                    }
                                 }
-                                return acc;
-                            }, []);
+                            }
+                            //# Else this is a standard .arr .reduce search for unique values
+                            else {
+                                a_vReturnVal = x.reduce(function (acc, v) {
+                                    if (acc.indexOf(v) === -1 && (!oOptions.caseInsensitive || acc.indexOf((v + "").toLowerCase()) === -1)) {
+                                        acc.push(v);
+                                    }
+                                    return acc;
+                                }, []);
+                            }
                         }
 
                         return a_vReturnVal;
@@ -2537,7 +2571,7 @@
                                             }
                                             //# Else this a_sCurrentKeys is new for our vTarget, so set it from the vCurrentSource
                                             else {
-                                                vTarget[a_sCurrentKeys] = vCurrentSource[a_sCurrentKeys];
+                                                vTarget[a_sCurrentKeys[j]] = vCurrentSource[a_sCurrentKeys[j]];
                                             }
                                         }
                                     }
