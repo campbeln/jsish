@@ -653,7 +653,7 @@
                         //# If the caller passed in a vMkDefaultVal, setup the .mk oInterface
                         if (arguments.length > 2) {
                             oInterface.mk = function (x, vDefaultVal) {
-                                return (fnTest(x) ?
+                                return (oInterface.is(x) ?
                                     x : (
                                         arguments.length > 1 ? vDefaultVal : vMkDefaultVal
                                     )
@@ -3048,9 +3048,9 @@
             init(
                 core,
                 //x => Buffer.from(x, 'base64').toString(),
-                x => Buffer.from(x, 'base64').toString('binary'),
+                function (x) { return Buffer.from(x, 'base64').toString('binary'); },
                 //x => Buffer.from(x).toString('base64')
-                x => Buffer.from(x, 'binary').toString('base64')
+                function (x) { return Buffer.from(x, 'binary').toString('base64'); }
             );
         };
     }

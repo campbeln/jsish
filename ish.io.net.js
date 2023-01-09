@@ -462,7 +462,7 @@
                                         oData.data = await oError[oOptions.returnType]();
                                     } catch (e) {
                                         oData.data = oError;
-                                    };
+                                    }
                                     fnResolve(oData);
                                 }
                             })
