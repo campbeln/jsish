@@ -1406,7 +1406,32 @@
                                     );
                                 });
                             };
-                        }() //# type.str.replace
+                        }(), //# type.str.replace
+
+
+                        //#########
+                        /** Creates a Base64-encoded ASCII string from a binary string (i.e., a string in which each character in the string is treated as a byte of binary data).
+                         * @function ish.type.str.atob
+                         * @param {variant} x Value representing the binary string containing base64-encoded data.
+                         * @returns {string} Value representing the  the results of the passed value's Base64 decoded data.
+                         * @see {@link https://dirask.com/posts/Node-js-atob-btoa-functions-equivalents-1Aqb51|Node.js - atob / btoa functions equivalents}
+                         */ //#####
+                        //# https://dirask.com/posts/Node-js-atob-btoa-functions-equivalents-1Aqb51
+                        atob: function (encodedData) {
+                            return atob(encodedData);
+                        }, //# type.str.atob
+
+
+                        //#########
+                        /** Decodes a Base64-encoded ASCII string of data which has been encoded using Base64 encoding.
+                         * @function ish.type.str.btoa
+                         * @param {string} encodedData Value representing the binary string.
+                         * @returns {string} Value representing the results of the passed value's Base64 representation.
+                         * @see {@link https://dirask.com/posts/Node-js-atob-btoa-functions-equivalents-1Aqb51|Node.js - atob / btoa functions equivalents}
+                         */ //#####
+                        btoa: function (stringToEncode) {
+                            return btoa(stringToEncode);
+                        } //# type.str.btoa
                     };
                 }(), //# core.type.str
 
@@ -2540,7 +2565,7 @@
                                     if (core.type.arr.is(a_sCurrentKeys, true)) {
                                         for (j = 0; j < a_sCurrentKeys.length; j++) {
                                             //# If our vTarget already .has the a_sCurrentKeys
-                                            if (core.type.obj.has(vTarget, a_sCurrentKeys[j])) {
+                                            if (core.type.obj.has(vTarget, a_sCurrentKeys[j], false)) {
                                                 //# If vCurrentSource's a_sCurrentKeys .is .arr
                                                 if (core.type.arr.is(vCurrentSource[a_sCurrentKeys[j]], true)) {
                                                     //# If the vTarget's a_sCurrentKeys .is .arr and it's not the same array as in vCurrentSource, concat the values
@@ -3022,8 +3047,10 @@
         module.exports = function (core) {
             init(
                 core,
-                x => Buffer.from(x, 'base64').toString(),
-                x => Buffer.from(x).toString('base64')
+                //x => Buffer.from(x, 'base64').toString(),
+                x => Buffer.from(x, 'base64').toString('binary'),
+                //x => Buffer.from(x).toString('base64')
+                x => Buffer.from(x, 'binary').toString('base64')
             );
         };
     }

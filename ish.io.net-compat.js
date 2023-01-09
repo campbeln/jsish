@@ -927,7 +927,9 @@
     //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
     if (typeof module === 'object' && module.exports) { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
         module.exports = function (core) {
-            init(core, require('node-fetch'), require("xmlhttprequest").XMLHttpRequest);
+            //init(core, require('node-fetch'), require("xmlhttprequest").XMLHttpRequest);
+            init(core, require('node-fetch-commonjs'), require("xmlhttprequest").XMLHttpRequest);
+
         };
     }
     //# Else if we are running in an .amd environment, register as an anonymous module
