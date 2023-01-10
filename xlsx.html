@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+    <h1>read-excel-file</h1>
+</html>
+
+<!--script src="https://unpkg.com/read-excel-file@5.x/bundle/read-excel-file.min.js"></script-->
+<!--script src="https://cdn.sheetjs.com/xlsx-0.19.1/package/dist/xlsx.full.min.js"></script-->
+
+
+<script type="text/javascript" src="ish.js"
+ish='{ "target": "ish" }'
+></script>
+<script type="text/javascript" src="ish.io.xlsx.js"></script>
+
+<script>
+    var input = document.createElement("INPUT");
+    input.setAttribute("type", "file");
+    document.body.appendChild(input)
+    input.addEventListener('change', async function() {
+        /*
+        var $reader = new FileReader();
+        $reader.onload = function () {
+            var vFile = $reader.result;
+            console.log(
+                ish.io.xlsx(
+                    vFile
+                )
+            );
+        };
+        $reader.readAsArrayBuffer(input.files[0]);
+        // */
+
+
+        // *
+        const res = await fetch(input.files[0].name);
+        const vFile = await res.arrayBuffer();
+
+        //const res = await fetch("https://sheetjs.com/pres.numbers.b64");
+        //const vFile = { file: await res.text(), options: { type: "base64" } };
+
+        console.log(
+            ish.io.xlsx(
+                vFile
+            )
+        );
+        // */
+
+        /*
+        const url = "https://sheetjs.com/pres.numbers.b64"; // workaround
+
+        const res = await fetch(url);
+
+        // const ab = await res.arrayBuffer(); // Once Excel bug is fixed
+        const b64 = await res.text(); // workaround
+
+        // var wb = XLSX.read(ab); // Once Excel bug is fixed
+        //var wb = XLSX.read(b64, { type: "base64" }); // workaround
+        //var wb = ish.io.xlsx({ file: b64, options: { type: "base64" } });
+        console.log(ish.io.xlsx({ file: b64, options: { type: "base64" } }));
+
+        //var ws = wb.Sheets[wb.SheetNames[0]]; // get first worksheet
+        //var aoa = XLSX.utils.sheet_to_json(ws, { header: 1 }); // get data as array of arrays
+        //console.log(aoa);
+        //*/
+
+
+
+        //readXlsxFile('./Data.xlsx')
+
+        /*
+        readXlsxFile(input.files[0], { getSheets: true }).then((sheets) => {
+            sheets.forEach((obj)=>{
+
+                readXlsxFile(input.files[0], { sheet: obj.name }).then(function(rows) {
+                    console.log(obj.name, rows)
+                })
+            })
+        })
+        */
+
+
+
+        /*
+        readXlsxFile(input.files[0], { sheet: 2 }).then(function(rows) {
+            console.log(rows)
+        })
+        */
+
+        /*
+        readSheetNames(input.files[0]).then(function(sheetNames) {
+            console.log(sheetNames)
+        })*/
+    })
+</script>
