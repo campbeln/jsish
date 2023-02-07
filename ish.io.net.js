@@ -297,43 +297,44 @@
                     /*var oInit = {
                         //# fetch init options
 
-                        method: "GET",              //# GET, POST, PUT, PATCH, DELETE, HEAD + TRACE, CONNECT, OPTIONS - https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
-                        body: undefined,            //# String, FormData, Blob, BufferSource, URLSearchParams - NOTE: Not allowed on GET and HEAD
+                        method: "GET",                      //# GET, POST, PUT, PATCH, DELETE, HEAD + TRACE, CONNECT, OPTIONS - https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods
+                        body: undefined,                    //# String, FormData, Blob, BufferSource, URLSearchParams - NOTE: Not allowed on GET and HEAD
 
-                        headers: {},                //# { "Content-Type": "text/plain;charset=UTF-8" }
-                        mode: "cors",               //# "cors", "no-cors", "same-origin",
-                        credentials: "same-origin", //# "omit", "same-origin", "include", FederatedCredential, PasswordCredential
-                        cache: "default",           //# "default", "no-store", "reload", "no-cache", "force-cache", "only-if-cached", SEE: https://developer.mozilla.org/en-US/docs/Web/API/Request/cache
-                        redirect: "follow",         //# "redirect", "error", "manual"
-                        referrer: "",               //# same-origin URL, "same-origin", "", USVString
-                        referrerPolicy: "",         //# "", "no-referrer", "no-referrer-when-downgrade", "same-origin", "origin", "strict-origin", "origin-when-cross-origin", "strict-origin-when-cross-origin", "unsafe-url", SEE: https://w3c.github.io/webappsec-referrer-policy/#referrer-policies
-                        integrity: undefined,       //# e.g., sha256-BpfBw7ivV8q2jLiT13fxDYAe2tJllusRSZ273h2nFSE=
-                        keepalive: false,           //# false/true
-                        signal: undefined,          //# AbortSignal
-                        //window: window,           //# Non-standard?
+                        headers: {},                        //# { "Content-Type": "text/plain;charset=UTF-8" }
+                        mode: "cors",                       //# "cors", "no-cors", "same-origin",
+                        credentials: "same-origin",         //# "omit", "same-origin", "include", FederatedCredential, PasswordCredential
+                        cache: "default",                   //# "default", "no-store", "reload", "no-cache", "force-cache", "only-if-cached", SEE: https://developer.mozilla.org/en-US/docs/Web/API/Request/cache
+                        redirect: "follow",                 //# "redirect", "error", "manual"
+                        referrer: "",                       //# same-origin URL, "same-origin", "", USVString
+                        referrerPolicy: "",                 //# "", "no-referrer", "no-referrer-when-downgrade", "same-origin", "origin", "strict-origin", "origin-when-cross-origin", "strict-origin-when-cross-origin", "unsafe-url", SEE: https://w3c.github.io/webappsec-referrer-policy/#referrer-policies
+                        integrity: undefined,               //# e.g., sha256-BpfBw7ivV8q2jLiT13fxDYAe2tJllusRSZ273h2nFSE=
+                        keepalive: false,                   //# false/true
+                        signal: undefined,                  //# AbortSignal
+                        //window: window,                   //# Non-standard?
 
                         //# ish.io.net additional oOptions
 
-                        returnType: "jsonOrText",   //# "arrayBuffer", "blob", "formData", "json", "text", "jsonOrText"
+                        forceContentTypeOnJsonBody: true    //# Forces the header's Content-Type to application/json if body is .stringify'd JSON
+                        returnType: "jsonOrText",           //# "arrayBuffer", "blob", "formData", "json", "text", "jsonOrText"
 
-                        retry: 500,                 //# integer, function
-                        maxAttempts: 5,             //# integer
+                        retry: 500,                         //# integer, function
+                        maxAttempts: 5,                     //# integer
 
                         //# xhr-specific oOptions
 
-                        async: false,               //# false/true
-                        useCache: false,            //# false/true
-                        //cache: false,               //# false/true
-                        fn: undefined,              //# function callback
-                        arg: undefined,             //# variant
-                        //headers: {},                //# { "Content-Type": "text/plain;charset=UTF-8" }
-                        mimeType: undefined,        //# string
-                        contentType: undefined,     //# string
-                        responseType: "text"        //# "text", "response"
+                        async: false,                       //# false/true
+                        useCache: false,                    //# false/true
+                        //cache: false,                       //# false/true
+                        fn: undefined,                      //# function callback
+                        arg: undefined,                     //# variant
+                        //headers: {},                        //# { "Content-Type": "text/plain;charset=UTF-8" }
+                        mimeType: undefined,                //# string
+                        contentType: undefined,             //# string
+                        responseType: "text"                //# "text", "response"
                     };*/
 
 
-                    var oInit, iMS,
+                    var oInit, iMS, bRequestHasBody,
                         bJsonOrText = false,
                         syRetrying = core.type.symbol.get(),
                         oData = {
@@ -361,7 +362,7 @@
                         bJsonOrText = true;
                     }
 
-                    //#
+                    //# If there's a oOptions.contentType, copy it into the .headers Content-Type
                     if (core.type.str.is(oOptions.contentType, true)) {
                         oOptions.headers = core.type.obj.mk(oOptions.headers);
                         oOptions.headers["Content-Type"] = oOptions.contentType;
@@ -373,14 +374,26 @@
                         "GET" :
                         sVerb
                     );
+                    bRequestHasBody = (core.type.is.value(oBody) && sVerb !== "GET" && sVerb !== "HEAD");
+
+                    //# If this bRequestHasBody, it's oBody .is .obj, we're to .forceContentTypeOnJsonBody or we don't already have a Content-Type
+                    if (bRequestHasBody &&
+                        core.type.obj.is(oBody) && (
+                            oOptions.forceContentTypeOnJsonBody ||
+                            !core.type.str.is(core.resolve(oOptions, ["headers", "Content-Type"]), true)
+                        )
+                    ) {
+                        //# Set the .headers Content-Type to application/json
+                        oOptions.headers = core.type.obj.mk(oOptions.headers);
+                        oOptions.headers["Content-Type"] = "application/json";
+                    }
 
                     //# Set the required .method and .body elements while removing the ish-specific .returnType, .retry and .attempts into .fetch's oInit
                     oInit = core.extend(oOptions, {
                         method: sVerb,
-                        body: (
-                            core.type.is.value(oBody) && sVerb !== "GET" && sVerb !== "HEAD" ?
-                                (core.type.obj.is(oBody) ? JSON.stringify(oBody) : oBody) :
-                                _undefined
+                        body: (bRequestHasBody ?
+                            (core.type.obj.is(oBody) ? JSON.stringify(oBody) : oBody) :
+                            _undefined
                         ),
                         //mode: "cors",
                         //returnType: _undefined,
