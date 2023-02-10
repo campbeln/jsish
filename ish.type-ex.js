@@ -3,7 +3,7 @@
  * @mixin ish.type
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2021, Nick Campbell
+ * @copyright 2014-2023, Nick Campbell
  * @ignore
  */ //############################################################################################
 /*global module, define, global, WeakMap */                     //# Enable Node globals for JSHint
@@ -2510,6 +2510,70 @@
 
                             return vReturnVal;
                         }, //# type.obj.clone
+
+
+                        //#########
+                        /** Removes any characters from object keys that require bracket-style notation (e.g. <code>oObject["2 this is\n1 valid key"]</code> becomes <code>oObject.thisis1validkey</code>)
+                         * @function ish.type.obj.rekey
+                         * @param {object|function|object[]|function[]} x Value representing the object(s) to rekey.
+                         * @param {string|boolean|object} [vOptions] Value representing the <code>replacementChar</code>, if we are to <code>deleteRekeyed</code> values or the following options:
+                         *      @param {string} [oOptions.replacementChar=""] Value representing the char (or characters) used to replace any unfriendly characters.
+                         *      @param {string} [oOptions.trackRekeyed=""] Value representing the key to store the remapped key data.
+                         *      @param {boolean} [oOptions.deleteRekeyed=false] Value representing if the original key/value is to be <code>delete</code>d from the object.
+                         * @returns {object|function|object[]|function[]} Value representing the rekeyed object(s) (i.e. the passed <code>x</code> is returned for convenience).
+                         */ //#####
+                        rekey: function (x, vOptions) {
+                            var a_sKeys, oReplacedKeys, oCurrent, oOptions, sFriendlyKeyName, sChar, i, j,
+                                a_oX = (core.type.arr.is(x) ? x : [x])
+                            ;
+
+                            //# Process the passed vOptions into oOptions
+                            oOptions = core.extend({
+                                replacementChar: (core.type.str.is(vOptions) ? vOptions : ""),
+                                trackRekeyed: "",
+                                deleteRekeyed: (core.type.bool.is(vOptions) ? vOptions : false)
+                            }, oOptions);
+                            sChar = oOptions.replacementChar || "_";
+
+                            //# Traverse the a_oX(s), pulling the oCurrent a_oX, it's a_sKeys and resetting oReplacedKeys as we go
+                            for (i = 0; i < a_oX.length; i++) {
+                                oCurrent = a_oX[i];
+                                a_sKeys = core.type.obj.ownKeys(oCurrent);
+                                oReplacedKeys = [];
+
+                                //# Traverse the a_sKeys for the oCurrent a_oX, determining the sFriendlyKeyName as we go
+                                for (j = 0; j < a_sKeys.length; j++) {
+                                    sFriendlyKeyName = a_sKeys[j].replace(/[^a-z0-9_$]/gi, oOptions.replacementChar).replace(/^[0-9]{1,}/, oOptions.replacementChar);
+
+                                    //# If the oCurrent a_sKeys has non-friendly characters
+                                    if (sFriendlyKeyName !== a_sKeys[j]) {
+                                        //# If the sFriendlyKeyName already exists in our oCurrent a_oX, append as many sChar's as required to make it unique
+                                        if (a_sKeys.indexOf(sFriendlyKeyName) !== -1) {
+                                            do {
+                                                sFriendlyKeyName += sChar;
+                                            } while (a_sKeys.indexOf(sFriendlyKeyName) !== -1);
+                                        }
+
+                                        //# Place our sFriendlyKeyName mapping into oReplacedKeys and set a new value in the oCurrent a_oX
+                                        oReplacedKeys[sFriendlyKeyName] = { original: a_sKeys[j], remapped: sFriendlyKeyName };
+                                        oCurrent[sFriendlyKeyName] = oCurrent[a_sKeys[j]];
+
+                                        //# If we are to .deleteRekeyed, remove the a_sKeys[j] now
+                                        if (oOptions.deleteRekeyed) {
+                                            delete oCurrent[a_sKeys[j]];
+                                        }
+                                    }
+                                }
+
+                                //# If we are .trackRekeyed, attach the oReplacedKeys under the set key name
+                                if (core.type.str.is(oOptions.trackRekeyed, true)) {
+                                    oCurrent[oOptions.trackRekeyed] = oReplacedKeys;
+                                }
+                            }
+
+                            //# For convenience, return the passed (though updated by reference) x to the caller
+                            return x;
+                        }, //# type.obj.rekey
 
 
                         //#########
