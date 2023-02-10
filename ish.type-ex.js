@@ -2532,14 +2532,14 @@
                                 replacementChar: (core.type.str.is(vOptions) ? vOptions : ""),
                                 trackRekeyed: "",
                                 deleteRekeyed: (core.type.bool.is(vOptions) ? vOptions : false)
-                            }, oOptions);
+                            }, vOptions);
                             sChar = oOptions.replacementChar || "_";
 
                             //# Traverse the a_oX(s), pulling the oCurrent a_oX, it's a_sKeys and resetting oReplacedKeys as we go
                             for (i = 0; i < a_oX.length; i++) {
                                 oCurrent = a_oX[i];
                                 a_sKeys = core.type.obj.ownKeys(oCurrent);
-                                oReplacedKeys = [];
+                                oReplacedKeys = {};
 
                                 //# Traverse the a_sKeys for the oCurrent a_oX, determining the sFriendlyKeyName as we go
                                 for (j = 0; j < a_sKeys.length; j++) {
