@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>ish.type.arr.pagination.js - Documentation</title>
+    <title>ish.io.xslx - Documentation</title>
     
     
     <script src="scripts/prettify/prettify.js"></script>
@@ -40,234 +40,236 @@
 
 
 
+
+<section>
+
+<header>
     
-    <section>
-        <article>
-            <pre class="prettyprint source linenums"><code>//################################################################################################
-/** @file Pagination-based mixin for ish.js
- * @mixin ish.type.arr.pagination
- * @author Nick Campbell
- * @license MIT
- * @copyright 2014-2021, Nick Campbell
- * @ignore
- */ //############################################################################################
-/*global module, define */                                      //# Enable Node globals for JSHint
-/*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
-(function () {
-    'use strict'; //&lt;MIXIN>
+        <h1 class="page-title">ish.io.xslx</h1><!-- neek added to line 27 -->
+        
+            <h2 class="description">XLSX Parser mixin for ish.js</h2>
+        
 
-    function init(core) {
-        //################################################################################################
-        /** Collection of Pagination-based functionality.
-         * @namespace ish.type.arr.pagination
-         * @ignore
-         */ //############################################################################################
-        core.oop.partial(core.type.arr, function (/*oProtected*/) {
-            //#
-            function newPage(sLabel, iPage) {
-                iPage = core.type.int.mk(iPage, 0);
+        <!-- neek
+        <h2>
+        ish.io.xslx
+        </h2>
+        
+        neek -->
+    
+</header>
 
-                return {
-                    page: iPage,
-                    label: sLabel,
-                    isCurrent: false,
-                    clickable: (iPage !== 0)
-                };
-            } //# newPage
+<article>
+    
+        <div class="container-overview">
+        
+            
 
+<dl class="details">
 
-            //#
-            function setCurrentPage(iPage, fnReturnVal) {
-                var i, iLowerPage, iUpperPage,
-                    bTrailingEllipse = false,
-                    iMaxPagesToShow = fnReturnVal.maxPagesToShow,
-                    iHalfMaxPages = Math.ceil(iMaxPagesToShow / 2),
-                    iPageCount = Math.ceil(fnReturnVal.data.length / fnReturnVal.pageSize),
-                    a_iPages = []
-                ;
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.io.xlsx.js.html">ish.io.xlsx.js</a>, <a href="ish.io.xlsx.js.html#line2">line 2</a>
+    </li></ul></dd>
+    
 
-                //# Ensure the passed iPage .is.int
-                iPage = core.type.int.mk(iPage, 1);
+    
 
-                //#
-                switch (iPage) {
-                    case -1: {
-                        iPage = fnReturnVal.current - 1;
-                        break;
-                    }
-                    case -2: {
-                        iPage = fnReturnVal.current + 1;
-                        break;
-                    }
-                }
-                fnReturnVal.current = (iPage &lt; 1 ? 1 : iPage);
-                fnReturnVal.current = (fnReturnVal.current > iPageCount ? iPageCount : fnReturnVal.current);
+    
 
-                //# If we are supposed to .showPrevNext
-                if (fnReturnVal.showPrevNext &amp;&amp; fnReturnVal.current > 1) {
-                    //# .push the First page linky
-                    a_iPages.push(newPage("&lt;", -1));
-                }
+    
 
-                //# Setup then fix the iLowerPage and iUpperPage
-                iLowerPage = (fnReturnVal.current - iHalfMaxPages);
-                iUpperPage = (fnReturnVal.current + iHalfMaxPages);
-                if (iLowerPage &lt; 1) {
-                    iUpperPage -= iLowerPage; //# 1 - (-1) = 2
-                    iLowerPage = 1;
-                }
-                //#
-                if (iUpperPage > iPageCount) {
-                    iLowerPage += (iPageCount - iUpperPage);
-                    iLowerPage = (iLowerPage &lt; 1 ? 1 : iLowerPage);
-                    iUpperPage = iPageCount;
-                }
+    
 
-                //#
-                if ((iUpperPage - iLowerPage + 1) > iMaxPagesToShow) {
-                    iUpperPage--;
-                }
+    
 
-                //# If we need a leading ellipse, adjust the counters and .push it in now
-                if (iLowerPage > 1) {
-                    a_iPages.push(newPage("...", iLowerPage));
-                    iLowerPage++;
-                }
+    
 
-                //# If we need a bTrailingEllipse, adjust the counters and flip bTrailingEllipse
-                if (iUpperPage &lt; iPageCount) {
-                    iUpperPage--;
-                    bTrailingEllipse = true;
-                }
+    
 
-                //# Traverse the iMaxPagesToShow, .push'ing each as we go
-                for (i = iLowerPage; i &lt;= iUpperPage; i++) {
-                    a_iPages.push(newPage(i, i));
+    
 
-                    //# If we are on the .isCurrent iPage, flip it
-                    if (i === iPage) {
-                        a_iPages[a_iPages.length - 1].isCurrent = true;
-                    }
-                }
+    
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Nick Campbell (wrapper); https://stackoverflow.com/users/36866/some</li>
+        </ul>
+    </dd>
+    
 
-                //# If we need a bTrailingEllipse, .push it in now
-                if (bTrailingEllipse) {
-                    a_iPages.push(newPage("...", iUpperPage + 1));
-                }
+    
+    <dt class="tag-copyright">Copyright:</dt>
+    <dd class="tag-copyright"><ul class="dummy"><li>2022-2023, Nick Campbell (wrapper)</li></ul></dd>
+    
 
-                //# If we are supposed to .showPrevNext, .push the Last page linky
-                if (fnReturnVal.showPrevNext &amp;&amp; fnReturnVal.current &lt; iPageCount) {
-                    a_iPages.push(newPage(">", -2));
-                }
+    
+    <dt class="tag-license">License:</dt>
+    <dd class="tag-license"><ul class="dummy"><li>Public Domain</li></ul></dd>
+    
 
-                fnReturnVal.pages = a_iPages;
+    
 
-                return iPage;
-            } //# setCurrentPage
+    
+
+    
+
+    
+</dl>
 
 
-            return {
-                //#########
-                /** Creates an interface that represents the pagination information.
-                 * @function ish.type.arr.pagination
-                 * @param {variant[]} a_vData Value representing the array of data.
-                 * @param {object} [oOptions] Value representing the following options:
-                 *      @param {integer} [oOptions.current=1] Value representing the current page.
-                 *      @param {integer} [oOptions.pageSize=10] Value representing the page size.
-                 *      @param {integer} [oOptions.maxPagesToShow=10] Value representing the max pages to show.
-                 *      @param {boolean} [oOptions.showPrevNext=false] Value representing if the previous/next controls will be shown.
-                 * @returns {object} =interface Value representing the following properties:
-                 *      @returns {object[]} =interface.pages Value representing the pagination's page descriptions; &lt;code>{ clickable: boolean, isCurrent: boolean, label: string, page: integer }&lt;/code>.
-                 *      @returns {variant[]} =interface.data Value representing the pagination's data.
-                 *      @returns {integer} =interface.current Value representing the pagination's current page.
-                 *      @returns {integer} =interface.pageSize Value representing the pagination's page size.
-                 *      @returns {integer} =interface.maxPagesToShow Value representing the pagination's max number of pages to show.
-                 *      @returns {integer} =interface.showPrevNext Value representing the pagination's max number of pages to show.
-                 *      @returns {function} =interface.slice Determines the current page's records; &lt;code>slice()&lt;/code>.
-                 *      @returns {function} =interface.set Sets the current page; &lt;code>set(iPage)&lt;/code>:
-                 *          &lt;table class="params">
-                 *              &lt;tr>&lt;td class="name">&lt;code>iPage&lt;/code>&lt;td>&lt;td class="type param-type">integer&lt;td>&lt;td class="description last">Value representing the page to set as current.&lt;/td>&lt;/tr>
-                 *          &lt;/table>
-                 */ //#####
-                pagination: function (a_vData, oOptions) {
-                    var fnReturnVal = function (a_vData, oOptions) {
-                        //#
-                        a_vData = core.type.arr.mk(a_vData);
-
-                        //# Ensure the passed oOptions .is .obj then setup the local vars and their related .properties
-                        oOptions = core.type.obj.mk(oOptions);
-                        core.extend(fnReturnVal, {
-                            pages: null,
-                            data: a_vData,
-                            current: core.type.int.mk(oOptions.current, 1),
-                            pageSize: core.type.int.mk(oOptions.pageSize, 10),
-                            maxPagesToShow: core.type.int.mk(oOptions.maxPagesToShow, 10),
-                            showPrevNext: core.type.bool.mk(oOptions.showPrevNext, false),
-
-                            //showMiddlePages: core.type.bool.mk(oOptions.showMiddlePages, false),
-                            //template: newPage,
-
-                            //#########
-                            /** Determines the current page's records.
-                             * @function ish.type.arr.pagination:*:slice
-                             * @returns {variant[]} Value representing the current page's records.
-                             * @ignore
-                             */ //#####
-                            slice: function () {
-                                var iIndex = ((fnReturnVal.current - 1) * fnReturnVal.pageSize);
-
-                                return a_vData.slice(iIndex, iIndex + fnReturnVal.pageSize);
-                            }, //# ish.type.arr.pagination.slice
 
 
-                            //#########
-                            /** Sets the current page.
-                             * @function ish.type.arr.pagination:*:set
-                             * @param {integer} iPage Value representing the page to set as current.
-                             * @returns {integer} Value representing the current page.
-                             * @ignore
-                             */ //#####
-                            set: function (iPage) {
-                                return setCurrentPage(iPage, fnReturnVal);
-                            } //# ish.type.arr.pagination.set
-                        });
+            
+                <div class="description" style="display: none;">XLSX Parser mixin for ish.js</div> <!-- neek added style="display: none;" -->
+            
 
-                        //# .setCurrentPage to .current
-                        setCurrentPage(fnReturnVal.current, fnReturnVal);
-                    };
+            
+        
+        </div>
+    
 
-                    //# Init fnReturnVal new reference with the passed a_vData/oOptions, then return it to the caller
-                    fnReturnVal(a_vData, oOptions);
-                    return fnReturnVal;
-                }
-            };
-        });
+    
 
-        //# .fire the plugin's loaded event
-        core.io.event.fire("ish.type.arr.pagination");
-    } //# init
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
-    //# If we are running server-side
-    //#     NOTE: Compliant with UMD, see: https://github.com/umdjs/umd/blob/master/templates/returnExports.js
-    //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
-    if (typeof module === 'object' &amp;&amp; module.exports) { //if (typeof module !== 'undefined' &amp;&amp; this.module !== module &amp;&amp; module.exports) {
-        module.exports = init;
-    }
-    //# Else if we are running in an .amd environment, register as an anonymous module
-    else if (typeof define === 'function' &amp;&amp; define.amd) {
-        define([], init);
-    }
-    //# Else we are running in the browser, so we need to setup the _document-based features
-    else {
-        init(document.querySelector("SCRIPT[ish]").ish);
-    }
 
-    //&lt;/MIXIN>
-}());
-</code></pre>
-        </article>
-    </section>
+
+
+
+
+<section>
+
+<header>
+    
+        <h1 class="page-title">ish.io.xslx</h1><!-- neek added to line 27 -->
+        
+            <h2 class="description">XLSX Parser mixin for ish.js</h2>
+        
+
+        <!-- neek
+        <h2>
+        ish.io.xslx
+        </h2>
+        
+        neek -->
+    
+</header>
+
+<article>
+    
+        <div class="container-overview">
+        
+            
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.io.xlsx-sm.js.html">ish.io.xlsx-sm.js</a>, <a href="ish.io.xlsx-sm.js.html#line2">line 2</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+    <dt class="tag-author">Author:</dt>
+    <dd class="tag-author">
+        <ul>
+            <li>Nick Campbell (wrapper); https://stackoverflow.com/users/36866/some</li>
+        </ul>
+    </dd>
+    
+
+    
+    <dt class="tag-copyright">Copyright:</dt>
+    <dd class="tag-copyright"><ul class="dummy"><li>2022-2023, Nick Campbell (wrapper)</li></ul></dd>
+    
+
+    
+    <dt class="tag-license">License:</dt>
+    <dd class="tag-license"><ul class="dummy"><li>Public Domain</li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+            
+                <div class="description" style="display: none;">XLSX Parser mixin for ish.js</div> <!-- neek added style="display: none;" -->
+            
+
+            
+        
+        </div>
+    
+
+    
+
+    
+
+    
+    
+    
+
+     
+
+    
+
+    
+
+    
+
+    
+
+    
+</article>
+
+</section>
 
 
 

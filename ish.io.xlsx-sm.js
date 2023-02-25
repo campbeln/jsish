@@ -24,7 +24,7 @@
         }
 
         let readXlsxFile = getXLSX(/*window, document*/);
-        
+
 
         //################################################################################################
         /** Collection of XLSX-based functionality.
