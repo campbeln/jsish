@@ -2542,6 +2542,7 @@
                                 oReplacedKeys = {};
 
                                 //# Traverse the a_sKeys for the oCurrent a_oX, determining the sFriendlyKeyName as we go
+                                //#     SEE: https://stackoverflow.com/questions/1661197/what-characters-are-valid-for-javascript-variable-names
                                 for (j = 0; j < a_sKeys.length; j++) {
                                     sFriendlyKeyName = a_sKeys[j].replace(/[^a-z0-9_$]/gi, oOptions.replacementChar).replace(/^[0-9]{1,}/, oOptions.replacementChar);
 
