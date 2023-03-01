@@ -9,6 +9,9 @@
                 "class":"menu-item",
                 "id":"website_link"
             }
+        },
+        "meta": {
+            "title": "JSish => Zero-dependency OOP-organized Javascript code snippets"
         }
     },
     "templates" : {
