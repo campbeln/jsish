@@ -21,10 +21,10 @@
  *      All features are organized in individually includable mixins organized by namespace/major features with only the core <code>ish.js</code> functionality required to bootstrap.
  *  </p>`
  * </div>
- * @version 0.14.2021-04-24
+ * @version 0.14.2023-05-02
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2021, Nick Campbell
+ * @copyright 2014-2023, Nick Campbell
  */ /**
  * ish.js's (renameable) global object.
  * @namespace ish
@@ -46,7 +46,7 @@
         oPrivate = {},
         oTypeIsIsh = { //# Set the .ver and .target under .type.is.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             config: {
-                ver: '0.13.2020-12-16',
+                ver: '0.13.2023-05-02',
                 onServer: bServerside,
                 debug: true,
                 //script: _undefined,
@@ -1810,7 +1810,7 @@
                             };
                         }
                         //# Else if the passed vKey is a function, set it into fnTest
-                        if (core.type.is(vKey, RegExp)) {
+                        else if (core.type.fn.is(vKey)) {
                             fnTest = vKey;
                         }
                         //# Else force vKey into a .str, .toLowerCase it and setup fnTest accordingly
@@ -1821,15 +1821,21 @@
                             }
                         }
 
+                        //# If we are to bReturnAllMatching, setup our vReturnVal as an array
+                        if (bReturnAllMatching) {
+                            vReturnVal = [];
+                            vReturnVal.keys = [];
+                        }
+
                         //# Traverse the oSource
                         for (sCurrentKey in oSource) {
                             //# If our fnTest matches on the sCurrentKey
                             if (fnTest(sCurrentKey)) {
-                                //# If we are to bReturnAllMatching, .push it into our vReturnVal (ensuring vReturnVal is a valid array as we go)
+                                //# If we are to bReturnAllMatching, .push it into our vReturnVal
                                 if (bReturnAllMatching) {
                                     //vReturnVal[sCurrentKey] = oSource[sCurrentKey];
-                                    vReturnVal = (vReturnVal || []);
                                     vReturnVal.push(oSource[sCurrentKey]);
+                                    vReturnVal.keys.push(sCurrentKey);
                                 }
                                 //# Else we're to return only the first value, so set our vReturnVal and break from the loop
                                 else {
