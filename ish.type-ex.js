@@ -2580,6 +2580,63 @@
 
 
                         //#########
+                        /** Flattens the structure of an object into a single depth object as <code>parent_child_grandchild</code> using <code>ish.type.obj.rekey</code> to preprocess key names.
+                         * @function ish.type.obj.flatten
+                         * @param {object|function|object[]|function[]} x Value representing the object(s) to rekey.
+                         * @param {string|boolean|object} [vOptions] Value representing the <code>replacementChar</code>, if we are to <code>deleteRekeyed</code> values or the following options:
+                         *      @param {string} [oOptions.replacementChar=""] Value representing the char (or characters) used to replace any unfriendly characters.
+                         *      @param {string} [oOptions.trackRekeyed=""] Value representing the key to store the remapped key data.
+                         *      @param {boolean} [oOptions.deleteRekeyed=true] Value representing if the original key/value is to be <code>delete</code>d from the object.
+                         * @returns {object|function|object[]|function[]} Value representing the rekeyed object(s) (i.e. the passed <code>x</code> is returned for convenience).
+                         */ //#####
+                        flatten: function f(x, vOptions) {
+                            let a_sKeys, a_sCurrentKeys, oCurrent, i, j,
+                                oReturnVal /* = _undefined */
+                            ;
+
+                            //#
+                            vOptions = core.extend({
+                                deleteRekeyed: true
+                            }, vOptions);
+
+                            //# If the passed x .is .obj, .rekey it (passing along the vOptions) and collect the a_sKeys
+                            if (core.type.obj.is(x, true)) {
+                                oReturnVal = core.type.obj.rekey(x, vOptions);
+                                a_sKeys = core.type.obj.ownKeys(oReturnVal);
+
+                                //# Traverse the a_sKeys
+                                //#     NOTE: We don't need to test for a_sKeys being an .arr due to the .is .obj test above
+                                for (i = 0; i < a_sKeys.length; i++) {
+                                    //#
+                                    //#     NOTE: Shell environment variable naming restrictions: [a-zA-Z_]{1,}[a-zA-Z0-9_]{0,}
+                                    if (a_sKeys[i].indexOf("$") > -1) {
+                                        //# TODO
+                                    }
+
+                                    //# If the current a_sKeys .is an .obj (including .arr), pull the oCurrent object and it's .ownKeys
+                                    if (core.type.obj.is(oReturnVal[a_sKeys[i]], true)) { // || core.type.arr.is(oReturnVal[a_sKeys[i]])) {
+                                        oCurrent = core.type.obj.flatten(oReturnVal[a_sKeys[i]], vOptions);
+                                        a_sCurrentKeys = core.type.obj.ownKeys(oCurrent);
+
+                                        //# If we have a_sCurrentKeys traverse them, placing each key under a underscored path
+                                        //#     NOTE: This test is required due to no testing of oCurrent prior to .ownKeys
+                                        if (core.type.arr.is(a_sCurrentKeys, true)) {
+                                            for (j = 0; j < a_sCurrentKeys.length; j++) {
+                                                oReturnVal[a_sKeys[i] + "_" + a_sCurrentKeys[j]] = oCurrent[a_sCurrentKeys[j]];
+                                            }
+                                        }
+
+                                        //# delete the current a_sKeys[i] as it was recreated above as a flat structure
+                                        delete oReturnVal[a_sKeys[i]];
+                                    }
+                                }
+                            }
+
+                            return oReturnVal;
+                        }, //# type.obj.flatten
+
+
+                        //#########
                         /** Mutates the passed value into an array.
                          * @function ish.type.obj.toArr
                          * @param {object|function} x Value representing the object to mutate.
