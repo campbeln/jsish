@@ -3148,6 +3148,9 @@
 
         //# .fire the plugin's loaded event
         core.io.event.fire("ish.type-ex");
+
+        //# Return core to allow for chaining
+        return core;
     } //# init
 
     /*
@@ -3186,7 +3189,7 @@
     }
     //# Else we are running in the browser, so we need to setup the _document-based features
     else {
-        init(document.querySelector("SCRIPT[ish]").ish, window.atob, window.btoa);
+        return init(document.querySelector("SCRIPT[ish]").ish, window.atob, window.btoa);
     }
 
     //</MIXIN>

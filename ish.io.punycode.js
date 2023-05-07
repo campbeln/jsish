@@ -3,7 +3,7 @@
  * @mixin ish.io.punycode
  * @author Nick Campbell (wrapper); https://stackoverflow.com/users/36866/some
  * @license Public Domain
- * @copyright 2014-2021, Nick Campbell (wrapper)
+ * @copyright 2014-2023, Nick Campbell (wrapper)
  */ //############################################################################################
 /*global module, define */                                      //# Enable Node globals for JSHint
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
@@ -392,6 +392,9 @@
 
         //# .fire the plugin's loaded event
         core.io.event.fire("ish.io.punycode");
+
+        //# Return core to allow for chaining
+        return core;
     } //# init
 
 
@@ -407,7 +410,7 @@
     }
     //# Else we are running in the browser, so we need to setup the _document-based features
     else {
-        init(document.querySelector("SCRIPT[ish]").ish);
+        return init(document.querySelector("SCRIPT[ish]").ish);
     }
 
     //</MIXIN>
