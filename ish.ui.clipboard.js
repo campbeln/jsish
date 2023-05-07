@@ -3,7 +3,7 @@
  * @mixin ish.ui.clipboard
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2021, Nick Campbell
+ * @copyright 2014-2023, Nick Campbell
  * @ignore
  */ //############################################################################################
 //<MIXIN>
@@ -70,6 +70,9 @@
 
     //# .fire the plugin's loaded event
     core.io.event.fire("ish.ui.clipboard");
+
+    //# Return core to allow for chaining
+    return core;
 
 }(document.querySelector("SCRIPT[ish]").ish)); //# Web-only
 //</MIXIN>
