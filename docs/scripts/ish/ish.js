@@ -1,7 +1,7 @@
 //################################################################################################
 /** @file Q: Are you using Vanilla Javascript?<br/>A: ...ish
  * <div style="font-size: 75%; margin-top: 20px;">
- *  JSish => Zero-dependency OOP-organized Javascript code snippets, including:
+ *  JSish => `Zero-dependency OOP-organized Javascript code snippets, including:
  *  <ul>
  *      <li>Type-safety and type-casting - assisting developers in overcoming issues related to loose typing via Vanilla Javascript (rather than syntactic sugar à la TypeScript);</li>
  *      <li>OOP features - partial class definitions with shared private members and multiple inheritance;</li>
@@ -19,7 +19,7 @@
  *  with all non-UI features available both client-side (in-browser) and server-side (Node/etc.).
  *  <p style="margin-top: 20px;">
  *      All features are organized in individually includable mixins organized by namespace/major features with only the core <code>ish.js</code> functionality required to bootstrap.
- *  </p>
+ *  </p>`
  * </div>
  * @version 0.14.2021-04-24
  * @author Nick Campbell

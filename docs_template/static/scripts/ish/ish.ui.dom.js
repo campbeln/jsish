@@ -3,7 +3,7 @@
  * @mixin ish.ui.dom
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2021, Nick Campbell
+ * @copyright 2014-2023, Nick Campbell
  * @ignore
  */ //############################################################################################
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
@@ -948,6 +948,9 @@
 
     //# .fire the plugin's loaded event
     core.io.event.fire("ish.ui.dom");
+
+    //# Return core to allow for chaining
+    return core;
 
 }(document.querySelector("SCRIPT[ish]").ish)); //# Web-only
 //</MIXIN>
