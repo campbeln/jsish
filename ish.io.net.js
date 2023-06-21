@@ -686,12 +686,14 @@
     if (typeof module === 'object' && module.exports) { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
         module.exports = function (core) {
             init(core, require('node-fetch-commonjs'));
+            return core;
         };
     }
     //# Else if we are running in an .amd environment, register as an anonymous module
     else if (typeof define === 'function' && define.amd) {
         define([], function (core) {
             init(core, window.fetch);
+            return core;
         });
     }
     //# Else we are running in the browser, so we need to setup the _document-based features

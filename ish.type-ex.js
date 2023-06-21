@@ -683,7 +683,9 @@
                  * @namespace ish.type.uuid
                  */ //#####
                 uuid: function() {
-                    var fnReturnValue, d;
+                    var fnReturnValue, d,
+                        crypto_randomUUID = core.resolve(_root, "crypto.randomUUID")
+                    ;
 
                     //#
                     function fixVersion(iVersion) {
@@ -691,28 +693,43 @@
                         return (iVersion < 1 || iVersion > 5 ? 4 : iVersion);
                     } //# fixVersion
 
+
                     //# If _root.Uint8Array and _root.crypto are available, use them in our fnReturnValue
                     if (core.type.fn.is(_root.Uint8Array) && core.type.fn.is(core.resolve(_root, "crypto.getRandomValues"))) {
                         fnReturnValue = function (iVersion) {
-                            /*jslint bitwise: true */           //# Enable bitwise operators for JSHint
-                            return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
-                                return (c ^ _root.crypto.getRandomValues(new _root.Uint8Array(1))[0] & 15 >> c / 4).toString(16);
-                            }).replace(/^(.{13})-4/, "$1-" + fixVersion(iVersion));
+                            //# If this is a iVersion 4 request, use crypto_randomUUID
+                            if (iVersion === 4) {
+                                return crypto_randomUUID();
+                            }
+                            //# Else use the inline version
+                            else {
+                                /*jslint bitwise: true */           //# Enable bitwise operators for JSHint
+                                return ([1e7] + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, function (c) {
+                                    return (c ^ _root.crypto.getRandomValues(new _root.Uint8Array(1))[0] & 15 >> c / 4).toString(16);
+                                }).replace(/^(.{13})-4/, "$1-" + fixVersion(iVersion));
+                            }
                         };
                     }
                     //# Else something went wrong using the ES6 approach, so fall back to the old skool way
                     else {
                         fnReturnValue = function (iVersion) {
-                            d = (
-                                Date.now() + (core.type.fn.call(core.resolve(_root, "performance.now")) || 0)
-                            );
+                            //# If this is a iVersion 4 request, use crypto_randomUUID
+                            if (iVersion === 4) {
+                                return crypto_randomUUID();
+                            }
+                            //# Else use the inline version
+                            else {
+                                d = (
+                                    Date.now() + (core.type.fn.call(core.resolve(_root, "performance.now")) || 0)
+                                );
 
-                            /*jslint bitwise: true */           //# Enable bitwise operators for JSHint
-                            return ('xxxxxxxx-xxxx-' + fixVersion(iVersion) + 'xxx-yxxx-xxxxxxxxxxxx').replace(/[xy]/g, function (c) {
-                                var r = (d + Math.random() * 16) % 16 | 0;
-                                d = Math.floor(d / 16);
-                                return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
-                            });
+                                /*jslint bitwise: true */           //# Enable bitwise operators for JSHint
+                                return ('xxxxxxxx-xxxx-' + fixVersion(iVersion) + 'xxx-yxxx-xxxxxxxxxxxx').replace(/[xy]/g, function (c) {
+                                    var r = (d + Math.random() * 16) % 16 | 0;
+                                    d = Math.floor(d / 16);
+                                    return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+                                });
+                            }
                         };
 
                         /*
@@ -741,6 +758,11 @@
                             ;
                         };
                         */
+
+                        //# If we were not able to successfully collect crypto_randomUUID, reroute it's calls to our fnReturnValue
+                        if (!core.type.fn.is(crypto_randomUUID)) {
+                            crypto_randomUUID = fnReturnValue;
+                        }
                     }
 
                     //#
@@ -1066,10 +1088,6 @@
                                 iMS = 1000 * 60 * 60;
                                 break;
                             }
-                            case "d": {
-                                iMS = 1000 * 60 * 60 * 24;
-                                break;
-                            }
                             case "w": {
                                 iMS = 1000 * 60 * 60 * 24 * 7;
                                 break;
@@ -1080,6 +1098,11 @@
                             }
                             case "Y": {
                                 dReturnVal = (dY.getFullYear() - dX.getFullYear());
+                                break;
+                            }
+                            case "d":
+                            default: {
+                                iMS = 1000 * 60 * 60 * 24;
                                 break;
                             }
                         }
@@ -3179,12 +3202,14 @@
                 //x => Buffer.from(x).toString('base64')
                 function (x) { return Buffer.from(x, 'binary').toString('base64'); }
             );
+            return core;
         };
     }
     //# Else if we are running in an .amd environment, register as an anonymous module
     else if (typeof define === 'function' && define.amd) {
         define([], function (core) {
             init(core, window.atob, window.btoa);
+            return core;
         });
     }
     //# Else we are running in the browser, so we need to setup the _document-based features

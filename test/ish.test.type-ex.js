@@ -3,7 +3,7 @@
  * @mixin ish.test
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2021, Nick Campbell
+ * @copyright 2014-2023, Nick Campbell
  * @ignore
  */ //############################################################################################
 (function () {
