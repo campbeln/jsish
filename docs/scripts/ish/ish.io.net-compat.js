@@ -3,7 +3,7 @@
  * @mixin ish.io.net
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2021, Nick Campbell
+ * @copyright 2014-2023, Nick Campbell
  */ //############################################################################################
 /*global module, define, require, XMLHttpRequest, ActiveXObject */  //# Enable Node globals for JSHint
 /*jshint maxcomplexity:9 */                                         //# Enable max complexity warnings for JSHint
@@ -919,6 +919,9 @@
 
         //# .fire the plugin's loaded event
         core.io.event.fire("ish.io.net");
+
+        //# Return core to allow for chaining
+        return core;
     }
 
 
@@ -941,7 +944,7 @@
     //# Else we are running in the browser, so we need to setup the _document-based features
     else {
         /*global ActiveXObject: false */ //# JSHint "ActiveXObject variable undefined" error suppressor
-        init(document.querySelector("SCRIPT[ish]").ish, window.fetch, XMLHttpRequest || ActiveXObject);
+        return init(document.querySelector("SCRIPT[ish]").ish, window.fetch, XMLHttpRequest || ActiveXObject);
     }
 
     //</MIXIN>

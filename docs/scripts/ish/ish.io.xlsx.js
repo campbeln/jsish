@@ -118,6 +118,9 @@
 
         //# .fire the plugin's loaded event
         core.io.event.fire("ish.io.xlsx");
+
+        //# Return core to allow for chaining
+        return core;
     }
 
 
@@ -133,7 +136,7 @@
     }
     //# Else we are running in the browser, so we need to setup the _document-based features
     else {
-        init(document.querySelector("SCRIPT[ish]").ish);
+        return init(document.querySelector("SCRIPT[ish]").ish);
     }
 
     //</MIXIN>

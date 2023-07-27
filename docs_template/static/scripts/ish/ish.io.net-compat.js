@@ -931,14 +931,13 @@
     if (typeof module === 'object' && module.exports) { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
         module.exports = function (core) {
             //init(core, require('node-fetch'), require("xmlhttprequest").XMLHttpRequest);
-            init(core, require('node-fetch-commonjs'), require("xmlhttprequest").XMLHttpRequest);
-
+            return init(core, require('node-fetch-commonjs'), require("xmlhttprequest").XMLHttpRequest);
         };
     }
     //# Else if we are running in an .amd environment, register as an anonymous module
     else if (typeof define === 'function' && define.amd) {
         define([], function (core) {
-            init(core, XMLHttpRequest || ActiveXObject);
+            return init(core, XMLHttpRequest || ActiveXObject);
         });
     }
     //# Else we are running in the browser, so we need to setup the _document-based features
