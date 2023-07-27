@@ -2201,7 +2201,7 @@
                                         }
 
                                         //# If x doesn't .hasOwnProperty, or the current sKey .is(n't) a .fn or the oInterface's test returns falsy, flip our bReturnVal and fall from the loop
-                                        if (!x.hasOwnProperty(sKey) ||
+                                        if (sKey in x || //!x.hasOwnProperty(sKey) ||
                                             !core.type.fn.is(oInterface[sKey]) ||
                                             !oInterface[sKey](x[sKey])
                                         ) {

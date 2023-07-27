@@ -21,7 +21,7 @@
  *      All features are organized in individually includable mixins organized by namespace/major features with only the core <code>ish.js</code> functionality required to bootstrap.
  *  </p>`
  * </div>
- * @version 0.14.2023-05-18
+ * @version 0.14.2023-07-11
  * @author Nick Campbell
  * @license MIT
  * @copyright 2014-2023, Nick Campbell
@@ -46,7 +46,7 @@
         oPrivate = {},
         oTypeIsIsh = { //# Set the .ver and .target under .type.is.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             config: {
-                ver: '0.13.2023-05-18',
+                ver: '0.13.2023-07-11',
                 onServer: bServerside,
                 debug: true,
                 //script: _undefined,
@@ -3265,8 +3265,9 @@
                     _script.setAttribute(sTarget, "");
                 }
 
-                //# Ensure there is a reference to core available on our _script tag so that other scripts can auto-resolve it then .process
+                //# Ensure there is a reference to core available on our _script tag and the _head (for redundancy) so that other scripts can auto-resolve it then .process
                 _script[sTarget] = core;
+                _head[sTarget] = core;
                 process(bProcessAttributeInit);
             }; //# oPrivates.init
 
@@ -3565,7 +3566,7 @@
                     }
 
                     return bReturnVal;
-                },
+                }, //# scrollTo
 
                 //#########
                 /** Clears any page selection(s) from the browser.
@@ -3574,7 +3575,31 @@
                 clearSelection: function () {
                     if (_root.getSelection) {_root.getSelection().removeAllRanges();}
                     else if (_document.selection) {_document.selection.empty();}
-                }
+                }, //# clearSelection
+
+                //#########
+                /** Downloads the provided contents as a file via the browser.
+                 * @function ish.ui.downloadToFile
+                 * @param {string} vContents Value representing the file contents.
+                 * @param {string} [sFilename] Value representing filename.
+                 * @param {string} [sContentType] Value representing content type of the file.
+                 */ //#####
+                downloadToFile: function (vContents, sFilename, sContentType) {
+                    var $a = _document.createElement("a");
+
+                    //# Try/catch around the URL and Blob uses just in case stuff blows up
+                    try {
+                        //# Set the .href based on a new Blob, set the sFilename for the .download, initiate the download via .click then .revoke the Blob
+                        $a.href = URL.createObjectURL(
+                            new Blob([vContents], { type: sContentType })
+                        );
+                        $a.download = sFilename;
+                        $a.click();
+                        URL.revokeObjectURL($a.href);
+                    } catch (e) {
+                        (console.error || console.log)("Unable to create URL or Blob to download file!", e);
+                    }
+                } //# downloadToFile
 
                 /*
                 //############################################################
