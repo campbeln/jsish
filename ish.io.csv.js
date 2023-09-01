@@ -122,24 +122,19 @@
                                     }
                                     //#
                                     else if (core.type.obj.is(vCurrent) || core.type.arr.is(vCurrent)) {
-                                        vCurrent = JSON.stringify(vCurrent);
+                                        vCurrent = '"' + JSON.stringify(vCurrent).replace(/"/g, '""') + '"';
                                     }
                                     //#
-                                    else if (oOptions.quotes) {
-                                        vCurrent = '"' + vCurrent + '"';
-                                    }
-                                    //#
-                                    else if (!core.type.is.numeric(vCurrent)) {
-                                        vCurrent = core.type.str.mk(vCurrent);
+                                    else {
+                                        //#
+                                        if (core.type.is.numeric(vCurrent)) {
+                                            vCurrent = core.type.str.mk(vCurrent);
+                                        }
 
                                         //#
                                         if (oOptions.quotes || vCurrent.indexOf(oOptions.delimiter) > -1 || vCurrent.indexOf('"') > -1 || vCurrent.indexOf('\n') > -1) {
                                             vCurrent = '"' + vCurrent.replace(/"/g, '""') + '"';
                                         }
-                                    }
-                                    //#
-                                    else if (oOptions.quotes) {
-                                        vCurrent = '"' + vCurrent + '"';
                                     }
 
                                     sReturnVal += vCurrent + ((iKeysLength - 1) === j ? "\n" : oOptions.delimiter);

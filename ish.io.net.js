@@ -720,6 +720,7 @@
     //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
     if (typeof module === 'object' && module.exports) { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
         module.exports = function (core) {
+            //#     NOTE: FormData is included in NodeJS v18+ but the form-data npm package is required for versions below that
             return init(core, require('node-fetch-commonjs'), FormData || require('form-data'));
         };
     }
