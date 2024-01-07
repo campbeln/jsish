@@ -1210,7 +1210,7 @@
                         //# Else if the passed s(tring) .starts with sReference after .trim'ing and .toLowerCase'ing, set our bReturnVal to 1 (truthy)
                         else {
                             sX = sX.trim().toLowerCase();
-                            sReference.trim().toLowerCase();
+                            sReference = sReference.trim().toLowerCase();
                             if (fnTest(sX.indexOf(sReference), sX.length, sReference.length)) {
                                 bReturnVal = 1;
                             }
