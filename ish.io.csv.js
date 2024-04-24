@@ -67,7 +67,28 @@
                         // Otherwise, append the current character to the current column
                         arr[row][col] += cc;
                     }
-                    return arr;
+                    //return arr;
+
+                    var i, j,
+                        a_oReturnVal = []
+                    ;
+
+                    //#
+                    a_oReturnVal.asArr = arr;
+
+                    //# Traverse the arr, starting at the first data row, .push'ing a new object into our a_oReturnVal as we go
+                    for (i = 1; i < arr.length; i++) {
+                       a_oReturnVal.push({});
+
+                        //# Traverse the arr's column header row
+                        for (j = 0; j < arr[0].length; j++) {
+                            //# Set the current a_oReturnVal's row under the current header column's name (or "ColumnJ+1")
+                            a_oReturnVal[i - 1][
+                                arr[0][j] || "Column" + (j + 1)
+                            ] = arr[i][j];
+                        }
+                    }
+                    return a_oReturnVal;
                 }, //# io.csv.parse
 
                 //#########
@@ -168,7 +189,7 @@
     }
     //# Else we are running in the browser, so we need to setup the _document-based features
     else {
-        return init(document.querySelector("SCRIPT[ish]").ish);
+        return init(window.head.ish || document.querySelector("SCRIPT[ish]").ish);
     }
 
     //</MIXIN>

@@ -166,5 +166,5 @@
     //# Return core to allow for chaining
     return core;
 
-}(document.querySelector("SCRIPT[ish]").ish)); //# Web-only
+}(window.head.ish || document.querySelector("SCRIPT[ish]").ish)); //# Web-only
 //</MIXIN>

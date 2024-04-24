@@ -21,10 +21,10 @@
  *      All features are organized in individually includable mixins organized by namespace/major features with only the core <code>ish.js</code> functionality required to bootstrap.
  *  </p>`
  * </div>
- * @version 0.14.2023-07-11
+ * @version 0.14.2024-02-03
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2023, Nick Campbell
+ * @copyright 2014-2024, Nick Campbell
  */ /**
  * ish.js's (renameable) global object.
  * @namespace ish
@@ -46,7 +46,7 @@
         oPrivate = {},
         oTypeIsIsh = { //# Set the .ver and .target under .type.is.ish (done here so it's at the top of the file for easy editing) then stub out the .app and .lib with a new .pub oInterfaces for each
             config: {
-                ver: '0.13.2023-07-11',
+                ver: '0.14.2024-02-03',
                 onServer: bServerside,
                 debug: true,
                 //script: _undefined,
@@ -3358,7 +3358,7 @@
 
                     //#########
                     /** Casts the passed value into a DOM element.
-                     * @$note Can be a CSS Selector (used by document.querySelector), jQuery reference (x[0] will be returned), HTML string defining a single root element or DOM element.
+                     * @$note <code>_fileInput</code> can be a CSS Selector (used by <code>document.querySelector</code>), jQuery reference (<code>x[0]</code> will be returned), HTML string defining a single root element or DOM element.
                      * @$note If the value to interrogate represents multiple top-level DOM elements, they will be returned under a single <code><div></div></code> who has a property of <code>parsedMultiple=true</code>.
                      * @function ish.type.dom.mk
                      * @param {variant|string} x Value to interrogate.
@@ -3577,29 +3577,74 @@
                     else if (_document.selection) {_document.selection.empty();}
                 }, //# clearSelection
 
-                //#########
-                /** Downloads the provided contents as a file via the browser.
-                 * @function ish.ui.downloadToFile
-                 * @param {string} vContents Value representing the file contents.
-                 * @param {string} [sFilename] Value representing filename.
-                 * @param {string} [sContentType] Value representing content type of the file.
-                 */ //#####
-                downloadToFile: function (vContents, sFilename, sContentType) {
-                    var $a = _document.createElement("a");
 
-                    //# Try/catch around the URL and Blob uses just in case stuff blows up
-                    try {
-                        //# Set the .href based on a new Blob, set the sFilename for the .download, initiate the download via .click then .revoke the Blob
-                        $a.href = URL.createObjectURL(
-                            new Blob([vContents], { type: sContentType })
-                        );
-                        $a.download = sFilename;
-                        $a.click();
-                        URL.revokeObjectURL($a.href);
-                    } catch (e) {
-                        (console.error || console.log)("Unable to create URL or Blob to download file!", e);
-                    }
-                } //# downloadToFile
+                //#########
+                /** Client-side file-based functionality.
+                 * @namespace ish.ui.fs
+                 * @$clientsideonly
+                 */ //#####
+                fs: {
+                    //#########
+                    /** Downloads the provided contents as a file via the browser.
+                     * @function ish.ui.fs.save
+                     * @note Was <code>ish.ui.downloadToFile</code>.
+                     * @param {string} vContents Value representing the file contents.
+                     * @param {string} [sFilename] Value representing filename.
+                     * @param {string} [sContentType] Value representing content type of the file.
+                     */ //#####
+                    save: function (vContents, sFilename, sContentType) {
+                        var $a = _document.createElement("a");
+
+                        //# Try/catch around the URL and Blob uses just in case stuff blows up
+                        try {
+                            //# Set the .href based on a new Blob, set the sFilename for the .download, initiate the download via .click then .revoke the Blob
+                            $a.href = URL.createObjectURL(
+                                new Blob([vContents], { type: sContentType })
+                            );
+                            $a.download = sFilename;
+                            $a.click();
+                            URL.revokeObjectURL($a.href);
+                        } catch (e) {
+                            (console.error || console.log)("Unable to create URL or Blob to download file!", e);
+                        }
+                    }, //# ui.fs.save
+
+                    //#########
+                    /** Loads the provided file via the browser.
+                     * @function ish.ui.fs.load
+                     * @param {function} fnCallback Function to be called on load which receives `sFileContents` and `$loadEvent` as arguments.
+                     * @param {string} [sInputFileSelector=input[type=file]] Value representing the CSS selector to the file input.
+                     */ //#####
+                    load: function (fnCallback, sInputFileSelector) {
+                        //# Ensure the passed sInputFileSelector is a string
+                        sInputFileSelector = core.type.str.mk(sInputFileSelector, "input[type=file]");
+
+                        //# Try/catch around the FileReader uses just in case stuff blows up
+                        try {
+                            var $input = _document_querySelector(sInputFileSelector),
+                                $fileReader = new _window.FileReader()
+                            ;
+
+                            //# If the $input isn't as expected, throw the error
+                            if (!core.type.dom.is($input) || !$input.files || !$input.files[0]) {
+                                throw("Insure `" + sInputFileSelector + "` supports `files` and has a file selected.");
+                            }
+                            //# Else if the fnCallback
+                            else if (!core.type.fn.is(fnCallback)) {
+                                throw("`fnCallback` is not a function.");
+                            }
+                            //# Else the arguments are valid so setup the $fileReader
+                            else {
+                                $fileReader.onload = function ($event) {
+                                    fnCallback(core.resolve($event, "target.result"), $event);
+                                }
+                                $fileReader.readAsText($input.files[0]);
+                            }
+                        } catch (e) {
+                            (console.error || console.log)("ish.ui.file.load error:", e);
+                        }
+                    } //# ui.fs.load
+                }
 
                 /*
                 //############################################################

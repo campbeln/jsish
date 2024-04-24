@@ -736,7 +736,7 @@
     }
     //# Else we are running in the browser, so we need to setup the _document-based features
     else {
-        return init(document.querySelector("SCRIPT[ish]").ish, window.fetch, window.FormData);
+        return init(window.head.ish || document.querySelector("SCRIPT[ish]").ish, window.fetch, window.FormData);
     }
 
     //</MIXIN>

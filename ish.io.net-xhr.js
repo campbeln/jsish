@@ -402,7 +402,7 @@
     //# Else we are running in the browser, so we need to setup the _document-based features
     else {
         /*global ActiveXObject: false */ //# JSHint "ActiveXObject variable undefined" error suppressor
-        return init(document.querySelector("SCRIPT[ish]").ish, XMLHttpRequest || ActiveXObject);
+        return init(window.head.ish || document.querySelector("SCRIPT[ish]").ish, XMLHttpRequest || ActiveXObject);
     }
 
     //</MIXIN>

@@ -3,7 +3,7 @@
 <head>
     
     <meta charset="utf-8">
-    <title>event - (JSish => 'Zero-dependency OOP-organized Javascript code snippets')()</title>
+    <title>fs - (JSish => 'Zero-dependency OOP-organized Javascript code snippets')()</title>
     
     
     
@@ -85,14 +85,16 @@
 <header>
     
         <img src="img/ish.png" style="float: right; height: 200px;" />
-        <h1 class="page-title">ish.io.event</h1><!-- neek added to line 27 -->
+        <h1 class="page-title">ish.ui.fs</h1><!-- neek added to line 27 -->
         
-            <h2 class="description">Event-based functionality.</h2>
+            <h2 class="description">Client-side file-based functionality.</h2>
         
 
         <!-- neek
         <h2>
-        event
+            <span class="ancestors"><a href="ish.html">ish</a><a href="ish.ui.html">.ui</a>.</span>
+        
+        fs
         </h2>
         
         neek -->
@@ -110,7 +112,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line2401">line 2401</a>
+        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line3582">line 3582</a>
     </li></ul></dd>
     
 
@@ -149,7 +151,7 @@
 
 
             
-                <div class="description" style="display: none;">Event-based functionality.</div> <!-- neek added style="display: none;" -->
+                <div class="description" style="display: none;">Client-side file-based functionality.</div> <!-- neek added style="display: none;" -->
             
 
             
@@ -179,11 +181,11 @@
 
     
 
-    <h4 class="name" id=".fire">
+    <h4 class="name" id=".load">
       <!-- neek -->
-      
+      <client>[client]</client>
       <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.io.event.fire<span class="signature">(sEvent, a_vArguments<span class="signature-attributes">opt</span>)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
+      <!-- neek <span class="type-signature">(static) </span> -->ish.ui.fs.load<span class="signature">(fnCallback, sInputFileSelector<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
 
     
 
@@ -195,7 +197,7 @@
     
     <dt class="tag-source">Source:</dt>
     <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line2462">line 2462</a>
+        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line3613">line 3613</a>
     </li></ul></dd>
     
 
@@ -235,8 +237,20 @@
 
 
 <div class="description">
-    Fires the passed event, executing any registered functions with the passed arguments.
+    Loads the provided file via the browser.
 </div>
+
+
+<!-- neek -->
+
+
+    <div class="description">
+        <b><client>Client-Side Only:</client></b> This functionality is only available under a browser (Firefox, Chrome, etc.).
+    </div>
+
+
+
+
 
 
 <!-- neek -->
@@ -245,9 +259,206 @@
 
 
 
+
+
+
+
+
+    <h5>Parameters:</h5>
+    
+
+<table class="params">
+    <thead>
+    <tr>
+        
+        <th>Name</th>
+        
+
+        <th>Type</th>
+
+        
+        <th>Attributes</th>
+        
+
+        
+        <th>Default</th>
+        
+
+        <th class="last">Description</th>
+    </tr>
+    </thead>
+
+    <tbody>
+    
+
+        <tr>
+            
+                <td class="name"><code>fnCallback</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">function</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                </td>
+            
+
+            <td class="description last">Function to be called on load which receives `sFileContents` and `$loadEvent` as arguments.</td>
+        </tr>
+
+    
+
+        <tr>
+            
+                <td class="name"><code>sInputFileSelector</code></td>
+            
+
+            <td class="type">
+            
+                
+<span class="param-type">string</span>
+
+
+            
+            </td>
+
+            
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
+
+            
+                <td class="default">
+                
+                    <code>input[type=file]</code>
+                
+                </td>
+            
+
+            <td class="description last">Value representing the CSS selector to the file input.</td>
+        </tr>
+
+    
+    </tbody>
+</table>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+ <!-- neek -->
+
+
+
+        
+            
+
+    
+
+    <h4 class="name" id=".save">
+      <!-- neek -->
+      <client>[client]</client>
+      <!-- /neek -->
+      <!-- neek <span class="type-signature">(static) </span> -->ish.ui.fs.save<span class="signature">(vContents, sFilename<span class="signature-attributes">opt</span>, sContentType<span class="signature-attributes">opt</span>)</span><span class="type-signature"></span></h4>
+
+    
+
+
+
+
+<dl class="details">
+
+    
+    <dt class="tag-source">Source:</dt>
+    <dd class="tag-source"><ul class="dummy"><li>
+        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line3588">line 3588</a>
+    </li></ul></dd>
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+
+    
+</dl>
+
+
+
+
+
+<div class="description">
+    Downloads the provided contents as a file via the browser.
+</div>
+
+
+<!-- neek -->
+
+
     <div class="description">
-        <b>AKA:</b> <code>ish.io.event</code>
+        <b><client>Client-Side Only:</client></b> This functionality is only available under a browser (Firefox, Chrome, etc.).
     </div>
+
+
+
 
 
 
@@ -289,7 +500,7 @@
 
         <tr>
             
-                <td class="name"><code>sEvent</code></td>
+                <td class="name"><code>vContents</code></td>
             
 
             <td class="type">
@@ -313,23 +524,20 @@
 
             
 
-            <td class="description last">Value representing the name of the event.</td>
+            <td class="description last">Value representing the file contents.</td>
         </tr>
 
     
 
         <tr>
             
-                <td class="name"><code>a_vArguments</code></td>
+                <td class="name"><code>sFilename</code></td>
             
 
             <td class="type">
             
                 
-<span class="param-type">arguments</span>
-|
-
-<span class="param-type">Array.&lt;variant></span>
+<span class="param-type">string</span>
 
 
             
@@ -349,190 +557,14 @@
 
             
 
-            <td class="description last">Value representing the arguments to pass into the event's registered functions.<br/><b>Note:</b> This value is passed through <code>ish.type.fn.convert</code> to ensure an array.</td>
+            <td class="description last">Value representing filename.</td>
         </tr>
 
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
     
 
         <tr>
             
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Value representing if any registered functions were executed.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
- <!-- neek -->
- <!-- neek -->
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".fired">
-      <!-- neek -->
-      
-      <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.io.event.fired<span class="signature">(sEvent)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line2472">line 2472</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Determines if the passed event has been previously fired.
-</div>
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-    <div class="description">
-        <b>Note:</b> During the first call, <code>ish.io.event.fired</code> will return <code>false</code> to indicate this is the first run of the event.
-    </div>
-
-<!-- neek -->
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>sEvent</code></td>
+                <td class="name"><code>sContentType</code></td>
             
 
             <td class="type">
@@ -545,10 +577,20 @@
             </td>
 
             
+                <td class="attributes">
+                
+                    &lt;optional><br>
+                
+
+                
+
+                
+                </td>
+            
 
             
 
-            <td class="description last">Value representing the name of the event.</td>
+            <td class="description last">Value representing content type of the file.</td>
         </tr>
 
     
@@ -569,904 +611,6 @@
 
 
 
-
-<h5>Returns:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Value representing if the passed event has been previously fired.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
- <!-- neek -->
- <!-- neek -->
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".registered">
-      <!-- neek -->
-      
-      <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.io.event.registered<span class="signature">(sEvent, fnCallback)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line2519">line 2519</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Determines if the passed callback is registered against passed event.
-</div>
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>sEvent</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Value representing the name of the event.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>fnCallback</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Function that may be registered against the event.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Value representing if the passed callback is registered against the event.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
- <!-- neek -->
- <!-- neek -->
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".unregister">
-      <!-- neek -->
-      
-      <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.io.event.unregister<span class="signature">(sEvent)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line2555">line 2555</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Unregisters the passed event.
-</div>
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>sEvent</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Value representing the name of the event.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Value representing if the passed event has been successfully unregistered.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
- <!-- neek -->
- <!-- neek -->
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".unwatch">
-      <!-- neek -->
-      
-      <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.io.event.unwatch<span class="signature">(sEvent, fnCallback)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line2510">line 2510</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Unregisters the passed callback from the passed event.
-</div>
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>sEvent</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Value representing the name of the event.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>fnCallback</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Function to unregister against the event.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Value representing if the passed callback was successfully unregistered against the event.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
- <!-- neek -->
- <!-- neek -->
-
-
-
-        
-            
-
-    
-
-    <h4 class="name" id=".watch">
-      <!-- neek -->
-      
-      <!-- /neek -->
-      <!-- neek <span class="type-signature">(static) </span> -->ish.io.event.watch<span class="signature">(sEvent, fnCallback)</span><span class="type-signature"> &rarr; {boolean}</span></h4>
-
-    
-
-
-
-
-<dl class="details">
-
-    
-    <dt class="tag-source">Source:</dt>
-    <dd class="tag-source"><ul class="dummy"><li>
-        <a href="ish.js.html">ish.js</a>, <a href="ish.js.html#line2483">line 2483</a>
-    </li></ul></dd>
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-
-    
-</dl>
-
-
-
-
-
-<div class="description">
-    Watches the passed event, executing the passed function whenever the event is fired.
-</div>
-
-
-<!-- neek -->
-
-
-
-
-
-
-
-    <div class="description">
-        <b>Note:</b> The passed function will be executed immediately if the passed event has been previously fired.
-    </div>
-
-<!-- neek -->
-
-
-
-
-
-
-
-
-
-
-    <h5>Parameters:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-        <th>Name</th>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-                <td class="name"><code>sEvent</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">string</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Value representing the name of the event.</td>
-        </tr>
-
-    
-
-        <tr>
-            
-                <td class="name"><code>fnCallback</code></td>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">function</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Function to execute whenever the event is fired, accepting the arguments passed into <code>ish.io.event.fire</code> and executed with <code>{ name: sEvent, count: iEventCallCount }</code> as <code>this</code>.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<h5>Returns:</h5>
-    
-
-<table class="params">
-    <thead>
-    <tr>
-        
-
-        <th>Type</th>
-
-        
-
-        
-
-        <th class="last">Description</th>
-    </tr>
-    </thead>
-
-    <tbody>
-    
-
-        <tr>
-            
-
-            <td class="type">
-            
-                
-<span class="param-type">boolean</span>
-
-
-            
-            </td>
-
-            
-
-            
-
-            <td class="description last">Value representing if the passed function was successfully registered against the event.</td>
-        </tr>
-
-    
-    </tbody>
-</table>
- <!-- neek -->
  <!-- neek -->
 
 

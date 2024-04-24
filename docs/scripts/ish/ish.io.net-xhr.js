@@ -390,19 +390,19 @@
     //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
     if (typeof module === 'object' && module.exports) { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
         module.exports = function (core) {
-            init(core, require("xmlhttprequest").XMLHttpRequest);
+            return init(core, require("xmlhttprequest").XMLHttpRequest);
         };
     }
     //# Else if we are running in an .amd environment, register as an anonymous module
     else if (typeof define === 'function' && define.amd) {
         define([], function (core) {
-            init(core, XMLHttpRequest || ActiveXObject);
+            return init(core, XMLHttpRequest || ActiveXObject);
         });
     }
     //# Else we are running in the browser, so we need to setup the _document-based features
     else {
         /*global ActiveXObject: false */ //# JSHint "ActiveXObject variable undefined" error suppressor
-        return init(document.querySelector("SCRIPT[ish]").ish, XMLHttpRequest || ActiveXObject);
+        return init(window.head.ish || document.querySelector("SCRIPT[ish]").ish, XMLHttpRequest || ActiveXObject);
     }
 
     //</MIXIN>

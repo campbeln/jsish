@@ -377,7 +377,7 @@
                     bRequestHasBody = (core.type.is.value(oBody) && sVerb !== "GET" && sVerb !== "HEAD");
                     bBodyIsFormData = bRequestHasBody &&
                         core.type.fn.is(oBody.append) && //# see: https://developer.mozilla.org/en-US/docs/Web/API/FormData
-                        core.type.fn.is(oBody.delete) &&
+                        core.type.fn.is(oBody.delete) && //# TODO: Neek
                         core.type.fn.is(oBody.entries) &&
                         core.type.fn.is(oBody.get) &&
                         core.type.fn.is(oBody.getAll) &&
@@ -403,7 +403,7 @@
                     oInit = core.extend(oOptions, {
                         method: sVerb,
                         body: (bRequestHasBody ?
-                            (core.type.obj.is(oBody) && bBodyIsFormData ? JSON.stringify(oBody) : oBody) :
+                            (core.type.obj.is(oBody) /*&& bBodyIsFormData*/ ? JSON.stringify(oBody) : oBody) :
                             _undefined
                         ),
                         //mode: "cors",
@@ -720,7 +720,12 @@
     //#     NOTE: Does not work with strict CommonJS, but only CommonJS-like environments that support module.exports, like Node.
     if (typeof module === 'object' && module.exports) { //if (typeof module !== 'undefined' && this.module !== module && module.exports) {
         module.exports = function (core) {
-            return init(core, require('node-fetch-commonjs'), FormData || require('form-data'));
+            //#     NOTE: FormData is included in NodeJS v18+ but the form-data npm package is required for versions below that
+            try {
+                return init(core, require('node-fetch-commonjs'), FormData);
+            } catch (e) {
+                return init(core, require('node-fetch-commonjs'), require('form-data'));
+            }
         };
     }
     //# Else if we are running in an .amd environment, register as an anonymous module
@@ -731,7 +736,7 @@
     }
     //# Else we are running in the browser, so we need to setup the _document-based features
     else {
-        return init(document.querySelector("SCRIPT[ish]").ish, window.fetch, window.FormData);
+        return init(window.head.ish || document.querySelector("SCRIPT[ish]").ish, window.fetch, window.FormData);
     }
 
     //</MIXIN>
