@@ -67,7 +67,28 @@
                         // Otherwise, append the current character to the current column
                         arr[row][col] += cc;
                     }
-                    return arr;
+                    //return arr;
+
+                    var i, j,
+                        a_oReturnVal = []
+                    ;
+
+                    //#
+                    a_oReturnVal.asArr = arr;
+
+                    //# Traverse the arr, starting at the first data row, .push'ing a new object into our a_oReturnVal as we go
+                    for (i = 1; i < arr.length; i++) {
+                       a_oReturnVal.push({});
+
+                        //# Traverse the arr's column header row
+                        for (j = 0; j < arr[0].length; j++) {
+                            //# Set the current a_oReturnVal's row under the current header column's name (or "ColumnJ+1")
+                            a_oReturnVal[i - 1][
+                                arr[0][j] || "Column" + (j + 1)
+                            ] = arr[i][j];
+                        }
+                    }
+                    return a_oReturnVal;
                 }, //# io.csv.parse
 
                 //#########
@@ -122,24 +143,19 @@
                                     }
                                     //#
                                     else if (core.type.obj.is(vCurrent) || core.type.arr.is(vCurrent)) {
-                                        vCurrent = JSON.stringify(vCurrent);
+                                        vCurrent = '"' + JSON.stringify(vCurrent).replace(/"/g, '""') + '"';
                                     }
                                     //#
-                                    else if (oOptions.quotes) {
-                                        vCurrent = '"' + vCurrent + '"';
-                                    }
-                                    //#
-                                    else if (!core.type.is.numeric(vCurrent)) {
-                                        vCurrent = core.type.str.mk(vCurrent);
+                                    else {
+                                        //#
+                                        if (core.type.is.numeric(vCurrent)) {
+                                            vCurrent = core.type.str.mk(vCurrent);
+                                        }
 
                                         //#
                                         if (oOptions.quotes || vCurrent.indexOf(oOptions.delimiter) > -1 || vCurrent.indexOf('"') > -1 || vCurrent.indexOf('\n') > -1) {
                                             vCurrent = '"' + vCurrent.replace(/"/g, '""') + '"';
                                         }
-                                    }
-                                    //#
-                                    else if (oOptions.quotes) {
-                                        vCurrent = '"' + vCurrent + '"';
                                     }
 
                                     sReturnVal += vCurrent + ((iKeysLength - 1) === j ? "\n" : oOptions.delimiter);

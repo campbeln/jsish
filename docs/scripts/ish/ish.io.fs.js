@@ -3,14 +3,12 @@
  * @mixin ish.io.fs
  * @author Nick Campbell
  * @license MIT
- * @copyright 2014-2023, Nick Campbell
+ * @copyright 2014-2024, Nick Campbell
  */ //############################################################################################
 /*jshint maxcomplexity:9 */                                     //# Enable max complexity warnings for JSHint
 //<MIXIN>
-(function (core) {
+(function (core, _document, _window) {
     'use strict';
-
-    var _document = document;                                                       //# code-golf
 
 
     //################################################################################################
@@ -23,6 +21,8 @@
             //#########
             /** Saves the passed value by downloading it onto the client system as a string.
              * @function ish.io.fs.save
+             * @$clientsideonly
+             * @note Was <code>ish.ui.downloadToFile</code>.
              * @param {string|object} vData Value representing the data to download as a string.
              * @param {object} [oOptions] Value representing the desired options:
              *      @param {string} [oOptions.filename='downloaded.txt'] Value representing the default filename of the downloaded file.
@@ -64,16 +64,19 @@
 
 
             //#########
-            /** Uploads the referenced file from the client system.
-             * @function ish.io.fs.upload
-             * @param {object} _fileInput Value representing the file input DOM-based object.
+            /** Loads the referenced file from the client system.
+             * @function ish.io.fs.load
+             * @$clientsideonly
+             * @note Was <code>ish.io.fs.upload</code>.
+             * @param {variant|string} vFileInput Value representing the file input DOM-based object, as resolvable by <code>ish.type.dom.mk</code>.
              * @param {object} [oOptions] Value representing the desired options:
              *      @param {function} [oOptions.callback=undefined] Value representing the function to be called on completion; <code>oOptions.callback(eventTargetResult, iIndex, oFile, oOptions)</code>.
              *      @param {integer} [oOptions.byteStart=0] Value representing the byte to start reading from the file to upload.
              *      @param {string} [oOptions.byteEnd=0] Value representing the byte to end reading from the file to upload, with <code>0</code> representing all of the file.
              */ //#####
-            upload: function (_fileInput, oOptions) {
+            load: function (vFileInput, oOptions) {
                 var i,
+                    _fileInput = core.type.dom.mk(vFileInput, null),
                     iLen = core.resolve(_fileInput, "files.length"),
                     bReturnVal = (core.type.dom.is(_fileInput) && iLen)
                 ;
@@ -81,7 +84,7 @@
                 //#
                 function processFile(oFile, iIndex) {
                     var oBlob,
-                        _reader = new FileReader()
+                        _reader = new _window.FileReader()
                     ;
 
                     //# Setup _reader's .onloadend event, .call'ing our .callback when it's FileReader.DONE (== 2)
@@ -113,7 +116,7 @@
                 }
 
                 return bReturnVal;
-            } //# io.fs.download
+            } //# io.fs.load
         }
     }); //# core.io.fs
 
@@ -123,5 +126,5 @@
     //# Return core to allow for chaining
     return core;
 
-}(window.head.ish || document.querySelector("SCRIPT[ish]").ish)); //# Web-only
+}(window.head.ish || document.querySelector("SCRIPT[ish]").ish, document, window)); //# Web-only
 //</MIXIN>
