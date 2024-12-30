@@ -92,7 +92,7 @@
                                 aborted: bAbort,
                                 response: $xhr[bResponseTypeText ? 'responseText' : 'response'],
                                 text: bResponseTypeText ? $xhr.responseText : null,
-                                json: bResponseTypeText ? core.type.fn.tryCatch(JSON.parse)($xhr.responseText) : null
+                                json: bResponseTypeText ? core.type.fn.tryCatch(JSON.parse)(core.type.str.mk($xhr.responseText).replaceAll("\n", "\\n")) : null
                             };
                             oData.loaded = oData.ok; //# TODO: Remove
                             oData.data = oData.json; //# TODO: Remove
@@ -223,7 +223,7 @@
                                 aborted: false,
                                 response: $xhr[bResponseTypeText ? 'responseText' : 'response'],
                                 text: (bResponseTypeText ? $xhr.responseText : null),
-                                json: (bResponseTypeText ? core.type.fn.tryCatch(JSON.parse)($xhr.responseText) : null)
+                                json: (bResponseTypeText ? core.type.fn.tryCatch(JSON.parse)(core.type.str.mk($xhr.responseText).replaceAll("\n", "\\n")) : null)
                             };
                             //oData.loaded = oData.ok;
                             //oData.data = oData.json;
