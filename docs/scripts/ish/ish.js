@@ -630,7 +630,7 @@
             //#
             function mkJSON(v) {
                 try {
-                    return JSON.parse(v);
+                    return JSON.parse(core.type.str.mk(v).replaceAll("\n", "\\n"));
                 } catch (e) {/*oTypeIsIsh.public.expectedErrorHandler(e);*/}
             } //# mkJSON
 

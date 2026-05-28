@@ -492,7 +492,7 @@
                                     }
                                 }
                             }
-                            console.log(oReturnVal);
+                            //console.log(oReturnVal);
                         }
                         //# Else call queryTestValue with the vKey
                         else {
@@ -1056,6 +1056,66 @@
 
                         return iReturnVal;
                     }, //# date.age
+
+
+                    //#########
+                    /** Determines the difference between two dates in years, days, hours, minutes and seconds.
+                     * @$note The passed values are implicitly casted per <code>{@link ish.type.date.mk}</code>.
+                     * @function ish.type.date.diff
+                     * @param {variant} x Value representing the first date to compare.
+                     * @param {variant} [y=new Date()] Value representing the second date to compare.
+                     * @returns {integer} Value representing the difference between two dates in years, days, hours, minutes and seconds.
+                     * @see {@link https://stackoverflow.com/a/13904120/235704|StackOverflow.com}
+                     */ //#####
+                    ydhms: function(x, y) {
+                        var iDelta, iTemp,
+                            sReturnVal = "",
+                            dX = core.type.date.mk(x),
+                            dY = core.type.date.mk(y)
+                        ;
+
+                        // get total seconds between the times
+                        iDelta = Math.abs(dY - dX) / 1000;
+
+                        // calculate (and subtract) whole days
+                        iTemp = Math.floor(iDelta / 86400);
+                        iDelta -= iTemp * 86400;
+
+                        //# If we have full days
+                        if (iTemp > 0) {
+                            //# If we have full years, append them now
+                            if (iTemp > 364) {
+                                sReturnVal += Math.floor(iTemp / 365) + "y ";
+                            }
+
+                            //# Append the full days now
+                            sReturnVal += (iTemp % 365) + "d ";
+                        }
+
+                        // calculate (and subtract) whole hours
+                        iTemp = Math.floor(iDelta / 3600) % 24;
+                        iDelta -= iTemp * 3600;
+
+                        //# If we have full hours, append them now
+                        if (iTemp > 0) {
+                            sReturnVal += iTemp + "h ";
+                        }
+
+                        // calculate (and subtract) whole minutes
+                        iTemp = Math.floor(iDelta / 60) % 60;
+                        iDelta -= iTemp * 60;
+
+                        //# If we have full minutes, append them now
+                        if (iTemp > 0) {
+                            sReturnVal += iTemp + "m ";
+                        }
+
+                        // what's left is seconds
+                        iTemp = iDelta % 60;  // in theory the modulus is not required
+
+                        //# Append the seconds to the sReturnVal
+                        return sReturnVal + iTemp + "s";
+                    },
 
 
                     //#########

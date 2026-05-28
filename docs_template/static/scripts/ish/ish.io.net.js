@@ -465,9 +465,13 @@
                             .then(/*async*/ function /*chainedResponsePromise*/(vResponseData) {
                                 oData.data = vResponseData;
 
-                                //# If the vResponseData .is .obj or .arr, also set it into our .json
-                                if (core.type.obj.is(vResponseData) || core.type.arr.is(vResponseData)) {
+                                //# If the vResponseData .is .arr, also set it into our .json
+                                if (core.type.arr.is(vResponseData)) {
                                     oData.json = vResponseData;
+                                }
+                                //# Else if the vResponseData .is .obj, also set it into our .json
+                                else if (core.type.obj.is(vResponseData, { allowJSON: true })) {
+                                    oData.json = core.type.obj.mk(vResponseData);
                                 }
                                 //# Else if the vResponseData .is .str, also set it into our .text
                                 else if (core.type.str.is(vResponseData)) {
