@@ -3207,7 +3207,7 @@
                         replace: function (vTarget, vReplacement) {
                             var _target = core.type.dom.mk(vTarget, null),
                                 _replacement = (vReplacement ? core.type.dom.parse(vReplacement)[0] : null), //# TODO: add looping
-                                bReturnVal = !!(_target && _target.parentNode)
+                                bReturnVal = !!(_target && _target.parentNode && _target.remove)
                             ;
 
                             //# If the _target and _replacement are valid, .replaceChild now
