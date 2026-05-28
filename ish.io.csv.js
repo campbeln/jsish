@@ -189,7 +189,7 @@
     }
     //# Else we are running in the browser, so we need to setup the _document-based features
     else {
-        return init(window.head.ish || document.querySelector("SCRIPT[ish]").ish);
+        return init(document.head.ish || document.querySelector("SCRIPT[ish]").ish);
     }
 
     //</MIXIN>

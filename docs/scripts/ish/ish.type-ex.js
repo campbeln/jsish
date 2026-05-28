@@ -3207,7 +3207,7 @@
                         replace: function (vTarget, vReplacement) {
                             var _target = core.type.dom.mk(vTarget, null),
                                 _replacement = (vReplacement ? core.type.dom.parse(vReplacement)[0] : null), //# TODO: add looping
-                                bReturnVal = !!(_target && _target.parentNode)
+                                bReturnVal = !!(_target && _target.parentNode && _target.remove)
                             ;
 
                             //# If the _target and _replacement are valid, .replaceChild now
@@ -3272,7 +3272,7 @@
     }
     //# Else we are running in the browser, so we need to setup the _document-based features
     else {
-        return init(window.head.ish || document.querySelector("SCRIPT[ish]").ish, window.atob, window.btoa);
+        return init(document.head.ish || document.querySelector("SCRIPT[ish]").ish, window.atob, window.btoa);
     }
 
     //</MIXIN>

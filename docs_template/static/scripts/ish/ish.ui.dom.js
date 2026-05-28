@@ -952,5 +952,5 @@
     //# Return core to allow for chaining
     return core;
 
-}(window.head.ish || document.querySelector("SCRIPT[ish]").ish)); //# Web-only
+}(document.head.ish || document.querySelector("SCRIPT[ish]").ish)); //# Web-only
 //</MIXIN>

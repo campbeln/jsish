@@ -98,5 +98,5 @@
     //# Return core to allow for chaining
     return core;
 
-}(window.head.ish || document.querySelector("SCRIPT[ish]").ish), window.Vue); //# Web-only
+}(document.head.ish || document.querySelector("SCRIPT[ish]").ish), window.Vue); //# Web-only
 //</MIXIN>
